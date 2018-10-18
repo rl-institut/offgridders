@@ -1,0 +1,11 @@
+Cost, unit, Investment, Installation, Operation and Management, lifetime, weight
+Value, unit, Euro, percent of investment, hours per year, years, kg per unit
+PV poly, 0, 0, 0, 0, 0, 0
+PV mono, 0, 0, 0, 0, 0, 0
+Battery Lithium, 0, 0, 0, 0, 0, 0
+Battery Lead, 0, 0, 0, 0, 0, 0
+Inverter Charge Controller, 0, 0, 0, 0, 0, 0
+Inverter PV, 0, 0, 0, 0, 0, 0
+Inverter Grid, 0, 0, 0, 0, 0, 0
+Cable 3phase main, 0, 0, 0, 0, 0, 0
+Cable 3phase branch, 0, 0, 0, 0, 0, 0
