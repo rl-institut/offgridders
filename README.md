@@ -11,3 +11,4 @@ https://guides.github.com/activities/hello-world/
 Tracking:
 - Installed Pycharm on personal and RLI PC
 - Github pull and push tested (working)
+- Created CSV file for cost input, py file for pandas reading
