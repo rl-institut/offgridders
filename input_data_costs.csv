@@ -1,5 +1,5 @@
-Cost, unit, Investment, Installation, Operation and Management, lifetime, weight
-Value, unit, Euro, percent of investment, hours per year, years, kg per unit
+Cost,unit,Investment,Installation,Operation and Management,lifetime,weight
+Value,unit,Euro,percent of investment,hours per year,years,kg per unit
 PV poly, 0, 0, 0, 0, 0, 0
 PV mono, 0, 0, 0, 0, 0, 0
 Battery Lithium, 0, 0, 0, 0, 0, 0

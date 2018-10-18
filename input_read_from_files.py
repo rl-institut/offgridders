@@ -4,4 +4,4 @@ import pandas as pd
 
 all_data = pd.read_csv('input_data_costs.csv', encoding='utf8', index_col='Cost')
 
-all_data['Investment']
+print(all_data['Investment'][1:])
