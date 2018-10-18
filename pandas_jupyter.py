@@ -1,27 +1,217 @@
-# to display plots in line:
-# %matplotlib inline
+# -*- coding: utf-8 -*-
 
+"""
+General description
+-------------------
+A basic example to show how to model a simple energy system with oemof.solph.
+The following energy system is modeled:
+                input/output  bgas     bel
+                     |          |        |       |
+                     |          |        |       |
+ wind(FixedSource)   |------------------>|       |
+                     |          |        |       |
+ pv(FixedSource)     |------------------>|       |
+                     |          |        |       |
+ rgas(Commodity)     |--------->|        |       |
+                     |          |        |       |
+ demand(Sink)        |<------------------|       |
+                     |          |        |       |
+                     |          |        |       |
+ pp_gas(Transformer) |<---------|        |       |
+                     |------------------>|       |
+                     |          |        |       |
+ storage(Storage)    |<------------------|       |
+                     |------------------>|       |
+Data
+----
+data_rows_demand_pv_wind.csv
+Installation requirements
+-------------------------
+This example requires the version v0.2.3 of oemof. Install by:
+    pip install 'oemof>=0.2.3,<0.3'
+Optional:
+    pip install matplotlib
+"""
+
+# ****************************************************************************
+# ********** PART 1 - Define and optimise the energy system ******************
+# ****************************************************************************
+
+###############################################################################
+# imports
+###############################################################################
+
+# Default logger of oemof
+from oemof.tools import logger
+from oemof.tools import helpers
+
+import oemof.solph as solph
+import oemof.outputlib as outputlib
+
+import logging
+import os
 import pandas as pd
-import matplotlib.pyplot as plt
+import pprint as pp
 
-# read with "read_csv", fields are comma-seperated
+try:
+    import matplotlib.pyplot as plt
+except ImportError:
+    plt = None
 
-all_data=pd.read_csv('input_data_costs.csv', encoding='utf9', sep=';', parse_dates=['Date'], dayfirst=True, index_col='Date')
 
-    # change the column separator to a ;
-    # Set the encoding to 'latin1' (the default is 'utf8')
-    # Parse the dates in the 'Date' column
-    # Tell it that our dates have the day first instead of the month first
-    # Set the index to be the 'Date' column
+solver = 'cbc'  # 'glpk', 'gurobi',....
+debug = False  # Set number_of_timesteps to 3 to get a readable lp-file.
+number_of_time_steps = 24*7*8
+solver_verbose = False  # show/hide solver output
 
-# all_data is a DataFrame, made up from all rows and columns. you can get columns by asking for the columntitle
+# initiate the logger (see the API docs for more information)
+logger.define_logging(logfile='oemof_example.log',
+                      screen_level=logging.INFO,
+                      file_level=logging.DEBUG)
 
-all_data['columntitle']
+logging.info('Initialize the energy system')
+date_time_index = pd.date_range('1/1/2012', periods=number_of_time_steps,
+                                freq='H')
 
-# you can directly plot the data
+energysystem = solph.EnergySystem(timeindex=date_time_index)
 
-all_data['columntitle'].plot()
-# with .plot(figsize=(17, 10)) the plot can appear smaller or bigger
+# Read data file
+filename = os.path.join(os.path.dirname(__file__), 'data_rows_demand_pv_wind.csv')
+data = pd.read_csv(filename)
 
-#opening multiple colums until row 10
-all_data[['columntitle', 'columntitle2']][:10]
+##########################################################################
+# Create oemof object
+##########################################################################
+
+logging.info('Create oemof objects')
+
+# The bus objects were assigned to variables which makes it easier to connect
+# components to these buses (see below).
+
+# create natural gas bus
+bgas = solph.Bus(label="natural_gas")
+
+# create electricity bus
+bel = solph.Bus(label="electricity")
+
+# adding the buses to the energy system
+energysystem.add(bgas, bel)
+
+# create excess component for the electricity bus to allow overproduction
+energysystem.add(solph.Sink(label='excess_bel', inputs={bel: solph.Flow()}))
+
+# create source object representing the natural gas commodity (annual limit)
+energysystem.add(solph.Source(label='rgas', outputs={bgas: solph.Flow(
+    nominal_value=29825293, summed_max=1)}))
+
+# create fixed source object representing wind power plants
+energysystem.add(solph.Source(label='wind', outputs={bel: solph.Flow(
+    actual_value=data['wind'], nominal_value=1000000, fixed=True)}))
+
+# create fixed source object representing pv power plants
+energysystem.add(solph.Source(label='pv', outputs={bel: solph.Flow(
+    actual_value=data['pv'], nominal_value=582000, fixed=True)}))
+
+# create simple sink object representing the electrical demand
+energysystem.add(solph.Sink(label='demand', inputs={bel: solph.Flow(
+    actual_value=data['demand'], fixed=True, nominal_value=1)}))
+
+# create simple transformer object representing a gas power plant
+energysystem.add(solph.Transformer(
+    label="pp_gas",
+    inputs={bgas: solph.Flow()},
+    outputs={bel: solph.Flow(nominal_value=10e10, variable_costs=50)},
+    conversion_factors={bel: 0.58}))
+
+# create storage object representing a battery
+storage = solph.components.GenericStorage(
+    nominal_capacity=10077997,
+    label='storage',
+    inputs={bel: solph.Flow(nominal_value=10077997/6)},
+    outputs={bel: solph.Flow(nominal_value=10077997/6, variable_costs=0.001)},
+    capacity_loss=0.00, initial_capacity=None,
+    inflow_conversion_factor=1, outflow_conversion_factor=0.8,
+)
+
+energysystem.add(storage)
+
+##########################################################################
+# Optimise the energy system and plot the results
+##########################################################################
+
+logging.info('Optimise the energy system')
+
+# initialise the operational model
+model = solph.Model(energysystem)
+
+# This is for debugging only. It is not(!) necessary to solve the problem and
+# should be set to False to save time and disc space in normal use. For
+# debugging the timesteps should be set to 3, to increase the readability of
+# the lp-file.
+if debug:
+    filename = os.path.join(
+        helpers.extend_basic_path('lp_files'), 'data_rows_demand_pv_wind.lp')
+    logging.info('Store lp-file in {0}.'.format(filename))
+    model.write(filename, io_options={'symbolic_solver_labels': True})
+
+# if tee_switch is true solver messages will be displayed
+logging.info('Solve the optimization problem')
+model.solve(solver=solver, solve_kwargs={'tee': solver_verbose})
+
+logging.info('Store the energy system with the results.')
+
+# The processing module of the outputlib can be used to extract the results
+# from the model transfer them into a homogeneous structured dictionary.
+
+# add results to the energy system to make it possible to store them.
+energysystem.results['main'] = outputlib.processing.results(model)
+energysystem.results['meta'] = outputlib.processing.meta_results(model)
+
+# The default path is the '.oemof' folder in your $HOME directory.
+# The default filename is 'es_dump.oemof'.
+# You can omit the attributes (as None is the default value) for testing cases.
+# You should use unique names/folders for valuable results to avoid
+# overwriting.
+
+# store energy system with results
+energysystem.dump(dpath=None, filename=None)
+
+# ****************************************************************************
+# ********** PART 2 - Processing the results *********************************
+# ****************************************************************************
+
+logging.info('**** The script can be divided into two parts here.')
+logging.info('Restore the energy system and the results.')
+energysystem = solph.EnergySystem()
+energysystem.restore(dpath=None, filename=None)
+
+# define an alias for shorter calls below (optional)
+results = energysystem.results['main']
+storage = energysystem.groups['storage']
+
+# print a time slice of the state of charge
+print('')
+print('********* State of Charge (slice) *********')
+print(results[(storage, None)]['sequences']['2012-02-25 08:00:00':
+                                            '2012-02-26 15:00:00'])
+print('')
+
+# get all variables of a specific component/bus
+custom_storage = outputlib.views.node(results, 'storage')
+electricity_bus = outputlib.views.node(results, 'electricity')
+
+# plot the time series (sequences) of a specific component/bus
+if plt is not None:
+    custom_storage['sequences'].plot(kind='line', drawstyle='steps-post')
+    plt.show()
+    electricity_bus['sequences'].plot(kind='line', drawstyle='steps-post')
+    plt.show()
+
+# print the solver results
+print('********* Meta results *********')
+pp.pprint(energysystem.results['meta'])
+print('')
+
+# print the sums of the flows around the electricity bus
+print('********* Main results *********')
+print(electricity_bus['sequences'].sum(axis=0))
