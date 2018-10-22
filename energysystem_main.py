@@ -85,11 +85,13 @@ micro_grid_system = solph.EnergySystem(timeindex=date_time_index)
 # File paths
 output_folder='./simulation_results'
 output_file='micro_grid_simulation_results'
+
+input_folder='inputs'
 input_file_demand_pv='data_rows_demand_pv_wind.csv'
 
 # Read data file for demand, wind and pv
 
-filename = os.path.join(os.path.dirname(__file__), input_file_demand_pv)  # why do I need this function?
+filename = os.path.join(os.path.dirname(__file__), input_folder+'/'+input_file_demand_pv)  # why do I need this function?
 data_set = pd.read_csv(filename)
 
 # Definitions
