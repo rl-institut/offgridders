@@ -185,6 +185,7 @@ logging.info('Store the energy system with the results.')
 micro_grid_system.results['main'] = outputlib.processing.results(model)
 micro_grid_system.results['meta'] = outputlib.processing.meta_results(model)
 
+#todo Enter check for directory and create directory here!
 # store energy system with results
 micro_grid_system.dump(dpath=output_folder, filename=output_file)
 
@@ -196,7 +197,6 @@ logging.info('**** The script can be divided into two parts here.')
 logging.info('Restore the energy system and the results.')
 micro_grid_system = solph.EnergySystem()
 
-############# Enter check for directory and create directory here!
 micro_grid_system.restore(dpath=output_folder, filename=output_file)
 
 # define an alias for shorter calls below (optional)
@@ -215,6 +215,7 @@ custom_storage = outputlib.views.node(results, 'generic_storage')
 electricity_bus = outputlib.views.node(results, 'bus_electricity_mg')
 
 # plot the time series (sequences) of a specific component/bus
+#todo plots not working
 if plt is not None:
     logging.info('Plotting: Generic storage')
     custom_storage['sequences'].plot(kind='line', drawstyle='steps-post')

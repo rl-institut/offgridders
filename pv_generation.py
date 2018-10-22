@@ -6,9 +6,10 @@ https://github.com/oemof/feedinlib/blob/dev/example/feedinlib_example_new.py#L11
 """
 
 try:
-    from matplotlib import pyplot as plt
+    import matplotlib as plt
 except ImportError:
     plt = None
+
 import pvlib
 import logging
 from pvlib.pvsystem import PVSystem
@@ -16,14 +17,14 @@ from pvlib.location import Location
 from pvlib.modelchain import ModelChain
 from pvlib.tools import cosd
 import feedinlib.weather as weather
-from windpowerlib import basicmodel
-
 
 logging.getLogger().setLevel(logging.INFO)
 
+input_file_weather = './inputs/weather.csv'
+
 # loading feedinlib's weather data
 my_weather = weather.FeedinWeather()
-my_weather.read_feedinlib_csv('weather_wittenberg.csv')
+my_weather.read_feedinlib_csv(input_file_weather)
 
 # #####################################
 # ********** windpowerlib *************
@@ -37,22 +38,6 @@ coastDat2 = {
     'temp_air': 2,
     'v_wind': 10,
     'Z0': 0}
-
-# own parameters of the wind converter
-enerconE126 = {
-    'h_hub': 135,
-    'd_rotor': 127,
-    'wind_conv_type': 'ENERCON E 126 7500'}
-
-# windpowerlib's basic model
-e126 = basicmodel.SimpleWindTurbine(**enerconE126)
-
-if plt:
-    e126.turbine_power_output(weather=my_weather.data,
-        data_height=coastDat2).plot()
-    plt.show()
-else:
-    logging.warning("No plots shown. Install matplotlib to see the plots.")
 
 # #####################################
 # ********** pvlib ********************
