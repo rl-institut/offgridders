@@ -1,3 +1,4 @@
+
 '''
 STANDALONE Version
 Requires 'tables' plugin
@@ -5,9 +6,16 @@ This is the long version, but much of this can be packaged in the Modelchain
 '''
 
 import pandas as pd
-import matplotlib.pyplot as plt
 import pvlib
 
+import logging
+logging.getLogger().setLevel(logging.INFO)
+
+try:
+    import matplotlib.pyplot as plt
+except ImportError:
+    plt = None
+    logging.warning("Install matplotlib to plot graphs!")
 
 latitude = 50
 longitude = 10
@@ -77,3 +85,5 @@ total_irrad['poa_global'].plot()
 ac.plot()
 plt.ylabel('Power (kW)')
 plt.show()
+
+logging.info('Calculated solar irradiation and pv generation (without white noise).')
