@@ -1,12 +1,17 @@
 # -*- coding: utf-8
 """
 STANDALONE VERSION
-Unchanged file from
+Unchanged file from:
 https://github.com/oemof/feedinlib/blob/dev/example/feedinlib_example_new.py#L111
+Feedinlib documentation:
+https://feedinlib.readthedocs.io/en/stable/index.html
+Please check...
+https://pvlib-python.readthedocs.io/en/latest/introexamples.html#modeling-paradigms
+...and find out if pvlib would be able to fetch the subsequent dhi data sets automatically
 """
 
 try:
-    import matplotlib as plt
+    import matplotlib.pyplot as plt
 except ImportError:
     plt = None
 
@@ -27,22 +32,10 @@ my_weather = weather.FeedinWeather()
 my_weather.read_feedinlib_csv(input_file_weather)
 
 # #####################################
-# ********** windpowerlib *************
-# #####################################
-
-# specifications of the weather data set
-coastDat2 = {
-    'dhi': 0,
-    'dirhi': 0,
-    'pressure': 0,
-    'temp_air': 2,
-    'v_wind': 10,
-    'Z0': 0}
-
-# #####################################
 # ********** pvlib ********************
 # #####################################
 
+# todo weatherdata includes dhi etc, but can this info be downloaded automatically from nasa??
 # preparing the weather data to suit pvlib's needs
 # different name for the wind speed
 my_weather.data.rename(columns={'v_wind': 'wind_speed'}, inplace=True)
@@ -56,6 +49,7 @@ w = my_weather.data
 times = my_weather.data.index
 
 # get module and inverter parameter from sandia database
+# todo read module and inverter lists -> identify which can be used at all
 sandia_modules = pvlib.pvsystem.retrieve_sam('SandiaMod')
 sapm_inverters = pvlib.pvsystem.retrieve_sam('sandiainverter')
 
