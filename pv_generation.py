@@ -1,13 +1,10 @@
 # -*- coding: utf-8
 """
 STANDALONE VERSION
-Unchanged file from:
+Based on file from:
 https://github.com/oemof/feedinlib/blob/dev/example/feedinlib_example_new.py#L111
 Feedinlib documentation:
 https://feedinlib.readthedocs.io/en/stable/index.html
-Please check...
-https://pvlib-python.readthedocs.io/en/latest/introexamples.html#modeling-paradigms
-...and find out if pvlib would be able to fetch the subsequent dhi data sets automatically
 """
 
 try:
