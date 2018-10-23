@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 """
 STANDALONE VERSION
-Unchanged file
+Unchanged file:
 https://github.com/oemof/demandlib/blob/master/demandlib/examples/power_demand_example.py
+Demandlib documentation:
+https://demandlib.readthedocs.io/en/latest/
 """
 
 import datetime
@@ -12,8 +14,20 @@ from datetime import time as settime
 try:
     import matplotlib.pyplot as plt
 except ImportError:
-    print("yeah, we see this")
+    print("Matplotlib.pyplot could not be loaded")
     plt = None
+
+# todo difference between class and function
+# todo better display of plots
+def plot_results(pandas_dataframe, title, xaxis, yaxis):
+    if plt is not None:
+        # Plot demand
+        ax = pandas_dataframe.plot()
+        ax.set_title(title)
+        ax.set_xlabel(xaxis)
+        ax.set_ylabel(yaxis)
+        plt.show()
+    return
 
 # todo: in gui, it must be possible to add holidays and scaling parameters manually
 # todo: in gui, it must be possible to set and scale for working hours
@@ -22,6 +36,11 @@ holidays = {
     datetime.date(2018, 12, 25): 'Christmas Day',
     datetime.date(2018, 12, 26): 'Second Christmas Day'
 }
+# todo: create seasons
+""" 
+seasons (dictionary) – Describing the time ranges for summer, winter and transition periods.
+seasons = {}
+"""
 
 # Define demand
 ann_el_demand_per_household = 2210
@@ -48,39 +67,66 @@ def power_example():
     ilp = profiles.IndustrialLoadProfile(e_slp.date_time_index,
                                          holidays=holidays)
 
-    # Beginning and end of workday, weekdays and weekend days, and scaling
-    # factors by default
-    electricity_demand['households'] = ilp.simple_profile(ann_el_demand_per_sector['households'])
+    # Household profile: Factors by default
+    # -> weekends have higher demand than weekdays
+    electricity_demand['households'] = ilp.simple_profile(
+        ann_el_demand_per_sector['households'])
 
-    # Change scaling factors
+    # Business profile: Beginning and end of workday, weekdays and weekend days, and scaling
+    # -> weekends have lower demand that weekdays
     electricity_demand['businesses'] = ilp.simple_profile(
         ann_el_demand_per_sector['businesses'],
         am=settime(9, 0, 0), # Set beginning of workday to 9 am
+        pm=settime(19,0,0), # Set end of workday to 19
         profile_factors={'week': {'day': 1.0, 'night': 0.8},
                          'weekend': {'day': 0.8, 'night': 0.6}})
 
-    print("Be aware that the values in the DataFrame are 15minute values with "
-          "a power unit. If you sum up a table with 15min values the result "
-          "will be of the unit 'kW15minutes'.")
+    # Define electricity demand profile with 15-min steps
+    electricity_demand_15min = electricity_demand
+    plot_results(electricity_demand, "Electricity demand per sector (15-min)", "Date (15-min steps)", "Date (15-min steps)")
 
-    print(electricity_demand.sum())
-
-    print("You will have to divide the result by 4 to get kWh.")
-    print(electricity_demand.sum() / 4)
-
-    print("Or resample the DataFrame to hourly values using the mean() "
-          "method.")
-
+    """
+    Be aware that the values in the DataFrame are 15minute values with
+    a power unit. If you sum up a table with 15min values the result
+    will be of the unit 'kW15minutes'. 
+    You can divide the total sum electricity_demand.sum() by 4 to get kWh.
+    For an hourly profile resample the DataFrame to hourly values using 
+    the mean() method.
+    """
     # Resample 15-minute values to hourly values.
-    electricity_demand = electricity_demand.resample('H').mean()
-    print(electricity_demand.sum())
+    electricity_demand_hourly = electricity_demand.resample('H').mean()
+    print("Total annual demand per sector (kWh/a)")
+    print(electricity_demand_hourly.sum())
+    print(" ")
+    plot_results(electricity_demand_hourly, "Electricity demand per sector (1-hr)", "Date (1-hr steps)",
+                 "Power demand in kW")
 
-    if plt is not None:
-        # Plot demand
-        ax = electricity_demand.plot()
-        ax.set_xlabel("Date")
-        ax.set_ylabel("Power demand")
-        plt.show()
+    # Total demand (hourly) for project site
+    electricity_demand_total_hourly = electricity_demand_hourly['households']+electricity_demand_hourly['businesses']
+    print("Total annual demand for project site (kWh/a)")
+    print(electricity_demand_total_hourly.sum())
+    print(" ")
+    plot_results(electricity_demand_total_hourly, "Electricity demand at project site (1-hr)", "Date (1-hr steps)",
+                 "Power demand in kW")
+
+    # Resample hourly values to daily values.
+    electricity_demand_daily = electricity_demand_hourly.resample('D').sum()
+    plot_results(electricity_demand_daily, "Electricity demand per sector (1-d)", "Date (1-d steps)",
+                 "Power demand in kWh/d")
+    print("Median daily demand (kWh/d)")
+    print(electricity_demand_daily.mean())
+    print(" ")
+
+# todo include white noise
+
+    # Define daily profile with peak demands - without white noise the value is constant
+    electricity_demand_kW_max = electricity_demand.resample('D').max()
+    plot_results(electricity_demand_kW_max, "Daily peak demand per sector", "Date (1-d steps)",
+                 "Peak power demand in kW")
+    print("Absolute peak demand (kW)")
+    print(electricity_demand_kW_max.max())
+    print(" ")
+# todo create merged demand of households and businesses, so that the total load profile can be fed into the mg optimization
 
 if __name__ == '__main__':
     power_example()
