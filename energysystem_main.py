@@ -7,19 +7,21 @@ Energy system modeled: Micro Grid with fixed capacities
             input/output    bus_fuel        bus_electricity     flow
                     |               |               |
                     |               |               |
-source: pv          |------------------------------>|       pv_generate (fix)
+source: pv          |------------------------------>|       generate_pv (fix)
                     |               |               |
 source: fossil_fuel |-------------->|               |       fossil_fuel_in (var)
                     |               |               |
 trafo: generator    |<--------------|               |       fossil_fuel_use (var)
-                    |------------------------------>|       generate (var)
+                    |------------------------------>|       generate_fuel (var)
                     |               |               |
-sink: demand        |<------------------------------|       demand_supply (fix)
+storage: battery    |<------------------------------|       battery_charge (var)
+                    |------------------------------>|       battery_discharge (var)
                     |               |               |
-sink: excess        |<------------------------------|       excess_supply (var)
+sink: demand        |<------------------------------|       supply_demand (fix)
                     |               |               |
-storage: battery    |<------------------------------|       store (var)
-                    |------------------------------>|       feed_in_stored (var)
+sink: excess        |<------------------------------|       supply_excess (var)
+                    |               |               |
+
 _____
 Data used: None
 
