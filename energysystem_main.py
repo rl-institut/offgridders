@@ -35,12 +35,17 @@ Requires: oemof, matplotlib
 ###############################################################################
 
 from oemof.tools import logger
-from oemof.tools import helpers
+# from oemof.tools import helpers
 
 import oemof.solph as solph
 import oemof.outputlib as outputlib
 
 import logging
+# Logging
+logger.define_logging(logfile='energy_system_main.log',
+                      screen_level=logging.INFO,
+                      file_level=logging.DEBUG)
+
 import os
 import pandas as pd
 import pprint as pp
@@ -52,6 +57,12 @@ except ImportError:
     logging.info('Attention! matplotlib could not be imported.')
     plt = None
 
+# import own functions
+import demand_profile
+
+###############################################################################
+# Simulation settings
+###############################################################################
 
 # Define solver
 solver = 'cbc'
@@ -60,30 +71,27 @@ solver_verbose = False  # show/hide solver output
 # Debugging
 debug = False  # Set number_of_timesteps to 3 to get a readable lp-file.
 
-# Simulation timesteps
-number_of_time_steps = 24*7*8
+# Simulation timeframe
+time_start = '1/1/2018'
+time_end = '31/12/2018'
+time_frequency = 'H'
 
-# Logging
-logger.define_logging(logfile='energy_system_main.log',
-                      screen_level=logging.INFO,
-                      file_level=logging.DEBUG)
 
 ###############################################################################
-# Initialize Energy System
+# Input values
 ###############################################################################
 
-logging.info('Initialize the energy system')
+# Definitions
+fuel_price=0.04
 
-# Create panda DataFrame
-date_time_index = pd.date_range('1/1/2018', periods=number_of_time_steps, freq='H')
+# Define demand
+ann_el_demand_per_household = 2210
+ann_el_demand_per_business = 10000
+number_of_households = 20
+number_of_businesses = 6
 
-# create energy system
-micro_grid_system = solph.EnergySystem(timeindex=date_time_index)
-
-###############################################################################
-# Import input values
-###############################################################################
-
+demand_input = pd.DataFrame({'annual_demand_kWh': [ann_el_demand_per_household, ann_el_demand_per_business], 'number': [number_of_households, number_of_businesses]}, index=['households', 'businesses'])
+print(demand_input)
 # File paths
 output_folder='./simulation_results'
 output_file='micro_grid_simulation_results'
@@ -96,10 +104,22 @@ input_file_demand_pv='data_rows_demand_pv_wind.csv'
 filename = os.path.join(os.path.dirname(__file__), input_folder+'/'+input_file_demand_pv)  # why do I need this function?
 data_set = pd.read_csv(filename)
 
-# Definitions
-fuel_price=0.04
 
+###############################################################################
+# Initialize Energy System
+###############################################################################
 
+logging.info('Initialize the energy system')
+
+# Create panda DataFrame
+date_time_index = pd.date_range(start=time_start, end=time_end, freq=time_frequency)
+
+# create energy system
+micro_grid_system = solph.EnergySystem(timeindex=date_time_index)
+
+# Estimate Load profile
+
+demand_profile_Wh = demand_profile.estimate.power_example(demand_input) # wh? kWh?
 ###############################################################################
 # Create Energy System with oemof
 ###############################################################################
@@ -132,7 +152,7 @@ source_pv=solph.Source(label="source_pv",
 # create and add demand sink to micro_grid_system - fixed
 sink_demand=solph.Sink(label="sink_demand",
            inputs={bus_electricity_mg: solph.Flow(
-               actual_value=data_set['demand'],
+               actual_value=demand_profile_Wh,
                nominal_value=1,
                fixed=True)}  # utilizing imported data-set
            )
