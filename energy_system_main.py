@@ -58,8 +58,8 @@ except ImportError:
     plt = None
 
 # import own functions
-import demand_profile
-
+from demand_profile import demand_profile
+from pvlib_scripts import pvlib_scripts
 ###############################################################################
 # Simulation settings
 ###############################################################################
@@ -75,7 +75,7 @@ debug = False  # Set number_of_timesteps to 3 to get a readable lp-file.
 time_start = '1/1/2018'
 time_end = '31/12/2018'
 time_frequency = 'H'
-
+date_time_index = pd.date_range(start=time_start, end=time_end, freq=time_frequency)
 
 ###############################################################################
 # Input values
@@ -91,7 +91,28 @@ number_of_households = 20
 number_of_businesses = 6
 
 demand_input = pd.DataFrame({'annual_demand_kWh': [ann_el_demand_per_household, ann_el_demand_per_business], 'number': [number_of_households, number_of_businesses]}, index=['households', 'businesses'])
-print(demand_input)
+
+# Define irradiation and generation
+latitude = 50
+longitude = 10
+location_name = 'Berlin'
+altitude = 34
+timezone = 'Etc/GMT-1'
+
+surface_azimuth = 180
+tilt = 0
+pv_composite_name = 'basic'
+module_name = 'Canadian_Solar_CS5P_220M___2009_'
+inverter_name = 'ABB__MICRO_0_25_I_OUTD_US_208_208V__CEC_2014_'
+
+pv_system_location = pd.DataFrame([location_name, latitude, longitude, altitude, timezone],
+                       index=['name', 'latitude', 'longitude', 'altitude', 'timezone'])
+
+pv_system_parameters=pd.DataFrame([pv_composite_name, surface_azimuth, tilt, module_name, inverter_name],
+                       index=['name','surface_azimut', 'tilt', 'module_name', 'inverter_name'])
+
+solpos, dni_extra, airmass, pressure, am_abs, tl, cs = pvlib_scripts.irradiation(pv_system_location, date_time_index)
+
 # File paths
 output_folder='./simulation_results'
 output_file='micro_grid_simulation_results'
@@ -111,15 +132,12 @@ data_set = pd.read_csv(filename)
 
 logging.info('Initialize the energy system')
 
-# Create panda DataFrame
-date_time_index = pd.date_range(start=time_start, end=time_end, freq=time_frequency)
-
 # create energy system
 micro_grid_system = solph.EnergySystem(timeindex=date_time_index)
 
 # Estimate Load profile
 
-demand_profile_Wh = demand_profile.estimate.power_example(demand_input) # wh? kWh?
+demand_profile_Wh = demand_profile.estimate(demand_input) # wh? kWh?
 ###############################################################################
 # Create Energy System with oemof
 ###############################################################################

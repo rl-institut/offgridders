@@ -18,7 +18,7 @@ except ImportError:
     print("Matplotlib.pyplot could not be loaded")
     plt = None
 
-class estimate:
+class demand_profile:
 
     # todo difference between class and function
     # todo better display of plots
@@ -32,7 +32,7 @@ class estimate:
             plt.show()
         return
 
-    def power_example(demand_input):
+    def estimate(demand_input):
         year = 2018
 
         # todo: in gui, it must be possible to add holidays and scaling parameters manually
@@ -84,14 +84,14 @@ class estimate:
         # todo if pass frequency/timestamp, then we automatically have appropriate demand profile. choose with check for frequency, which outputs (prints, plots) are generated
         # Define electricity demand profile with 15-min steps
         electricity_demand_15min = electricity_demand
-        estimate.plot_results(electricity_demand, "Electricity demand per sector (15-min)", "Date (15-min steps)", "Date (15-min steps)")
+        demand_profile.plot_results(electricity_demand, "Electricity demand per sector (15-min)", "Date (15-min steps)", "Date (15-min steps)")
 
         # Define total electricity demand profile with 15-min steps
         electricity_demand__total_15min = electricity_demand_15min['households']+electricity_demand_15min['businesses']
         print("Total annual demand for project site (kWh/a)")
         print(electricity_demand__total_15min.sum()/4)
         print(" ")
-        estimate.plot_results(electricity_demand__total_15min, "Electricity demand at project site (15-min)", "Date (15-im steps)",
+        demand_profile.plot_results(electricity_demand__total_15min, "Electricity demand at project site (15-min)", "Date (15-im steps)",
                      "Power demand in kW")
 
         """
@@ -107,7 +107,7 @@ class estimate:
         print("Total annual demand per sector (kWh/a)")
         print(electricity_demand_hourly.sum())
         print(" ")
-        estimate.plot_results(electricity_demand_hourly, "Electricity demand per sector (1-hr)", "Date (1-hr steps)",
+        demand_profile.plot_results(electricity_demand_hourly, "Electricity demand per sector (1-hr)", "Date (1-hr steps)",
                      "Power demand in kW")
 
         # Total demand (hourly) for project site
@@ -115,12 +115,12 @@ class estimate:
         print("Total annual demand for project site (kWh/a)")
         print(electricity_demand_total_hourly.sum())
         print(" ")
-        estimate.plot_results(electricity_demand_total_hourly, "Electricity demand at project site (1-hr)", "Date (1-hr steps)",
+        demand_profile.plot_results(electricity_demand_total_hourly, "Electricity demand at project site (1-hr)", "Date (1-hr steps)",
                      "Power demand in kW")
 
         # Resample hourly values to daily values.
         electricity_demand_daily = electricity_demand_hourly.resample('D').sum()
-        estimate.plot_results(electricity_demand_daily, "Electricity demand per sector (1-d)", "Date (1-d steps)",
+        demand_profile.plot_results(electricity_demand_daily, "Electricity demand per sector (1-d)", "Date (1-d steps)",
                      "Power demand in kWh/d")
         print("Median daily demand (kWh/d)")
         print(electricity_demand_daily.mean())
@@ -130,13 +130,11 @@ class estimate:
 
         # Define daily profile with peak demands - without white noise the value is constant
         electricity_demand_kW_max = electricity_demand.resample('D').max()
-        estimate.plot_results(electricity_demand_kW_max, "Daily peak demand per sector", "Date (1-d steps)",
+        demand_profile.plot_results(electricity_demand_kW_max, "Daily peak demand per sector", "Date (1-d steps)",
                      "Peak power demand in kW")
         print("Absolute peak demand (kW)")
         print(electricity_demand_kW_max.max())
         print(" ")
-
-        print(electricity_demand_total_hourly)
 
         return electricity_demand_total_hourly
     # todo create merged demand of households and businesses, so that the total load profile can be fed into the mg optimization
