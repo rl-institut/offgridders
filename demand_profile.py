@@ -50,11 +50,6 @@ class demand_profile:
 
         ann_el_demand_per_sector = demand_input.annual_demand_kWh*demand_input.number # todo is this a value that should be submitted as kWh/a or Wh/a
 
-        #{
-        #    'households': ann_el_demand_per_household*number_of_households,
-        #    'businesses': ann_el_demand_per_business*number_of_businesses
-        #}
-
         # read standard load profiles
         e_slp = bdew.ElecSlp(year, holidays=holidays)
 

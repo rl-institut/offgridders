@@ -28,6 +28,17 @@ Tracking:
 
 23.10: Standalone completed: demandlib (demand profile) and multiple pv generation scripts
         (pv_generation_pv, pvlib_modelchain, pvlib_try)
+        
+24.10: Combined energy system with demand class (demand profile generation)
+
+25.10: Combined energy system with pvlib class (solar irradiation, pv generation)
+
+# Needed packages
+tables, pandas
+
+matplotlib
+
+oemof, demandlib
 
 # Energy system
 _Based on file energysystem_main.py_
