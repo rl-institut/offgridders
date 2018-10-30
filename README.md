@@ -33,41 +33,43 @@ Tracking:
 
 25.10: Combined energy system with pvlib class (solar irradiation, pv generation)
 
+30.10: Integration of demand and pvlib class into Energysystem complete (fixed capacities)
+
 # Needed packages
-tables, pandas
+tables, pandas, tkinter
 
 matplotlib
 
-oemof, demandlib
+oemof, demandlib, pvlib
 
 # Energy system
-_Based on file energysystem_main.py_
+_Based on file energy_system_main.py_
 Currently a micro grid system with fixed demand, pv generation and a fossil fuelled generator. 
 
 # PV generarion: 
+_Based on file pvlib_scripts.py_
 General: As written in demandlib docs, technical pv module parameters are taken from the sandia-files.
 
         https://sam.nrel.gov/sites/default/files/sam-library-sandia-modules-2015-6-30.csv
         https://sam.nrel.gov/sites/default/files/sam-library-cec-modules-2015-6-30.csv
         
-_Based on file pv_generation.py_
-- requires input data (temp,dhi,dni,vwind)
-- not my favourite...
-    
-_Based on file pvlib_try.py_
-As written in demandlib, the technical pv module parameters are taken from the sandia-files.
-- detailed calculations, but only location, module/inverter parameters and temp_air/wind to be defined
-- using sandia modules and inverters
-- highly adaptable
+Solar irradiation (per sqm?) and pv generation (per panel?) are calculated based on location and a 
+specific solar module and inverter from the sandia-files. They provide all technical parameters, only
+tilt and azimuth are input parameters. Currently working with constant wind speed and ambient temperature.
 
-_Based on file pvlib_modelchain.py_
-As written in demandlib, the technical pv module parameters are taken from the sandia-files.
-- ghi/dni/dhi/temp/wind should be defined
-- using sandia modules and inverters
-- can use different input sets - but most importantly works with very few inputs
+The solar irradiation as well as the pv generation therefore are highly idealized, and can differ 
+from the measured local values. The margin should be adressed somewhere in the thesis.
+
+Currently, no white noise taking into account volatile weather conditions is included. 
+The energy system currently receives the total irradiation as well as the panel generation for the
+definition of its components. In the future, multiple panels should be integrated.
 
 # Load profile
-_Based on file demand_profile_generation.py_
-- Adjusted demandlib example
-- Now calculates: 15-min, 1-hr, 1-d, total 1-d, peak -1d load profiles
-- Generates plots and prints values
+_Based on file demand_profile.py_
+The demand profile estimation is based on the number and annual consumption of households and businesses 
+at the project site. In the future, the interactive addition of further sectors could be interesting.
+
+Currently, the script calculates the profile for each sector in 15-min, 1-hr and 1-d timesteps. 
+Additionaly, the total consumption and the highest peak of a day are summarized. 
+Plots for all cases are displayed, as well as other summarized values.
+The energy system recieves the total consumption as the project demand profile.
