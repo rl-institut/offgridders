@@ -16,25 +16,6 @@ Tasks:
 
 https://guides.github.com/activities/hello-world/
 
-Tracking:
-
-16.10: Installed Pycharm on personal and RLI PC
-
-17.10: Github pull and push tested (working)
-
-17.10: Created CSV file for cost input, py file for pandas reading
-
-22.10: Sucessfully adapted oemof's basic_example (no wind), but plots are not created
-
-23.10: Standalone completed: demandlib (demand profile) and multiple pv generation scripts
-        (pv_generation_pv, pvlib_modelchain, pvlib_try)
-        
-24.10: Combined energy system with demand class (demand profile generation)
-
-25.10: Combined energy system with pvlib class (solar irradiation, pv generation)
-
-30.10: Integration of demand and pvlib class into Energysystem complete (fixed capacities)
-
 # Needed packages
 tables, pandas, tkinter
 
@@ -73,3 +54,22 @@ Currently, the script calculates the profile for each sector in 15-min, 1-hr and
 Additionaly, the total consumption and the highest peak of a day are summarized. 
 Plots for all cases are displayed, as well as other summarized values.
 The energy system recieves the total consumption as the project demand profile.
+
+# Track Versions
+
+16.10: Installed Pycharm on personal and RLI PC
+
+17.10: Github pull and push tested (working)
+
+17.10: Created CSV file for cost input, py file for pandas reading
+
+22.10: Sucessfully adapted oemof's basic_example (no wind), but plots are not created
+
+23.10: Standalone completed: demandlib (demand profile) and multiple pv generation scripts
+        (pv_generation_pv, pvlib_modelchain, pvlib_try)
+        
+24.10: Combined energy system with demand class (demand profile generation)
+
+25.10: Combined energy system with pvlib class (solar irradiation, pv generation)
+
+30.10: Integration of demand and pvlib class into Energysystem complete (fixed capacities)

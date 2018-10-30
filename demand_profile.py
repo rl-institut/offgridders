@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-STANDALONE VERSION
+Integrated version
 Unchanged file:
 https://github.com/oemof/demandlib/blob/master/demandlib/examples/power_demand_example.py
 Demandlib documentation:
@@ -18,18 +18,21 @@ except ImportError:
     print("Matplotlib.pyplot could not be loaded")
     plt = None
 
-class demand_profile:
+# Import simulation settings
+from config import display_graphs
 
+class demand_profile:
     # todo difference between class and function
     # todo better display of plots
     def plot_results(pandas_dataframe, title, xaxis, yaxis):
         if plt is not None:
-            # Plot demand
-            ax = pandas_dataframe.plot()
-            ax.set_title(title)
-            ax.set_xlabel(xaxis)
-            ax.set_ylabel(yaxis)
-            plt.show()
+            if display_graphs==True:
+                # Plot demand
+                ax = pandas_dataframe.plot()
+                ax.set_title(title)
+                ax.set_xlabel(xaxis)
+                ax.set_ylabel(yaxis)
+                plt.show()
         return
 
     def estimate(demand_input):
@@ -84,7 +87,7 @@ class demand_profile:
         # Define total electricity demand profile with 15-min steps
         electricity_demand__total_15min = electricity_demand_15min['households']+electricity_demand_15min['businesses']
         print("Total annual demand for project site (kWh/a)")
-        print(electricity_demand__total_15min.sum()/4)
+        print(round(electricity_demand__total_15min.sum()/4, 2))
         print(" ")
         demand_profile.plot_results(electricity_demand__total_15min, "Electricity demand at project site (15-min)", "Date (15-im steps)",
                      "Power demand in kW")

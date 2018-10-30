@@ -62,84 +62,40 @@ except ImportError:
 # import own functions
 from demand_profile import demand_profile
 from pvlib_scripts import pvlib_scripts
+
 ###############################################################################
 # Simulation settings
 ###############################################################################
 
-# Define solver
-solver = 'cbc'
-solver_verbose = False  # show/hide solver output
-
-# Debugging
-debug = False  # Set number_of_timesteps to 3 to get a readable lp-file.
-
-# Simulation timeframe
-# todo define time as one whole year aka 8760 timesteps - right now the 31st is not counted adequately
-time_start = '1/1/2018'
-time_end = '31/12/2018'
-time_frequency = 'H'
-date_time_index = pd.date_range(start=time_start, end=time_end, freq=time_frequency)
-
+# Import general simulation settings
+from config import solver, solver_verbose, debug
+# File structure
+from config import output_folder, output_file
+# Import specific simulation settings
+from config import display_graphs, date_time_index
 ###############################################################################
 # Input values
 ###############################################################################
+# demand
+from input_values import demand_input
+# costs
+from input_values import cost_data, fuel_price
+# fixed capacities
+from input_values import cap_fuel_gen, cap_pv, cap_storage
+# pv system
+from input_values import pv_system_location, location_name, pv_system_parameters, pv_composite_name
 
-# File paths
-output_folder='./simulation_results'
-output_file='micro_grid_simulation_results'
+# Estimate Load profile
+# todo check for units
+demand_profile = demand_profile.estimate(demand_input) # wh? kWh?
 
-#input_folder='inputs'
-#input_file_demand_pv='data_rows_demand_pv_wind.csv'
+# Solar irradiance
+# todo check for units
+solpos, dni_extra, airmass, pressure, am_abs, tl, cs = pvlib_scripts.irradiation(pv_system_location, location_name)
 
-# Read data file for demand, wind and pv
-
-#filename = os.path.join(os.path.dirname(__file__), input_folder+'/'+input_file_demand_pv)  # why do I need this function?
-#data_set = pd.read_csv(filename)
-
-
-# Definitions
-fuel_price=0.04 # Euro/l
-
-# Define demand
-# todo check for units of annual demand
-ann_el_demand_per_household = 2210 # kWh/a
-ann_el_demand_per_business = 10000 # kWh/a
-number_of_households = 20
-number_of_businesses = 6
-
-demand_input = pd.DataFrame({'annual_demand_kWh': [ann_el_demand_per_household, ann_el_demand_per_business], 'number': [number_of_households, number_of_businesses]}, index=['households', 'businesses'])
-
-# Fixed capacities
-# todo check for units of capacities
-cap_pv          = 100 # in number of panels -> installed kWp depends on panel type chosen!
-cap_fuel_gen    = 100 # kW
-cap_storage     = 100 # kWh, max. charge/discharge per timestep: cap_pv/6 kWh
-
-# Define irradiation and generation
-location_name = 'Berlin'
-latitude = 50
-longitude = 10
-altitude = 34
-timezone = 'Etc/GMT-1'
-
-pv_composite_name = 'basic'
-surface_azimuth = 180
-tilt = 0
-module_name = 'Canadian_Solar_CS5P_220M___2009_'
-inverter_name = 'ABB__MICRO_0_25_I_OUTD_US_208_208V__CEC_2014_'
-
-pv_system_location = pd.DataFrame([latitude, longitude, altitude, timezone],
-                       index=['latitude', 'longitude', 'altitude', 'timezone'],
-                        columns=[location_name])
-
-# todo check for units of irradiation and generation (sqm, panel)
-pv_system_parameters=pd.DataFrame([surface_azimuth, tilt, module_name, inverter_name],
-                       index=['surface_azimuth', 'tilt', 'module_name', 'inverter_name'],
-                       columns=[pv_composite_name])
-
-solpos, dni_extra, airmass, pressure, am_abs, tl, cs = pvlib_scripts.irradiation(pv_system_location, location_name, date_time_index)
-
-pv_generation_per_panel = pvlib_scripts.generation(pv_system_parameters, pv_composite_name, location_name, solpos, dni_extra, airmass, pressure, am_abs, tl, cs, date_time_index)
+# PV generation
+# todo check for units
+pv_generation_per_panel = pvlib_scripts.generation(pv_system_parameters, pv_composite_name, location_name, solpos, dni_extra, airmass, pressure, am_abs, tl, cs)
 
 ###############################################################################
 # Initialize Energy System
@@ -150,9 +106,6 @@ logging.info('Initialize the energy system')
 # create energy system
 micro_grid_system = solph.EnergySystem(timeindex=date_time_index)
 
-# Estimate Load profile
-# todo check for units
-demand_profile = demand_profile.estimate(demand_input) # wh? kWh?
 ###############################################################################
 # Create Energy System with oemof
 ###############################################################################
@@ -179,6 +132,7 @@ source_pv=solph.Source(label="source_pv",
                  actual_value=pv_generation_per_panel,
                  fixed=True,
                  nominal_value=cap_pv
+                 #investment=solph.Investment(ep_costs=cost_data.loc['annuity', 'PV'])
                  )}
              )
 
@@ -199,21 +153,26 @@ sink_excess=solph.Sink(label="sink_excess",
 transformer_fuel_generator=solph.Transformer(label="transformer_fuel_generator",
                   inputs={bus_fuel: solph.Flow()},
                   outputs={bus_electricity_mg: solph.Flow(
-                      nominal_value=cap_fuel_gen, # sets to 100 kW capacity
+                      nominal_value=cap_fuel_gen,
                       variable_costs=50)},
-                  conversion_factors={bus_electricity_mg: 0.58},  # is efficiency of the generator?? Then this should later on be included as a function of the load factor
+                  #investment=solph.Investment(ep_costs=cost_data.loc['annuity', 'GenSet']),
+                  conversion_factors={bus_electricity_mg: 0.58}  # is efficiency of the generator?? Then this should later on be included as a function of the load factor
                   )
 
 # create and add storage object representing a battery - variable
 generic_storage = solph.components.GenericStorage(
-    nominal_capacity=cap_storage,
     label='generic_storage',
-    inputs={bus_electricity_mg: solph.Flow(nominal_value=cap_storage/6)},  # 10077997/6 is probably the maximum charge/discharge possible in one timestep
-    outputs={bus_electricity_mg: solph.Flow(nominal_value=cap_storage/6, variable_costs=0.001)},
+    nominal_capacity=cap_storage,
+    #investment=solph.Investment(ep_costs=cost_data.loc['annuity', 'Storage']),
+    inputs={bus_electricity_mg: solph.Flow(
+        nominal_value=cap_storage/6)},  # 10077997/6 is probably the maximum charge/discharge possible in one timestep
+    outputs={bus_electricity_mg: solph.Flow(
+        nominal_value=cap_storage/6,
+        variable_costs=0.0)},
     capacity_loss=0.00,  # from timestep to timestep? what is this?
     initial_capacity=None,  # in terms of SOC?
     inflow_conversion_factor=1,  # storing efficiency?
-    outflow_conversion_factor=0.8,  # efficiency of feed-in-stored?
+    outflow_conversion_factor=0.8  # efficiency of feed-in-stored?
 )
 
 micro_grid_system.add(sink_demand, sink_excess, source_fuel, source_pv, transformer_fuel_generator, generic_storage)
@@ -287,3 +246,38 @@ print('')
 # print the sums of the flows around the electricity bus
 print('********* Main results *********')
 print(electricity_bus['sequences'].sum(axis=0))
+
+'''
+results = outputlib.processing.results(model)
+
+custom_storage = outputlib.views.node(results, 'generic_storage')
+electricity_bus = outputlib.views.node(results, 'bus_electricity_mg')
+
+print (electricity_bus)
+
+if plt is not None:
+    logging.info('Plotting: Generic storage')
+    custom_storage['sequences'].plot(kind='line', drawstyle='steps-post')
+    plt.show()
+    logging.info('Plotting: Electricity bus')
+    electricity_bus['sequences'].plot(kind='line', drawstyle='steps-post')
+    plt.show()
+
+my_results = electricity_bus['scalars']
+
+print (my_results)
+print(results[(generic_storage, None)])
+
+# installed capacity of storage in GWh
+my_results['storage_invest_kWh'] = (results[(generic_storage, None)]
+                                    ['scalars']['invest'])
+
+# installed capacity of pv power plant in MW
+my_results['pv_invest_kW'] = (results[(source_pv, bus_electricity_mg)]
+                              ['scalars']['invest'])
+
+# resulting renewable energy share
+my_results['res_share'] = (1 - results[(transformer_fuel_generator, bus_electricity_mg)]
+                           ['sequences'].sum()/results[(bus_electricity_mg, sink_demand)]
+['sequences'].sum())
+'''
