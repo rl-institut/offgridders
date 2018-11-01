@@ -18,15 +18,15 @@ number_of_businesses = 6
 # Fixed capacities
 # todo check for units of capacities
 cap_pv          = 100 # in number of panels -> installed kWp depends on panel type chosen!
-cap_fuel_gen    = 10 # kW
+cap_fuel_gen    = 100 # kW
 cap_storage     = 100 # kWh, max. charge/discharge per timestep: cap_pv/6 kWh
 
 # todo what exactly is wac
 # todo capex should include replacement costs etc... where account for annual costs?
 wacc = 0.05
-cost_data = pd.DataFrame({'PV': [400, 20, 100],
-                          'GenSet': [300, 20, 100],
-                          'Storage': [170, 10, 100]},
+cost_data = pd.DataFrame({'PV': [400, 20, 0],
+                          'GenSet': [300, 20, 200],
+                          'Storage': [170, 10, 0]},
                          index=['initial_investment', 'lifetime', 'capex'])
 
 # Define irradiation and generation

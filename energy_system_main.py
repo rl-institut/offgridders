@@ -76,25 +76,22 @@ from config import display_graphs, date_time_index
 ###############################################################################
 # Input values
 ###############################################################################
-# demand
-from input_values import demand_input
+
 # costs
 from input_values import cost_data, fuel_price
 # fixed capacities
 from input_values import cap_fuel_gen, cap_pv, cap_storage
-# pv system
-from input_values import pv_system_location, location_name, pv_system_parameters, pv_composite_name
 
-# Estimate Load profile
+#------------- Estimate Load profile -----------------#
 # todo check for units
+from input_values import demand_input
 demand_profile = demand_profile.estimate(demand_input) # wh? kWh?
 
-# Solar irradiance
-# todo check for units
+#------------- PV system------------------------------#
+from input_values import pv_system_location, location_name, pv_system_parameters, pv_composite_name
+# Solar irradiance # todo check for units
 solpos, dni_extra, airmass, pressure, am_abs, tl, cs = pvlib_scripts.irradiation(pv_system_location, location_name)
-
-# PV generation
-# todo check for units
+# PV generation # todo check for units
 pv_generation_per_panel = pvlib_scripts.generation(pv_system_parameters, pv_composite_name, location_name, solpos, dni_extra, airmass, pressure, am_abs, tl, cs)
 
 ###############################################################################
@@ -202,12 +199,16 @@ micro_grid_system.results['meta'] = outputlib.processing.meta_results(model)
 #todo Enter check for directory and create directory here!
 # store energy system with results
 micro_grid_system.dump(dpath=output_folder, filename=output_file)
+logging.info('Stored results in ./'+output_folder+'/'+output_file)
 
 # ****************************************************************************
 # ********** PART 2 - Processing the results *********************************
 # ****************************************************************************
 
-logging.info('**** The script can be divided into two parts here.')
+# ****************************************************************************
+# ********** PART 2 - Processing the results *********************************
+# ****************************************************************************
+
 logging.info('Restore the energy system and the results.')
 micro_grid_system = solph.EnergySystem()
 
@@ -217,13 +218,6 @@ micro_grid_system.restore(dpath=output_folder, filename=output_file)
 results = micro_grid_system.results['main']
 storage = micro_grid_system.groups['generic_storage']
 
-# print a time slice of the state of charge
-print('')
-print('********* State of Charge (slice) *********')
-print(results[(storage, None)]['sequences']['2018-02-25 08:00:00':
-                                            '2018-02-26 15:00:00'])
-print('')
-
 # get all variables of a specific component/bus
 custom_storage = outputlib.views.node(results, 'generic_storage')
 electricity_bus = outputlib.views.node(results, 'bus_electricity_mg')
@@ -232,10 +226,20 @@ electricity_bus = outputlib.views.node(results, 'bus_electricity_mg')
 #todo plots not working
 if plt is not None:
     logging.info('Plotting: Generic storage')
-    custom_storage['sequences'].plot(kind='line', drawstyle='steps-post')
+    custom_storage['sequences'][(('generic_storage', 'None'), 'capacity')].plot(kind='line', drawstyle='steps-post', label='??((generic_storage, None), capacity)??')
+    custom_storage['sequences'][(('generic_storage', 'bus_electricity_mg'), 'flow')].plot(kind='line', drawstyle='steps-post', label='Discharge storage')
+    custom_storage['sequences'][(('bus_electricity_mg', 'generic_storage'), 'flow')].plot(kind='line', drawstyle='steps-post', label='Charge storage')
+    plt.legend(loc='upper right')
     plt.show()
     logging.info('Plotting: Electricity bus')
-    electricity_bus['sequences'].plot(kind='line', drawstyle='steps-post')
+    # plot each flow to/from electricity bus with appropriate name
+    electricity_bus['sequences'][(('source_pv', 'bus_electricity_mg'), 'flow')].plot(kind='line', drawstyle='steps-post', label='PV generation')
+    electricity_bus['sequences'][(('bus_electricity_mg', 'sink_demand'), 'flow')].plot(kind='line', drawstyle='steps-post', label='Demand supply')
+    electricity_bus['sequences'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'flow')].plot(kind='line', drawstyle='steps-post', label='GenSet')
+    electricity_bus['sequences'][(('generic_storage', 'bus_electricity_mg'), 'flow')].plot(kind='line', drawstyle='steps-post', label='Discharge storage')
+    electricity_bus['sequences'][(('bus_electricity_mg', 'generic_storage'), 'flow')].plot(kind='line', drawstyle='steps-post', label='Charge storage')
+    electricity_bus['sequences'][(('bus_electricity_mg', 'sink_excess'), 'flow')].plot(kind='line', drawstyle='steps-post', label='Excess electricity')
+    plt.legend(loc='upper right')
     plt.show()
 
 # print the solver results
@@ -248,20 +252,8 @@ print('********* Main results *********')
 print(electricity_bus['sequences'].sum(axis=0))
 
 '''
-results = outputlib.processing.results(model)
-
-custom_storage = outputlib.views.node(results, 'generic_storage')
-electricity_bus = outputlib.views.node(results, 'bus_electricity_mg')
-
-print (electricity_bus)
-
-if plt is not None:
-    logging.info('Plotting: Generic storage')
-    custom_storage['sequences'].plot(kind='line', drawstyle='steps-post')
-    plt.show()
-    logging.info('Plotting: Electricity bus')
-    electricity_bus['sequences'].plot(kind='line', drawstyle='steps-post')
-    plt.show()
+result_vector = electricity_bus['scalars']
+print(result_vector)
 
 my_results = electricity_bus['scalars']
 
