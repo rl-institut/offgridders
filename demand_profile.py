@@ -120,8 +120,8 @@ class demand_profile:
         electricity_demand_daily = electricity_demand_hourly.resample('D').sum()
         demand_profile.plot_results(electricity_demand_daily, "Electricity demand per sector (1-d)", "Date (1-d steps)",
                      "Power demand in kWh/d")
-        print("Median daily demand (kWh/d)")
-        print(electricity_demand_daily.mean())
+        print("Median daily demand per consumer (kWh/d)")
+        print(electricity_demand_daily.mean()/demand_input.number)
         print(" ")
 
     # todo include white noise
@@ -130,12 +130,9 @@ class demand_profile:
         electricity_demand_kW_max = electricity_demand.resample('D').max()
         demand_profile.plot_results(electricity_demand_kW_max, "Daily peak demand per sector", "Date (1-d steps)",
                      "Peak power demand in kW")
-        print("Absolute peak demand (kW)")
+        print("Absolute peak demand per sector (kW)")
         print(electricity_demand_kW_max.max())
         print(" ")
 
         return electricity_demand_total_hourly
     # todo create merged demand of households and businesses, so that the total load profile can be fed into the mg optimization
-
-if __name__ == '__main__':
-    power_example()

@@ -128,8 +128,8 @@ source_pv=solph.Source(label="source_pv",
              outputs={bus_electricity_mg: solph.Flow(label='PV generation',
                  actual_value=pv_generation_per_panel,
                  fixed=True,
-                 nominal_value=cap_pv
-                 #investment=solph.Investment(ep_costs=cost_data.loc['annuity', 'PV'])
+                 #nominal_value=cap_pv
+                 investment=solph.Investment(ep_costs=cost_data.loc['annuity', 'PV'])
                  )}
              )
 
@@ -151,25 +151,28 @@ transformer_fuel_generator=solph.Transformer(label="transformer_fuel_generator",
                   inputs={bus_fuel: solph.Flow()},
                   outputs={bus_electricity_mg: solph.Flow(
                       nominal_value=cap_fuel_gen,
-                      variable_costs=50)},
-                  #investment=solph.Investment(ep_costs=cost_data.loc['annuity', 'GenSet']),
+                      variable_costs=0)},
+                  investment=solph.Investment(ep_costs=cost_data.loc['annuity', 'GenSet']),
                   conversion_factors={bus_electricity_mg: 0.58}  # is efficiency of the generator?? Then this should later on be included as a function of the load factor
                   )
 
 # create and add storage object representing a battery - variable
 generic_storage = solph.components.GenericStorage(
     label='generic_storage',
-    nominal_capacity=cap_storage,
-    #investment=solph.Investment(ep_costs=cost_data.loc['annuity', 'Storage']),
-    inputs={bus_electricity_mg: solph.Flow(
-        nominal_value=cap_storage/6)},  # 10077997/6 is probably the maximum charge/discharge possible in one timestep
-    outputs={bus_electricity_mg: solph.Flow(
-        nominal_value=cap_storage/6,
-        variable_costs=0.0)},
+    #nominal_capacity=cap_storage,
+    inputs={bus_electricity_mg: solph.Flow()},
+    #inputs={bus_electricity_mg: solph.Flow(nominal_value=cap_storage / 6)},
+    outputs={bus_electricity_mg: solph.Flow()},
+    #outputs={bus_electricity_mg: solph.Flow(
+    #    nominal_value=cap_storage/6,
+    #    variable_costs=0.0)},
     capacity_loss=0.00,  # from timestep to timestep? what is this?
-    initial_capacity=None,  # in terms of SOC?
+    initial_capacity=0,  # in terms of SOC?
     inflow_conversion_factor=1,  # storing efficiency?
-    outflow_conversion_factor=0.8  # efficiency of feed-in-stored?
+    outflow_conversion_factor=0.8,  # efficiency of feed-in-stored?
+    investment = solph.Investment(ep_costs=cost_data.loc['annuity', 'Storage']),
+    invest_relation_input_capacity = 1 / 6,
+    invest_relation_output_capacity = 1 / 6
 )
 
 micro_grid_system.add(sink_demand, sink_excess, source_fuel, source_pv, transformer_fuel_generator, generic_storage)
@@ -199,20 +202,17 @@ micro_grid_system.results['meta'] = outputlib.processing.meta_results(model)
 #todo Enter check for directory and create directory here!
 # store energy system with results
 micro_grid_system.dump(dpath=output_folder, filename=output_file)
-logging.info('Stored results in ./'+output_folder+'/'+output_file)
+logging.info('Stored results in '+output_folder+'/'+output_file)
 
 # ****************************************************************************
 # ********** PART 2 - Processing the results *********************************
 # ****************************************************************************
-
-# ****************************************************************************
-# ********** PART 2 - Processing the results *********************************
-# ****************************************************************************
-
-logging.info('Restore the energy system and the results.')
-micro_grid_system = solph.EnergySystem()
-
-micro_grid_system.restore(dpath=output_folder, filename=output_file)
+# todo into config file
+simulation_restore = False
+if simulation_restore == True:
+    logging.info('Restore the energy system and the results.')
+    micro_grid_system = solph.EnergySystem()
+    micro_grid_system.restore(dpath=output_folder, filename=output_file)
 
 # define an alias for shorter calls below (optional)
 results = micro_grid_system.results['main']
@@ -242,6 +242,20 @@ if plt is not None:
     plt.legend(loc='upper right')
     plt.show()
 
+oem_results = electricity_bus['scalars']
+# installed capacity of storage in GWh
+oem_results['storage_invest_kWh'] = (results[(generic_storage, None)]
+                                    ['scalars']['invest'])
+
+# installed capacity of pv power plant in MW
+oem_results['pv_invest_kW'] = (results[(source_pv, bus_electricity_mg)]
+                              ['scalars']['invest'])
+
+oem_results['res_share'] = (1 - results[(transformer_fuel_generator, bus_electricity_mg)]
+                            ['sequences'].sum()/results[(bus_electricity_mg, sink_demand)]['sequences'].sum())
+
+print (oem_results)
+
 # print the solver results
 print('********* Meta results *********')
 pp.pprint(micro_grid_system.results['meta'])
@@ -250,26 +264,3 @@ print('')
 # print the sums of the flows around the electricity bus
 print('********* Main results *********')
 print(electricity_bus['sequences'].sum(axis=0))
-
-'''
-result_vector = electricity_bus['scalars']
-print(result_vector)
-
-my_results = electricity_bus['scalars']
-
-print (my_results)
-print(results[(generic_storage, None)])
-
-# installed capacity of storage in GWh
-my_results['storage_invest_kWh'] = (results[(generic_storage, None)]
-                                    ['scalars']['invest'])
-
-# installed capacity of pv power plant in MW
-my_results['pv_invest_kW'] = (results[(source_pv, bus_electricity_mg)]
-                              ['scalars']['invest'])
-
-# resulting renewable energy share
-my_results['res_share'] = (1 - results[(transformer_fuel_generator, bus_electricity_mg)]
-                           ['sequences'].sum()/results[(bus_electricity_mg, sink_demand)]
-['sequences'].sum())
-'''

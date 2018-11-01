@@ -24,9 +24,9 @@ cap_storage     = 100 # kWh, max. charge/discharge per timestep: cap_pv/6 kWh
 # todo what exactly is wac
 # todo capex should include replacement costs etc... where account for annual costs?
 wacc = 0.05
-cost_data = pd.DataFrame({'PV': [400, 20, 0],
-                          'GenSet': [300, 20, 200],
-                          'Storage': [170, 10, 0]},
+cost_data = pd.DataFrame({'PV': [400, 20, 100],
+                          'GenSet': [300, 20, 2000],
+                          'Storage': [170, 20, 100]},
                          index=['initial_investment', 'lifetime', 'capex'])
 
 # Define irradiation and generation
