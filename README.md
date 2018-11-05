@@ -73,3 +73,11 @@ The energy system recieves the total consumption as the project demand profile.
 25.10: Combined energy system with pvlib class (solar irradiation, pv generation)
 
 30.10: Integration of demand and pvlib class into Energysystem complete (fixed capacities)
+
+31.10:  Definition of config/input file
+
+1.11:  Integration of config/input file
+
+2.11: Trying to fix OEM, using config/input file
+
+5.11: Trying to fix OEM, creating basic modular structure
