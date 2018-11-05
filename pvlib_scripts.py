@@ -70,6 +70,8 @@ class pvlib_scripts:
             am_abs, aoi, module)  # irradiation equal to the power being produced
         dc = pvlib.pvsystem.sapm(effective_irradiance, temps['temp_cell'], module)  # dc power in Wh
         ac = pvlib.pvsystem.snlinverter(dc['v_mp'], dc['p_mp'], inverter)  # ac power in Wh
+        print('PV Module: Maximum power current: ' + str(module.loc['Impo']) + ', maximum power voltage: ' + str(module.loc['Vmpo']))
+        print('One PV Module offers ' + str(module.loc['Impo']*module.loc['Vmpo']) + ' kWp')
 
         annual_energy_kWh = ac.sum()
         if date_time_index.freq == '15min':

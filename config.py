@@ -12,7 +12,7 @@ output_folder='./simulation_results'
 output_file='micro_grid_simulation_results'
 
 # define global variables
-global display_graphs
+#global display_graphs
 display_graphs = False
 
 # Simulation timeframe
@@ -21,5 +21,13 @@ time_start = '1/1/2018'
 time_end = '31/12/2018'
 time_frequency = 'H'
 
-global date_time_index
+#global date_time_index
 date_time_index = pd.date_range(start=time_start, end=time_end, freq=time_frequency)
+
+# Allow fuel shortage
+allow_shortage = False
+if allow_shortage == True:
+    max_share_unsupplied_load = 0.05
+    var_costs_unsupplied_load = 1
+
+settings_fixed_capacities = False

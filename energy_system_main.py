@@ -36,19 +36,20 @@ tables, tkinter
 # Imports and initialize
 ###############################################################################
 
-from oemof.tools import logger
+
 # from oemof.tools import helpers
 
 import oemof.solph as solph
 import oemof.outputlib as outputlib
 
+from oemof.tools import logger
 import logging
 # Logging
 logger.define_logging(logfile='energy_system_main.log',
                       screen_level=logging.INFO,
                       file_level=logging.DEBUG)
 
-import os
+# import os
 import pandas as pd
 import pprint as pp
 
@@ -72,7 +73,7 @@ from config import solver, solver_verbose, debug
 # File structure
 from config import output_folder, output_file
 # Import specific simulation settings
-from config import display_graphs, date_time_index
+from config import date_time_index
 ###############################################################################
 # Input values
 ###############################################################################
@@ -107,8 +108,11 @@ micro_grid_system = solph.EnergySystem(timeindex=date_time_index)
 # Create Energy System with oemof
 ###############################################################################
 
-logging.info('Create oemof objects for Micro Grid System (off-grid, fixed capacities)')
+logging.info('Create oemof objects for Micro Grid System (off-grid)')
 
+from config import settings_fixed_capacities
+if settings_fixed_capacities == True: logging.info('    FIXED CAPACITIES (Dispatch optimization)')
+else: logging.info('    VARIABLE CAPACITIES (OEM)')
 # create AC electricity bus of distribution grid
 bus_electricity_mg = solph.Bus(label="bus_electricity_mg")
 
@@ -120,63 +124,92 @@ micro_grid_system.add(bus_electricity_mg, bus_fuel)
 
 # create and add fuel source to micro_grid_system - variable
 source_fuel=solph.Source(label="source_fuel",
-             outputs={bus_fuel: solph.Flow(variable_costs=fuel_price)}  #  ??
-            )
+                         outputs={bus_fuel: solph.Flow(
+                             variable_costs=fuel_price/9.41)})
+
+# create source for shortage electricity, dependent on config file
+from config import allow_shortage
+if allow_shortage == True:
+    from config import var_costs_unsupplied_load, max_share_unsupplied_load
+    source_shortage=solph.Source(label="source_shortage",
+                                 outputs={bus_electricity_mg: solph.Flow(
+                                     variable_costs=var_costs_unsupplied_load,
+                                     nominal_value=max_share_unsupplied_load*sum(demand_profile),
+                                     summed_max=1)})
 
 # create and add pv generation source to micro_grid_system - fixed
-source_pv=solph.Source(label="source_pv",
+if settings_fixed_capacities==False:
+    source_pv=solph.Source(label="source_pv",
              outputs={bus_electricity_mg: solph.Flow(label='PV generation',
                  actual_value=pv_generation_per_panel,
                  fixed=True,
-                 #nominal_value=cap_pv
+                 nominal_value=cap_pv
+                 )})
+else:
+    source_pv=solph.Source(label="source_pv",
+             outputs={bus_electricity_mg: solph.Flow(label='PV generation',
+                 actual_value=pv_generation_per_panel,
+                 fixed=True,
                  investment=solph.Investment(ep_costs=cost_data.loc['annuity', 'PV'])
-                 )}
-             )
+                 )})
 
-# create and add demand sink to micro_grid_system - fixed
+    # create and add demand sink to micro_grid_system - fixed
 sink_demand=solph.Sink(label="sink_demand",
            inputs={bus_electricity_mg: solph.Flow(
                actual_value=demand_profile,
                nominal_value=1,
-               fixed=True)}
-           )
+               fixed=True)})
 
 # create and add excess electricity sink to micro_grid_system - variable
 sink_excess=solph.Sink(label="sink_excess",
-           inputs={bus_electricity_mg: solph.Flow()}
-           )
+           inputs={bus_electricity_mg: solph.Flow()})
 
 # create and add fuel generator (transformer) to micro_grid_system - variable
-transformer_fuel_generator=solph.Transformer(label="transformer_fuel_generator",
+if settings_fixed_capacities == True:
+    transformer_fuel_generator=solph.Transformer(label="transformer_fuel_generator",
                   inputs={bus_fuel: solph.Flow()},
                   outputs={bus_electricity_mg: solph.Flow(
-                      nominal_value=cap_fuel_gen,
-                      variable_costs=0)},
-                  investment=solph.Investment(ep_costs=cost_data.loc['annuity', 'GenSet']),
-                  conversion_factors={bus_electricity_mg: 0.58}  # is efficiency of the generator?? Then this should later on be included as a function of the load factor
-                  )
+                      nominal_value=cap_fuel_gen)},
+                  conversion_factors={bus_electricity_mg: 0.58})  # is efficiency of the generator?? Then this should later on be included as a function of the load factor
+else:
+    transformer_fuel_generator=solph.Transformer(label="transformer_fuel_generator",
+                  inputs={bus_fuel: solph.Flow()},
+                  outputs={bus_electricity_mg: solph.Flow(
+                      investment=solph.Investment(ep_costs=cost_data.loc['annuity', 'GenSet']))},
+                  conversion_factors={bus_electricity_mg: 0.58})
 
 # create and add storage object representing a battery - variable
-generic_storage = solph.components.GenericStorage(
-    label='generic_storage',
-    #nominal_capacity=cap_storage,
-    inputs={bus_electricity_mg: solph.Flow()},
-    #inputs={bus_electricity_mg: solph.Flow(nominal_value=cap_storage / 6)},
-    outputs={bus_electricity_mg: solph.Flow()},
-    #outputs={bus_electricity_mg: solph.Flow(
-    #    nominal_value=cap_storage/6,
-    #    variable_costs=0.0)},
-    capacity_loss=0.00,  # from timestep to timestep? what is this?
-    initial_capacity=0,  # in terms of SOC?
-    inflow_conversion_factor=1,  # storing efficiency?
-    outflow_conversion_factor=0.8,  # efficiency of feed-in-stored?
-    investment = solph.Investment(ep_costs=cost_data.loc['annuity', 'Storage']),
-    invest_relation_input_capacity = 1 / 6,
-    invest_relation_output_capacity = 1 / 6
-)
+if settings_fixed_capacities == True:
+    generic_storage = solph.components.GenericStorage(
+        label='generic_storage',
+        nominal_capacity=cap_storage,
+        inputs={bus_electricity_mg: solph.Flow(
+            nominal_value=cap_storage/6)},  # probably the maximum charge/discharge possible in one timestep
+        outputs={bus_electricity_mg: solph.Flow(
+            nominal_value=cap_storage/6,
+            variable_costs=0.0)},
+        capacity_loss=0.00,  # from timestep to timestep? what is this?
+        initial_capacity=0,  # in terms of SOC?
+        inflow_conversion_factor=1,  # storing efficiency?
+        outflow_conversion_factor=0.8)  # efficiency of feed-in-stored?
 
-micro_grid_system.add(sink_demand, sink_excess, source_fuel, source_pv, transformer_fuel_generator, generic_storage)
+else:
+    generic_storage = solph.components.GenericStorage(
+        label='generic_storage',
+        inputs={bus_electricity_mg: solph.Flow()},  # 10077997/6 is probably the maximum charge/discharge possible in one timestep
+        outputs={bus_electricity_mg: solph.Flow(variable_costs=0.0)},
+        capacity_loss=0.00,  # from timestep to timestep? what is this?
+        inflow_conversion_factor=1,  # storing efficiency?
+        outflow_conversion_factor=0.8,  # efficiency of feed-in-stored?
+        investment = solph.Investment(ep_costs=cost_data.loc['annuity', 'Storage']),
+        invest_relation_input_capacity = 1/6,
+        invest_relation_output_capacity = 1/6
+    )
 
+if allow_shortage == True:
+    micro_grid_system.add(sink_demand, sink_excess, source_shortage, source_fuel, source_pv, transformer_fuel_generator, generic_storage)
+else:
+    micro_grid_system.add(sink_demand, sink_excess, source_fuel, source_pv, transformer_fuel_generator, generic_storage)
 ###############################################################################
 # Optimise the energy system and plot the results
 ###############################################################################
@@ -239,22 +272,24 @@ if plt is not None:
     electricity_bus['sequences'][(('generic_storage', 'bus_electricity_mg'), 'flow')].plot(kind='line', drawstyle='steps-post', label='Discharge storage')
     electricity_bus['sequences'][(('bus_electricity_mg', 'generic_storage'), 'flow')].plot(kind='line', drawstyle='steps-post', label='Charge storage')
     electricity_bus['sequences'][(('bus_electricity_mg', 'sink_excess'), 'flow')].plot(kind='line', drawstyle='steps-post', label='Excess electricity')
+    if allow_shortage == True: electricity_bus['sequences'][(('source_shortage', 'bus_electricity_mg'), 'flow')].plot(kind='line', drawstyle='steps-post', label='Supply shortage')
     plt.legend(loc='upper right')
     plt.show()
 
-oem_results = electricity_bus['scalars']
-# installed capacity of storage in GWh
-oem_results['storage_invest_kWh'] = (results[(generic_storage, None)]
-                                    ['scalars']['invest'])
+if settings_fixed_capacities == False:
+    oem_results = electricity_bus['scalars']
+    # installed capacity of storage in GWh
+    #oem_results['storage_invest_kWh'] = (results[(generic_storage, None)]
+    #                                    ['scalars']['invest'])
 
-# installed capacity of pv power plant in MW
-oem_results['pv_invest_kW'] = (results[(source_pv, bus_electricity_mg)]
-                              ['scalars']['invest'])
+    # installed capacity of pv power plant in MW
+    #oem_results['pv_invest_kW'] = (results[(source_pv, bus_electricity_mg)]
+    #                              ['scalars']['invest'])
 
-oem_results['res_share'] = (1 - results[(transformer_fuel_generator, bus_electricity_mg)]
-                            ['sequences'].sum()/results[(bus_electricity_mg, sink_demand)]['sequences'].sum())
+    #oem_results['res_share'] = (1 - results[(transformer_fuel_generator, bus_electricity_mg)]
+    #                            ['sequences'].sum()/results[(bus_electricity_mg, sink_demand)]['sequences'].sum())
 
-print (oem_results)
+    print (oem_results)
 
 # print the solver results
 print('********* Meta results *********')

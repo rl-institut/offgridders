@@ -6,7 +6,7 @@ from oemof.tools import economics
 ###############################################################################
 
 # Definitions
-fuel_price=0.04 # Euro/l
+fuel_price=100 # Euro/l
 
 # Define demand
 # todo check for units of annual demand
@@ -17,15 +17,15 @@ number_of_businesses = 6
 
 # Fixed capacities
 # todo check for units of capacities
-cap_pv          = 100 # in number of panels -> installed kWp depends on panel type chosen!
-cap_fuel_gen    = 100 # kW
-cap_storage     = 100 # kWh, max. charge/discharge per timestep: cap_pv/6 kWh
+cap_pv          = 1000 # in number of panels -> installed kWp depends on panel type chosen!
+cap_fuel_gen    = 10 # kW
+cap_storage     = 10 # kWh, max. charge/discharge per timestep: cap_pv/6 kWh
 
 # todo what exactly is wac
 # todo capex should include replacement costs etc... where account for annual costs?
 wacc = 0.05
 cost_data = pd.DataFrame({'PV': [400, 20, 100],
-                          'GenSet': [300, 20, 2000],
+                          'GenSet': [300, 20, 20000],
                           'Storage': [170, 20, 100]},
                          index=['initial_investment', 'lifetime', 'capex'])
 
@@ -53,6 +53,7 @@ demand_input = pd.DataFrame({'annual_demand_kWh': [ann_el_demand_per_household, 
 cost_data.loc['annuity', 'PV']      =   economics.annuity(capex=cost_data.loc['capex', 'PV',], n=cost_data.loc['lifetime', 'PV'], wacc=wacc)
 cost_data.loc['annuity', 'GenSet']  =   economics.annuity(capex=cost_data.loc['capex', 'GenSet'], n=cost_data.loc['lifetime', 'GenSet'], wacc=wacc)
 cost_data.loc['annuity', 'Storage'] =   economics.annuity(capex=cost_data.loc['capex', 'Storage'], n=cost_data.loc['lifetime', 'Storage'], wacc=wacc)
+
 
 pv_system_location = pd.DataFrame([latitude, longitude, altitude, timezone],
                        index=['latitude', 'longitude', 'altitude', 'timezone'],
