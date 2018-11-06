@@ -31,6 +31,7 @@ if allow_shortage == True:
     var_costs_unsupplied_load = 1
 
 settings_fixed_capacities = False
+setting_lp_file = True
 
 # display_graphs
 display_graphs_solar = True

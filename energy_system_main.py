@@ -230,7 +230,8 @@ model = solph.Model(micro_grid_system)
 # if tee_switch is true solver messages will be displayed
 logging.info('Solve the optimization problem')
 model.solve(solver=solver, solve_kwargs={'tee': solver_verbose})
-model.write('./my_model.lp', io_options={'symbolic_solver_labels': True})
+from config import setting_lp_file
+if setting_lp_file == True: model.write('./my_model.lp', io_options={'symbolic_solver_labels': True})
 logging.info('Store the energy system with the results.')
 
 # The processing module of the outputlib can be used to extract the results
