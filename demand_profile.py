@@ -19,14 +19,14 @@ except ImportError:
     plt = None
 
 # Import simulation settings
-from config import display_graphs
+from config import display_graphs_demand, date_time_index
 
 class demand_profile:
     # todo difference between class and function
     # todo better display of plots
     def plot_results(pandas_dataframe, title, xaxis, yaxis):
         if plt is not None:
-            if display_graphs==True:
+            if display_graphs_demand==True:
                 # Plot demand
                 ax = pandas_dataframe.plot()
                 ax.set_title(title)
@@ -134,5 +134,5 @@ class demand_profile:
         print(electricity_demand_kW_max.max())
         print(" ")
 
-        return electricity_demand_total_hourly
+        return electricity_demand_total_hourly[date_time_index] # to synchronize evaluated timeframe
     # todo create merged demand of households and businesses, so that the total load profile can be fed into the mg optimization

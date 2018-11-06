@@ -15,7 +15,7 @@ except ImportError:
     logging.warning("Install matplotlib to plot graphs!")
 
 # Import simulation settings
-from config import date_time_index, display_graphs
+from config import date_time_index, display_graphs_solar
 
 class pvlib_scripts:
     # ####################################################################### #
@@ -68,27 +68,33 @@ class pvlib_scripts:
         effective_irradiance = pvlib.pvsystem.sapm_effective_irradiance(
             total_irrad['poa_direct'], total_irrad['poa_diffuse'],
             am_abs, aoi, module)  # irradiation equal to the power being produced
-        dc = pvlib.pvsystem.sapm(effective_irradiance, temps['temp_cell'], module)  # dc power in Wh
-        ac = pvlib.pvsystem.snlinverter(dc['v_mp'], dc['p_mp'], inverter)  # ac power in Wh
-        print('PV Module: Maximum power current: ' + str(module.loc['Impo']) + ', maximum power voltage: ' + str(module.loc['Vmpo']))
-        print('One PV Module offers ' + str(module.loc['Impo']*module.loc['Vmpo']) + ' kWp')
+        dc = pvlib.pvsystem.sapm(effective_irradiance, temps['temp_cell'], module)  # dc power per panel in Wh
+        ac_per_panel = pvlib.pvsystem.snlinverter(dc['v_mp'], dc['p_mp'], inverter)  # ac power per panel in Wh
 
-        annual_energy_kWh = ac.sum()
+        #logging.info('PV Module: Maximum power current: ' + str(module.loc['Impo']) + ', maximum power voltage: ' + str(module.loc['Vmpo']))
+        module_Wp=module.loc['Impo']*module.loc['Vmpo']
+        logging.info('One PV Module offers ' + str(round(module_Wp)) + ' Wp')
+
+        ac_per_kWp = ac_per_panel * 1000/module_Wp # ac power per installed kWp in Wh
+
+        annual_energy_kWh = ac_per_kWp.sum()/1000
         if date_time_index.freq == '15min':
             annual_energy_kWh = annual_energy_kWh / 4  # 15 min steps in timeframe
 
         #energies = pd.Series(annual_energy_kWh)
-        print("Annual energy from irradiation in kWh")
+        print("Annual energy from irradiation in kWh per kWp installed capacity")
         print(round(annual_energy_kWh, 2))
-        if display_graphs==True:
+        if display_graphs_solar==True:
             irradiation, = plt.plot(total_irrad['poa_global']/1000, label='Solar irradiation per sqm')
-            pv_gen, = plt.plot(ac/1000, label='Panel generation: '+ pv_system_parameters.loc['module_name', pv_composite_name])
+            pv_gen1, = plt.plot(ac_per_kWp /1000,
+                               label='Generation per installed kWp: ' + pv_system_parameters.loc['module_name', pv_composite_name])
+            pv_gen2, = plt.plot(ac_per_panel/1000, label='Generation per panel: '+ pv_system_parameters.loc['module_name', pv_composite_name])
             plt.legend()
             plt.ylabel('kWh')
             plt.title('Solar irradiation and '+pv_composite_name+' panel generation')
             plt.show()
 
         logging.info('Calculated solar irradiation and pv generation (without white noise) for '+pv_composite_name+'_'+location_name)
-        return ac/1000 # in kWh
+        return ac_per_kWp.clip_lower(0)/1000, module_Wp/1000  # pro installed kWp # clips all negative calues!
 
 # times = pd.DatetimeIndex(start='2018', end='2019', freq='15min')

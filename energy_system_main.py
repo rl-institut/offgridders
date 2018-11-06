@@ -93,7 +93,7 @@ from input_values import pv_system_location, location_name, pv_system_parameters
 # Solar irradiance # todo check for units
 solpos, dni_extra, airmass, pressure, am_abs, tl, cs = pvlib_scripts.irradiation(pv_system_location, location_name)
 # PV generation # todo check for units
-pv_generation_per_panel = pvlib_scripts.generation(pv_system_parameters, pv_composite_name, location_name, solpos, dni_extra, airmass, pressure, am_abs, tl, cs)
+pv_generation_per_kWp, pv_module_kWp = pvlib_scripts.generation(pv_system_parameters, pv_composite_name, location_name, solpos, dni_extra, airmass, pressure, am_abs, tl, cs)
 
 ###############################################################################
 # Initialize Energy System
@@ -138,17 +138,23 @@ if allow_shortage == True:
                                      summed_max=1)})
 
 # create and add pv generation source to micro_grid_system - fixed
-if settings_fixed_capacities==False:
+if settings_fixed_capacities==True:
+    if pv_generation_per_kWp.any()<<0: logging.info("Error, PV generation negative")
+
     source_pv=solph.Source(label="source_pv",
              outputs={bus_electricity_mg: solph.Flow(label='PV generation',
-                 actual_value=pv_generation_per_panel,
+                 actual_value=pv_generation_per_kWp,
                  fixed=True,
-                 nominal_value=cap_pv
+                 nominal_value=cap_pv # in no of panels
                  )})
 else:
+    pv_norm = pv_generation_per_kWp / max(pv_generation_per_kWp)
+    if pv_norm.any() > 1: logging.info("Error, PV generation not normalized, greater than 1")
+    if pv_norm.any() < 0: logging.info("Error, PV generation negative")
     source_pv=solph.Source(label="source_pv",
              outputs={bus_electricity_mg: solph.Flow(label='PV generation',
-                 actual_value=pv_generation_per_panel,
+                 actual_value=pv_norm,
+                 #actual_value=pv_generation_per_kWp,
                  fixed=True,
                  investment=solph.Investment(ep_costs=cost_data.loc['annuity', 'PV'])
                  )})
@@ -200,7 +206,8 @@ else:
         outputs={bus_electricity_mg: solph.Flow(variable_costs=0.0)},
         capacity_loss=0.00,  # from timestep to timestep? what is this?
         inflow_conversion_factor=1,  # storing efficiency?
-        outflow_conversion_factor=0.8,  # efficiency of feed-in-stored?
+        outflow_conversion_factor=0.8,  # efficiency of feed-in-stored
+        initial_capacity=0,
         investment = solph.Investment(ep_costs=cost_data.loc['annuity', 'Storage']),
         invest_relation_input_capacity = 1/6,
         invest_relation_output_capacity = 1/6
@@ -219,10 +226,11 @@ logging.info('Optimise the energy system of the micro grid')
 # initialise the operational model
 model = solph.Model(micro_grid_system)
 
+
 # if tee_switch is true solver messages will be displayed
 logging.info('Solve the optimization problem')
 model.solve(solver=solver, solve_kwargs={'tee': solver_verbose})
-
+model.write('./my_model.lp', io_options={'symbolic_solver_labels': True})
 logging.info('Store the energy system with the results.')
 
 # The processing module of the outputlib can be used to extract the results
