@@ -44,7 +44,8 @@ dictof_oemparameters ={'cost_pv':      [100,100, 5],
                        'cost_genset':  [100, 100, 5],
                        'cost_storage': [100, 100, 5],
                        'fuel_price_100':   [50, 100, 10],
-                       'wacc_100':         [10, 10, 1]}
+                       'wacc_100':         [10, 10, 1],
+                       'shortage':         [2, 15, 1]}
 
 dictof_nooemparameters ={ 'blackout_duration_100':  [20, 20, 5],
                           'blackout_frequency_100': [90, 110, 10],
