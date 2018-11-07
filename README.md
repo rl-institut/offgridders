@@ -81,3 +81,7 @@ The energy system recieves the total consumption as the project demand profile.
 2.11: Trying to fix OEM, using config/input file
 
 5.11: Trying to fix OEM, creating basic modular structure
+
+6.11: Fixed OEM in standalone script, started defining oemoffunctions for modular tool
+
+7.11: Working oemfunctions, now easy definition and adoptation of multiple cases

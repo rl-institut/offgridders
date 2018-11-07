@@ -1,62 +1,30 @@
 """
-Following excample:
-https://github.com/oemof/oemof_examples/blob/master/examples/oemof_0.2/basic_example/basic_example.py#L84
-
-Energy system modeled: Micro Grid with fixed capacities
-
-            input/output    bus_fuel        bus_electricity     flow
-                    |               |               |
-                    |               |               |
-source: pv          |------------------------------>|       generate_pv (fix)
-                    |               |               |
-source: fossil_fuel |-------------->|               |       fossil_fuel_in (var)
-                    |               |               |
-trafo: generator    |<--------------|               |       fossil_fuel_use (var)
-                    |------------------------------>|       generate_fuel (var)
-                    |               |               |
-storage: battery    |<------------------------------|       battery_charge (var)
-                    |------------------------------>|       battery_discharge (var)
-                    |               |               |
-sink: demand        |<------------------------------|       supply_demand (fix)
-                    |               |               |
-sink: excess        |<------------------------------|       supply_excess (var)
-                    |               |               |
-
-_____
-Data used: None
-
-_________
 Requires:
 oemof, matplotlib, demandlib, pvlib
 tables, tkinter
-
 """
 
 ###############################################################################
 # Imports and initialize
 ###############################################################################
 
-
 # from oemof.tools import helpers
 import pprint as pp
+import pandas as pd
 import oemof.solph as solph
 import oemof.outputlib as outputlib
-
-from oemof.tools import logger
-
 import logging
-# Logging
-logger.define_logging(logfile='energy_system_main.log',
-                      screen_level=logging.INFO,
-                      file_level=logging.DEBUG)
-
 
 # Try to import matplotlib librar
 try:
     import matplotlib.pyplot as plt
 except ImportError:
-    logging.info('Attention! matplotlib could not be imported.')
+    logging.warning('Attention! matplotlib could not be imported.')
     plt = None
+
+###############################################################################
+# Define all oemof_functioncalls (including generate graph etc)
+###############################################################################
 
 class generatemodel():
     ######## Busses ########
@@ -108,8 +76,8 @@ class generatemodel():
     def pv_oem(micro_grid_system, bus_electricity_mg, pv_generation_per_kWp):
         from input_values import cost_data
         pv_norm = pv_generation_per_kWp / max(pv_generation_per_kWp)
-        if pv_norm.any() > 1: logging.info("Error, PV generation not normalized, greater than 1")
-        if pv_norm.any() < 0: logging.info("Error, PV generation negative")
+        if pv_norm.any() > 1: logging.warning("Error, PV generation not normalized, greater than 1")
+        if pv_norm.any() < 0: logging.warning("Error, PV generation negative")
 
         source_pv = solph.Source(label="source_pv",
                                  outputs={bus_electricity_mg: solph.Flow(label='PV generation',
@@ -178,7 +146,6 @@ class generatemodel():
         )
         micro_grid_system.add(generic_storage)
         return micro_grid_system, bus_electricity_mg
-
     ######## Components ########
 
     ######## Sinks ########
@@ -202,97 +169,104 @@ class generatemodel():
 
     ######## Textblocks ########
     def textblock_fix():
-        logging.info('    FIXED CAPACITIES (Dispatch optimization)')
-        logging.info('Create oemof objects for Micro Grid System (off-grid)')
+        logging.debug('    FIXED CAPACITIES (Dispatch optimization)')
+        logging.debug('Create oemof objects for Micro Grid System (off-grid)')
 
     def textblock_oem():
-        logging.info('    VARIABLE CAPACITIES (OEM)')
-        logging.info('Create oemof objects for Micro Grid System (off-grid)')
+        logging.debug('    VARIABLE CAPACITIES (OEM)')
+        logging.debug('Create oemof objects for Micro Grid System (off-grid)')
     ######## Textblocks ########
 
     ######## Simulation control ########
     def initialize_model():
         from config import date_time_index
-        logging.info('Initialize the energy system')
+        logging.debug('Initialize energy system dataframe')
         # create energy system
         micro_grid_system = solph.EnergySystem(timeindex=date_time_index)
         return micro_grid_system
 
     def simulate(micro_grid_system):
         from config import solver, solver_verbose, output_folder, output_file, setting_lp_file
-        logging.info('Initialize the energy system to be optimized')
+        logging.debug('Initialize the energy system to be optimized')
         model = solph.Model(micro_grid_system)
-        logging.info('Solve the optimization problem')
+        logging.debug('Solve the optimization problem')
         model.solve(solver=solver,
                     solve_kwargs={'tee': solver_verbose})  # if tee_switch is true solver messages will be displayed
         if setting_lp_file == True: model.write('./my_model.lp', io_options={'symbolic_solver_labels': True})
-        logging.info('Store the energy system with the results.')
 
         # add results to the energy system to make it possible to store them.
         micro_grid_system.results['main'] = outputlib.processing.results(model)
         micro_grid_system.results['meta'] = outputlib.processing.meta_results(model)
-
-        # todo Enter check for directory and create directory here!
-        # store energy system with results
-        micro_grid_system.dump(dpath=output_folder, filename=output_file)
-        logging.info('Stored results in ' + output_folder + '/' + output_file)
-        return
+        return micro_grid_system
     ######## Simulation control ########
 
     ######## Processing ########
     def load_energysystem():
         return
 
-    def load_results():
+    def store_results(micro_grid_system, case_name):
+        # todo Enter check for directory and create directory here!
+        # store energy system with results
         from config import output_folder, output_file
-        logging.info('Restore the energy system and the results.')
-        micro_grid_system = solph.EnergySystem()
-        micro_grid_system.restore(dpath=output_folder, filename=output_file)
-        micro_grid_system.keys()
+        micro_grid_system.dump(dpath=output_folder, filename=output_file+ '_' + case_name + ".oemof")
+        logging.debug('Stored results in ' + output_folder + '/' + output_file + '_' + case_name + '.oemof')
         return micro_grid_system
 
-    def process_dispatch(micro_grid_system):
+    def load_results():
+        from config import output_folder, output_file
+        logging.debug('Restore the energy system and the results.')
+        micro_grid_system = solph.EnergySystem()
+        micro_grid_system.restore(dpath=output_folder, filename=output_file+".oemof")
+        return micro_grid_system
+
+    def process(micro_grid_system, case_name, get_el_bus):
         # define an alias for shorter calls below (optional)
         results = micro_grid_system.results['main']
+        meta = micro_grid_system.results['meta']
         storage = micro_grid_system.groups['generic_storage']
 
         # get all variables of a specific component/bus
-        custom_storage = outputlib.views.node(results, 'generic_storage')
+        generic_storage = outputlib.views.node(results, 'generic_storage')
         electricity_bus = outputlib.views.node(results, 'bus_electricity_mg')
-        generatemodel.plot_el_mg(custom_storage)
-        generatemodel.plot_storage(electricity_bus)
+        generatemodel.plot_el_mg(electricity_bus)
+        generatemodel.plot_storage(generic_storage)
 
         # print the solver results
-        print('********* Meta results *********')
-        pp.pprint(micro_grid_system.results['meta'])
-        print('')
+        logging.debug('********* Meta results *********')
+        logging.debug(meta)
         # print the sums of the flows around the electricity bus
-        print('********* Main results *********')
-        print(electricity_bus['sequences'].sum(axis=0))
-        return
+        logging.debug('********* Main results *********')
+        logging.debug(electricity_bus['sequences'].sum(axis=0))
 
-    def process_oem(micro_grid_system):
-        results = micro_grid_system.results['main']
-        electricity_bus = outputlib.views.node(results, 'bus_electricity_mg')
-        oem_results = electricity_bus['scalars']
-        # installed capacity of storage in GWh
-        # oem_results['storage_invest_kWh'] = (results[(generic_storage, None)]
-        #                                    ['scalars']['invest'])
+        if get_el_bus == True:
+            return electricity_bus
+        else:
+            return logging.info('    Dispatch optimization for case "' + case_name + '" finished, with renewable share of ' +
+            str(round((1 - electricity_bus['sequences'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'flow')].sum()
+             / electricity_bus['sequences'][(('bus_electricity_mg', 'sink_demand'), 'flow')].sum()) * 100)) +
+                                ' percent.')
 
-        # installed capacity of pv power plant in MW
-        # oem_results['pv_invest_kW'] = (results[(source_pv, bus_electricity_mg)]
-        #                              ['scalars']['invest'])
+    def process_oem(electricity_bus, case_name):
+        oem_results = pd.DataFrame({'storage_invest_kWh': [electricity_bus['scalars'][(('generic_storage', 'bus_electricity_mg'), 'invest')]],
+                                           'pv_invest_kW': [electricity_bus['scalars'][(('source_pv', 'bus_electricity_mg'), 'invest')]],
+                                           'genset_invest_kW': [electricity_bus['scalars'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'invest')]],
+                                           'res_share_perc': [(1 - electricity_bus['sequences'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'flow')].sum()
+                                                          / electricity_bus['sequences'][(('bus_electricity_mg', 'sink_demand'), 'flow')].sum())*100]},
+                                          index=[case_name])
 
-        # oem_results['res_share'] = (1 - results[(transformer_fuel_generator, bus_electricity_mg)]
-        #                            ['sequences'].sum()/results[(bus_electricity_mg, sink_demand)]['sequences'].sum())
+        logging.info ('    OEM results of case "' + case_name + '" : ' + str(round(oem_results['storage_invest_kWh'][case_name])) + ' kWh battery, ' +
+                                           str(round(oem_results['pv_invest_kW'][case_name])) + ' kWp PV, ' +
+                                                     str(round(oem_results['genset_invest_kW'][case_name])) + ' kW genset at a renewable share of ' +
+                                                               str(round(oem_results['res_share_perc'][case_name])) + ' percent.')
+        return oem_results
 
-        return print(oem_results)
     ######## Processing ########
 
     ####### Show #######
     def plot_storage(custom_storage):
-        if plt is not None:
-            logging.info('Plotting: Generic storage')
+        from config import display_graphs_simulation
+        if plt is not None and display_graphs_simulation == True:
+            logging.debug('Plotting: Generic storage')
             custom_storage['sequences'][(('generic_storage', 'None'), 'capacity')].plot(kind='line',
                                                                                         drawstyle='steps-post',
                                                                                         label='??((generic_storage, None), capacity)??')
@@ -307,8 +281,9 @@ class generatemodel():
         return
 
     def plot_el_mg(electricity_bus):
-        if plt is not None:
-            logging.info('Plotting: Electricity bus')
+        from config import allow_shortage, display_graphs_simulation
+        if plt is not None and display_graphs_simulation == True:
+            logging.debug('Plotting: Electricity bus')
             # plot each flow to/from electricity bus with appropriate name
             electricity_bus['sequences'][(('source_pv', 'bus_electricity_mg'), 'flow')].plot(kind='line',
                                                                                              drawstyle='steps-post',
@@ -334,59 +309,3 @@ class generatemodel():
             plt.show()
         return
     ###### Show ######
-
-###############################################################################
-# Create Energy System with oemof
-###############################################################################
-
-class cases():
-    from config import allow_shortage
-
-    def mg_fixed(demand_profile, pv_generation):
-        from config import allow_shortage
-        micro_grid_system = generatemodel.initialize_model()
-        generatemodel.textblock_fix()
-        micro_grid_system, bus_fuel, bus_electricity_mg = generatemodel.bus_basic(micro_grid_system)
-        micro_grid_system, bus_fuel = generatemodel.fuel(micro_grid_system, bus_fuel)
-        if allow_shortage == True: micro_grid_system = generatemodel.shortage(micro_grid_system, bus_electricity_mg)
-        micro_grid_system, bus_electricity_mg = generatemodel.demand(micro_grid_system, bus_electricity_mg, demand_profile)
-        micro_grid_system, bus_electricity_mg = generatemodel.excess(micro_grid_system, bus_electricity_mg)
-        micro_grid_system, bus_electricity_mg = generatemodel.pv_fix(micro_grid_system, bus_electricity_mg, pv_generation)
-        micro_grid_system, bus_fuel, bus_electricity_mg = generatemodel.transformer_fix(micro_grid_system, bus_fuel, bus_electricity_mg)
-        micro_grid_system, bus_electricity_mg = generatemodel.storage_fix(micro_grid_system, bus_electricity_mg)
-        generatemodel.simulate(micro_grid_system)
-        micro_grid_system = generatemodel.load_results()
-        generatemodel.process_dispatch(micro_grid_system)
-
-    def mg_oem(demand_profile, pv_generation):
-        from config import allow_shortage
-        micro_grid_system = generatemodel.initialize_model()
-        generatemodel.textblock_oem()
-        micro_grid_system, bus_fuel, bus_electricity_mg = generatemodel.bus_basic(micro_grid_system)
-        micro_grid_system, bus_fuel = generatemodel.fuel(micro_grid_system, bus_fuel)
-        if allow_shortage == True: micro_grid_system, bus_electricity_mg = generatemodel.shortage(micro_grid_system, bus_electricity_mg)
-        micro_grid_system, bus_electricity_mg = generatemodel.demand(micro_grid_system, demand_profile, demand_profile)
-        micro_grid_system, bus_electricity_mg = generatemodel.excess(micro_grid_system, bus_electricity_mg)
-        micro_grid_system, bus_electricity_mg = generatemodel.pv_oem(micro_grid_system, bus_electricity_mg, pv_generation)
-        micro_grid_system, bus_fuel, bus_electricity_mg = generatemodel.transformer_oem(micro_grid_system, bus_fuel, bus_electricity_mg)
-        micro_grid_system, bus_electricity_mg = generatemodel.storage_oem(micro_grid_system, bus_electricity_mg)
-        generatemodel.simulate(micro_grid_system)
-        micro_grid_system = generatemodel.load_results()
-        generatemodel.process_dispatch(micro_grid_system)
-        generatemodel.process_oem(micro_grid_system)
-
-from demand_profile import demand_profile
-
-from input_values import demand_input
-demand_profile = demand_profile.estimate(demand_input) # wh? kWh?
-#------------- PV system------------------------------#
-from pvlib_scripts import pvlib_scripts
-from input_values import pv_system_location, location_name, pv_system_parameters, pv_composite_name
-# Solar irradiance # todo check for units
-solpos, dni_extra, airmass, pressure, am_abs, tl, cs = pvlib_scripts.irradiation(pv_system_location, location_name)
-# PV generation # todo check for units
-pv_generation_per_kWp, pv_module_kWp = pvlib_scripts.generation(pv_system_parameters, pv_composite_name, location_name, solpos, dni_extra, airmass, pressure, am_abs, tl, cs)
-
-print (pv_generation_per_kWp)
-print (demand_profile)
-cases.mg_fixed(demand_profile, pv_generation_per_kWp)

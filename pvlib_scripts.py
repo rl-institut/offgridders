@@ -82,8 +82,8 @@ class pvlib_scripts:
             annual_energy_kWh = annual_energy_kWh / 4  # 15 min steps in timeframe
 
         #energies = pd.Series(annual_energy_kWh)
-        print("Annual energy from irradiation in kWh per kWp installed capacity")
-        print(round(annual_energy_kWh, 2))
+        logging.debug('Annual energy from irradiation in kWh per kWp installed capacity' + str(round(annual_energy_kWh, 2)))
+
         if display_graphs_solar==True:
             irradiation, = plt.plot(total_irrad['poa_global']/1000, label='Solar irradiation per sqm')
             pv_gen1, = plt.plot(ac_per_kWp /1000,
