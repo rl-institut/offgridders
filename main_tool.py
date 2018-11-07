@@ -34,7 +34,6 @@ listof_cases =['base',
                'oem_interconnected',
                'backupgrid',
                'buysell',
-               'mg_fixed',
                'mg_oem'
                ]
 
@@ -71,7 +70,6 @@ solpos, dni_extra, airmass, pressure, am_abs, tl, cs = pvlib_scripts.irradiation
 pv_generation_per_kWp, pv_module_kWp = pvlib_scripts.generation(pv_system_parameters, pv_composite_name, location_name, solpos, dni_extra, airmass, pressure, am_abs, tl, cs)
 
 capacities = cases.mg_oem(demand_profile, pv_generation_per_kWp)
-print (capacities)
 
 ###############################################################################
 # Simulations of all cases

@@ -12,10 +12,16 @@ output_folder='./simulation_results'
 output_file='micro_grid_simulation_results'
 
 # Simulation timeframe
-# todo define time as one whole year aka 8760 timesteps - right now the 31st is not counted adequately
-time_start = pd.to_datetime('2018-07-07 0:00', format='%Y-%m-%d %H:%M')
-time_end = pd.to_datetime('2018-07-07 23:00', format='%Y-%m-%d %H:%M')
-time_frequency = 'H'
+coding_process = False
+
+if coding_process == True:
+    time_start = pd.to_datetime('2018-07-07 0:00', format='%Y-%m-%d %H:%M')
+    time_end = pd.to_datetime('2018-07-07 23:00', format='%Y-%m-%d %H:%M')
+    time_frequency = 'H'
+else:
+    time_start = pd.to_datetime('2018-01-01 0:00', format='%Y-%m-%d %H:%M')
+    time_end = pd.to_datetime('2018-12-31 23:00', format='%Y-%m-%d %H:%M')
+    time_frequency = 'H'
 
 #time_start = '1/1/2018'
 #time_end = '31/12/2018'
@@ -36,4 +42,6 @@ setting_lp_file = False
 # display_graphs
 display_graphs_solar = False
 display_graphs_demand = False
-display_graphs_simulation = False
+display_graphs_simulation = True
+print_simulation_meta = True
+print_simulation_main = True

@@ -106,7 +106,7 @@ class cases():
         generatemodel.store_results(micro_grid_system, case_name)
         #micro_grid_system = generatemodel.load_results()
         electricity_bus = generatemodel.process(micro_grid_system, case_name, get_el_bus=True)
-        oem_results = generatemodel.process_oem(electricity_bus, case_name)
+        oem_results = generatemodel.process_oem(electricity_bus, case_name, max(pv_generation))
         logging.info(' ')
         return oem_results
 

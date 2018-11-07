@@ -6,7 +6,7 @@ from oemof.tools import economics
 ###############################################################################
 
 # Definitions
-fuel_price=100 # Euro/l
+fuel_price=1 # Euro/l
 
 # Define demand
 # todo check for units of annual demand
@@ -24,9 +24,9 @@ cap_storage     = 100 # kWh, max. charge/discharge per timestep: cap_pv/6 kWh
 # todo what exactly is wac
 # todo capex should include replacement costs etc... where account for annual costs?
 wacc = 0.05
-cost_data = pd.DataFrame({'PV': [400, 20, 1],
-                          'GenSet': [300, 20, 10],
-                          'Storage': [170, 20, 1]},
+cost_data = pd.DataFrame({'PV': [400, 20, 400],
+                          'GenSet': [300, 20, 350],
+                          'Storage': [170, 20, 170]},
                          index=['initial_investment', 'lifetime', 'capex'])
 
 # Define irradiation and generation

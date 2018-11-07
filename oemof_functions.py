@@ -220,6 +220,7 @@ class generatemodel():
         return micro_grid_system
 
     def process(micro_grid_system, case_name, get_el_bus):
+        from config import print_simulation_meta, print_simulation_main
         # define an alias for shorter calls below (optional)
         results = micro_grid_system.results['main']
         meta = micro_grid_system.results['meta']
@@ -232,11 +233,13 @@ class generatemodel():
         generatemodel.plot_storage(generic_storage)
 
         # print the solver results
-        logging.debug('********* Meta results *********')
-        logging.debug(meta)
+        if print_simulation_meta == True:
+            logging.info('********* Meta results *********')
+            pp.pprint(meta)
         # print the sums of the flows around the electricity bus
-        logging.debug('********* Main results *********')
-        logging.debug(electricity_bus['sequences'].sum(axis=0))
+        if print_simulation_main == True:
+            logging.info('********* Main results *********')
+            pp.pprint(electricity_bus['sequences'].sum(axis=0))
 
         if get_el_bus == True:
             return electricity_bus
@@ -246,9 +249,9 @@ class generatemodel():
              / electricity_bus['sequences'][(('bus_electricity_mg', 'sink_demand'), 'flow')].sum()) * 100)) +
                                 ' percent.')
 
-    def process_oem(electricity_bus, case_name):
+    def process_oem(electricity_bus, case_name, pv_generation_max):
         oem_results = pd.DataFrame({'storage_invest_kWh': [electricity_bus['scalars'][(('generic_storage', 'bus_electricity_mg'), 'invest')]],
-                                           'pv_invest_kW': [electricity_bus['scalars'][(('source_pv', 'bus_electricity_mg'), 'invest')]],
+                                           'pv_invest_kW': [electricity_bus['scalars'][(('source_pv', 'bus_electricity_mg'), 'invest')]/pv_generation_max],
                                            'genset_invest_kW': [electricity_bus['scalars'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'invest')]],
                                            'res_share_perc': [(1 - electricity_bus['sequences'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'flow')].sum()
                                                           / electricity_bus['sequences'][(('bus_electricity_mg', 'sink_demand'), 'flow')].sum())*100]},
