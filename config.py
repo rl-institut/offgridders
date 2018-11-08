@@ -43,5 +43,5 @@ setting_lp_file = False
 display_graphs_solar = False
 display_graphs_demand = False
 display_graphs_simulation = True
-print_simulation_meta = True
-print_simulation_main = True
+print_simulation_meta = False
+print_simulation_main = False

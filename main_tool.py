@@ -1,6 +1,7 @@
 '''
 Overlying script for tool for the analysis of possible
 operational modes of micro grids interconnecting with an unreliable national grid
+For efficient iterations? https://docs.python.org/2/library/itertools.html
 '''
 
 import os

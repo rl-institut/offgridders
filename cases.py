@@ -13,7 +13,8 @@ import logging
 #                      screen_level=logging.INFO,
 #                      file_level=logging.DEBUG)
 
-from oemof_functions import generatemodel
+from oemof_generatemodel import generatemodel
+from oemof_general import oemofmodel
 
 class cases():
     ###############################################################################
@@ -45,20 +46,20 @@ class cases():
         '''
         from config import allow_shortage
         case_name = "mg_fix"
-        micro_grid_system = generatemodel.initialize_model()
-        generatemodel.textblock_fix()
+        micro_grid_system = oemofmodel.initialize_model()
+        oemofmodel.textblock_fix()
         micro_grid_system, bus_fuel, bus_electricity_mg = generatemodel.bus_basic(micro_grid_system)
         micro_grid_system, bus_fuel = generatemodel.fuel(micro_grid_system, bus_fuel)
         if allow_shortage == True: micro_grid_system = generatemodel.shortage(micro_grid_system, bus_electricity_mg)
         micro_grid_system, bus_electricity_mg = generatemodel.demand(micro_grid_system, bus_electricity_mg, demand_profile)
         micro_grid_system, bus_electricity_mg = generatemodel.excess(micro_grid_system, bus_electricity_mg)
         micro_grid_system, bus_electricity_mg = generatemodel.pv_fix(micro_grid_system, bus_electricity_mg, pv_generation)
-        micro_grid_system, bus_fuel, bus_electricity_mg = generatemodel.transformer_fix(micro_grid_system, bus_fuel, bus_electricity_mg)
+        micro_grid_system, bus_fuel, bus_electricity_mg = generatemodel.genset_fix(micro_grid_system, bus_fuel, bus_electricity_mg)
         micro_grid_system, bus_electricity_mg = generatemodel.storage_fix(micro_grid_system, bus_electricity_mg)
-        micro_grid_system = generatemodel.simulate(micro_grid_system)
-        generatemodel.store_results(micro_grid_system, case_name)
-        #micro_grid_system = generatemodel.load_results()
-        generatemodel.process(micro_grid_system, case_name, get_el_bus=False)
+        micro_grid_system = oemofmodel.simulate(micro_grid_system)
+        oemofmodel.store_results(micro_grid_system, case_name)
+        #micro_grid_system = oemofmodel.load_results()
+        oemofmodel.process(micro_grid_system, case_name, get_el_bus=False)
         logging.info(' ')
         return logging.debug('            Simulation of case "base" complete.')
 
@@ -92,21 +93,21 @@ class cases():
         '''
         from config import allow_shortage
         case_name = "mg_oem"
-        micro_grid_system = generatemodel.initialize_model()
-        generatemodel.textblock_oem()
+        micro_grid_system = oemofmodel.initialize_model()
+        oemofmodel.textblock_oem()
         micro_grid_system, bus_fuel, bus_electricity_mg = generatemodel.bus_basic(micro_grid_system)
         micro_grid_system, bus_fuel = generatemodel.fuel(micro_grid_system, bus_fuel)
         if allow_shortage == True: micro_grid_system, bus_electricity_mg = generatemodel.shortage(micro_grid_system, bus_electricity_mg)
         micro_grid_system, bus_electricity_mg = generatemodel.demand(micro_grid_system, bus_electricity_mg, demand_profile)
         micro_grid_system, bus_electricity_mg = generatemodel.excess(micro_grid_system, bus_electricity_mg)
         micro_grid_system, bus_electricity_mg = generatemodel.pv_oem(micro_grid_system, bus_electricity_mg, pv_generation)
-        micro_grid_system, bus_fuel, bus_electricity_mg = generatemodel.transformer_oem(micro_grid_system, bus_fuel, bus_electricity_mg)
+        micro_grid_system, bus_fuel, bus_electricity_mg = generatemodel.genset_oem(micro_grid_system, bus_fuel, bus_electricity_mg)
         micro_grid_system, bus_electricity_mg = generatemodel.storage_oem(micro_grid_system, bus_electricity_mg)
-        micro_grid_system = generatemodel.simulate(micro_grid_system)
-        generatemodel.store_results(micro_grid_system, case_name)
-        #micro_grid_system = generatemodel.load_results()
-        electricity_bus = generatemodel.process(micro_grid_system, case_name, get_el_bus=True)
-        oem_results = generatemodel.process_oem(electricity_bus, case_name, max(pv_generation))
+        micro_grid_system = oemofmodel.simulate(micro_grid_system)
+        oemofmodel.store_results(micro_grid_system, case_name)
+        #micro_grid_system = oemofmodel.load_results()
+        electricity_bus = oemofmodel.process(micro_grid_system, case_name, get_el_bus=True)
+        oem_results = oemofmodel.process_oem(electricity_bus, case_name, max(pv_generation))
         logging.info(' ')
         return oem_results
 

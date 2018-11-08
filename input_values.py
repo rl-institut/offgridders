@@ -7,6 +7,7 @@ from oemof.tools import economics
 
 # Definitions
 fuel_price=1 # Euro/l
+maingrid_electricity_costs=0.27 # Euro/kWh
 
 # Define demand
 # todo check for units of annual demand
@@ -20,13 +21,15 @@ number_of_businesses = 6
 cap_pv          = 100 # in kWp
 cap_fuel_gen    = 100 # kW
 cap_storage     = 100 # kWh, max. charge/discharge per timestep: cap_pv/6 kWh
+cap_pointofcoupling = 100 #kW (kVA), not sure here...?
 
 # todo what exactly is wac
 # todo capex should include replacement costs etc... where account for annual costs?
 wacc = 0.05
 cost_data = pd.DataFrame({'PV': [400, 20, 400],
                           'GenSet': [300, 20, 350],
-                          'Storage': [170, 20, 170]},
+                          'Storage': [170, 20, 170],
+                          'PCoupling': [1000, 20, 1500]},
                          index=['initial_investment', 'lifetime', 'capex'])
 
 # Define irradiation and generation
@@ -53,6 +56,7 @@ demand_input = pd.DataFrame({'annual_demand_kWh': [ann_el_demand_per_household, 
 cost_data.loc['annuity', 'PV']      =   economics.annuity(capex=cost_data.loc['capex', 'PV',], n=cost_data.loc['lifetime', 'PV'], wacc=wacc)
 cost_data.loc['annuity', 'GenSet']  =   economics.annuity(capex=cost_data.loc['capex', 'GenSet'], n=cost_data.loc['lifetime', 'GenSet'], wacc=wacc)
 cost_data.loc['annuity', 'Storage'] =   economics.annuity(capex=cost_data.loc['capex', 'Storage'], n=cost_data.loc['lifetime', 'Storage'], wacc=wacc)
+cost_data.loc['annuity', 'PCoupling'] =   economics.annuity(capex=cost_data.loc['capex', 'PCoupling'], n=cost_data.loc['lifetime', 'PCoupling'], wacc=wacc)
 
 
 pv_system_location = pd.DataFrame([latitude, longitude, altitude, timezone],
