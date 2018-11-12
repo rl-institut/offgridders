@@ -7,6 +7,17 @@ coding_process              = True  # Defines timeframe and noise (see below)
 # oemof simulation
 settings_fixed_capacities   = False  # utilize fixed capacities as saved in file "input_values.py"
 allow_shortage              = False  # Allow supply shortage, details given below
+# simulated cases:
+simulated_cases = {
+    'base': True,
+    'buyoff': False,
+    'parallel': False,
+    'adapted': False,
+    'oem_interconnected': False,
+    'backupgrid': False,
+    'buysell': False,
+    'mg_oem': False
+}
 
 # # # # # # # # #
 # Input (files) #
