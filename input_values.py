@@ -49,34 +49,25 @@ inverter_name = 'ABB__MICRO_0_25_I_OUTD_US_208_208V__CEC_2014_'
 # Sensitivity analysis
 ###############################################################################
 # constants/values of the sensitivity analysis - influencing the base case OEM
-s_oem = {
-    'sensitivity_bounds':
-        {
-            #'fuel_price':     {'min': 0.5,  'max': 1,     'step': 0.1}
-        },
-    'constant_values':
-        {
-            'cost_pv':      300,
-            'cost_genset':  400,
-            'cost_storage': 170,
-            'fuel_price':   1,
-            'shortage':     0,
-            'wacc':         0.05
-        }
+'''
+IT IS POSSIBLE TO SHIFT ELEMENTS BETWEEN THE LIST sensitivity_bounds <-> constant_values
+BUT DO NOT DELETE OR ADD NEW ELEMENTS WITHOUT CHANGING THE MAIN CODE
+'''
+sensitivity_bounds ={
+        #'fuel_price':     {'min': 0.5,  'max': 1,     'step': 0.1}
     }
 
-# constants/variables of the sensitivity analysis - not influencing the base case OEM
-s_nooem = {
-    'sensitivity_bounds':
-        {
-            #'blackout_duration':     {'min': 2,  'max': 2.5,     'step': 0.5}
-        },
-    'constant_values':
-        {
-            'blackout_frequency':   7,
-            'blackout_duration':    2,
-            'distance_to_grid':     10
-        }
+# Values of the sensitivity analysis that appear constant
+sensitivity_constants ={
+        'cost_pv':      300,
+        'cost_genset':  400,
+        'cost_storage': 170,
+        'fuel_price':   1,
+        'shortage':     0,
+        'wacc':         0.05,
+        'blackout_frequency': 7,
+        'blackout_duration': 2,
+        'distance_to_grid': 10
     }
 
 ###############################################################################

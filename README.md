@@ -86,4 +86,4 @@ The energy system recieves the total consumption as the project demand profile.
 
 7.11: Working oemfunctions, now easy definition and adoptation of multiple cases
 
-12.11: Improved modular structure - now accepting files as demand input
+12.11: Improved modular structure - now accepting files as demand input, base structure for sensitivity analyses included

@@ -20,7 +20,7 @@ class cases():
     ###############################################################################
     # Basecase
     ###############################################################################
-    def base(demand_profile, pv_generation):
+    def base(demand_profile, pv_generation, postfix):
         '''
         Case: micro grid with fixed capacities = dispatch analysis
 
@@ -57,7 +57,7 @@ class cases():
         micro_grid_system, bus_fuel, bus_electricity_mg = generatemodel.genset_fix(micro_grid_system, bus_fuel, bus_electricity_mg)
         micro_grid_system, bus_electricity_mg = generatemodel.storage_fix(micro_grid_system, bus_electricity_mg)
         micro_grid_system = oemofmodel.simulate(micro_grid_system)
-        oemofmodel.store_results(micro_grid_system, case_name)
+        oemofmodel.store_results(micro_grid_system, case_name+postfix)
         #micro_grid_system = oemofmodel.load_results()
         oemofmodel.process(micro_grid_system, case_name, get_el_bus=False)
         logging.info(' ')
@@ -67,7 +67,7 @@ class cases():
     # Optimization of off-grid micro grid
     ###############################################################################
 
-    def mg_oem(demand_profile, pv_generation):
+    def mg_oem(demand_profile, pv_generation, postfix):
         '''
         Case: micro grid with variable capacities = OEM
 
@@ -104,7 +104,7 @@ class cases():
         micro_grid_system, bus_fuel, bus_electricity_mg = generatemodel.genset_oem(micro_grid_system, bus_fuel, bus_electricity_mg)
         micro_grid_system, bus_electricity_mg = generatemodel.storage_oem(micro_grid_system, bus_electricity_mg)
         micro_grid_system = oemofmodel.simulate(micro_grid_system)
-        oemofmodel.store_results(micro_grid_system, case_name)
+        oemofmodel.store_results(micro_grid_system, case_name+postfix)
         #micro_grid_system = oemofmodel.load_results()
         electricity_bus = oemofmodel.process(micro_grid_system, case_name, get_el_bus=True)
         oem_results = oemofmodel.process_oem(electricity_bus, case_name, max(pv_generation))

@@ -46,8 +46,8 @@ if use_input_file_weather == True: write_weather_to_file = False
 # display results and graphs
 setting_lp_file             = False  # save lp file of oemof simulation
 display_graphs_solar        = False
-display_graphs_demand       = True
-display_graphs_simulation   = True
+display_graphs_demand       = False
+display_graphs_simulation   = False
 print_simulation_meta       = False
 print_simulation_main       = False
 
