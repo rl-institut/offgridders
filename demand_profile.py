@@ -9,6 +9,7 @@ https://learn.adafruit.com/micropython-basics-loading-modules/import-code
 """
 
 import datetime
+import pandas as pd
 import demandlib.bdew as bdew
 import demandlib.particular_profiles as profiles
 from datetime import time as settime
@@ -21,7 +22,7 @@ except ImportError:
 # Import simulation settings
 from config import display_graphs_demand, date_time_index
 
-class demand_profile:
+class demand:
     # todo difference between class and function
     # todo better display of plots
     def plot_results(pandas_dataframe, title, xaxis, yaxis):
@@ -35,7 +36,39 @@ class demand_profile:
                 plt.show()
         return
 
-    def estimate(demand_input):
+    ##
+    def estimate():
+        from config import use_input_file_demand, write_demand_to_file
+
+        if use_input_file_demand == True:
+            demand_profile = demand.read_from_file()
+        else:
+            demand_profile = demand.demandlib_estimation()
+
+        if write_demand_to_file == True:
+            print ('write!!')
+            from config import output_folder
+            demand_profile.to_csv(output_folder + '/demand.csv')
+
+        return demand_profile[date_time_index]
+
+    def read_from_file():
+        from config import input_file_demand, unit_factor, date_time_index
+        data_set = pd.read_csv(input_file_demand)
+        index = pd.DatetimeIndex(data_set['timestep'].values)
+        demand_profile = pd.Series(data_set['demand'].values/unit_factor, index= index)
+
+        # Actually, there needs to be a check for timesteps here
+        print("Total annual demand for project site (kWh/a)")
+        print(demand_profile.sum())
+        print(" ")
+        demand.plot_results(demand_profile[date_time_index], "Electricity demand at project site",
+                            "Date",
+                            "Power demand in kW")
+        return demand_profile
+
+    def demandlib_estimation():
+        from input_values import demand_input
         year = 2018
 
         # todo: in gui, it must be possible to add holidays and scaling parameters manually
@@ -82,14 +115,14 @@ class demand_profile:
         # todo if pass frequency/timestamp, then we automatically have appropriate demand profile. choose with check for frequency, which outputs (prints, plots) are generated
         # Define electricity demand profile with 15-min steps
         electricity_demand_15min = electricity_demand
-        demand_profile.plot_results(electricity_demand, "Electricity demand per sector (15-min)", "Date (15-min steps)", "Date (15-min steps)")
+        demand.plot_results(electricity_demand, "Electricity demand per sector (15-min)", "Date (15-min steps)", "Date (15-min steps)")
 
         # Define total electricity demand profile with 15-min steps
         electricity_demand__total_15min = electricity_demand_15min['households']+electricity_demand_15min['businesses']
         print("Total annual demand for project site (kWh/a)")
         print(round(electricity_demand__total_15min.sum()/4, 2))
         print(" ")
-        demand_profile.plot_results(electricity_demand__total_15min, "Electricity demand at project site (15-min)", "Date (15-im steps)",
+        demand.plot_results(electricity_demand__total_15min, "Electricity demand at project site (15-min)", "Date (15-im steps)",
                      "Power demand in kW")
 
         """
@@ -105,7 +138,7 @@ class demand_profile:
         print("Total annual demand per sector (kWh/a)")
         print(electricity_demand_hourly.sum())
         print(" ")
-        demand_profile.plot_results(electricity_demand_hourly, "Electricity demand per sector (1-hr)", "Date (1-hr steps)",
+        demand.plot_results(electricity_demand_hourly, "Electricity demand per sector (1-hr)", "Date (1-hr steps)",
                      "Power demand in kW")
 
         # Total demand (hourly) for project site
@@ -113,12 +146,12 @@ class demand_profile:
         print("Total annual demand for project site (kWh/a)")
         print(electricity_demand_total_hourly.sum())
         print(" ")
-        demand_profile.plot_results(electricity_demand_total_hourly, "Electricity demand at project site (1-hr)", "Date (1-hr steps)",
+        demand.plot_results(electricity_demand_total_hourly, "Electricity demand at project site (1-hr)", "Date (1-hr steps)",
                      "Power demand in kW")
 
         # Resample hourly values to daily values.
         electricity_demand_daily = electricity_demand_hourly.resample('D').sum()
-        demand_profile.plot_results(electricity_demand_daily, "Electricity demand per sector (1-d)", "Date (1-d steps)",
+        demand.plot_results(electricity_demand_daily, "Electricity demand per sector (1-d)", "Date (1-d steps)",
                      "Power demand in kWh/d")
         print("Median daily demand per consumer (kWh/d)")
         print(electricity_demand_daily.mean()/demand_input.number)
@@ -128,11 +161,11 @@ class demand_profile:
 
         # Define daily profile with peak demands - without white noise the value is constant
         electricity_demand_kW_max = electricity_demand.resample('D').max()
-        demand_profile.plot_results(electricity_demand_kW_max, "Daily peak demand per sector", "Date (1-d steps)",
+        demand.plot_results(electricity_demand_kW_max, "Daily peak demand per sector", "Date (1-d steps)",
                      "Peak power demand in kW")
         print("Absolute peak demand per sector (kW)")
         print(electricity_demand_kW_max.max())
         print(" ")
-
-        return electricity_demand_total_hourly[date_time_index] # to synchronize evaluated timeframe
+        print(electricity_demand_total_hourly)
+        return electricity_demand_total_hourly # to synchronize evaluated timeframe
     # todo create merged demand of households and businesses, so that the total load profile can be fed into the mg optimization

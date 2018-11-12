@@ -58,9 +58,9 @@ dictof_nooemparameters ={ 'blackout_duration_100':  [20, 20, 5],
 # Generation of initializing data (demand, pv generation, basecase capacities
 ###############################################################################
 #-----------------------------Demand profile------------------------------#
-from demand_profile import demand_profile
-from input_values import demand_input
-demand_profile = demand_profile.estimate(demand_input)
+from demand_profile import demand
+
+demand_profile = demand.estimate()
 
 #-----------------------------PV system------------------------------#
 from pvlib_scripts import pvlib_scripts
