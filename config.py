@@ -6,9 +6,10 @@ coding_process              = True  # Defines timeframe and noise (see below)
 
 # oemof simulation
 allow_shortage              = False  # Allow supply shortage, details given below
+
 # simulated cases:
 simulated_cases = {
-    'base': True,
+    'mg_fixed': True,
     'buyoff': False,
     'parallel': False,
     'adapted': False,
@@ -17,6 +18,11 @@ simulated_cases = {
     'buysell': False,
     'mg_oem': False
 }
+# Minimal batch capacities (always round up, if value is exactly met, add another batch)
+round_to_batch = {'PV': 0.25, # kWp
+            'GenSet': 0.25, #kW
+            'Storage': 1 #kWh
+            }
 
 # # # # # # # # #
 # Input (files) #
@@ -66,6 +72,7 @@ debug = True  # Set number_of_timesteps to 3 to get a readable lp-file.
 
 # Simulation timeframe
 if coding_process == True:
+    evaluated_days          =  1 # not used to redifine time_start/end! manual!
     time_start              = pd.to_datetime('2018-07-07 0:00', format='%Y-%m-%d %H:%M')
     time_end                = pd.to_datetime('2018-07-07 23:00', format='%Y-%m-%d %H:%M')
     time_frequency          = 'H'
@@ -82,7 +89,3 @@ else:
 
 #global date_time_index
 date_time_index = pd.date_range(start=time_start, end=time_end, freq=time_frequency)
-
-if allow_shortage == True:
-    max_share_unsupplied_load = 0.05 # todo max_share_unsupplied_load decipated??
-    var_costs_unsupplied_load = 1 # todo var_costs_unsupplied_load decipated??

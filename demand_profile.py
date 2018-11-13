@@ -13,6 +13,10 @@ import pandas as pd
 import demandlib.bdew as bdew
 import demandlib.particular_profiles as profiles
 from datetime import time as settime
+
+import oemof.outputlib as outputlib
+import logging
+
 try:
     import matplotlib.pyplot as plt
 except ImportError:
@@ -59,9 +63,7 @@ class demand:
         demand_profile = pd.Series(data_set['demand'].values/unit_factor, index= index)
 
         # Actually, there needs to be a check for timesteps here
-        print("Total annual demand for project site (kWh/a)")
-        print(demand_profile.sum())
-        print(" ")
+        logging.info("Total annual demand for project site (kWh/a): " + str(round(demand_profile.sum())))
         demand.plot_results(demand_profile[date_time_index], "Electricity demand at project site",
                             "Date",
                             "Power demand in kW")
@@ -119,9 +121,7 @@ class demand:
 
         # Define total electricity demand profile with 15-min steps
         electricity_demand__total_15min = electricity_demand_15min['households']+electricity_demand_15min['businesses']
-        print("Total annual demand for project site (kWh/a)")
-        print(round(electricity_demand__total_15min.sum()/4, 2))
-        print(" ")
+        logging.info("Total annual demand for project site (kWh/a): " + str(round(electricity_demand__total_15min.sum()/4, 2)))
         demand.plot_results(electricity_demand__total_15min, "Electricity demand at project site (15-min)", "Date (15-im steps)",
                      "Power demand in kW")
 
@@ -135,17 +135,13 @@ class demand:
         """
         # Resample 15-minute values to hourly values.
         electricity_demand_hourly = electricity_demand.resample('H').mean()
-        print("Total annual demand per sector (kWh/a)")
-        print(electricity_demand_hourly.sum())
-        print(" ")
+        logging.info("Total annual demand per sector (kWh/a): " + str(round(electricity_demand_hourly.sum())))
         demand.plot_results(electricity_demand_hourly, "Electricity demand per sector (1-hr)", "Date (1-hr steps)",
                      "Power demand in kW")
 
         # Total demand (hourly) for project site
         electricity_demand_total_hourly = electricity_demand_hourly['households']+electricity_demand_hourly['businesses']
-        print("Total annual demand for project site (kWh/a)")
-        print(electricity_demand_total_hourly.sum())
-        print(" ")
+        logging.info("Total annual demand for project site (kWh/a): " + str( round(electricity_demand_total_hourly.sum()), 2))
         demand.plot_results(electricity_demand_total_hourly, "Electricity demand at project site (1-hr)", "Date (1-hr steps)",
                      "Power demand in kW")
 
@@ -153,9 +149,7 @@ class demand:
         electricity_demand_daily = electricity_demand_hourly.resample('D').sum()
         demand.plot_results(electricity_demand_daily, "Electricity demand per sector (1-d)", "Date (1-d steps)",
                      "Power demand in kWh/d")
-        print("Median daily demand per consumer (kWh/d)")
-        print(electricity_demand_daily.mean()/demand_input.number)
-        print(" ")
+        logging.info("Median daily demand per consumer (kWh/d): " + str( round(electricity_demand_daily.mean()/demand_input.number), 3))
 
     # todo include white noise
 
@@ -163,9 +157,6 @@ class demand:
         electricity_demand_kW_max = electricity_demand.resample('D').max()
         demand.plot_results(electricity_demand_kW_max, "Daily peak demand per sector", "Date (1-d steps)",
                      "Peak power demand in kW")
-        print("Absolute peak demand per sector (kW)")
-        print(electricity_demand_kW_max.max())
-        print(" ")
-        print(electricity_demand_total_hourly)
+        logging.info("Absolute peak demand per sector (kW): " + str( round(electricity_demand_kW_max.max(),2)))
         return electricity_demand_total_hourly # to synchronize evaluated timeframe
     # todo create merged demand of households and businesses, so that the total load profile can be fed into the mg optimization

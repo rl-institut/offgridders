@@ -105,24 +105,39 @@ class oemofmodel():
             return electricity_bus
         else:
             return logging.info('    Dispatch optimization for case "' + case_name + '" finished, with renewable share of ' +
-            str(round((1 - electricity_bus['sequences'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'flow')].sum()
+            str(round(abs(1 - electricity_bus['sequences'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'flow')].sum()
              / electricity_bus['sequences'][(('bus_electricity_mg', 'sink_demand'), 'flow')].sum()) * 100)) +
                                 ' percent.')
 
     def process_oem(electricity_bus, case_name, pv_generation_max):
-        oem_results = pd.DataFrame({'storage_invest_kWh': [electricity_bus['scalars'][(('generic_storage', 'bus_electricity_mg'), 'invest')]],
-                                           'pv_invest_kW': [electricity_bus['scalars'][(('source_pv', 'bus_electricity_mg'), 'invest')]*pv_generation_max],
-                                           'genset_invest_kW': [electricity_bus['scalars'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'invest')]],
-                                           'res_share_perc': [(1 - electricity_bus['sequences'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'flow')].sum()
-                                                          / electricity_bus['sequences'][(('bus_electricity_mg', 'sink_demand'), 'flow')].sum())*100]},
-                                          index=[case_name])
+        oem_results = {'storage_invest_kWh': electricity_bus['scalars'][(('generic_storage', 'bus_electricity_mg'), 'invest')],
+                                           'pv_invest_kW': electricity_bus['scalars'][(('source_pv', 'bus_electricity_mg'), 'invest')]*pv_generation_max,
+                                           'genset_invest_kW': electricity_bus['scalars'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'invest')],
+                                           'res_share_perc': abs(1 - electricity_bus['sequences'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'flow')].sum()
+                                                          / electricity_bus['sequences'][(('bus_electricity_mg', 'sink_demand'), 'flow')].sum())*100}
 
-        logging.info ('    OEM results of case "' + case_name + '" : ' + str(round(oem_results['storage_invest_kWh'][case_name])) + ' kWh battery, ' +
-                                           str(round(oem_results['pv_invest_kW'][case_name])) + ' kWp PV, ' +
-                                                     str(round(oem_results['genset_invest_kW'][case_name])) + ' kW genset at a renewable share of ' +
-                                                               str(round(oem_results['res_share_perc'][case_name])) + ' percent.')
+        logging.info ('    The exact OEM results of case "' + case_name + '" : \n'
+                      + '    ' + '    ' + '    ' + str(round(oem_results['storage_invest_kWh'],3)) + ' kWh battery, '
+                      + str(round(oem_results['pv_invest_kW'],3)) + ' kWp PV, '
+                      + str(round(oem_results['genset_invest_kW'],3)) + ' kW genset '
+                      + 'at a renewable share of ' + str(round(oem_results['res_share_perc'],3)) + ' percent.')
+
         return oem_results
 
+    def process_oem_batch(capacities_base, case_name):
+        from config import round_to_batch
+        capacities_base.update({'pv_invest_kW': round (0.5+capacities_base['pv_invest_kW']/round_to_batch['PV'])
+                                                  *round_to_batch['PV']}) # immer eher 0.25 capacity mehr als eigentlich nötig
+        capacities_base.update({'genset_invest_kW': round(0.5+capacities_base['genset_invest_kW'] / round_to_batch['GenSet']) *
+                                                  round_to_batch['GenSet']})
+        capacities_base.update({'storage_invest_kWh': round(0.5+capacities_base['storage_invest_kWh'] / round_to_batch['Storage']) *
+                                                  round_to_batch['Storage']})
+        logging.info ('    The equivalent batch capacities of the base case OEM for case "' + case_name + '" are: \n'
+                      + '    ' + '    ' + '    ' + str(capacities_base['storage_invest_kWh']) + ' kWh battery, '
+                      + str(capacities_base['pv_invest_kW']) + ' kWp PV, '
+                      + str(capacities_base['genset_invest_kW']) + ' kW genset '
+                      + 'at a renewable share of ' + str(round(capacities_base['res_share_perc'],2)) + ' percent.')
+        return capacities_base
     ######## Processing ########
 
     ####### Show #######

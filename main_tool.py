@@ -31,7 +31,7 @@ from national_grid import national_grid
 #-------------------------------Cases-----------------------------------------#
 # Cases to be evaluated during simulation                                     #
 #-----------------------------------------------------------------------------#
-from config_functions import config_func
+from general_functions import config_func
 listof_cases        =   config_func.cases()
 
 ###############################################################################
@@ -84,8 +84,7 @@ logging.info(str(len(sensitivity_experiments)) + ' combinations of blackout dura
 #-----------------------------------------------------------------------------#
 for experiment in sensitivity_experiments:
     # todo: this function should be called with base_experiment[] to include sensitivites
-    base_capacities = cases.mg_oem(demand_profile, pv_generation_per_kWp, experiment['filename'])
-
+    capacities_base = cases.base_oem(demand_profile, pv_generation_per_kWp, experiment)
     ###############################################################################
     # Simulations of all cases
     ###############################################################################
@@ -102,14 +101,14 @@ for experiment in sensitivity_experiments:
     # According to parameters set beforehand
     ###############################################################################
     for items in listof_cases:
-        if      items == 'base':                 cases.base(demand_profile, pv_generation_per_kWp, experiment['filename'])
+        if      items == 'mg_fixed':              cases.mg_fix(demand_profile, pv_generation_per_kWp, experiment, capacities_base)
         elif    items == 'buyoff':               cases.buyoff()
         elif    items == 'parallel':             cases.parallel()
         elif    items == 'adapted':              cases.adapted()
         elif    items == 'oem_interconnected':   cases.oem_interconnected()
         elif    items == 'backupgrid':           cases.backupgrid()
         elif    items == 'buysell':              cases.buysell()
-        elif    items == 'mg_oem':               cases.mg_oem(demand_profile, pv_generation_per_kWp, experiment['filename'])
+        #elif    items == 'mg_oem':               cases.mg_oem(demand_profile, pv_generation_per_kWp, experiment['filename']) # which case is this supposed anyway?
         else: logging.warning("Unknown case!")
 
     logging.info('The case with following parameters has been analysed:')
