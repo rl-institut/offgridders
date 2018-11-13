@@ -5,7 +5,6 @@ import pandas as pd
 coding_process              = True  # Defines timeframe and noise (see below)
 
 # oemof simulation
-settings_fixed_capacities   = False  # utilize fixed capacities as saved in file "input_values.py"
 allow_shortage              = False  # Allow supply shortage, details given below
 # simulated cases:
 simulated_cases = {
@@ -38,10 +37,14 @@ if use_input_file_weather == True:
 # # # # # #
 # Outputs #
 # # # # # #
-write_demand_to_file = True
-write_demand_to_file = True
+write_demand_to_file = False
+write_weather_to_file = False
 if use_input_file_demand == True: write_demand_to_file = False
 if use_input_file_weather == True: write_weather_to_file = False
+
+# Output file paths
+output_folder='./simulation_results'
+output_file='results'
 
 # display results and graphs
 setting_lp_file             = False  # save lp file of oemof simulation
@@ -50,10 +53,6 @@ display_graphs_demand       = False
 display_graphs_simulation   = False
 print_simulation_meta       = False
 print_simulation_main       = False
-
-# Output file paths
-output_folder='./simulation_results'
-output_file='results'
 
 ####### ----------------- Oemof simulation settings ------------------- #######
 # Define solver
@@ -85,5 +84,5 @@ else:
 date_time_index = pd.date_range(start=time_start, end=time_end, freq=time_frequency)
 
 if allow_shortage == True:
-    max_share_unsupplied_load = 0.05
-    var_costs_unsupplied_load = 1
+    max_share_unsupplied_load = 0.05 # todo max_share_unsupplied_load decipated??
+    var_costs_unsupplied_load = 1 # todo var_costs_unsupplied_load decipated??
