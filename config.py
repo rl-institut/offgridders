@@ -9,7 +9,7 @@ allow_shortage              = False  # Allow supply shortage, details given belo
 
 # simulated cases:
 simulated_cases = {
-    'mg_fixed': True,
+    'mg_fixed': True, # dispatch with base oem capacities
     'buyoff': False,
     'parallel': False,
     'adapted': False,
@@ -19,9 +19,13 @@ simulated_cases = {
     'mg_oem': False
 }
 # Minimal batch capacities (always round up, if value is exactly met, add another batch)
-round_to_batch = {'PV': 0.25, # kWp
-            'GenSet': 0.25, #kW
-            'Storage': 1 #kWh
+
+setting_batch_capacity      = True
+if setting_batch_capacity == True:
+    round_to_batch = {
+        'PV': 0.25, # kWp
+        'GenSet': 0.25, #kW
+        'Storage': 1 #kWh
             }
 
 # # # # # # # # #
@@ -30,6 +34,7 @@ round_to_batch = {'PV': 0.25, # kWp
 use_input_file_demand       = True
 use_input_file_weather      = False
 
+#TODO: ALLOW MULTIPLE DEMAND FILES
 if use_input_file_demand == True:
     input_file_demand       = './inputs/demand.csv'
     unit_of_input_file      = 'kWh'
@@ -53,12 +58,12 @@ output_folder='./simulation_results'
 output_file='results'
 
 # display results and graphs
-setting_lp_file             = False  # save lp file of oemof simulation
+setting_lp_file             = True  # save lp file of oemof simulation
 display_graphs_solar        = False
 display_graphs_demand       = False
-display_graphs_simulation   = False
+display_graphs_simulation   = True
 print_simulation_meta       = False
-print_simulation_main       = False
+print_simulation_main       = True
 
 ####### ----------------- Oemof simulation settings ------------------- #######
 # Define solver

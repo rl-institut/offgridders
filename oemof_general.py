@@ -45,14 +45,14 @@ class oemofmodel():
         micro_grid_system = solph.EnergySystem(timeindex=date_time_index)
         return micro_grid_system
 
-    def simulate(micro_grid_system):
+    def simulate(micro_grid_system, case_name, experiment_name):
         from config import solver, solver_verbose, output_folder, output_file, setting_lp_file
         logging.debug('Initialize the energy system to be optimized')
         model = solph.Model(micro_grid_system)
         logging.debug('Solve the optimization problem')
         model.solve(solver=solver,
                     solve_kwargs={'tee': solver_verbose})  # if tee_switch is true solver messages will be displayed
-        if setting_lp_file == True: model.write('./my_model.lp', io_options={'symbolic_solver_labels': True})
+        if setting_lp_file == True: model.write(output_folder+'/model_'+case_name+'_'+experiment_name+'.lp', io_options={'symbolic_solver_labels': True})
 
         # add results to the energy system to make it possible to store them.
         micro_grid_system.results['main'] = outputlib.processing.results(model)
@@ -100,7 +100,7 @@ class oemofmodel():
         if print_simulation_main == True:
             logging.info('********* Main results *********')
             pp.pprint(electricity_bus['sequences'].sum(axis=0))
-
+        print(electricity_bus)
         if get_el_bus == True:
             return electricity_bus
         else:
@@ -110,18 +110,23 @@ class oemofmodel():
                                 ' percent.')
 
     def process_oem(electricity_bus, case_name, pv_generation_max):
-        oem_results = {'storage_invest_kWh': electricity_bus['scalars'][(('generic_storage', 'bus_electricity_mg'), 'invest')],
-                                           'pv_invest_kW': electricity_bus['scalars'][(('source_pv', 'bus_electricity_mg'), 'invest')]*pv_generation_max,
-                                           'genset_invest_kW': electricity_bus['scalars'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'invest')],
-                                           'res_share_perc': abs(1 - electricity_bus['sequences'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'flow')].sum()
-                                                          / electricity_bus['sequences'][(('bus_electricity_mg', 'sink_demand'), 'flow')].sum())*100}
+        oem_results = {}
+        oem_results.update({'storage_invest_kWh': electricity_bus['scalars'][(('generic_storage', 'bus_electricity_mg'), 'invest')]})
+        if pv_generation_max > 1:
+            oem_results.update({'pv_invest_kW': electricity_bus['scalars'][(('source_pv', 'bus_electricity_mg'), 'invest')]* pv_generation_max })
+        elif pv_generation_max > 0 and pv_generation_max < 1:
+            oem_results.update({'pv_invest_kW': electricity_bus['scalars'][(('source_pv', 'bus_electricity_mg'), 'invest')] / pv_generation_max })
+        else:
+            logging.warning("Error, Strange PV behaviour (PV gen < 0)")
+        oem_results.update({'genset_invest_kW': electricity_bus['scalars'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'invest')]})
+        oem_results.update({'res_share_perc': abs(1 - electricity_bus['sequences'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'flow')].sum()
+                                                          / electricity_bus['sequences'][(('bus_electricity_mg', 'sink_demand'), 'flow')].sum())*100})
 
         logging.info ('    The exact OEM results of case "' + case_name + '" : \n'
                       + '    ' + '    ' + '    ' + str(round(oem_results['storage_invest_kWh'],3)) + ' kWh battery, '
                       + str(round(oem_results['pv_invest_kW'],3)) + ' kWp PV, '
                       + str(round(oem_results['genset_invest_kW'],3)) + ' kW genset '
                       + 'at a renewable share of ' + str(round(oem_results['res_share_perc'],3)) + ' percent.')
-
         return oem_results
 
     def process_oem_batch(capacities_base, case_name):

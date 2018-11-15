@@ -48,6 +48,7 @@ class extract():
         experiment_storage.update({'cost_annuity_storage': experiment['cost_annuity_storage']})
         experiment_storage.update({'cost_var_storage': experiment['cost_var_storage']})
         experiment_storage.update({'storage_Crate': experiment['storage_Crate']})
+        experiment_storage.update({'storage_initial_soc': experiment['storage_initial_soc']})
         experiment_storage.update({'storage_loss_timestep': experiment['storage_loss_timestep']})
         experiment_storage.update({'storage_inflow_efficiency': experiment['storage_inflow_efficiency']})
         experiment_storage.update({'storage_outflow_efficiency': experiment['storage_outflow_efficiency']})

@@ -82,25 +82,26 @@ sensitivity_bounds ={
 
 # Values of the sensitivity analysis that appear constant
 sensitivity_constants ={
-        'cost_annuity_pv':              cost_data.loc['annuity', 'PV'],
-        'cost_annuity_genset':          cost_data.loc['annuity', 'GenSet'],
-        'cost_annuity_storage':         cost_data.loc['annuity', 'Storage'],
-        'cost_annuity_pcoupling':       cost_data.loc['annuity', 'PCoupling'],  # todo not implemented
-        'cost_var_pv':                  cost_data.loc['opex_var', 'PV'], # todo not implemented
-        'cost_var_genset':              cost_data.loc['opex_var', 'GenSet'], # todo not implemented
-        'cost_var_storage':             cost_data.loc['opex_var', 'PV'], # todo not implemented
-        'cost_var_pcoupling':           cost_data.loc['opex_var', 'PCoupling'], # todo not implemented
+        'cost_annuity_pv':              cost_data.loc['annuity', 'PV'], # incl o&M (scaled per kWp!!)
+        'cost_annuity_genset':          cost_data.loc['annuity', 'GenSet'], # incl o&M (scaled per kWh!!)
+        'cost_annuity_storage':         cost_data.loc['annuity', 'Storage'], # incl o&M (scaled per kW!!)
+        'cost_annuity_pcoupling':       cost_data.loc['annuity', 'PCoupling'],  # todo PC not implemented
+        'cost_var_pv':                  cost_data.loc['opex_var', 'PV'], # per unit # todo not implemented
+        'cost_var_genset':              cost_data.loc['opex_var', 'GenSet'], # per unit # todo not implemented
+        'cost_var_storage':             cost_data.loc['opex_var', 'PV'], # per unit # todo not implemented
+        'cost_var_pcoupling':           cost_data.loc['opex_var', 'PCoupling'], # todo PC not implemented
         'price_fuel':                   10, # /unit
         'combustion_value_fuel':        9.41, # kWh/unit
         'price_electricity_main_grid':  0.20,  # todo not implemented
         'max_share_unsupplied_load':    0, #  factor
-        'var_costs_unsupplied_load':    10, # /kWh
+        'costs_var_unsupplied_load':    10, # /kWh
         'blackout_frequency':           7, #  blackouts per month
         'blackout_duration':            2, # hrs per blackout
-        'storage_Crate':                1/6, #  factor of total capacity
-        'storage_loss_timestep':        0,
+        'storage_Crate':                1/6, # factor (possible charge/discharge ratio to total capacity)
+        'storage_loss_timestep':        0, # factor
         'storage_inflow_efficiency':    1, # factor
         'storage_outflow_efficiency':   0.8, #  factor
+        'storage_initial_soc':          0.5, # factor
         'efficiency_generator':         0.58, #  factor
         'efficiency_pcoupling':         0.98, # inverter inefficiency between highvoltage/mediumvoltage grid (maybe even split into feedin/feedfrom
         'min_res_share':                0, # todo not implemented res share
