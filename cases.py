@@ -63,10 +63,10 @@ class cases():
         micro_grid_system, bus_fuel, bus_electricity_mg     = generatemodel.genset_oem(micro_grid_system, bus_fuel, bus_electricity_mg, extract.genset(experiment))
         micro_grid_system, bus_electricity_mg               = generatemodel.storage_oem(micro_grid_system, bus_electricity_mg, extract.storage(experiment))
         micro_grid_system                                   = oemofmodel.simulate(micro_grid_system, case_name, experiment['filename'])
-        oemofmodel.store_results(micro_grid_system, case_name+experiment['filename'])
+        oemofmodel.store_results(micro_grid_system, case_name, experiment['filename'])
         #micro_grid_system = oemofmodel.load_results() # todo not yet defined.
         electricity_bus                                      = oemofmodel.process(micro_grid_system, case_name, get_el_bus=True)
-        oem_results                                          = oemofmodel.process_oem(electricity_bus, case_name, max(pv_generation))
+        oem_results                                          = oemofmodel.process_oem(electricity_bus, case_name, max(pv_generation), extract.storage_oem(experiment))
         logging.info(' ')
         return oem_results
 
@@ -113,7 +113,7 @@ class cases():
         micro_grid_system, bus_fuel, bus_electricity_mg     = generatemodel.genset_fix(micro_grid_system, bus_fuel, bus_electricity_mg, capacity_base['genset_invest_kW'], extract.genset(experiment))
         micro_grid_system, bus_electricity_mg               = generatemodel.storage_fix(micro_grid_system, bus_electricity_mg, capacity_base['storage_invest_kWh'], extract.storage(experiment))
         micro_grid_system                                   = oemofmodel.simulate(micro_grid_system, case_name, experiment['filename'])
-        oemofmodel.store_results(micro_grid_system, case_name+experiment['filename'])
+        oemofmodel.store_results(micro_grid_system, case_name, experiment['filename'])
         #micro_grid_system = oemofmodel.load_results()
         oemofmodel.process(micro_grid_system, case_name, get_el_bus=False)
         logging.info(' ')

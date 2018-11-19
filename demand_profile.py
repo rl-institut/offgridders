@@ -41,38 +41,43 @@ class demand:
         return
 
     ##
-    def estimate():
+    def get():
         from config import use_input_file_demand, write_demand_to_file
 
         if use_input_file_demand == True:
-            demand_profile = demand.read_from_file()
+            demand_profile = demand.read_from_file() # results in a dictionary of demand profiles
         else:
             demand_profile = demand.demandlib_estimation()
+            if write_demand_to_file == True:
+                from config import output_folder
+                demand_profile.to_csv(output_folder + '/demand.csv') # Save annual profile to file
+            demand_profile = {'demand': demand_profile[date_time_index]} # utilize only defined timeframe for simulation
 
-        if write_demand_to_file == True:
-            print ('write!!')
-            from config import output_folder
-            demand_profile.to_csv(output_folder + '/demand.csv')
-
-        return demand_profile[date_time_index]
+        return demand_profile
 
     def read_from_file():
-        from config import input_file_demand, unit_factor, date_time_index
-        data_set = pd.read_csv(input_file_demand)
-        index = pd.DatetimeIndex(data_set['timestep'].values)
-        demand_profile = pd.Series(data_set['demand'].values/unit_factor, index= index)
+        from input_values import input_files_demand, unit_factor
+        from config import date_time_index
 
-        # Actually, there needs to be a check for timesteps here
-        logging.info("Total annual demand for project site (kWh/a): " + str(round(demand_profile.sum())))
-        demand.plot_results(demand_profile[date_time_index], "Electricity demand at project site",
+        demand_profiles =  {}
+        for file in input_files_demand:
+            data_set = pd.read_csv(input_files_demand[file])
+            # todo not sure if this works!
+            index = pd.DatetimeIndex(data_set['timestep'].values) + pd.DateOffset(year=date_time_index[0].year)
+            demand_profile =  pd.Series(data_set['demand'].values/unit_factor, index = index)
+            # todo Actually, there needs to be a check for timesteps here
+            logging.info('Included demand profile input file "'+ input_files_demand[file] + '"')
+            logging.info('     Total annual demand at project site (kWh/a): ' + str(round(demand_profile.sum())))
+            demand.plot_results(demand_profile[date_time_index], "Electricity demand at project site (" + file + ")",
                             "Date",
                             "Power demand in kW")
-        return demand_profile
+            demand_profiles.update({file: demand_profile[date_time_index]})
+        return demand_profiles
 
     def demandlib_estimation():
         from input_values import demand_input
-        year = 2018
-
+        from config import date_time_index
+        year = date_time_index[0].year
         # todo: in gui, it must be possible to add holidays and scaling parameters manually
         # todo: in gui, it must be possible to set and scale for working hours
         holidays = {

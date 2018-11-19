@@ -6,6 +6,12 @@ import pandas
 
 from oemof.tools import logger
 import logging
+try:
+    import matplotlib.pyplot as plt
+except ImportError:
+    print("Matplotlib.pyplot could not be loaded")
+    plt = None
+
 
 class config_func():
     def cases():
@@ -24,6 +30,18 @@ class config_func():
 '''
 The handler for information on the specific case analysed in the case study ("experiment")
 '''
+
+class helpers:
+    # todo better display of plots
+    def plot_results(pandas_dataframe, title, xaxis, yaxis):
+        if plt is not None:
+            # Plot demand
+            ax = pandas_dataframe.plot()
+            ax.set_title(title)
+            ax.set_xlabel(xaxis)
+            ax.set_ylabel(yaxis)
+            plt.show()
+        return
 
 class extract():
     def fuel(experiment):
@@ -54,6 +72,11 @@ class extract():
         experiment_storage.update({'storage_loss_timestep': experiment['storage_loss_timestep']})
         experiment_storage.update({'storage_inflow_efficiency': experiment['storage_inflow_efficiency']})
         experiment_storage.update({'storage_outflow_efficiency': experiment['storage_outflow_efficiency']})
+        return experiment_storage
+
+    def storage_oem(experiment):
+        experiment_storage = {}
+        experiment_storage.update({'storage_Crate': experiment['storage_Crate']})
         return experiment_storage
 
     def pcoupling(experiment):

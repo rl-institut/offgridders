@@ -52,7 +52,7 @@ class oemofmodel():
         logging.debug('Solve the optimization problem')
         model.solve(solver=solver,
                     solve_kwargs={'tee': solver_verbose})  # if tee_switch is true solver messages will be displayed
-        if setting_lp_file == True: model.write(output_folder+'/model_'+case_name+'_'+experiment_name+'.lp', io_options={'symbolic_solver_labels': True})
+        if setting_lp_file == True: model.write(output_folder+'/model_'+case_name+experiment_name+'.lp', io_options={'symbolic_solver_labels': True})
 
         # add results to the energy system to make it possible to store them.
         micro_grid_system.results['main'] = outputlib.processing.results(model)
@@ -64,19 +64,21 @@ class oemofmodel():
     def load_energysystem():
         return
 
-    def store_results(micro_grid_system, case_name):
+    def store_results(micro_grid_system, case_name, experiment_name):
         # todo Enter check for directory and create directory here!
         # store energy system with results
         from config import output_folder, output_file
-        micro_grid_system.dump(dpath=output_folder, filename=output_file+ '_' + case_name + ".oemof")
-        logging.debug('Stored results in ' + output_folder + '/' + output_file + '_' + case_name + '.oemof')
+        micro_grid_system.dump(dpath=output_folder,
+                               filename=output_file+ '_' + case_name + experiment_name +".oemof")
+        logging.debug('Stored results in ' + output_folder + '/' + output_file + '_' + case_name + experiment_name + '.oemof')
         return micro_grid_system
 
-    def load_results():
+    def load_results(case_name, experiment_name):
         from config import output_folder, output_file
         logging.debug('Restore the energy system and the results.')
         micro_grid_system = solph.EnergySystem()
-        micro_grid_system.restore(dpath=output_folder, filename=output_file+".oemof")
+        micro_grid_system.restore(dpath=output_folder,
+                                  filename=output_file+ '_' + case_name + experiment_name +".oemof")
         return micro_grid_system
 
     def process(micro_grid_system, case_name, get_el_bus):
@@ -107,7 +109,7 @@ class oemofmodel():
              / electricity_bus['sequences'][(('bus_electricity_mg', 'sink_demand'), 'flow')].sum()) * 100)) +
                                 ' percent.')
 
-    def process_oem(electricity_bus, case_name, pv_generation_max):
+    def process_oem(electricity_bus, case_name, pv_generation_max, experiment):
         from config import print_simulation_invest
         if print_simulation_invest == True:
             logging.info('********* Invest results *********')
@@ -117,7 +119,7 @@ class oemofmodel():
 
         # oem_results.update({'storage_invest_kWh': electricity_bus['scalars'][(('generic_storage', 'bus_electricity_mg'), 'invest')]}) # ToDo: Old version. Check with Sarah
 
-        capacity_battery = 6*(electricity_bus['scalars'][(('generic_storage', 'bus_electricity_mg'), 'invest')]
+        capacity_battery = 1/experiment['storage_Crate']*(electricity_bus['scalars'][(('generic_storage', 'bus_electricity_mg'), 'invest')]
                               + electricity_bus['scalars'][(('bus_electricity_mg', 'generic_storage'), 'invest')])/2
         oem_results.update({'storage_invest_kWh': capacity_battery})  # ToDo: Check with Sarah
 
@@ -139,7 +141,7 @@ class oemofmodel():
         return oem_results
 
     def process_oem_batch(capacities_base, case_name):
-        from config import round_to_batch
+        from input_values import round_to_batch
         capacities_base.update({'pv_invest_kW': round (0.5+capacities_base['pv_invest_kW']/round_to_batch['PV'])
                                                   *round_to_batch['PV']}) # immer eher 0.25 capacity mehr als eigentlich nötig
         capacities_base.update({'genset_invest_kW': round(0.5+capacities_base['genset_invest_kW'] / round_to_batch['GenSet']) *
