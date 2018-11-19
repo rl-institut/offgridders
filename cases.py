@@ -109,7 +109,7 @@ class cases():
             micro_grid_system, bus_electricity_mg           = generatemodel.shortage(micro_grid_system, bus_electricity_mg, sum(demand_profile), extract.shortage(experiment))
         micro_grid_system, bus_electricity_mg               = generatemodel.demand(micro_grid_system, bus_electricity_mg, demand_profile)
         micro_grid_system, bus_electricity_mg               = generatemodel.excess(micro_grid_system, bus_electricity_mg)
-        micro_grid_system, bus_electricity_mg               = generatemodel.pv_fix(micro_grid_system, bus_electricity_mg, pv_generation, capacity_base['pv_invest_kW'])
+        micro_grid_system, bus_electricity_mg               = generatemodel.pv_fix(micro_grid_system, bus_electricity_mg, pv_generation, capacity_base['pv_invest_kW'], extract.pv(experiment))
         micro_grid_system, bus_fuel, bus_electricity_mg     = generatemodel.genset_fix(micro_grid_system, bus_fuel, bus_electricity_mg, capacity_base['genset_invest_kW'], extract.genset(experiment))
         micro_grid_system, bus_electricity_mg               = generatemodel.storage_fix(micro_grid_system, bus_electricity_mg, capacity_base['storage_invest_kWh'], extract.storage(experiment))
         micro_grid_system                                   = oemofmodel.simulate(micro_grid_system, case_name, experiment['filename'])

@@ -48,6 +48,8 @@ class extract():
         experiment_storage.update({'cost_annuity_storage': experiment['cost_annuity_storage']})
         experiment_storage.update({'cost_var_storage': experiment['cost_var_storage']})
         experiment_storage.update({'storage_Crate': experiment['storage_Crate']})
+        experiment_storage.update({'storage_capacity_max': experiment['storage_capacity_max']})
+        experiment_storage.update({'storage_capacity_min': experiment['storage_capacity_min']})
         experiment_storage.update({'storage_initial_soc': experiment['storage_initial_soc']})
         experiment_storage.update({'storage_loss_timestep': experiment['storage_loss_timestep']})
         experiment_storage.update({'storage_inflow_efficiency': experiment['storage_inflow_efficiency']})
@@ -65,7 +67,9 @@ class extract():
         experiment_generator = {}
         experiment_generator.update({'cost_annuity_genset': experiment['cost_annuity_genset']})
         experiment_generator.update({'cost_var_genset': experiment['cost_var_genset']})
-        experiment_generator.update({'efficiency_generator': experiment['efficiency_generator']})
+        experiment_generator.update({'genset_efficiency': experiment['genset_efficiency']})
+        experiment_generator.update({'genset_min_loading': experiment['genset_min_loading']})
+        experiment_generator.update({'genset_max_loading': experiment['genset_max_loading']})
         return experiment_generator
 
     def pv(experiment):

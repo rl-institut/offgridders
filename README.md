@@ -91,3 +91,5 @@ The energy system recieves the total consumption as the project demand profile.
 13.11: Improved input file 
 
 15.11: Issue with PV, storage (unsolved)
+
+16.11: Storage and PV issue solved: Batch, 6(Flow1+Flow2)/2

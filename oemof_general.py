@@ -84,7 +84,6 @@ class oemofmodel():
         # define an alias for shorter calls below (optional)
         results = micro_grid_system.results['main']
         meta = micro_grid_system.results['meta']
-        storage = micro_grid_system.groups['generic_storage']
 
         # get all variables of a specific component/bus
         generic_storage = outputlib.views.node(results, 'generic_storage')
@@ -100,7 +99,6 @@ class oemofmodel():
         if print_simulation_main == True:
             logging.info('********* Main results *********')
             pp.pprint(electricity_bus['sequences'].sum(axis=0))
-        print(electricity_bus)
         if get_el_bus == True:
             return electricity_bus
         else:
@@ -110,8 +108,19 @@ class oemofmodel():
                                 ' percent.')
 
     def process_oem(electricity_bus, case_name, pv_generation_max):
+        from config import print_simulation_invest
+        if print_simulation_invest == True:
+            logging.info('********* Invest results *********')
+            pp.pprint(electricity_bus['scalars'])
+
         oem_results = {}
-        oem_results.update({'storage_invest_kWh': electricity_bus['scalars'][(('generic_storage', 'bus_electricity_mg'), 'invest')]})
+
+        # oem_results.update({'storage_invest_kWh': electricity_bus['scalars'][(('generic_storage', 'bus_electricity_mg'), 'invest')]}) # ToDo: Old version. Check with Sarah
+
+        capacity_battery = 6*(electricity_bus['scalars'][(('generic_storage', 'bus_electricity_mg'), 'invest')]
+                              + electricity_bus['scalars'][(('bus_electricity_mg', 'generic_storage'), 'invest')])/2
+        oem_results.update({'storage_invest_kWh': capacity_battery})  # ToDo: Check with Sarah
+
         if pv_generation_max > 1:
             oem_results.update({'pv_invest_kW': electricity_bus['scalars'][(('source_pv', 'bus_electricity_mg'), 'invest')]* pv_generation_max })
         elif pv_generation_max > 0 and pv_generation_max < 1:
@@ -152,7 +161,7 @@ class oemofmodel():
             logging.debug('Plotting: Generic storage')
             custom_storage['sequences'][(('generic_storage', 'None'), 'capacity')].plot(kind='line',
                                                                                         drawstyle='steps-post',
-                                                                                        label='??((generic_storage, None), capacity)??')
+                                                                                        label='Stored capacity in kWh')
             custom_storage['sequences'][(('generic_storage', 'bus_electricity_mg'), 'flow')].plot(kind='line',
                                                                                                   drawstyle='steps-post',
                                                                                                   label='Discharge storage')

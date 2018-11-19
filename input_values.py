@@ -24,7 +24,7 @@ wacc = 0.05
 # of costs if that is optional -> include in sensitivity bounds and use min=max?
 
 cost_data = pd.DataFrame({'PV':         [20,            450,        0,          0],
-                          'GenSet':     [15,            400,        0,          0],
+                          'GenSet':     [15,            200,        0,          0],
                           'Storage':    [6,             170,        0,          0],
                           'PCoupling':  [20,            1500,       0,          0]},
                          index=         ['lifetime',    'capex',    'opex_a',   'opex_var'])
@@ -90,7 +90,7 @@ sensitivity_constants ={
         'cost_var_genset':              cost_data.loc['opex_var', 'GenSet'], # per unit # todo not implemented
         'cost_var_storage':             cost_data.loc['opex_var', 'PV'], # per unit # todo not implemented
         'cost_var_pcoupling':           cost_data.loc['opex_var', 'PCoupling'], # todo PC not implemented
-        'price_fuel':                   10, # /unit
+        'price_fuel':                   1, # /unit
         'combustion_value_fuel':        9.41, # kWh/unit
         'price_electricity_main_grid':  0.20,  # todo not implemented
         'max_share_unsupplied_load':    0, #  factor
@@ -99,10 +99,14 @@ sensitivity_constants ={
         'blackout_duration':            2, # hrs per blackout
         'storage_Crate':                1/6, # factor (possible charge/discharge ratio to total capacity)
         'storage_loss_timestep':        0, # factor
-        'storage_inflow_efficiency':    1, # factor
-        'storage_outflow_efficiency':   0.8, #  factor
-        'storage_initial_soc':          0.5, # factor
-        'efficiency_generator':         0.58, #  factor
+        'storage_inflow_efficiency':    0.8, # factor
+        'storage_outflow_efficiency':   1,  # factor
+        'storage_capacity_min':         0.2,  # factor 1-DOD
+        'storage_capacity_max':         0.98,  # factor
+        'storage_initial_soc':          None, # factor # todo: what does None mean here?
+        'genset_efficiency':         0.58, #  factor
+        'genset_min_loading':           0.2, # Minimal load factor of generator - TODO only effective in dispatch optimization, not OEM
+        'genset_max_loading':           1,   # maximal load factor of generator
         'efficiency_pcoupling':         0.98, # inverter inefficiency between highvoltage/mediumvoltage grid (maybe even split into feedin/feedfrom
         'min_res_share':                0, # todo not implemented res share
         'distance_to_grid':             10 # todo not implemented distance_to_grid

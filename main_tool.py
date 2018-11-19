@@ -82,6 +82,7 @@ logging.info(str(len(sensitivity_experiments)) + ' combinations of blackout dura
 #---------------------------- Base case OEM ----------------------------------#
 # Based on demand, pv generation and subjected to sensitivity analysis SOEM   #
 #-----------------------------------------------------------------------------#
+from config import print_simulation_experiment
 for experiment in sensitivity_experiments:
     # todo: this function should be called with base_experiment[] to include sensitivites
     capacities_base = cases.base_oem(demand_profile, pv_generation_per_kWp, experiment)
@@ -101,7 +102,7 @@ for experiment in sensitivity_experiments:
     # According to parameters set beforehand
     ###############################################################################
     for items in listof_cases:
-        if      items == 'mg_fixed':              cases.mg_fix(demand_profile, pv_generation_per_kWp, experiment, capacities_base)
+        if      items == 'mg_fixed':             cases.mg_fix(demand_profile, pv_generation_per_kWp, experiment, capacities_base)
         elif    items == 'buyoff':               cases.buyoff()
         elif    items == 'parallel':             cases.parallel()
         elif    items == 'adapted':              cases.adapted()
@@ -111,8 +112,9 @@ for experiment in sensitivity_experiments:
         #elif    items == 'mg_oem':               cases.mg_oem(demand_profile, pv_generation_per_kWp, experiment['filename']) # which case is this supposed anyway?
         else: logging.warning("Unknown case!")
 
-    logging.info('The case with following parameters has been analysed:')
-    pp.pprint(sensitivity_experiments)
+    if print_simulation_experiment == True:
+        logging.info('The case with following parameters has been analysed:')
+        pp.pprint(sensitivity_experiments)
 
 ###############################################################################
 # Create DataFrame with all data

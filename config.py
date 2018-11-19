@@ -62,9 +62,10 @@ setting_lp_file             = True  # save lp file of oemof simulation
 display_graphs_solar        = False
 display_graphs_demand       = False
 display_graphs_simulation   = True
-print_simulation_meta       = False
-print_simulation_main       = True
-
+print_simulation_meta       = False  # print information on opimization
+print_simulation_main       = False  # print accumulated flows over electricity bus
+print_simulation_invest     = False  # print investment results
+print_simulation_experiment = False  # Print data on experiment run (sensitivity analysis)
 ####### ----------------- Oemof simulation settings ------------------- #######
 # Define solver
 solver = 'cbc'
