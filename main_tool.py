@@ -79,6 +79,8 @@ logging.info(str(len(sensitivity_experiments)) + ' combinations of blackout dura
 from config import print_simulation_experiment
 from general_functions import helpers
 
+# todo show figures but continue script!
+
 for experiment in sensitivity_experiments:
     # todo: this function should be called with base_experiment[] to include sensitivites
     start = timeit.default_timer()
