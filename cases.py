@@ -9,6 +9,8 @@ Input from base case is capacity_base with keys 'storage_invest_kWh', 'pv_invest
 import os
 import pandas
 
+
+
 from oemof.tools import logger
 import logging
 # Logging
@@ -54,7 +56,7 @@ class cases():
         micro_grid_system = oemofmodel.initialize_model()
         oemofmodel.textblock_oem()
         micro_grid_system, bus_fuel, bus_electricity_mg     = generatemodel.bus_basic(micro_grid_system)
-        micro_grid_system, bus_fuel                         = generatemodel.fuel(micro_grid_system, bus_fuel, extract.fuel(experiment))
+        micro_grid_system, bus_fuel                         = generatemodel.fuel_oem(micro_grid_system, bus_fuel, extract.fuel(experiment), sum(demand_profile))
         if allow_shortage == True:
             micro_grid_system, bus_electricity_mg           = generatemodel.shortage(micro_grid_system, bus_electricity_mg, sum(demand_profile), extract.shortage(experiment))
         micro_grid_system, bus_electricity_mg               = generatemodel.demand(micro_grid_system, bus_electricity_mg, demand_profile)
@@ -65,10 +67,9 @@ class cases():
         micro_grid_system                                   = oemofmodel.simulate(micro_grid_system, case_name, experiment['filename'])
         oemofmodel.store_results(micro_grid_system, case_name, experiment['filename'])
         #micro_grid_system = oemofmodel.load_results() # todo not yet defined.
-        electricity_bus                                      = oemofmodel.process(micro_grid_system, case_name, get_el_bus=True)
-        oem_results                                          = oemofmodel.process_oem(electricity_bus, case_name, max(pv_generation), extract.storage_oem(experiment))
-        logging.info(' ')
-        return oem_results
+        oemof_results, capacities_base                             = oemofmodel.process_oem(micro_grid_system, case_name, max(pv_generation), extract.storage_oem(experiment))
+        logging.debug('            Simulation of case "base_oem" complete.')
+        return oemof_results, capacities_base
 
     ###############################################################################
     #                Dispatch optimization with fixed capacities                  #
@@ -100,24 +101,24 @@ class cases():
         from config import allow_shortage, setting_batch_capacity
         case_name = "mg_fix"
         if setting_batch_capacity == True:
-            capacity_base                                       = oemofmodel.process_oem_batch(capacity_base, case_name)
+            capacity_batch                                       = oemofmodel.process_oem_batch(capacity_base, case_name)
         micro_grid_system                                   = oemofmodel.initialize_model()
         oemofmodel.textblock_fix()
         micro_grid_system, bus_fuel, bus_electricity_mg     = generatemodel.bus_basic(micro_grid_system)
-        micro_grid_system, bus_fuel                         = generatemodel.fuel(micro_grid_system, bus_fuel, extract.fuel(experiment))
+        micro_grid_system, bus_fuel                         = generatemodel.fuel_fix(micro_grid_system, bus_fuel, extract.fuel(experiment))
         if allow_shortage == True:
             micro_grid_system, bus_electricity_mg           = generatemodel.shortage(micro_grid_system, bus_electricity_mg, sum(demand_profile), extract.shortage(experiment))
         micro_grid_system, bus_electricity_mg               = generatemodel.demand(micro_grid_system, bus_electricity_mg, demand_profile)
         micro_grid_system, bus_electricity_mg               = generatemodel.excess(micro_grid_system, bus_electricity_mg)
-        micro_grid_system, bus_electricity_mg               = generatemodel.pv_fix(micro_grid_system, bus_electricity_mg, pv_generation, capacity_base['pv_invest_kW'], extract.pv(experiment))
-        micro_grid_system, bus_fuel, bus_electricity_mg     = generatemodel.genset_fix(micro_grid_system, bus_fuel, bus_electricity_mg, capacity_base['genset_invest_kW'], extract.genset(experiment))
-        micro_grid_system, bus_electricity_mg               = generatemodel.storage_fix(micro_grid_system, bus_electricity_mg, capacity_base['storage_invest_kWh'], extract.storage(experiment))
+        micro_grid_system, bus_electricity_mg               = generatemodel.pv_fix(micro_grid_system, bus_electricity_mg, pv_generation, capacity_batch['pv_invest_kW'], extract.pv(experiment))
+        micro_grid_system, bus_fuel, bus_electricity_mg     = generatemodel.genset_fix(micro_grid_system, bus_fuel, bus_electricity_mg, capacity_batch['genset_invest_kW'], extract.genset(experiment))
+        micro_grid_system, bus_electricity_mg               = generatemodel.storage_fix(micro_grid_system, bus_electricity_mg, capacity_batch['storage_invest_kWh'], extract.storage(experiment))
         micro_grid_system                                   = oemofmodel.simulate(micro_grid_system, case_name, experiment['filename'])
         oemofmodel.store_results(micro_grid_system, case_name, experiment['filename'])
         #micro_grid_system = oemofmodel.load_results()
-        oemofmodel.process(micro_grid_system, case_name, get_el_bus=False)
-        logging.info(' ')
-        return logging.debug('            Simulation of case "base" complete.')
+        oemof_results = oemofmodel.process_fix(micro_grid_system, case_name, capacity_batch)
+        logging.debug('            Simulation of case "base" complete.')
+        return oemof_results
 
     ###############################################################################
     # Dispatch with MG as sunk costs

@@ -62,10 +62,12 @@ class demand:
         demand_profiles =  {}
         for file in input_files_demand:
             data_set = pd.read_csv(input_files_demand[file])
-            # todo not sure if this works!
-            index = pd.DatetimeIndex(data_set['timestep'].values) + pd.DateOffset(year=date_time_index[0].year)
+            # Anpassen des timestamps auf die analysierte Periode
+            index = pd.DatetimeIndex(data_set['timestep'].values)
+            index = [item + pd.DateOffset(year=date_time_index[0].year) for item in index]
+            # Reading demand profile adjusting to kWh
             demand_profile =  pd.Series(data_set['demand'].values/unit_factor, index = index)
-            # todo Actually, there needs to be a check for timesteps here
+            # todo Actually, there needs to be a check for timesteps 1/0.25 here
             logging.info('Included demand profile input file "'+ input_files_demand[file] + '"')
             logging.info('     Total annual demand at project site (kWh/a): ' + str(round(demand_profile.sum())))
             demand.plot_results(demand_profile[date_time_index], "Electricity demand at project site (" + file + ")",

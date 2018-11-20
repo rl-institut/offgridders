@@ -1,7 +1,7 @@
 import pandas as pd
 
 ####### ------------ General simulation settings ----------------- #######
-coding_process              = True  # Defines timeframe and noise (see below)
+coding_process              = False  # Defines timeframe and noise (see below)
 
 # simulated cases:
 simulated_cases = {
@@ -34,10 +34,11 @@ output_folder='./simulation_results'
 output_file='results'
 
 # display results and graphs
-setting_lp_file             = True  # save lp file of oemof simulation
-display_graphs_solar        = False
-display_graphs_demand       = False
-display_graphs_simulation   = False
+setting_save_lp_file        = False  # save lp file of oemof simulation
+setting_save_oemofresults   = True   # save oemofresults to .oemof file
+display_graphs_solar        = True
+display_graphs_demand       = True
+display_graphs_simulation   = True
 print_simulation_meta       = False  # print information on opimization
 print_simulation_main       = False  # print accumulated flows over electricity bus
 print_simulation_invest     = False  # print investment results

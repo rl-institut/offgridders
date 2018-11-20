@@ -42,18 +42,21 @@ class pvgen:
     # todo current place of work
     def read_from_file():
         from input_values import input_file_weather
-        from config import date_time_index
-        data_set = pd.read_csv(input_file_weather, header=1)
-        # todo not sure if this works!
-        index = pd.DatetimeIndex(data_set['local_time'].values) + pd.DateOffset(year=date_time_index[0].year)
+        from config import date_time_index, display_graphs_solar
+        data_set = pd.read_csv(input_file_weather, header=2)
+        # Anpassen des timestamps auf die analysierte Periode
+        index = pd.DatetimeIndex(data_set['local_time'].values)
+        index = [item + pd.DateOffset(year=date_time_index[0].year) for item in index]
+        # reading pv_generation values - adjust to panel area or kWp and if in Wh!
         pv_generation_per_kWp =  pd.Series(data_set['output'].values, index = index)
-        # todo Actually, there needs to be a check for timesteps here
-        logging.info('     Total annual pv generation at project site (kWh/a/kWp): ' + str(round(pv_generation_per_kWp.sum())))
-        helpers.plot_results(pv_generation_per_kWp[date_time_index], "PV generation at project site",
+        # todo Actually, there needs to be a check for timesteps (1/0.25) here
+        logging.info('Total annual pv generation at project site (kWh/a/kWp): ' + str(round(pv_generation_per_kWp.sum())))
+        if display_graphs_solar == True:
+            helpers.plot_results(pv_generation_per_kWp[date_time_index], "PV generation at project site",
                         "Date",
                         "Power kW")
-        return pv_generation_per_kWp[date_time_index]
 
+        return pv_generation_per_kWp[date_time_index]
 
     # ####################################################################### #
     #        Calculation of general solar variables, based on location        #

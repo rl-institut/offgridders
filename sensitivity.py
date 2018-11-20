@@ -5,6 +5,7 @@ dictonary, including filenames.
 '''
 
 import pprint as pp
+import pandas as pd
 
 class sensitivity():
     def experiments():
@@ -51,7 +52,15 @@ class sensitivity():
             if filename == '_s':
                 filename = ''
             experiments[i].update({'filename': filename})
-        return experiments
+
+        # define structure of pd.Dataframe: overall_results
+        overall_results = pd.DataFrame(
+            columns=['Case', 'Filename', 'Capacity PV kWp', 'Capacity storage kWh', 'Capacity genset kW', 'Renewable Factor', 'Simulation time'])
+        if len(demand_array) > 1:
+            overall_results = pd.concat([overall_results, pd.DataFrame(columns=['demand_profile'])], axis=1)
+        for keys in sensitivity_bounds:
+            overall_results = pd.concat([overall_results, pd.DataFrame(columns=[keys])], axis=1)
+        return experiments, overall_results
 
     def blackout_experiments():
         import itertools

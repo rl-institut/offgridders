@@ -2,7 +2,7 @@
 Small scripts to keep the main file clean
 '''
 
-import pandas
+import pandas as pd
 
 from oemof.tools import logger
 import logging
@@ -43,11 +43,40 @@ class helpers:
             plt.show()
         return
 
+    def store_result_matrix(overall_results, case_name, experiment, oemof_results, duration):
+        round_to_comma = 5
+        result_vector = []
+        for item in overall_results.columns.values:
+            if item == 'Case':
+                result_vector.extend([case_name])
+            elif item ==  'Filename':
+                result_vector.extend(['results_'+case_name+experiment['filename']])
+            elif item == 'Capacity PV kWp':
+                result_vector.extend([round(oemof_results['pv_invest_kW'], round_to_comma)])
+            elif item ==  'Capacity storage kWh':
+                result_vector.extend([round(oemof_results['storage_invest_kWh'], round_to_comma)])
+            elif item ==  'Capacity genset kW':
+                result_vector.extend([round(oemof_results['genset_invest_kW'], round_to_comma)])
+            elif item ==  'Renewable Factor':
+                result_vector.extend([round(oemof_results['res_share'], round_to_comma)])
+            elif item ==  'Simulation time':
+                result_vector.extend([round(duration, round_to_comma)])
+            elif item == 'demand_profile':
+                result_vector.extend([experiment[item]])
+            else:
+                result_vector.extend([round(experiment[item], round_to_comma)])
+
+        overall_results = overall_results.append(pd.Series(result_vector, overall_results.columns.values),
+                                                 ignore_index=True)
+        return overall_results
+
 class extract():
     def fuel(experiment):
         experiment_fuel = {}
         experiment_fuel.update({'price_fuel': experiment['price_fuel']})
         experiment_fuel.update({'combustion_value_fuel': experiment['combustion_value_fuel']})
+        experiment_fuel.update({'min_res_share': experiment['min_res_share']})
+        experiment_fuel.update({'genset_efficiency': experiment['genset_efficiency']})
         return experiment_fuel
 
     def shortage(experiment):

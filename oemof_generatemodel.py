@@ -41,24 +41,34 @@ class generatemodel():
     ######## Busses ########
 
     ######## Sources ########
-    def fuel(micro_grid_system, bus_fuel, experiment):
+    def fuel_oem(micro_grid_system, bus_fuel, experiment, total_demand):
         source_fuel = solph.Source(label="source_fuel",
                                    outputs={bus_fuel: solph.Flow(
-                                       variable_costs=experiment['price_fuel'] / experiment['combustion_value_fuel'])})
+                                       variable_costs   = experiment['price_fuel'] / experiment['combustion_value_fuel'],
+                                       nominal_value    = (1-experiment['min_res_share']) * total_demand / experiment['genset_efficiency'],
+                                       summed_max       = 1
+                                   )})
+        micro_grid_system.add(source_fuel)
+        return micro_grid_system, bus_fuel
+
+    def fuel_fix(micro_grid_system, bus_fuel, experiment):
+        source_fuel = solph.Source(label="source_fuel",
+                                   outputs={bus_fuel: solph.Flow(
+                                       variable_costs   = experiment['price_fuel'] / experiment['combustion_value_fuel'])})
         micro_grid_system.add(source_fuel)
         return micro_grid_system, bus_fuel
 
     def shortage(micro_grid_system, bus_electricity_mg, sum_demand_profile, experiment):
         source_shortage = solph.Source(label="source_shortage",
                                        outputs={bus_electricity_mg: solph.Flow(
-                                           variable_costs=experiment['costs_var_unsupplied_load'],
-                                           nominal_value=experiment['max_share_unsupplied_load'] * sum_demand_profile,
-                                           summed_max=1)})
+                                           variable_costs   = experiment['costs_var_unsupplied_load'],
+                                           nominal_value    = experiment['max_share_unsupplied_load'] * sum_demand_profile,
+                                           summed_max       = 1)})
         micro_grid_system.add(source_shortage)
         return micro_grid_system, bus_electricity_mg
 
     def maingrid(micro_grid_system, bus_electricity_ng, price_electricity_main_grid, experiment):
-        source_maingrid = solph.Source(label="source_shortage",
+        source_maingrid = solph.Source(label="source_maingrid",
                                        outputs={bus_electricity_ng: solph.Flow(
                                            variable_costs=experiment['price_electricity_main_grid'])})
         micro_grid_system.add(source_maingrid)
@@ -94,15 +104,18 @@ class generatemodel():
         micro_grid_system.add(source_pv)
         return micro_grid_system, bus_electricity_mg
 
+    # todo: edit so that nonconvex flow can be used. => enormeous computing time in fixed version
+    # todo: problems with min=0?
+    # todo: implement offset generator?
     def genset_fix(micro_grid_system, bus_fuel, bus_electricity_mg, capacity_fuel_gen, experiment):
         transformer_fuel_generator = solph.Transformer(label="transformer_fuel_generator",
                                                        inputs   ={bus_fuel: solph.Flow()},
                                                        outputs  ={bus_electricity_mg: solph.Flow(
-                                                           min  = experiment['genset_min_loading'],
-                                                           max  = experiment['genset_max_loading'],
-                                                           nonconvex=solph.NonConvex(),
-                                                           nominal_value=capacity_fuel_gen,
-                                                           variable_costs = experiment['cost_var_genset'])},
+                                                           #min              = experiment['genset_min_loading'],
+                                                           #max              = experiment['genset_max_loading'],
+                                                           #nonconvex        = solph.NonConvex(),
+                                                           nominal_value    = capacity_fuel_gen,
+                                                           variable_costs   = experiment['cost_var_genset'])},
                                                        conversion_factors={
                                                            bus_electricity_mg: experiment['genset_efficiency']})  # is efficiency of the generator?? Then this should later on be included as a function of the load factor
 
@@ -121,7 +134,7 @@ class generatemodel():
         return micro_grid_system, bus_fuel, bus_electricity_mg
 
     def pointofcoupling_feedin_fix(micro_grid_system, bus_electricity_mg, bus_electricity_ng, capacity_pointofcoupling, experiment):
-        pointofcoupling = solph.Transformer(label="transformer_fuel_generator",
+        pointofcoupling = solph.Transformer(label="transformer_pointofcoupling_feedin",
                                                        inputs={bus_electricity_mg: solph.Flow()},
                                                        outputs={bus_electricity_ng: solph.Flow(
                                                            nominal_value=capacity_pointofcoupling,
@@ -132,8 +145,8 @@ class generatemodel():
         micro_grid_system.add(pointofcoupling)
         return micro_grid_system, bus_electricity_mg, bus_electricity_ng
 
-    def pointofcoupling_feedin(micro_grid_system, bus_electricity_mg, bus_electricity_ng, experiment):
-        pointofcoupling = solph.Transformer(label="transformer_fuel_generator",
+    def pointofcoupling_feedin_oem(micro_grid_system, bus_electricity_mg, bus_electricity_ng, experiment):
+        pointofcoupling = solph.Transformer(label="transformer_pointofcoupling_feedin",
                                                        inputs={bus_electricity_mg: solph.Flow()},
                                                        outputs={bus_electricity_ng: solph.Flow(
                                                            investment=solph.Investment(
@@ -144,7 +157,7 @@ class generatemodel():
         return micro_grid_system, bus_electricity_mg, bus_electricity_ng
 
     def pointofcoupling_tomg_fix(micro_grid_system, bus_electricity_mg, bus_electricity_ng, cap_pointofcoupling, experiment):
-        pointofcoupling = solph.Transformer(label="transformer_fuel_generator",
+        pointofcoupling = solph.Transformer(label="transformer_pointofcoupling_tomg",
                                                        inputs={bus_electricity_ng: solph.Flow()},
                                                        outputs={bus_electricity_mg: solph.Flow(
                                                            nominal_value=cap_pointofcoupling,
@@ -155,8 +168,8 @@ class generatemodel():
         micro_grid_system.add(pointofcoupling)
         return micro_grid_system, bus_electricity_mg, bus_electricity_ng
 
-    def pointofcoupling_tomg(micro_grid_system, bus_electricity_mg, bus_electricity_ng, experiment):
-        pointofcoupling = solph.Transformer(label="transformer_fuel_generator",
+    def pointofcoupling_tomg_oem(micro_grid_system, bus_electricity_mg, bus_electricity_ng, experiment):
+        pointofcoupling = solph.Transformer(label="transformer_pointofcoupling_tomg",
                                                        inputs={bus_electricity_ng: solph.Flow()},
                                                        outputs={bus_electricity_mg: solph.Flow(
                                                            investment=solph.Investment(
@@ -226,7 +239,7 @@ class generatemodel():
 
     def feedin(micro_grid_system, bus_electricity_ng):
         # create and add demand sink to micro_grid_system - fixed
-        sink_feedin_ng = solph.Sink(label="sink_demand",
+        sink_feedin_ng = solph.Sink(label="sink_feedin",
                                  inputs={bus_electricity_ng: solph.Flow()})
         micro_grid_system.add(sink_feedin_ng)
         return micro_grid_system, bus_electricity_ng

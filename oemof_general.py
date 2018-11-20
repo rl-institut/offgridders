@@ -46,13 +46,13 @@ class oemofmodel():
         return micro_grid_system
 
     def simulate(micro_grid_system, case_name, experiment_name):
-        from config import solver, solver_verbose, output_folder, output_file, setting_lp_file
+        from config import solver, solver_verbose, output_folder, output_file, setting_save_lp_file
         logging.debug('Initialize the energy system to be optimized')
         model = solph.Model(micro_grid_system)
         logging.debug('Solve the optimization problem')
         model.solve(solver=solver,
                     solve_kwargs={'tee': solver_verbose})  # if tee_switch is true solver messages will be displayed
-        if setting_lp_file == True: model.write(output_folder+'/model_'+case_name+experiment_name+'.lp', io_options={'symbolic_solver_labels': True})
+        if setting_save_lp_file == True: model.write(output_folder + '/model_' + case_name + experiment_name + '.lp', io_options={'symbolic_solver_labels': True})
 
         # add results to the energy system to make it possible to store them.
         micro_grid_system.results['main'] = outputlib.processing.results(model)
@@ -67,10 +67,11 @@ class oemofmodel():
     def store_results(micro_grid_system, case_name, experiment_name):
         # todo Enter check for directory and create directory here!
         # store energy system with results
-        from config import output_folder, output_file
-        micro_grid_system.dump(dpath=output_folder,
+        from config import output_folder, output_file, setting_save_oemofresults
+        if setting_save_oemofresults == True:
+            micro_grid_system.dump(dpath=output_folder,
                                filename=output_file+ '_' + case_name + experiment_name +".oemof")
-        logging.debug('Stored results in ' + output_folder + '/' + output_file + '_' + case_name + experiment_name + '.oemof')
+            logging.debug('Stored results in ' + output_folder + '/' + output_file + '_' + case_name + experiment_name + '.oemof')
         return micro_grid_system
 
     def load_results(case_name, experiment_name):
@@ -81,19 +82,9 @@ class oemofmodel():
                                   filename=output_file+ '_' + case_name + experiment_name +".oemof")
         return micro_grid_system
 
-    def process(micro_grid_system, case_name, get_el_bus):
-        from config import print_simulation_meta, print_simulation_main
-        # define an alias for shorter calls below (optional)
-        results = micro_grid_system.results['main']
-        meta = micro_grid_system.results['meta']
-
-        # get all variables of a specific component/bus
-        generic_storage = outputlib.views.node(results, 'generic_storage')
-        electricity_bus = outputlib.views.node(results, 'bus_electricity_mg')
-        oemofmodel.plot_el_mg(electricity_bus)
-        oemofmodel.plot_storage(generic_storage)
-
+    def process_print_meta_main(meta, electricity_bus):
         # print the solver results
+        from config import print_simulation_meta, print_simulation_main
         if print_simulation_meta == True:
             logging.info('********* Meta results *********')
             pp.pprint(meta)
@@ -101,44 +92,78 @@ class oemofmodel():
         if print_simulation_main == True:
             logging.info('********* Main results *********')
             pp.pprint(electricity_bus['sequences'].sum(axis=0))
-        if get_el_bus == True:
-            return electricity_bus
-        else:
-            return logging.info('    Dispatch optimization for case "' + case_name + '" finished, with renewable share of ' +
-            str(round(abs(1 - electricity_bus['sequences'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'flow')].sum()
-             / electricity_bus['sequences'][(('bus_electricity_mg', 'sink_demand'), 'flow')].sum()) * 100)) +
-                                ' percent.')
+        return
 
-    def process_oem(electricity_bus, case_name, pv_generation_max, experiment):
+    def process_basic(micro_grid_system):
+
+        # define an alias for shorter calls below (optional)
+        results = micro_grid_system.results['main']
+        meta = micro_grid_system.results['meta']
+        # get all variables of a specific component/bus
+        generic_storage = outputlib.views.node(results, 'generic_storage')
+        electricity_bus = outputlib.views.node(results, 'bus_electricity_mg')
+        oemofmodel.plot_el_mg(electricity_bus)
+        oemofmodel.plot_storage(generic_storage)
+        oemofmodel.process_print_meta_main(meta, electricity_bus)
+
+        return results, meta, electricity_bus
+
+    def process_fix(micro_grid_system, case_name, capacity_batch):
+        results, meta, electricity_bus = oemofmodel.process_basic(micro_grid_system)
+
+        res_share =  abs(1 - electricity_bus['sequences'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'flow')].sum()
+                                     / electricity_bus['sequences'][(('bus_electricity_mg', 'sink_demand'), 'flow')].sum())
+
+        oemof_results = {'res_share': res_share,
+                         'pv_invest_kW': capacity_batch['pv_invest_kW'],
+                         'storage_invest_kWh': capacity_batch['storage_invest_kWh'],
+                         'genset_invest_kW': capacity_batch['genset_invest_kW']
+                             }
+
+        logging.info('    Dispatch optimization for case "' + case_name + '" finished, with renewable share of ' +
+                     str(round(oemof_results['res_share']*100,2)) + ' percent.')
+        return oemof_results
+
+    def process_oem(micro_grid_system, case_name, pv_generation_max, experiment):
+
+        results, meta, electricity_bus = oemofmodel.process_basic(micro_grid_system)
+
         from config import print_simulation_invest
         if print_simulation_invest == True:
             logging.info('********* Invest results *********')
             pp.pprint(electricity_bus['scalars'])
 
-        oem_results = {}
-
-        # oem_results.update({'storage_invest_kWh': electricity_bus['scalars'][(('generic_storage', 'bus_electricity_mg'), 'invest')]}) # ToDo: Old version. Check with Sarah
-
+        oemof_results     = {}
+        # ToDo issue for OEMOF: How to evaluate battery capacity
         capacity_battery = 1/experiment['storage_Crate']*(electricity_bus['scalars'][(('generic_storage', 'bus_electricity_mg'), 'invest')]
                               + electricity_bus['scalars'][(('bus_electricity_mg', 'generic_storage'), 'invest')])/2
-        oem_results.update({'storage_invest_kWh': capacity_battery})  # ToDo: Check with Sarah
+        oemof_results.update({'storage_invest_kWh': capacity_battery})  # ToDo: Check with Sarah
 
         if pv_generation_max > 1:
-            oem_results.update({'pv_invest_kW': electricity_bus['scalars'][(('source_pv', 'bus_electricity_mg'), 'invest')]* pv_generation_max })
+            oemof_results.update({'pv_invest_kW': electricity_bus['scalars'][(('source_pv', 'bus_electricity_mg'), 'invest')]* pv_generation_max })
         elif pv_generation_max > 0 and pv_generation_max < 1:
-            oem_results.update({'pv_invest_kW': electricity_bus['scalars'][(('source_pv', 'bus_electricity_mg'), 'invest')] / pv_generation_max })
+            oemof_results.update({'pv_invest_kW': electricity_bus['scalars'][(('source_pv', 'bus_electricity_mg'), 'invest')] / pv_generation_max })
         else:
             logging.warning("Error, Strange PV behaviour (PV gen < 0)")
-        oem_results.update({'genset_invest_kW': electricity_bus['scalars'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'invest')]})
-        oem_results.update({'res_share_perc': abs(1 - electricity_bus['sequences'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'flow')].sum()
-                                                          / electricity_bus['sequences'][(('bus_electricity_mg', 'sink_demand'), 'flow')].sum())*100})
 
-        logging.info ('    The exact OEM results of case "' + case_name + '" : \n'
-                      + '    ' + '    ' + '    ' + str(round(oem_results['storage_invest_kWh'],3)) + ' kWh battery, '
-                      + str(round(oem_results['pv_invest_kW'],3)) + ' kWp PV, '
-                      + str(round(oem_results['genset_invest_kW'],3)) + ' kW genset '
-                      + 'at a renewable share of ' + str(round(oem_results['res_share_perc'],3)) + ' percent.')
-        return oem_results
+        oemof_results.update({'genset_invest_kW': electricity_bus['scalars'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'invest')]})
+
+        res_share = abs(1 - electricity_bus['sequences'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'flow')].sum()
+                                / electricity_bus['sequences'][(('bus_electricity_mg', 'sink_demand'), 'flow')].sum())
+        oemof_results.update({'res_share': res_share})
+
+        logging.info ('Exact OEM results of case "' + case_name + '" : \n'
+                      + '  '+ '    ' + '    ' + '    ' + str(round(oemof_results['storage_invest_kWh'],3)) + ' kWh battery, '
+                      + str(round(oemof_results['pv_invest_kW'],3)) + ' kWp PV, '
+                      + str(round(oemof_results['genset_invest_kW'],3)) + ' kW genset '
+                      + 'at a renewable share of ' + str(round(oemof_results['res_share']*100,2)) + ' percent.')
+
+        capacities_base = {
+            'pv_invest_kW': oemof_results['pv_invest_kW'],
+            'storage_invest_kWh': oemof_results['storage_invest_kWh'],
+            'genset_invest_kW': oemof_results['genset_invest_kW']
+                            }
+        return oemof_results, capacities_base
 
     def process_oem_batch(capacities_base, case_name):
         from input_values import round_to_batch
@@ -151,8 +176,7 @@ class oemofmodel():
         logging.info ('    The equivalent batch capacities of the base case OEM for case "' + case_name + '" are: \n'
                       + '    ' + '    ' + '    ' + str(capacities_base['storage_invest_kWh']) + ' kWh battery, '
                       + str(capacities_base['pv_invest_kW']) + ' kWp PV, '
-                      + str(capacities_base['genset_invest_kW']) + ' kW genset '
-                      + 'at a renewable share of ' + str(round(capacities_base['res_share_perc'],2)) + ' percent.')
+                      + str(capacities_base['genset_invest_kW']) + ' kW genset.')
         return capacities_base
     ######## Processing ########
 

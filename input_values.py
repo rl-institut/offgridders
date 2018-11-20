@@ -8,15 +8,14 @@ from config import use_input_file_demand, use_input_file_weather, setting_batch_
 #----------------------------Demand profile-----------------------------------#
 #TODO: ALLOW MULTIPLE DEMAND FILES
 if use_input_file_demand == True:
-    input_files_demand       = {#'demand_low':        './inputs/demand_zambia_low.csv',
-                                #'demand_high':       './inputs/demand_zambia_high.csv',
-                                'demand_median': './inputs/demand_zambia_median.csv'
+    input_files_demand       = {'demand_low':        './inputs/demand_zambia_low.csv',
+                                'demand_high':       './inputs/demand_zambia_high.csv',
+                                'demand_median':     './inputs/demand_zambia_median.csv'
                                 }
     unit_of_input_file      = 'kWh'
     if unit_of_input_file == 'Wh': unit_factor = 1000
     elif unit_of_input_file == 'kWh': unit_factor = 1
     else: print ('WARNING! Unknown unit of demand file')
-
 else:
     # todo check for units of annual demand
     ann_el_demand_per_household = 2210  # kWh/a
@@ -29,7 +28,7 @@ else:
 
 #----------------------------Weather data------------------------------------#
 if use_input_file_weather == True:
-    input_file_weather      = './inputs/ninja_weather_zambia.csv'
+    input_file_weather      = './inputs/pv_gen_zambia.csv'
 else:
     location_name = 'Berlin'
     latitude = 50
@@ -70,14 +69,14 @@ else:
     white_noise_irradiation = 0.15
 
 
-wacc = 0.05
+wacc = 0.12
 # todo include own loop for varying wacc values (calculating annuity based on wac, creating vector, add to sensitivity boundaries AND NOT to constant values
 # if isinstance(wacc, list): sensitivity cases, loop around cost data
 # of costs if that is optional -> include in sensitivity bounds and use min=max?
 
-cost_data = pd.DataFrame({'PV':         [20,            450,        0,          0],
-                          'GenSet':     [15,            200,        0,          0],
-                          'Storage':    [6,             170,        0,          0],
+cost_data = pd.DataFrame({'PV':         [20,            950,        0,          0],
+                          'GenSet':     [10,            400,        25,         0.023],
+                          'Storage':    [6,             800,        0,          0],
                           'PCoupling':  [20,            1500,       0,          0]},
                          index=         ['lifetime',    'capex',    'opex_a',   'var_cost'])
 
@@ -120,24 +119,24 @@ sensitivity_constants ={
         'cost_var_genset':              cost_data.loc['var_cost', 'GenSet'], # per unit
         'cost_var_storage':             cost_data.loc['var_cost', 'PV'], # per unit
         'cost_var_pcoupling':           cost_data.loc['var_cost', 'PCoupling'], # todo PC not implemented
-        'price_fuel':                   1, # /unit
-        'combustion_value_fuel':        9.41, # kWh/unit
+        'price_fuel':                   4.4, # /unit
+        'combustion_value_fuel':        10, # kWh/unit
         'price_electricity_main_grid':  0.20,  # /unit
         'max_share_unsupplied_load':    0, #  factor
         'costs_var_unsupplied_load':    10, # /kWh
         'blackout_frequency':           7, #  blackouts per month
         'blackout_duration':            2, # hrs per blackout
-        'storage_Crate':                1/6, # factor (possible charge/discharge ratio to total capacity)
+        'storage_Crate':                1, # factor (possible charge/discharge ratio to total capacity)
         'storage_loss_timestep':        0, # factor
-        'storage_inflow_efficiency':    0.8, # factor
-        'storage_outflow_efficiency':   1,  # factor
+        'storage_inflow_efficiency':    0.9, # factor
+        'storage_outflow_efficiency':   0.9,  # factor
         'storage_capacity_min':         0.2,  # factor 1-DOD
-        'storage_capacity_max':         0.98,  # factor
+        'storage_capacity_max':         1,  # factor
         'storage_initial_soc':          None, # factor # todo: what does None mean here?
-        'genset_efficiency':            0.58, #  factor
+        'genset_efficiency':            0.33, #  factor
         'genset_min_loading':           0.2, # Minimal load factor of generator - TODO only effective in dispatch optimization, not OEM
         'genset_max_loading':           1,   # maximal load factor of generator
         'efficiency_pcoupling':         0.98, # inverter inefficiency between highvoltage/mediumvoltage grid (maybe even split into feedin/feedfrom
-        'min_res_share':                0, # todo not implemented res share
+        'min_res_share':                0, # todo only works properly for off-grid oem! Create add. transformer with input streams fuel (0% res) + nat.grid (x% res) and limit resshare there! #does not work at all for dispatch oem
         'distance_to_grid':             10 # todo not implemented distance_to_grid
     }

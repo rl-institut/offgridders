@@ -8,6 +8,7 @@ import os
 import pandas as pd
 import numpy as np
 import pprint as pp
+import timeit
 
 from oemof.tools import logger
 import logging
@@ -57,7 +58,7 @@ pv_generation_per_kWp = pvgen.get()
 # (point of attack: config_func.sensitivity_experiments)                      #
 #-----------------------------------------------------------------------------#
 from sensitivity import sensitivity
-sensitivity_experiments     =   sensitivity.experiments()
+sensitivity_experiments, overall_results     =   sensitivity.experiments()
 logging.info(str(len(sensitivity_experiments)) + ' simulations are necessary to perform the sensitivity analysis.')
 
 #-------------------------------Blackouts-------------------------------------#
@@ -76,16 +77,20 @@ logging.info(str(len(sensitivity_experiments)) + ' combinations of blackout dura
 # Based on demand, pv generation and subjected to sensitivity analysis SOEM   #
 #-----------------------------------------------------------------------------#
 from config import print_simulation_experiment
+from general_functions import helpers
+
 for experiment in sensitivity_experiments:
     # todo: this function should be called with base_experiment[] to include sensitivites
-    capacities_base = cases.base_oem(demand_profiles[experiment['demand_profile']], pv_generation_per_kWp, experiment)
+    start = timeit.default_timer()
+    results, capacities_base = cases.base_oem(demand_profiles[experiment['demand_profile']], pv_generation_per_kWp, experiment)
+    duration = timeit.default_timer() - start
+    logging.info('Simulation time (s): ' + str(round(duration, 2)) + '\n')
+    overall_results = helpers.store_result_matrix(overall_results, 'base_oem', experiment, results, duration)
     ###############################################################################
     # Simulations of all cases
     ###############################################################################
 
-    # todo: info in sensitivity parameters should be included here
     # todo: actually, calling all blackoutdurations/blackoutfrequencies seperately here is not helpful - the blackout
-    # incidents are not constant between cases with same bd/bf. workaround?
     # could be with check for frequency / duration and appropriate event
 
    # national_grid_availability = blackout_events['freq'=]['dur'=]
@@ -95,7 +100,8 @@ for experiment in sensitivity_experiments:
     # According to parameters set beforehand
     ###############################################################################
     for items in listof_cases:
-        if      items == 'mg_fixed':             cases.mg_fix(demand_profiles[experiment['demand_profile']], pv_generation_per_kWp, experiment, capacities_base)
+        start = timeit.default_timer()
+        if      items == 'mg_fixed':             oemof_results = cases.mg_fix(demand_profiles[experiment['demand_profile']], pv_generation_per_kWp, experiment, capacities_base)
         elif    items == 'buyoff':               cases.buyoff()
         elif    items == 'parallel':             cases.parallel()
         elif    items == 'adapted':              cases.adapted()
@@ -104,10 +110,16 @@ for experiment in sensitivity_experiments:
         elif    items == 'buysell':              cases.buysell()
         #elif    items == 'mg_oem':               cases.mg_oem(demand_profiles[experiment['demand_profile']], pv_generation_per_kWp, experiment['filename']) # which case is this supposed anyway?
         else: logging.warning("Unknown case!")
+        duration = timeit.default_timer() - start
+        logging.info('Simulation time (s): ' + str(round(duration, 2)) + '\n')
+        overall_results = helpers.store_result_matrix(overall_results, items, experiment, oemof_results, duration)
 
     if print_simulation_experiment == True:
         logging.info('The case with following parameters has been analysed:')
         pp.pprint(sensitivity_experiments)
+
+    from config import output_folder
+    overall_results.to_csv(output_folder + '/results.csv')
 
 ###############################################################################
 # Create DataFrame with all data
