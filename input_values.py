@@ -8,8 +8,8 @@ from config import use_input_file_demand, use_input_file_weather, setting_batch_
 #----------------------------Demand profile-----------------------------------#
 #TODO: ALLOW MULTIPLE DEMAND FILES
 if use_input_file_demand == True:
-    input_files_demand       = {'demand_low':        './inputs/demand_zambia_low.csv',
-                                'demand_high':       './inputs/demand_zambia_high.csv',
+    input_files_demand       = {#'demand_low':        './inputs/demand_zambia_low.csv',
+                                #'demand_high':       './inputs/demand_zambia_high.csv',
                                 'demand_median':     './inputs/demand_zambia_median.csv'
                                 }
     unit_of_input_file      = 'kWh'
@@ -111,14 +111,7 @@ sensitivity_bounds ={
 
 # Values of the sensitivity analysis that appear constant
 sensitivity_constants ={
-        'cost_annuity_pv':              cost_data.loc['annuity', 'PV'], # incl o&M (scaled per kWp!!)
-        'cost_annuity_genset':          cost_data.loc['annuity', 'GenSet'], # incl o&M (scaled per kWh!!)
-        'cost_annuity_storage':         cost_data.loc['annuity', 'Storage'], # incl o&M (scaled per kW!!)
-        'cost_annuity_pcoupling':       cost_data.loc['annuity', 'PCoupling'],  # todo PC not implemented
-        'cost_var_pv':                  cost_data.loc['var_cost', 'PV'], # per unit
-        'cost_var_genset':              cost_data.loc['var_cost', 'GenSet'], # per unit
-        'cost_var_storage':             cost_data.loc['var_cost', 'PV'], # per unit
-        'cost_var_pcoupling':           cost_data.loc['var_cost', 'PCoupling'], # todo PC not implemented
+        'project_life':                 20,
         'price_fuel':                   4.4, # /unit
         'combustion_value_fuel':        10, # kWh/unit
         'price_electricity_main_grid':  0.20,  # /unit
@@ -134,9 +127,21 @@ sensitivity_constants ={
         'storage_capacity_max':         1,  # factor
         'storage_initial_soc':          None, # factor # todo: what does None mean here?
         'genset_efficiency':            0.33, #  factor
-        'genset_min_loading':           0.2, # Minimal load factor of generator - TODO only effective in dispatch optimization, not OEM
+        'genset_min_loading':           0, # Minimal load factor of generator - TODO only effective in dispatch optimization, not OEM
         'genset_max_loading':           1,   # maximal load factor of generator
         'efficiency_pcoupling':         0.98, # inverter inefficiency between highvoltage/mediumvoltage grid (maybe even split into feedin/feedfrom
         'min_res_share':                0, # todo only works properly for off-grid oem! Create add. transformer with input streams fuel (0% res) + nat.grid (x% res) and limit resshare there! #does not work at all for dispatch oem
         'distance_to_grid':             10 # todo not implemented distance_to_grid
     }
+
+sensitivity_constants.update({
+    'annuity_factor':               1/economics.annuity(capex=1, n=sensitivity_constants['project_life'], wacc=wacc),
+    'cost_annuity_pv':              cost_data.loc['annuity', 'PV'], # incl o&M (scaled per kWp!!)
+    'cost_annuity_genset':          cost_data.loc['annuity', 'GenSet'], # incl o&M (scaled per kWh!!)
+    'cost_annuity_storage':         cost_data.loc['annuity', 'Storage'], # incl o&M (scaled per kW!!)
+    'cost_annuity_pcoupling':       cost_data.loc['annuity', 'PCoupling'],  # todo PC not implemented
+    'cost_var_pv':                  cost_data.loc['var_cost', 'PV'], # per unit
+    'cost_var_genset':              cost_data.loc['var_cost', 'GenSet'], # per unit
+    'cost_var_storage':             cost_data.loc['var_cost', 'PV'], # per unit
+    'cost_var_pcoupling':           cost_data.loc['var_cost', 'PCoupling'], # todo PC not implemented
+    })

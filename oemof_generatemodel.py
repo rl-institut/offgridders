@@ -108,7 +108,17 @@ class generatemodel():
     # todo: problems with min=0?
     # todo: implement offset generator?
     def genset_fix(micro_grid_system, bus_fuel, bus_electricity_mg, capacity_fuel_gen, experiment):
-        transformer_fuel_generator = solph.Transformer(label="transformer_fuel_generator",
+        if experiment['genset_min_loading'] == 0:
+            transformer_fuel_generator = solph.Transformer(label="transformer_fuel_generator",
+                                                           inputs={bus_fuel: solph.Flow()},
+                                                           outputs={bus_electricity_mg: solph.Flow(
+                                                               nominal_value=capacity_fuel_gen,
+                                                               variable_costs=experiment['cost_var_genset'])},
+                                                           conversion_factors={
+                                                               bus_electricity_mg: experiment['genset_efficiency']}
+                                                           )
+        else:
+            transformer_fuel_generator = solph.Transformer(label="transformer_fuel_generator",
                                                        inputs   ={bus_fuel: solph.Flow()},
                                                        outputs  ={bus_electricity_mg: solph.Flow(
                                                            nominal_value    = capacity_fuel_gen,
@@ -117,7 +127,7 @@ class generatemodel():
                                                            max=experiment['genset_max_loading'],
                                                            nonconvex=solph.NonConvex())},
                                                        conversion_factors={ bus_electricity_mg: experiment['genset_efficiency']}
-                                                       )  # is efficiency of the generator?? Then this should later on be included as a function of the load factor
+                                                       )
 
         micro_grid_system.add(transformer_fuel_generator)
         return micro_grid_system, bus_fuel, bus_electricity_mg

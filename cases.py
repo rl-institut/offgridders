@@ -67,7 +67,7 @@ class cases():
         micro_grid_system                                   = oemofmodel.simulate(micro_grid_system, case_name, experiment['filename'])
         oemofmodel.store_results(micro_grid_system, case_name, experiment['filename'])
         #micro_grid_system = oemofmodel.load_results() # todo not yet defined.
-        oemof_results, capacities_base                             = oemofmodel.process_oem(micro_grid_system, case_name, max(pv_generation), extract.storage_oem(experiment))
+        oemof_results, capacities_base                             = oemofmodel.process_oem(micro_grid_system, case_name, max(pv_generation), extract.process_oem(experiment))
         return oemof_results, capacities_base
 
     ###############################################################################
@@ -115,7 +115,7 @@ class cases():
         micro_grid_system                                   = oemofmodel.simulate(micro_grid_system, case_name, experiment['filename'])
         oemofmodel.store_results(micro_grid_system, case_name, experiment['filename'])
         #micro_grid_system = oemofmodel.load_results()
-        oemof_results = oemofmodel.process_fix(micro_grid_system, case_name, capacity_batch)
+        oemof_results = oemofmodel.process_fix(micro_grid_system, case_name, capacity_batch, extract.process_fix(experiment))
         return oemof_results
 
     ###############################################################################

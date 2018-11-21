@@ -55,7 +55,7 @@ class sensitivity():
 
         # define structure of pd.Dataframe: overall_results
         overall_results = pd.DataFrame(
-            columns=['Case', 'Filename', 'Capacity PV kWp', 'Capacity storage kWh', 'Capacity genset kW', 'Renewable Factor', 'Simulation time'])
+            columns=['Case', 'Filename', 'Capacity PV kWp', 'Capacity storage kWh', 'Capacity genset kW', 'Renewable Factor', 'NPV', 'LCOE', 'Annuity', 'Fuel consumption',  'Simulation time'])
         if len(demand_array) > 1:
             overall_results = pd.concat([overall_results, pd.DataFrame(columns=['demand_profile'])], axis=1)
         for keys in sensitivity_bounds:

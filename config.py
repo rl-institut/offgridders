@@ -36,9 +36,9 @@ output_file='results'
 # display results and graphs
 setting_save_lp_file        = False  # save lp file of oemof simulation
 setting_save_oemofresults   = True   # save oemofresults to .oemof file
-display_graphs_solar        = True
-display_graphs_demand       = True
-display_graphs_simulation   = True
+display_graphs_solar        = False
+display_graphs_demand       = False
+display_graphs_simulation   = False
 print_simulation_meta       = False  # print information on opimization
 print_simulation_main       = False  # print accumulated flows over electricity bus
 print_simulation_invest     = False  # print investment results
@@ -47,7 +47,9 @@ print_simulation_experiment = False  # Print data on experiment run (sensitivity
 ####### ----------------- Oemof simulation settings ------------------- #######
 # Define solver
 solver = 'cbc'
-solver_verbose = False  # show/hide solver output
+solver_verbose       = False  # show/hide solver output
+cmdline_option       = 'ratioGap' #  options for solver: allowedGap,  mipgap, ratioGap
+cmdline_option_value = 1*10^-6
 
 # Debugging
 debug = True  # Set number_of_timesteps to 3 to get a readable lp-file.
@@ -56,15 +58,16 @@ debug = True  # Set number_of_timesteps to 3 to get a readable lp-file.
 
 # Simulation timeframe
 if coding_process == True:
-    evaluated_days          =  1 # not used to redifine time_start/end! manual!
-    time_start              = pd.to_datetime('2018-07-07 0:00', format='%Y-%m-%d %H:%M')
-    time_end                = pd.to_datetime('2018-07-07 23:00', format='%Y-%m-%d %H:%M')
-    time_frequency          = 'H'
+    evaluated_days  =  1 # not used to redifine time_start/end! manual!
+    time_start      = pd.to_datetime('2018-07-07 0:00', format='%Y-%m-%d %H:%M')
+    time_end        = time_start + pd.DateOffset(days=evaluated_days) - pd.DateOffset(hours=1)
+    time_frequency  = 'H'
 
 else:
-    time_start              = pd.to_datetime('2018-01-01 0:00', format='%Y-%m-%d %H:%M')
-    time_end                = pd.to_datetime('2018-12-31 23:00', format='%Y-%m-%d %H:%M')
-    time_frequency          = 'H'
+    evaluated_days = 365
+    time_start     = pd.to_datetime('2018-01-01 0:00', format='%Y-%m-%d %H:%M')
+    time_end       = time_start + pd.DateOffset(days=evaluated_days) - pd.DateOffset(hours=1)
+    time_frequency = 'H'
 
-#global date_time_index
+
 date_time_index = pd.date_range(start=time_start, end=time_end, freq=time_frequency)

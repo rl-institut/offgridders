@@ -59,6 +59,14 @@ class helpers:
                 result_vector.extend([round(oemof_results['genset_invest_kW'], round_to_comma)])
             elif item ==  'Renewable Factor':
                 result_vector.extend([round(oemof_results['res_share'], round_to_comma)])
+            elif item ==  'NPV':
+                result_vector.extend([round(oemof_results['NPV'], round_to_comma)])
+            elif item ==  'LCOE':
+                result_vector.extend([round(oemof_results['LCOE'], round_to_comma)])
+            elif item ==  'Annuity':
+                result_vector.extend([round(oemof_results['Annuity'], round_to_comma)])
+            elif item ==  'Fuel consumption':
+                result_vector.extend([round(oemof_results['fuel_consumption'], round_to_comma)])
             elif item ==  'Simulation time':
                 result_vector.extend([round(duration, round_to_comma)])
             elif item == 'demand_profile':
@@ -103,10 +111,11 @@ class extract():
         experiment_storage.update({'storage_outflow_efficiency': experiment['storage_outflow_efficiency']})
         return experiment_storage
 
-    def storage_oem(experiment):
-        experiment_storage = {}
-        experiment_storage.update({'storage_Crate': experiment['storage_Crate']})
-        return experiment_storage
+    def process_oem(experiment):
+        experiment_oem = {}
+        experiment_oem.update({'storage_Crate': experiment['storage_Crate']})
+        experiment_oem.update({'annuity_factor': experiment['annuity_factor']})
+        return experiment_oem
 
     def pcoupling(experiment):
         experiment_pcoupling = {}
@@ -129,3 +138,12 @@ class extract():
         experiment_pv.update({'cost_annuity_pv': experiment['cost_annuity_pv']})
         experiment_pv.update({'cost_var_pv': experiment['cost_var_pv']})
         return experiment_pv
+
+    def process_fix(experiment):
+        experiment_fix = {}
+        experiment_fix.update({'cost_annuity_pv': experiment['cost_annuity_pv']})
+        experiment_fix.update({'cost_annuity_genset': experiment['cost_annuity_genset']})
+        experiment_fix.update({'cost_annuity_pcoupling': experiment['cost_annuity_pcoupling']})
+        experiment_fix.update({'cost_annuity_storage': experiment['cost_annuity_storage']})
+        experiment_fix.update({'annuity_factor': experiment['annuity_factor']})
+        return experiment_fix

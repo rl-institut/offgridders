@@ -95,3 +95,5 @@ The energy system recieves the total consumption as the project demand profile.
 19.11: Storage and PV issue solved: Batch, storage=6(Flow1+Flow2)/2, multiple demand files, started including external weather file
 
 20.11: Saving results in external file, including external pv output file (kWh/kWp), writing the WIKI
+
+21.11: Results include LCOE, NPV, fuel consumption (NPV has a pretty large margin, results in 1ct/kWh so improve on that), enabled computation of nonconvex flow
