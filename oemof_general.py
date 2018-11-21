@@ -152,8 +152,8 @@ class oemofmodel():
                                 / electricity_bus['sequences'][(('bus_electricity_mg', 'sink_demand'), 'flow')].sum())
         oemof_results.update({'res_share': res_share})
 
-        logging.info ('Exact OEM results of case "' + case_name + '" : \n'
-                      + '  '+ '    ' + '    ' + '    ' + str(round(oemof_results['storage_invest_kWh'],3)) + ' kWh battery, '
+        logging.info ('            Exact OEM results of case "' + case_name + '" : \n'
+                      +'             '+'  '+ '    ' + '    ' + '    ' + str(round(oemof_results['storage_invest_kWh'],3)) + ' kWh battery, '
                       + str(round(oemof_results['pv_invest_kW'],3)) + ' kWp PV, '
                       + str(round(oemof_results['genset_invest_kW'],3)) + ' kW genset '
                       + 'at a renewable share of ' + str(round(oemof_results['res_share']*100,2)) + ' percent.')
@@ -173,8 +173,8 @@ class oemofmodel():
                                                   round_to_batch['GenSet']})
         capacities_base.update({'storage_invest_kWh': round(0.5+capacities_base['storage_invest_kWh'] / round_to_batch['Storage']) *
                                                   round_to_batch['Storage']})
-        logging.info ('    The equivalent batch capacities of the base case OEM for case "' + case_name + '" are: \n'
-                      + '    ' + '    ' + '    ' + str(capacities_base['storage_invest_kWh']) + ' kWh battery, '
+        logging.info ('            The equivalent batch capacities of the base case OEM for case "' + case_name + '" are: \n'
+                      + '            '+'    ' + '    ' + '    ' + str(capacities_base['storage_invest_kWh']) + ' kWh battery, '
                       + str(capacities_base['pv_invest_kW']) + ' kWp PV, '
                       + str(capacities_base['genset_invest_kW']) + ' kW genset.')
         return capacities_base

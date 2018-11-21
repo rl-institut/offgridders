@@ -1,7 +1,3 @@
 ,Case,Filename,Capacity PV kWp,Capacity storage kWh,Capacity genset kW,Renewable Factor,Simulation time,demand_profile
-0,base_oem,results_base_oem_s_demand_low,45.00395,93.37174,1.43558,0.98101,49.68993,demand_low
-1,mg_fixed,results_mg_fixed_s_demand_low,45.25,94.0,1.5,0.98305,22.29471,demand_low
-2,base_oem,results_base_oem_s_demand_high,217.38079,595.21137,7.46998,0.97911,51.22067,demand_high
-3,mg_fixed,results_mg_fixed_s_demand_high,217.5,596.0,7.5,0.97959,24.77887,demand_high
-4,base_oem,results_base_oem_s_demand_median,159.47038,399.96999,5.38352,0.97974,50.89945,demand_median
-5,mg_fixed,results_mg_fixed_s_demand_median,159.5,400.0,5.5,0.97978,49.02499,demand_median
+0,base_oem,results_base_oem_s_demand_low,45.00395,93.37174,1.43558,0.98101,45.9748,demand_low
+1,mg_fixed,results_mg_fixed_s_demand_low,45.25,94.0,1.5,0.94332,26.65652,demand_low

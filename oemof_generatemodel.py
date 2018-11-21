@@ -111,13 +111,13 @@ class generatemodel():
         transformer_fuel_generator = solph.Transformer(label="transformer_fuel_generator",
                                                        inputs   ={bus_fuel: solph.Flow()},
                                                        outputs  ={bus_electricity_mg: solph.Flow(
-                                                           #min              = experiment['genset_min_loading'],
-                                                           #max              = experiment['genset_max_loading'],
-                                                           #nonconvex        = solph.NonConvex(),
                                                            nominal_value    = capacity_fuel_gen,
-                                                           variable_costs   = experiment['cost_var_genset'])},
-                                                       conversion_factors={
-                                                           bus_electricity_mg: experiment['genset_efficiency']})  # is efficiency of the generator?? Then this should later on be included as a function of the load factor
+                                                           variable_costs   = experiment['cost_var_genset'],
+                                                           min=experiment['genset_min_loading'],
+                                                           max=experiment['genset_max_loading'],
+                                                           nonconvex=solph.NonConvex())},
+                                                       conversion_factors={ bus_electricity_mg: experiment['genset_efficiency']}
+                                                       )  # is efficiency of the generator?? Then this should later on be included as a function of the load factor
 
         micro_grid_system.add(transformer_fuel_generator)
         return micro_grid_system, bus_fuel, bus_electricity_mg

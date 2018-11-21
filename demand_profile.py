@@ -27,9 +27,9 @@ except ImportError:
 from config import display_graphs_demand, date_time_index
 
 class demand:
-    # todo difference between class and function
     # todo better display of plots
-    def plot_results(pandas_dataframe, title, xaxis, yaxis):
+    def plot_results(pandas_dataframe, title, xaxis, yaxis, demand_title):
+        from config import output_folder
         if plt is not None:
             if display_graphs_demand==True:
                 # Plot demand
@@ -38,6 +38,7 @@ class demand:
                 ax.set_xlabel(xaxis)
                 ax.set_ylabel(yaxis)
                 plt.show()
+                #plt.savefig(output_folder+'/fig_'+demand_title+'.png', bbox_inches='tight')
         return
 
     ##
@@ -72,7 +73,7 @@ class demand:
             logging.info('     Total annual demand at project site (kWh/a): ' + str(round(demand_profile.sum())))
             demand.plot_results(demand_profile[date_time_index], "Electricity demand at project site (" + file + ")",
                             "Date",
-                            "Power demand in kW")
+                            "Power demand in kW", file)
             demand_profiles.update({file: demand_profile[date_time_index]})
         return demand_profiles
 
@@ -130,7 +131,7 @@ class demand:
         electricity_demand__total_15min = electricity_demand_15min['households']+electricity_demand_15min['businesses']
         logging.info("Total annual demand for project site (kWh/a): " + str(round(electricity_demand__total_15min.sum()/4, 2)))
         demand.plot_results(electricity_demand__total_15min, "Electricity demand at project site (15-min)", "Date (15-im steps)",
-                     "Power demand in kW")
+                     "Power demand in kW", "demand_15min")
 
         """
         Be aware that the values in the DataFrame are 15minute values with
@@ -144,18 +145,18 @@ class demand:
         electricity_demand_hourly = electricity_demand.resample('H').mean()
         logging.info("Total annual demand per sector (kWh/a): " + str(round(electricity_demand_hourly.sum())))
         demand.plot_results(electricity_demand_hourly, "Electricity demand per sector (1-hr)", "Date (1-hr steps)",
-                     "Power demand in kW")
+                     "Power demand in kW", "demand_sector_1hr")
 
         # Total demand (hourly) for project site
         electricity_demand_total_hourly = electricity_demand_hourly['households']+electricity_demand_hourly['businesses']
         logging.info("Total annual demand for project site (kWh/a): " + str( round(electricity_demand_total_hourly.sum()), 2))
         demand.plot_results(electricity_demand_total_hourly, "Electricity demand at project site (1-hr)", "Date (1-hr steps)",
-                     "Power demand in kW")
+                     "Power demand in kW", "demand_1hr")
 
         # Resample hourly values to daily values.
         electricity_demand_daily = electricity_demand_hourly.resample('D').sum()
         demand.plot_results(electricity_demand_daily, "Electricity demand per sector (1-d)", "Date (1-d steps)",
-                     "Power demand in kWh/d")
+                     "Power demand in kWh/d", "demand_sector_1d")
         logging.info("Median daily demand per consumer (kWh/d): " + str( round(electricity_demand_daily.mean()/demand_input.number), 3))
 
     # todo include white noise
@@ -163,7 +164,7 @@ class demand:
         # Define daily profile with peak demands - without white noise the value is constant
         electricity_demand_kW_max = electricity_demand.resample('D').max()
         demand.plot_results(electricity_demand_kW_max, "Daily peak demand per sector", "Date (1-d steps)",
-                     "Peak power demand in kW")
+                     "Peak power demand in kW", "demand__peak_sector_1d")
         logging.info("Absolute peak demand per sector (kW): " + str( round(electricity_demand_kW_max.max(),2)))
         return electricity_demand_total_hourly # to synchronize evaluated timeframe
     # todo create merged demand of households and businesses, so that the total load profile can be fed into the mg optimization

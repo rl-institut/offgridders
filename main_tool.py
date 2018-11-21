@@ -68,7 +68,7 @@ logging.info(str(len(sensitivity_experiments)) + ' simulations are necessary to 
 #-----------------------------------------------------------------------------#
 
 blackout_experiments   =   sensitivity.blackout_experiments()
-logging.info(str(len(sensitivity_experiments)) + ' combinations of blackout duration and frequency will be analysed.')
+logging.info(str(len(sensitivity_experiments)) + ' combinations of blackout duration and frequency will be analysed. \n')
 
 # todo create module for retrieving blackout events at specific combination of duration/frequency
 #blackout_events = { {d: XY, f: XY, pd.Dataframe},  } => from national_grid.availability(blackoutduration/100, blackoutfrequency/100)
@@ -80,13 +80,16 @@ from config import print_simulation_experiment
 from general_functions import helpers
 
 # todo show figures but continue script!
-
+number_of_experiment= 0
 for experiment in sensitivity_experiments:
+    number_of_experiment = number_of_experiment + 1
     # todo: this function should be called with base_experiment[] to include sensitivites
+    logging.info('Starting simulation of base OEM, experiment no. ' + str(number_of_experiment) +'...')
     start = timeit.default_timer()
     results, capacities_base = cases.base_oem(demand_profiles[experiment['demand_profile']], pv_generation_per_kWp, experiment)
     duration = timeit.default_timer() - start
-    logging.info('Simulation time (s): ' + str(round(duration, 2)) + '\n')
+    logging.info('            Simulation of base OEM complete.')
+    logging.info('            Simulation time (s): ' + str(round(duration, 2)) + '\n')
     overall_results = helpers.store_result_matrix(overall_results, 'base_oem', experiment, results, duration)
     ###############################################################################
     # Simulations of all cases
@@ -102,6 +105,7 @@ for experiment in sensitivity_experiments:
     # According to parameters set beforehand
     ###############################################################################
     for items in listof_cases:
+        logging.info('Starting simulation of case ' + items + ', experiment no. ' + str(number_of_experiment) +'...')
         start = timeit.default_timer()
         if      items == 'mg_fixed':             oemof_results = cases.mg_fix(demand_profiles[experiment['demand_profile']], pv_generation_per_kWp, experiment, capacities_base)
         elif    items == 'buyoff':               cases.buyoff()
@@ -113,7 +117,8 @@ for experiment in sensitivity_experiments:
         #elif    items == 'mg_oem':               cases.mg_oem(demand_profiles[experiment['demand_profile']], pv_generation_per_kWp, experiment['filename']) # which case is this supposed anyway?
         else: logging.warning("Unknown case!")
         duration = timeit.default_timer() - start
-        logging.info('Simulation time (s): ' + str(round(duration, 2)) + '\n')
+        logging.info('            Simulation of case '+items+' complete.')
+        logging.info('            Simulation time (s): ' + str(round(duration, 2)) + '\n')
         overall_results = helpers.store_result_matrix(overall_results, items, experiment, oemof_results, duration)
 
     if print_simulation_experiment == True:

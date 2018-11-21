@@ -68,7 +68,6 @@ class cases():
         oemofmodel.store_results(micro_grid_system, case_name, experiment['filename'])
         #micro_grid_system = oemofmodel.load_results() # todo not yet defined.
         oemof_results, capacities_base                             = oemofmodel.process_oem(micro_grid_system, case_name, max(pv_generation), extract.storage_oem(experiment))
-        logging.debug('            Simulation of case "base_oem" complete.')
         return oemof_results, capacities_base
 
     ###############################################################################
@@ -117,7 +116,6 @@ class cases():
         oemofmodel.store_results(micro_grid_system, case_name, experiment['filename'])
         #micro_grid_system = oemofmodel.load_results()
         oemof_results = oemofmodel.process_fix(micro_grid_system, case_name, capacity_batch)
-        logging.debug('            Simulation of case "base" complete.')
         return oemof_results
 
     ###############################################################################
@@ -147,7 +145,6 @@ class cases():
         sink: shortage      |<------------------------------|     var
                             |               |               |
         '''
-        logging.debug('            Simulation of case "buyoff" complete.')
         return
 
     ###############################################################################
@@ -178,7 +175,6 @@ class cases():
         sink: shortage      |<------------------------------|     var
                             |               |               |
         '''
-        logging.debug('            Simulation of case "parallel" complete.')
         return
 
     ###############################################################################
@@ -208,7 +204,6 @@ class cases():
         sink: shortage      |<------------------------------|     var
                             |               |               |
         '''
-        logging.debug('            Simulation of case "backupgrid" complete.')
         return
 
     ###############################################################################
@@ -241,7 +236,6 @@ class cases():
         source: ng          |               |               |<------------------------| var
         sink: ng            |               |               |------------------------>|
         '''
-        logging.debug('            Simulation of case "buysell" complete.')
         return
 
     ###############################################################################
@@ -271,7 +265,6 @@ class cases():
         sink: shortage      |<------------------------------|     var
                             |               |               |
         '''
-        logging.debug('            Simulation of case "adapted" complete.')
         return
 
     ###############################################################################
@@ -301,7 +294,6 @@ class cases():
         sink: shortage      |<------------------------------|     var
                             |               |               |
         '''
-        logging.debug('            Simulation of case "oem_interconnected" complete.')
         return
 
     
