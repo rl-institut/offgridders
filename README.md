@@ -97,3 +97,9 @@ The energy system recieves the total consumption as the project demand profile.
 20.11: Saving results in external file, including external pv output file (kWh/kWp), writing the WIKI
 
 21.11: Results include LCOE, NPV, fuel consumption (NPV has a pretty large margin, results in 1ct/kWh so improve on that), enabled computation of nonconvex flow
+
+22.11: Cost calculations currently are complete bull, as they are not related to the individual lifetimes.
+
+23.11: Cost calculations include real annuities now, but still large margin between oem/fix AND between cost of 
+       components according to calculations and according to OEM!! 
+       eg. Objective value (annuity) of 246, when PV+Storage alone have annuity of 256!

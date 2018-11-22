@@ -82,7 +82,7 @@ class generatemodel():
                                                                          actual_value   = pv_generation_per_kWp,
                                                                          fixed          = True,
                                                                          nominal_value  = capacity_pv,
-                                                                         variable_costs=experiment['cost_var_pv']
+                                                                         variable_costs=experiment['pv_cost_var']
                                                                          )})
 
         micro_grid_system.add(source_pv)
@@ -98,8 +98,8 @@ class generatemodel():
                                                                          actual_value=pv_norm,
                                                                          fixed=True,
                                                                          investment=solph.Investment(
-                                                                             ep_costs=experiment['cost_annuity_pv']),
-                                                                         variable_costs = experiment['cost_var_pv']/max(pv_generation_per_kWp)
+                                                                             ep_costs=experiment['pv_cost_annuity']),
+                                                                         variable_costs = experiment['pv_cost_var']/max(pv_generation_per_kWp)
                                                                          )})
         micro_grid_system.add(source_pv)
         return micro_grid_system, bus_electricity_mg
@@ -113,7 +113,7 @@ class generatemodel():
                                                            inputs={bus_fuel: solph.Flow()},
                                                            outputs={bus_electricity_mg: solph.Flow(
                                                                nominal_value=capacity_fuel_gen,
-                                                               variable_costs=experiment['cost_var_genset'])},
+                                                               variable_costs=experiment['genset_cost_var'])},
                                                            conversion_factors={
                                                                bus_electricity_mg: experiment['genset_efficiency']}
                                                            )
@@ -122,7 +122,7 @@ class generatemodel():
                                                        inputs   ={bus_fuel: solph.Flow()},
                                                        outputs  ={bus_electricity_mg: solph.Flow(
                                                            nominal_value    = capacity_fuel_gen,
-                                                           variable_costs   = experiment['cost_var_genset'],
+                                                           variable_costs   = experiment['genset_cost_var'],
                                                            min=experiment['genset_min_loading'],
                                                            max=experiment['genset_max_loading'],
                                                            nonconvex=solph.NonConvex())},
@@ -137,8 +137,8 @@ class generatemodel():
                                                        inputs={bus_fuel: solph.Flow()},
                                                        outputs={bus_electricity_mg: solph.Flow(
                                                            investment=solph.Investment(
-                                                               ep_costs=experiment['cost_annuity_genset']),
-                                                           variable_costs=experiment['cost_var_genset'])},
+                                                               ep_costs=experiment['genset_cost_annuity']),
+                                                           variable_costs=experiment['genset_cost_var'])},
                                                        conversion_factors={bus_electricity_mg: experiment['genset_efficiency']})
         micro_grid_system.add(transformer_fuel_generator)
         return micro_grid_system, bus_fuel, bus_electricity_mg
@@ -148,9 +148,9 @@ class generatemodel():
                                                        inputs={bus_electricity_mg: solph.Flow()},
                                                        outputs={bus_electricity_ng: solph.Flow(
                                                            nominal_value=capacity_pointofcoupling,
-                                                           variable_costs=experiment['cost_var_pcoupling'])},
+                                                           variable_costs=experiment['pcoupling_cost_var'])},
                                                        conversion_factors={
-                                                           bus_electricity_mg: experiment['efficiency_pcoupling']})  # is efficiency of the generator?? Then this should later on be included as a function of the load factor
+                                                           bus_electricity_mg: experiment['pcoupling_efficiency']})  # is efficiency of the generator?? Then this should later on be included as a function of the load factor
 
         micro_grid_system.add(pointofcoupling)
         return micro_grid_system, bus_electricity_mg, bus_electricity_ng
@@ -160,9 +160,9 @@ class generatemodel():
                                                        inputs={bus_electricity_mg: solph.Flow()},
                                                        outputs={bus_electricity_ng: solph.Flow(
                                                            investment=solph.Investment(
-                                                               ep_costs=experiment['cost_annuity_pcoupling']),
-                                                           variable_costs=experiment['cost_var_pcoupling'])},
-                                                       conversion_factors={bus_electricity_mg: experiment['efficiency_pcoupling']})
+                                                               ep_costs=experiment['pcoupling_cost_annuity']),
+                                                           variable_costs=experiment['pcoupling_cost_var'])},
+                                                       conversion_factors={bus_electricity_mg: experiment['pcoupling_efficiency']})
         micro_grid_system.add(pointofcoupling)
         return micro_grid_system, bus_electricity_mg, bus_electricity_ng
 
@@ -171,9 +171,9 @@ class generatemodel():
                                                        inputs={bus_electricity_ng: solph.Flow()},
                                                        outputs={bus_electricity_mg: solph.Flow(
                                                            nominal_value=cap_pointofcoupling,
-                                                           variable_costs=experiment['cost_var_pcoupling'])},
+                                                           variable_costs=experiment['pcoupling_cost_var'])},
                                                        conversion_factors={
-                                                           bus_electricity_mg: experiment['efficiency_pcoupling']})  # is efficiency of the generator?? Then this should later on be included as a function of the load factor
+                                                           bus_electricity_mg: experiment['pcoupling_efficiency']})  # is efficiency of the generator?? Then this should later on be included as a function of the load factor
 
         micro_grid_system.add(pointofcoupling)
         return micro_grid_system, bus_electricity_mg, bus_electricity_ng
@@ -183,9 +183,9 @@ class generatemodel():
                                                        inputs={bus_electricity_ng: solph.Flow()},
                                                        outputs={bus_electricity_mg: solph.Flow(
                                                            investment=solph.Investment(
-                                                               ep_costs=experiment['cost_annuity_pcoupling']),
-                                                           variable_costs=experiment['cost_var_pcoupling'])},
-                                                       conversion_factors={bus_electricity_mg: experiment['efficiency_pcoupling']})
+                                                               ep_costs=experiment['pcoupling_cost_annuity']),
+                                                           variable_costs=experiment['pcoupling_cost_var'])},
+                                                       conversion_factors={bus_electricity_mg: experiment['pcoupling_efficiency']})
         micro_grid_system.add(pointofcoupling)
         return micro_grid_system, bus_electricity_mg, bus_electricity_ng
 
@@ -194,12 +194,11 @@ class generatemodel():
             label                       = 'generic_storage',
             nominal_capacity            = capacity_storage,
             inputs={bus_electricity_mg: solph.Flow(
-                nominal_value= capacity_storage*experiment['storage_Crate'],
-                variable_costs=experiment['cost_var_storage']
+                nominal_value= capacity_storage*experiment['storage_Crate']
                 )},  # maximum charge possible in one timestep
             outputs={bus_electricity_mg: solph.Flow(
                 nominal_value= capacity_storage*experiment['storage_Crate'],
-                variable_costs=experiment['cost_var_storage']
+                variable_costs=experiment['storage_cost_var']
                 )},  # maximum discharge possible in one timestep
             capacity_loss               = experiment['storage_loss_timestep'],  # from timestep to timestep
             capacity_min                = experiment['storage_capacity_min'],
@@ -213,10 +212,10 @@ class generatemodel():
     def storage_oem(micro_grid_system, bus_electricity_mg, experiment):
         generic_storage = solph.components.GenericStorage(
             label='generic_storage',
-            investment=solph.Investment(ep_costs=experiment['cost_annuity_storage']),
+            investment=solph.Investment(ep_costs=experiment['storage_cost_annuity']),
             inputs                          = {bus_electricity_mg: solph.Flow()},
             outputs                         = {bus_electricity_mg: solph.Flow(
-                variable_costs=experiment['cost_var_storage'])},
+                variable_costs=experiment['storage_cost_var'])},
             capacity_loss                   = experiment['storage_loss_timestep'],  # from timestep to timestep
             capacity_min                    = experiment['storage_capacity_min'],
             capacity_max                    = experiment['storage_capacity_max'],

@@ -68,6 +68,13 @@ class cases():
         oemofmodel.store_results(micro_grid_system, case_name, experiment['filename'])
         #micro_grid_system = oemofmodel.load_results() # todo not yet defined.
         oemof_results, capacities_base                             = oemofmodel.process_oem(micro_grid_system, case_name, max(pv_generation), extract.process_oem(experiment))
+
+        print ("experiment['cost_annuity_pv']*capacities_base['pv_invest_kW']"+str(experiment['pv_cost_annuity']*capacities_base['pv_invest_kW']))
+        print ("experiment['cost_annuity_genset']*capacities_base['genset_invest_kW']"+str(experiment['genset_cost_annuity']*capacities_base['genset_invest_kW']))
+        print ("experiment['cost_annuity_storage'] * capacities_base['storage_invest_kWh']" + str(experiment['storage_cost_annuity'] * capacities_base['storage_invest_kWh']))
+
+        #cases.draw(micro_grid_system)
+
         return oemof_results, capacities_base
 
     ###############################################################################
@@ -296,4 +303,15 @@ class cases():
         '''
         return
 
-    
+    def draw(energysystem):
+        '''
+        Compare with https://oemof.readthedocs.io/en/stable/api/oemof.html?highlight=graph#module-oemof.graph for additional settings
+        '''
+        import oemof.graph as graph
+        import networkx as nx
+        import matplotlib.pyplot as plt
+        from config import output_folder
+
+        energysystem_graph = graph.create_nx_graph(energysystem, filename=output_folder+'/'+'case_graph')
+
+        return

@@ -49,7 +49,7 @@ print_simulation_experiment = False  # Print data on experiment run (sensitivity
 solver = 'cbc'
 solver_verbose       = False  # show/hide solver output
 cmdline_option       = 'ratioGap' #  options for solver: allowedGap,  mipgap, ratioGap
-cmdline_option_value = 1*10^-6
+cmdline_option_value = 1*10**(-6)
 
 # Debugging
 debug = True  # Set number_of_timesteps to 3 to get a readable lp-file.

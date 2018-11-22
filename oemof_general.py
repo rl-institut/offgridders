@@ -133,10 +133,14 @@ class oemofmodel():
 
         total_supplied_demand = electricity_bus['sequences'][(('bus_electricity_mg', 'sink_demand'), 'flow')].sum()
 
+        print ("experiment['cost_annuity_pv']*capacity_batch['pv_invest_kW']"+str(experiment['pv_cost_annuity']*capacity_batch['pv_invest_kW']))
+        print ("experiment['cost_annuity_genset']*capacity_batch['genset_invest_kW']"+str(experiment['genset_cost_annuity']*capacity_batch['genset_invest_kW']))
+        print ("experiment['cost_annuity_storage'] * capacity_batch['storage_invest_kWh']" + str(experiment['storage_cost_annuity'] * capacity_batch['storage_invest_kWh']))
+        print("objective"+str(meta['objective']))
 
-        annuity = experiment['cost_annuity_pv']*capacity_batch['pv_invest_kW'] +\
-                experiment['cost_annuity_genset']*capacity_batch['genset_invest_kW'] +\
-                experiment['cost_annuity_storage'] * capacity_batch['storage_invest_kWh'] +\
+        annuity = experiment['pv_cost_annuity']*capacity_batch['pv_invest_kW'] +\
+                experiment['genset_cost_annuity']*capacity_batch['genset_invest_kW'] +\
+                experiment['storage_cost_annuity'] * capacity_batch['storage_invest_kWh'] +\
                 meta['objective'] # here, objective function only gives the additional VARIABLE costs!
 
         from config import evaluated_days
@@ -200,7 +204,7 @@ class oemofmodel():
                       + str(round(oemof_results['pv_invest_kW'],3)) + ' kWp PV, '
                       + str(round(oemof_results['genset_invest_kW'],3)) + ' kW genset '
                       + 'at a renewable share of ' + str(round(oemof_results['res_share']*100,2)) + ' percent.')
-
+        print("objective" + str(meta['objective']))
         capacities_base = {
             'pv_invest_kW': oemof_results['pv_invest_kW'],
             'storage_invest_kWh': oemof_results['storage_invest_kWh'],

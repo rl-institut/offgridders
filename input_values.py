@@ -68,36 +68,8 @@ else:
     white_noise_demand      = 0.15
     white_noise_irradiation = 0.15
 
-
-wacc = 0.12
-# todo include own loop for varying wacc values (calculating annuity based on wac, creating vector, add to sensitivity boundaries AND NOT to constant values
-# if isinstance(wacc, list): sensitivity cases, loop around cost data
-# of costs if that is optional -> include in sensitivity bounds and use min=max?
-
-cost_data = pd.DataFrame({'PV':         [20,            950,        0,          0],
-                          'GenSet':     [10,            400,        25,         0.023],
-                          'Storage':    [6,             800,        0,          0],
-                          'PCoupling':  [20,            1500,       0,          0]},
-                         index=         ['lifetime',    'capex',    'opex_a',   'var_cost'])
-
-# Cost data
-# todo annuity currently includes annual opex costs!!
-cost_data.loc['annuity', 'PV']      =   economics.annuity(capex=cost_data.loc['capex', 'PV',], n=cost_data.loc['lifetime', 'PV'], wacc=wacc)\
-                                        + cost_data.loc['opex_a', 'PV',]
-cost_data.loc['annuity', 'GenSet']  =   economics.annuity(capex=cost_data.loc['capex', 'GenSet'], n=cost_data.loc['lifetime', 'GenSet'], wacc=wacc)\
-                                        + cost_data.loc['opex_a', 'GenSet',]
-cost_data.loc['annuity', 'Storage'] =   economics.annuity(capex=cost_data.loc['capex', 'Storage'], n=cost_data.loc['lifetime', 'Storage'], wacc=wacc)\
-                                        + cost_data.loc['opex_a', 'Storage',]
-cost_data.loc['annuity', 'PCoupling'] =   economics.annuity(capex=cost_data.loc['capex', 'PCoupling'], n=cost_data.loc['lifetime', 'PCoupling'], wacc=wacc)\
-                                        + cost_data.loc['opex_a', 'PCoupling',]
-
-from config import coding_process
-if coding_process == True:
-    from config import evaluated_days
-    cost_data.loc['annuity']=cost_data.loc['annuity']/365*evaluated_days
-
 ###############################################################################
-# Sensitivity analysis
+# General Inputs and sensitivity analysis
 ###############################################################################
 # constants/values of the sensitivity analysis - influencing the base case OEM
 '''
@@ -105,43 +77,51 @@ IT IS POSSIBLE TO SHIFT ELEMENTS BETWEEN THE LIST sensitivity_bounds <-> constan
 BUT DO NOT DELETE OR ADD NEW ELEMENTS WITHOUT CHANGING THE MAIN CODE
 '''
 
-sensitivity_bounds ={
-        #'price_fuel':     {'min': 0.5,  'max': 1,     'step': 0.1}
+sensitivity_bounds = {
+    #'price_fuel':     {'min': 0.5,  'max': 1,     'step': 0.1}
     }
 
 # Values of the sensitivity analysis that appear constant
-sensitivity_constants ={
-        'project_life':                 20,
-        'price_fuel':                   4.4, # /unit
-        'combustion_value_fuel':        10, # kWh/unit
-        'price_electricity_main_grid':  0.20,  # /unit
-        'max_share_unsupplied_load':    0, #  factor
-        'costs_var_unsupplied_load':    10, # /kWh
-        'blackout_frequency':           7, #  blackouts per month
-        'blackout_duration':            2, # hrs per blackout
-        'storage_Crate':                1, # factor (possible charge/discharge ratio to total capacity)
-        'storage_loss_timestep':        0, # factor
-        'storage_inflow_efficiency':    0.9, # factor
-        'storage_outflow_efficiency':   0.9,  # factor
-        'storage_capacity_min':         0.2,  # factor 1-DOD
-        'storage_capacity_max':         1,  # factor
-        'storage_initial_soc':          None, # factor # todo: what does None mean here?
-        'genset_efficiency':            0.33, #  factor
-        'genset_min_loading':           0, # Minimal load factor of generator - TODO only effective in dispatch optimization, not OEM
-        'genset_max_loading':           1,   # maximal load factor of generator
-        'efficiency_pcoupling':         0.98, # inverter inefficiency between highvoltage/mediumvoltage grid (maybe even split into feedin/feedfrom
-        'min_res_share':                0, # todo only works properly for off-grid oem! Create add. transformer with input streams fuel (0% res) + nat.grid (x% res) and limit resshare there! #does not work at all for dispatch oem
-        'distance_to_grid':             10 # todo not implemented distance_to_grid
-    }
-
-sensitivity_constants.update({
-    'annuity_factor':               1/economics.annuity(capex=1, n=sensitivity_constants['project_life'], wacc=wacc),
-    'cost_annuity_pv':              cost_data.loc['annuity', 'PV'], # incl o&M (scaled per kWp!!)
-    'cost_annuity_genset':          cost_data.loc['annuity', 'GenSet'], # incl o&M (scaled per kWh!!)
-    'cost_annuity_storage':         cost_data.loc['annuity', 'Storage'], # incl o&M (scaled per kW!!)
-    'cost_annuity_pcoupling':       cost_data.loc['annuity', 'PCoupling'],  # todo PC not implemented
-    'cost_var_pv':                  cost_data.loc['var_cost', 'PV'], # per unit
-    'cost_var_genset':              cost_data.loc['var_cost', 'GenSet'], # per unit
-    'cost_var_storage':             cost_data.loc['var_cost', 'PV'], # per unit
-    'cost_var_pcoupling':           cost_data.loc['var_cost', 'PCoupling'], # todo PC not implemented
-    })
+sensitivity_constants = {
+    'blackout_duration':	            2,	#	hrs	per	blackout
+    'blackout_frequency':	            7,	#	blackouts	per	month
+    'combustion_value_fuel':	        10,	#	kWh/unit
+    'costs_var_unsupplied_load':	    10,	#	/kWh
+    'distance_to_grid':	                10,	#	todo	not	implemented	distance_to_grid
+    'genset_cost_investment':	        800,
+    'genset_cost_opex':	                25,
+    'genset_cost_var':	                0.023,
+    'genset_efficiency':	            0.33,	#	factor
+    'genset_lifetime':	                10,
+    'genset_max_loading':	            1,	#	maximal	load	factor	of	generator
+    'genset_min_loading':	            0,	#	Minimal	load	factor	of	generator	-	TODO	only	effective	in	dispatch	optimization,	not	OEM
+    'max_share_unsupplied_load':	    0,	#	factor
+    'min_res_share':	                0,	#	todo	only	works	properly	for	off-grid	oem!	Create	add.	transformer	with	input	streams	fuel	(0%	res)	+	nat.grid	(x%	res)	and	limit	resshare	there!	#does	not	work	at	all	for	dispatch	oem
+    'pcoupling_cost_investment':	    1500,
+    'pcoupling_cost_opex':	            0,
+    'pcoupling_cost_var':	            0,
+    'pcoupling_efficiency':	            0.98,	#	inverter	inefficiency	between	highvoltage/mediumvoltage	grid	(maybe	even	split	into	feedin/feedfrom
+    'pcoupling_lifetime':	            20,
+    'price_electricity_main_grid':	    0.20,	#	/unit
+    'price_fuel':	                    4.4,	#	/unit
+    'project_cost_fix':	                0,	#	not	implemented
+    'project_cost_opex':	            0,	#	not	implemented
+    'project_life':	                    20,
+    'pv_cost_investment':	            950,
+    'pv_cost_opex':	                    0,
+    'pv_cost_var':	                    0,
+    'pv_lifetime':	                    20,
+    'storage_capacity_max':	            1,	#	factor
+    'storage_capacity_min':	            0.2,	#	factor	1-DOD
+    'storage_cost_investment':	        800,
+    'storage_cost_opex':	            0,
+    'storage_cost_var':	                0,
+    'storage_Crate':	                1,	#	factor	(possible	charge/discharge	ratio	to	total	capacity)
+    'storage_inflow_efficiency':	    0.9,	#	factor
+    'storage_initial_soc':	            None,	#	factor	#	todo:	what	does	None	mean	here?
+    'storage_lifetime':	                6,
+    'storage_loss_timestep':	        0,	#	factor
+    'storage_outflow_efficiency':	    0.9,	#	factor
+    'tax':	                            0,
+    'wacc':	                            0.12
+}

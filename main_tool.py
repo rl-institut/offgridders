@@ -34,7 +34,6 @@ from national_grid import national_grid
 #-----------------------------------------------------------------------------#
 from general_functions import config_func
 listof_cases        =   config_func.cases()
-
 ###############################################################################
 # Generation of initializing data (demand, pv generation)
 ###############################################################################
@@ -83,6 +82,16 @@ from general_functions import helpers
 experiment_count= 0
 for experiment in sensitivity_experiments:
     experiment_count = experiment_count + 1
+
+    # ----------------------------Input data---------------------------------------#
+    # Preprocessing of inputdata where necessary based on case                     #
+    # -----------------------------------------------------------------------------#
+    from general_functions import config_func
+    experiment = config_func.input_data(experiment)
+
+    # ----------------------------Base Case OEM------------------------------------#
+    # Optimization of optimal capacities in base case (off-grid micro grid)        #
+    # -----------------------------------------------------------------------------#
     # todo: this function should be called with base_experiment[] to include sensitivites
     logging.info('Starting simulation of base OEM, experiment no. ' + str(experiment_count) + '...')
     start = timeit.default_timer()

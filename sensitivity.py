@@ -9,7 +9,7 @@ import pandas as pd
 
 class sensitivity():
     def experiments():
-        from input_values import sensitivity_bounds, sensitivity_constants, input_files_demand
+        from input_values import input_files_demand, sensitivity_bounds, sensitivity_constants
         import itertools
         import numpy as np
         # create empty dictionary
@@ -63,9 +63,9 @@ class sensitivity():
         return experiments, overall_results
 
     def blackout_experiments():
+        from input_values import sensitivity_bounds, sensitivity_constants
         import itertools
         import numpy as np
-        from input_values import sensitivity_bounds, sensitivity_constants
 
         dictof_oemparameters = {}
         for keys in sensitivity_bounds:
