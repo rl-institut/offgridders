@@ -4,9 +4,7 @@ operational modes of micro grids interconnecting with an unreliable national gri
 For efficient iterations? https://docs.python.org/2/library/itertools.html
 '''
 
-import os
-import pandas as pd
-import numpy as np
+
 import pprint as pp
 import timeit
 
@@ -18,13 +16,13 @@ logger.define_logging(logfile='main_tool.log',
                       file_level=logging.DEBUG)
 
 from cases import cases
-from national_grid import national_grid
+#from national_grid import national_grid
 
 ###############################################################################
-# Load previous simulation of base case or perform OEM for base case
+# Check for, create or empty results dictionary                               #
 ###############################################################################
-
-# Not coded jet
+from general_functions import config_func
+config_func.check_results_dir()
 
 ###############################################################################
 # Create lists
@@ -44,12 +42,20 @@ listof_cases        =   config_func.cases()
 from demand_profile import demand
 demand_profiles = demand.get()
 
+from input_values import white_noise_demand
+if white_noise_demand != 0:
+    from general_functions import helpers
+    demand_profiles = helpers.noise_demand(white_noise_demand, demand_profiles)
 #-------------------------------PV system-------------------------------------#
 # Currently only based on generic data, specific panel/inverter               #
 #-----------------------------------------------------------------------------#
 from pvlib_scripts import pvgen
 pv_generation_per_kWp = pvgen.get()
 
+from input_values import white_noise_irradiation
+if white_noise_irradiation != 0:
+    from general_functions import helpers
+    pv_generation_per_kWp = helpers.noise_pv(white_noise_irradiation, pv_generation_per_kWp)
 #-----------------------------Sensitivity-------------------------------------#
 # Sensitivity cases to be evaluated during the simulation                     #
 # Attention: Right now, parameters influencing the OEM of the base case are   #
@@ -80,9 +86,10 @@ from general_functions import helpers
 
 # todo show figures but continue script!
 experiment_count= 0
-for experiment in sensitivity_experiments:
-    experiment_count = experiment_count + 1
 
+for experiment in sensitivity_experiments:
+
+    experiment_count = experiment_count + 1
     # ----------------------------Input data---------------------------------------#
     # Preprocessing of inputdata where necessary based on case                     #
     # -----------------------------------------------------------------------------#
@@ -100,6 +107,7 @@ for experiment in sensitivity_experiments:
     logging.info('    Simulation of base OEM complete.')
     logging.info('    Simulation time (s): ' + str(round(duration, 2)) + '\n')
     overall_results = helpers.store_result_matrix(overall_results, 'base_oem', experiment, results, duration)
+
     ###############################################################################
     # Simulations of all cases
     ###############################################################################
@@ -123,11 +131,11 @@ for experiment in sensitivity_experiments:
         elif    items == 'oem_interconnected':   cases.oem_interconnected()
         elif    items == 'backupgrid':           cases.backupgrid()
         elif    items == 'buysell':              cases.buysell()
-        #elif    items == 'mg_oem':               cases.mg_oem(demand_profiles[experiment['demand_profile']], pv_generation_per_kWp, experiment['filename']) # which case is this supposed anyway?
         else: logging.warning("Unknown case!")
         duration = timeit.default_timer() - start
         logging.info('    Simulation of case '+items+' complete.')
         logging.info('    Simulation time (s): ' + str(round(duration, 2)) + '\n')
+        # Create DataFrame with all data
         overall_results = helpers.store_result_matrix(overall_results, items, experiment, oemof_results, duration)
 
     if print_simulation_experiment == True:
@@ -135,13 +143,8 @@ for experiment in sensitivity_experiments:
         pp.pprint(sensitivity_experiments)
 
     from config import output_folder
+    # Writing DataFrame with all results to csv file
     overall_results.to_csv(output_folder + '/results.csv')
-
-###############################################################################
-# Create DataFrame with all data
-###############################################################################
-
-
 
 ###############################################################################
 # Plot all graphs

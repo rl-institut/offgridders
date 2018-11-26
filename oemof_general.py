@@ -45,8 +45,8 @@ class oemofmodel():
         micro_grid_system = solph.EnergySystem(timeindex=date_time_index)
         return micro_grid_system
 
-    def simulate(micro_grid_system, case_name, experiment_name):
-        from config import solver, solver_verbose, output_folder, output_file, setting_save_lp_file, cmdline_option, cmdline_option_value
+    def simulate(micro_grid_system, file_name):
+        from config import solver, solver_verbose, output_folder, setting_save_lp_file, cmdline_option, cmdline_option_value
         logging.debug('Initialize the energy system to be optimized')
         model = solph.Model(micro_grid_system)
         logging.debug('Solve the optimization problem')
@@ -55,7 +55,7 @@ class oemofmodel():
                     cmdline_options =   {cmdline_option:    str(cmdline_option_value)})   #ratioGap allowedGap mipgap
 
         if setting_save_lp_file == True:
-            model.write(output_folder + '/model_' + case_name + experiment_name + '.lp',
+            model.write(output_folder + '/model_' + file_name + '.lp',
                         io_options={'symbolic_solver_labels': True})
 
         # add results to the energy system to make it possible to store them.
@@ -65,25 +65,30 @@ class oemofmodel():
     ######## Simulation control ########
 
     ######## Processing ########
-    def load_energysystem():
+    def load_energysystem_lp():
+        # based on lp file
         return
 
-    def store_results(micro_grid_system, case_name, experiment_name):
+    def store_results(micro_grid_system, file_name):
         # todo Enter check for directory and create directory here!
         # store energy system with results
-        from config import output_folder, output_file, setting_save_oemofresults
+        from config import output_folder, setting_save_oemofresults
         if setting_save_oemofresults == True:
-            micro_grid_system.dump(dpath=output_folder,
-                               filename=output_file+ '_' + case_name + experiment_name +".oemof")
-            logging.debug('Stored results in ' + output_folder + '/' + output_file + '_' + case_name + experiment_name + '.oemof')
+            micro_grid_system.dump(dpath=output_folder, filename = file_name + ".oemof" )
+            logging.debug('Stored results in ' + output_folder + '/' + file_name + ".oemof")
         return micro_grid_system
 
-    def load_results(case_name, experiment_name):
-        from config import output_folder, output_file
+    def filename(case_name, experiment_name):
+        from config import output_file
+        file_name = output_file + "_" + case_name + experiment_name
+        return file_name
+
+    def load_oemof_results(file_name):
+        from config import output_folder
         logging.debug('Restore the energy system and the results.')
         micro_grid_system = solph.EnergySystem()
         micro_grid_system.restore(dpath=output_folder,
-                                  filename=output_file+ '_' + case_name + experiment_name +".oemof")
+                                  filename=file_name + ".oemof")
         return micro_grid_system
 
     def process_print_meta_main(meta, electricity_bus):
@@ -98,7 +103,7 @@ class oemofmodel():
             pp.pprint(electricity_bus['sequences'].sum(axis=0))
         return
 
-    def process_basic(micro_grid_system):
+    def process_basic(micro_grid_system, experiment):
 
         # define an alias for shorter calls below (optional)
         results = micro_grid_system.results['main']
@@ -123,24 +128,21 @@ class oemofmodel():
 
         oemof_results = {
             'res_share':        res_share,
-            'fuel_consumption': total_fuel_consumption
+            'fuel_consumption': total_fuel_consumption,
+            'fuel_annual_expenditures': total_fuel_consumption*experiment['price_fuel'] / experiment['combustion_value_fuel']
              }
 
         return results, meta, electricity_bus, oemof_results
 
     def process_fix(micro_grid_system, case_name, capacity_batch, experiment):
-        results, meta, electricity_bus, oemof_results = oemofmodel.process_basic(micro_grid_system)
+        results, meta, electricity_bus, oemof_results = oemofmodel.process_basic(micro_grid_system, experiment)
 
         total_supplied_demand = electricity_bus['sequences'][(('bus_electricity_mg', 'sink_demand'), 'flow')].sum()
 
-        print ("experiment['cost_annuity_pv']*capacity_batch['pv_invest_kW']"+str(experiment['pv_cost_annuity']*capacity_batch['pv_invest_kW']))
-        print ("experiment['cost_annuity_genset']*capacity_batch['genset_invest_kW']"+str(experiment['genset_cost_annuity']*capacity_batch['genset_invest_kW']))
-        print ("experiment['cost_annuity_storage'] * capacity_batch['storage_invest_kWh']" + str(experiment['storage_cost_annuity'] * capacity_batch['storage_invest_kWh']))
-        print("objective"+str(meta['objective']))
-
-        annuity = experiment['pv_cost_annuity']*capacity_batch['pv_invest_kW'] +\
-                experiment['genset_cost_annuity']*capacity_batch['genset_invest_kW'] +\
-                experiment['storage_cost_annuity'] * capacity_batch['storage_invest_kWh'] +\
+        annuity = experiment['pv_cost_annuity']*capacity_batch['pv_capacity_kW'] +\
+                experiment['genset_cost_annuity']*capacity_batch['genset_capacity_kW'] +\
+                experiment['storage_cost_annuity'] * capacity_batch['storage_capacity_kWh'] + \
+                experiment['project_cost_annuity'] +\
                 meta['objective'] # here, objective function only gives the additional VARIABLE costs!
 
         from config import evaluated_days
@@ -153,18 +155,25 @@ class oemofmodel():
         oemof_results.update({'Annuity': annuity})
         oemof_results.update({'LCOE': annuity/total_supplied_demand})
 
-        oemof_results.update({'pv_invest_kW': capacity_batch['pv_invest_kW']})
-        oemof_results.update({'storage_invest_kWh': capacity_batch['storage_invest_kWh']})
-        oemof_results.update({'genset_invest_kW': capacity_batch['genset_invest_kW']})
+        oemof_results.update({'pv_capacity_kW': capacity_batch['pv_capacity_kW']})
+        oemof_results.update({'storage_capacity_kWh': capacity_batch['storage_capacity_kWh']})
+        oemof_results.update({'genset_capacity_kW': capacity_batch['genset_capacity_kW']})
+
+        oemof_results.update({'pv_investment':
+                                  experiment['pv_cost_annuity']*capacity_batch['pv_capacity_kW']*experiment['annuity_factor']})
+        oemof_results.update({'storage_investment':
+                                  experiment['genset_cost_annuity']*capacity_batch['genset_capacity_kW']*experiment['annuity_factor']})
+        oemof_results.update({'genset_investment':
+                                  experiment['storage_cost_annuity'] * capacity_batch['storage_capacity_kWh']*experiment['annuity_factor']})
 
         logging.info('    Dispatch optimization for case "' + case_name + '" finished, with renewable share of ' +
                      str(round(oemof_results['res_share']*100,2)) + ' percent.')
-        pp.pprint(oemof_results)
+
         return oemof_results
 
     def process_oem(micro_grid_system, case_name, pv_generation_max, experiment):
 
-        results, meta, electricity_bus, oemof_results = oemofmodel.process_basic(micro_grid_system)
+        results, meta, electricity_bus, oemof_results = oemofmodel.process_basic(micro_grid_system, experiment)
 
         from config import print_simulation_invest
         if print_simulation_invest == True:
@@ -173,10 +182,10 @@ class oemofmodel():
 
         total_supplied_demand = electricity_bus['sequences'][(('bus_electricity_mg', 'sink_demand'), 'flow')].sum()
 
-        annuity = meta['objective']
+        annuity = meta['objective'] + experiment['project_cost_annuity']
 
         from config import evaluated_days
-        annuity = annuity * 365 / evaluated_days
+        annuity               = annuity * 365 / evaluated_days  # scaling to full year
         total_supplied_demand = total_supplied_demand * 365 / evaluated_days
 
         oemof_results.update({'Annuity':    annuity})
@@ -186,44 +195,50 @@ class oemofmodel():
         # ToDo issue for OEMOF: How to evaluate battery capacity
         capacity_battery = 1/experiment['storage_Crate']*(electricity_bus['scalars'][(('generic_storage', 'bus_electricity_mg'), 'invest')]
                               + electricity_bus['scalars'][(('bus_electricity_mg', 'generic_storage'), 'invest')])/2
-        oemof_results.update({'storage_invest_kWh': capacity_battery})  # ToDo: Check with Sarah
+        oemof_results.update({'storage_capacity_kWh': capacity_battery})
 
         if pv_generation_max > 1:
-            oemof_results.update({'pv_invest_kW': electricity_bus['scalars'][(('source_pv', 'bus_electricity_mg'), 'invest')]* pv_generation_max })
+            oemof_results.update({'pv_capacity_kW': electricity_bus['scalars'][(('source_pv', 'bus_electricity_mg'), 'invest')]* pv_generation_max })
         elif pv_generation_max > 0 and pv_generation_max < 1:
-            oemof_results.update({'pv_invest_kW': electricity_bus['scalars'][(('source_pv', 'bus_electricity_mg'), 'invest')] / pv_generation_max })
+            oemof_results.update({'pv_capacity_kW': electricity_bus['scalars'][(('source_pv', 'bus_electricity_mg'), 'invest')] / pv_generation_max })
         else:
             logging.warning("Error, Strange PV behaviour (PV gen < 0)")
 
-        oemof_results.update({'genset_invest_kW': electricity_bus['scalars'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'invest')]})
-
-        pp.pprint (oemof_results)
+        oemof_results.update({'genset_capacity_kW': electricity_bus['scalars'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'invest')]})
 
         logging.info ('    Exact OEM results of case "' + case_name + '" : \n'
-                      +'    '+'  '+ '    ' + '    ' + '    ' + str(round(oemof_results['storage_invest_kWh'],3)) + ' kWh battery, '
-                      + str(round(oemof_results['pv_invest_kW'],3)) + ' kWp PV, '
-                      + str(round(oemof_results['genset_invest_kW'],3)) + ' kW genset '
+                      +'    '+'  '+ '    ' + '    ' + '    ' + str(round(oemof_results['storage_capacity_kWh'],3)) + ' kWh battery, '
+                      + str(round(oemof_results['pv_capacity_kW'],3)) + ' kWp PV, '
+                      + str(round(oemof_results['genset_capacity_kW'],3)) + ' kW genset '
                       + 'at a renewable share of ' + str(round(oemof_results['res_share']*100,2)) + ' percent.')
-        print("objective" + str(meta['objective']))
+
         capacities_base = {
-            'pv_invest_kW': oemof_results['pv_invest_kW'],
-            'storage_invest_kWh': oemof_results['storage_invest_kWh'],
-            'genset_invest_kW': oemof_results['genset_invest_kW']
+            'pv_capacity_kW': oemof_results['pv_capacity_kW'],
+            'storage_capacity_kWh': oemof_results['storage_capacity_kWh'],
+            'genset_capacity_kW': oemof_results['genset_capacity_kW']
                             }
+
+        oemof_results.update({'pv_investment':
+                                  experiment['pv_cost_annuity']*oemof_results['pv_capacity_kW']*experiment['annuity_factor']})
+        oemof_results.update({'storage_investment':
+                                  experiment['genset_cost_annuity']*oemof_results['genset_capacity_kW']*experiment['annuity_factor']})
+        oemof_results.update({'genset_investment':
+                                  experiment['storage_cost_annuity'] * oemof_results['storage_capacity_kWh']*experiment['annuity_factor']})
+
         return oemof_results, capacities_base
 
     def process_oem_batch(capacities_base, case_name):
         from input_values import round_to_batch
-        capacities_base.update({'pv_invest_kW': round (0.5+capacities_base['pv_invest_kW']/round_to_batch['PV'])
+        capacities_base.update({'pv_capacity_kW': round (0.5+capacities_base['pv_capacity_kW']/round_to_batch['PV'])
                                                   *round_to_batch['PV']}) # immer eher 0.25 capacity mehr als eigentlich nötig
-        capacities_base.update({'genset_invest_kW': round(0.5+capacities_base['genset_invest_kW'] / round_to_batch['GenSet']) *
+        capacities_base.update({'genset_capacity_kW': round(0.5+capacities_base['genset_capacity_kW'] / round_to_batch['GenSet']) *
                                                   round_to_batch['GenSet']})
-        capacities_base.update({'storage_invest_kWh': round(0.5+capacities_base['storage_invest_kWh'] / round_to_batch['Storage']) *
+        capacities_base.update({'storage_capacity_kWh': round(0.5+capacities_base['storage_capacity_kWh'] / round_to_batch['Storage']) *
                                                   round_to_batch['Storage']})
         logging.info ('    Equivalent batch capacities of base OEM for dispatch OEM in case "' + case_name + '": \n'
-                      + '    ' + '  ' + '    ' + '    ' + '    ' + str(capacities_base['storage_invest_kWh']) + ' kWh battery, '
-                      + str(capacities_base['pv_invest_kW']) + ' kWp PV, '
-                      + str(capacities_base['genset_invest_kW']) + ' kW genset.')
+                      + '    ' + '  ' + '    ' + '    ' + '    ' + str(capacities_base['storage_capacity_kWh']) + ' kWh battery, '
+                      + str(capacities_base['pv_capacity_kW']) + ' kWp PV, '
+                      + str(capacities_base['genset_capacity_kW']) + ' kW genset.')
         return capacities_base
     ######## Processing ########
 
@@ -272,5 +287,18 @@ class oemofmodel():
                                                                           label='Supply shortage')
             plt.legend(loc='upper right')
             plt.show()
+        return
+
+    def draw(energysystem):
+        '''
+        Compare with https://oemof.readthedocs.io/en/stable/api/oemof.html?highlight=graph#module-oemof.graph for additional settings
+        '''
+        import oemof.graph as graph
+        import networkx as nx
+        import matplotlib.pyplot as plt
+        from config import output_folder
+
+        energysystem_graph = graph.create_nx_graph(energysystem, filename=output_folder+'/'+'case_graph')
+
         return
     ###### Show ######

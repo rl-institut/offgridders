@@ -6,7 +6,6 @@ from oemof.tools import economics
 ###############################################################################
 from config import use_input_file_demand, use_input_file_weather, setting_batch_capacity, coding_process
 #----------------------------Demand profile-----------------------------------#
-#TODO: ALLOW MULTIPLE DEMAND FILES
 if use_input_file_demand == True:
     input_files_demand       = {#'demand_low':        './inputs/demand_zambia_low.csv',
                                 #'demand_high':       './inputs/demand_zambia_high.csv',
@@ -65,8 +64,8 @@ if coding_process == True:
     white_noise_demand      = 0
     white_noise_irradiation = 0
 else:
-    white_noise_demand      = 0.15
-    white_noise_irradiation = 0.15
+    white_noise_demand      = 0
+    white_noise_irradiation = 0
 
 ###############################################################################
 # General Inputs and sensitivity analysis
@@ -93,35 +92,35 @@ sensitivity_constants = {
     'genset_cost_var':	                0.023,
     'genset_efficiency':	            0.33,	#	factor
     'genset_lifetime':	                10,
-    'genset_max_loading':	            1,	#	maximal	load	factor	of	generator
-    'genset_min_loading':	            0,	#	Minimal	load	factor	of	generator	-	TODO	only	effective	in	dispatch	optimization,	not	OEM
-    'max_share_unsupplied_load':	    0,	#	factor
-    'min_res_share':	                0,	#	todo	only	works	properly	for	off-grid	oem!	Create	add.	transformer	with	input	streams	fuel	(0%	res)	+	nat.grid	(x%	res)	and	limit	resshare	there!	#does	not	work	at	all	for	dispatch	oem
-    'pcoupling_cost_investment':	    1500,
-    'pcoupling_cost_opex':	            0,
-    'pcoupling_cost_var':	            0,
-    'pcoupling_efficiency':	            0.98,	#	inverter	inefficiency	between	highvoltage/mediumvoltage	grid	(maybe	even	split	into	feedin/feedfrom
-    'pcoupling_lifetime':	            20,
-    'price_electricity_main_grid':	    0.20,	#	/unit
-    'price_fuel':	                    4.4,	#	/unit
-    'project_cost_fix':	                0,	#	not	implemented
-    'project_cost_opex':	            0,	#	not	implemented
-    'project_life':	                    20,
-    'pv_cost_investment':	            950,
-    'pv_cost_opex':	                    0,
-    'pv_cost_var':	                    0,
-    'pv_lifetime':	                    20,
-    'storage_capacity_max':	            1,	#	factor
-    'storage_capacity_min':	            0.2,	#	factor	1-DOD
-    'storage_cost_investment':	        800,
-    'storage_cost_opex':	            0,
-    'storage_cost_var':	                0,
-    'storage_Crate':	                1,	#	factor	(possible	charge/discharge	ratio	to	total	capacity)
-    'storage_inflow_efficiency':	    0.9,	#	factor
-    'storage_initial_soc':	            None,	#	factor	#	todo:	what	does	None	mean	here?
-    'storage_lifetime':	                6,
-    'storage_loss_timestep':	        0,	#	factor
-    'storage_outflow_efficiency':	    0.9,	#	factor
-    'tax':	                            0,
-    'wacc':	                            0.12
+    'genset_max_loading':	            1,	    #	maximal	load factor	of	generator
+    'genset_min_loading':	            0,	    #	Minimal	load factor	of	generator	-	TODO	only	effective	in	dispatch	optimization,	not	OEM
+    'max_share_unsupplied_load':	    0,	    #	factor
+    'min_res_share':	                0,	    #   factor	todo	only	works	properly	for	off-grid	oem!	Create	add.	transformer	with	input	streams	fuel	(0%	res)	+	nat.grid	(x%	res)	and	limit	resshare	there!	#does	not	work	at	all	for	dispatch	oem
+    'pcoupling_cost_investment':	    1500,   # /unit
+    'pcoupling_cost_opex':	            0,      # /unit/a
+    'pcoupling_cost_var':	            0,      # /kWh
+    'pcoupling_efficiency':	            0.98,	# inverter inefficiency between highvoltage/mediumvoltage grid (maybe	even	split	into	feedin/feedfrom
+    'pcoupling_lifetime':	            20,     # a
+    'price_electricity_main_grid':	    0.20,	# /unit
+    'price_fuel':	                    4.4,	# /unit
+    'project_cost_fix':	                0,	    # not implemented
+    'project_cost_opex':	            0,	    # not implemented
+    'project_life':	                    20,     # a
+    'pv_cost_investment':	            950,    # /unit
+    'pv_cost_opex':	                    0,      # /unit/a
+    'pv_cost_var':	                    0,      # /kWh
+    'pv_lifetime':	                    20,     # a
+    'storage_capacity_max':	            1,	    # factor
+    'storage_capacity_min':	            0.2,	# factor (1-DOD)
+    'storage_cost_investment':	        800,    # /unit
+    'storage_cost_opex':	            0,      # /unit/a
+    'storage_cost_var':	                0,      # a
+    'storage_Crate':	                1,	    # factor (possible charge/discharge ratio to total capacity)
+    'storage_inflow_efficiency':	    0.9,	# factor
+    'storage_initial_soc':	            None,	# None or factor (None: start charge chosen by OEM)
+    'storage_lifetime':	                6,      # a
+    'storage_loss_timestep':	        0,	    # factor
+    'storage_outflow_efficiency':	    0.9,	# factor
+    'tax':	                            0,      # factor
+    'wacc':	                            0.12    # factor
 }

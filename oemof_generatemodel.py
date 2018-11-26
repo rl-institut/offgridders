@@ -8,11 +8,7 @@ tables, tkinter
 # Imports and initialize
 ###############################################################################
 
-# from oemof.tools import helpers
-import pprint as pp
-import pandas as pd
 import oemof.solph as solph
-import oemof.outputlib as outputlib
 import logging
 
 # Try to import matplotlib librar
@@ -98,15 +94,12 @@ class generatemodel():
                                                                          actual_value=pv_norm,
                                                                          fixed=True,
                                                                          investment=solph.Investment(
-                                                                             ep_costs=experiment['pv_cost_annuity']),
+                                                                             ep_costs=experiment['pv_cost_annuity']/max(pv_generation_per_kWp)),
                                                                          variable_costs = experiment['pv_cost_var']/max(pv_generation_per_kWp)
                                                                          )})
         micro_grid_system.add(source_pv)
         return micro_grid_system, bus_electricity_mg
 
-    # todo: edit so that nonconvex flow can be used. => enormeous computing time in fixed version
-    # todo: problems with min=0?
-    # todo: implement offset generator?
     def genset_fix(micro_grid_system, bus_fuel, bus_electricity_mg, capacity_fuel_gen, experiment):
         if experiment['genset_min_loading'] == 0:
             transformer_fuel_generator = solph.Transformer(label="transformer_fuel_generator",

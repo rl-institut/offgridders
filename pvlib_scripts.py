@@ -38,8 +38,6 @@ class pvgen:
     # ####################################################################### #
     #        Read weather data from file                                      #
     # ####################################################################### #
-
-    # todo current place of work
     def read_from_file():
         from input_values import input_file_weather
         from config import date_time_index, display_graphs_solar
