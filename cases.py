@@ -1,73 +1,34 @@
 '''
 Overlying script for tool for the analysis of possible
 operational modes of micro grids interconnecting with an unreliable national grid
+
+General settings from config.py, simulation-specific input data taken from dictionary experiment
+
+Utilizing the bus/component library oemof_generatemodel and the process oemof library oemof_general
+new cases can easily be added.
 '''
 
-import os
-import pandas
+# to check for files and paths
+import os.path
 
-from oemof.tools import logger
+# Logging of info
+#from oemof.tools import logger
 import logging
-# Logging
-#logger.define_logging(logfile='main_tool.log',
-#                      screen_level=logging.INFO,
-#                      file_level=logging.DEBUG)
 
+# For speeding up model and bus/component definition in oemof as well as processing
 from oemof_generatemodel import generatemodel
 from oemof_general import oemofmodel
 
+# This is not really a necessary class, as the whole experiement could be given to the function, but it ensures, that
+# only correct input data is included
+from general_functions import extract
+
 class cases():
     ###############################################################################
-    # Basecase
+    # Optimization of off-grid micro grid = Definition of base case capacities    #
     ###############################################################################
-    def base(demand_profile, pv_generation):
-        '''
-        Case: micro grid with fixed capacities = dispatch analysis
-
-                        input/output    bus_fuel        bus_electricity
-                            |               |               |
-                            |               |               |
-        source: pv          |------------------------------>|     fix cap
-                            |               |               |
-        source: fossil_fuel |-------------->|               |
-                            |               |               |
-        trafo: generator    |<--------------|               |     fix cap
-                            |------------------------------>|
-                            |               |               |
-        storage: battery    |<------------------------------|     fix cap
-                            |------------------------------>|
-                            |               |               |
-        sink: demand        |<------------------------------|     fix
-                            |               |               |
-        sink: excess        |<------------------------------|     var
-                            |               |               |
-        sink: shortage      |<------------------------------|     var
-                            |               |               |
-        '''
-        from config import allow_shortage
-        case_name = "mg_fix"
-        micro_grid_system = oemofmodel.initialize_model()
-        oemofmodel.textblock_fix()
-        micro_grid_system, bus_fuel, bus_electricity_mg = generatemodel.bus_basic(micro_grid_system)
-        micro_grid_system, bus_fuel = generatemodel.fuel(micro_grid_system, bus_fuel)
-        if allow_shortage == True: micro_grid_system = generatemodel.shortage(micro_grid_system, bus_electricity_mg)
-        micro_grid_system, bus_electricity_mg = generatemodel.demand(micro_grid_system, bus_electricity_mg, demand_profile)
-        micro_grid_system, bus_electricity_mg = generatemodel.excess(micro_grid_system, bus_electricity_mg)
-        micro_grid_system, bus_electricity_mg = generatemodel.pv_fix(micro_grid_system, bus_electricity_mg, pv_generation)
-        micro_grid_system, bus_fuel, bus_electricity_mg = generatemodel.genset_fix(micro_grid_system, bus_fuel, bus_electricity_mg)
-        micro_grid_system, bus_electricity_mg = generatemodel.storage_fix(micro_grid_system, bus_electricity_mg)
-        micro_grid_system = oemofmodel.simulate(micro_grid_system)
-        oemofmodel.store_results(micro_grid_system, case_name)
-        #micro_grid_system = oemofmodel.load_results()
-        oemofmodel.process(micro_grid_system, case_name, get_el_bus=False)
-        logging.info(' ')
-        return logging.debug('            Simulation of case "base" complete.')
-
-    ###############################################################################
-    # Optimization of off-grid micro grid
-    ###############################################################################
-
-    def mg_oem(demand_profile, pv_generation):
+    def base_oem(demand_profile, pv_generation, experiment):
+        from config import output_folder, restore_oemof_if_existant, allow_shortage
         '''
         Case: micro grid with variable capacities = OEM
 
@@ -91,26 +52,107 @@ class cases():
         sink: shortage      |<------------------------------|     var
                             |               |               |
         '''
-        from config import allow_shortage
-        case_name = "mg_oem"
-        micro_grid_system = oemofmodel.initialize_model()
-        oemofmodel.textblock_oem()
-        micro_grid_system, bus_fuel, bus_electricity_mg = generatemodel.bus_basic(micro_grid_system)
-        micro_grid_system, bus_fuel = generatemodel.fuel(micro_grid_system, bus_fuel)
-        if allow_shortage == True: micro_grid_system, bus_electricity_mg = generatemodel.shortage(micro_grid_system, bus_electricity_mg)
-        micro_grid_system, bus_electricity_mg = generatemodel.demand(micro_grid_system, bus_electricity_mg, demand_profile)
-        micro_grid_system, bus_electricity_mg = generatemodel.excess(micro_grid_system, bus_electricity_mg)
-        micro_grid_system, bus_electricity_mg = generatemodel.pv_oem(micro_grid_system, bus_electricity_mg, pv_generation)
-        micro_grid_system, bus_fuel, bus_electricity_mg = generatemodel.genset_oem(micro_grid_system, bus_fuel, bus_electricity_mg)
-        micro_grid_system, bus_electricity_mg = generatemodel.storage_oem(micro_grid_system, bus_electricity_mg)
-        micro_grid_system = oemofmodel.simulate(micro_grid_system)
-        oemofmodel.store_results(micro_grid_system, case_name)
-        #micro_grid_system = oemofmodel.load_results()
-        electricity_bus = oemofmodel.process(micro_grid_system, case_name, get_el_bus=True)
-        oem_results = oemofmodel.process_oem(electricity_bus, case_name, max(pv_generation))
-        logging.info(' ')
-        return oem_results
+        case_name = "base_oem"
+        file_name = oemofmodel.filename(case_name, experiment['filename'])
 
+        # For restoring .oemof results if that is possible (speeding up computation time)
+        if os.path.isfile(output_folder + "/" + file_name + ".oemof") and restore_oemof_if_existant == True:
+            logging.info("Previous results of " + case_name + " restored.")
+
+        # If .oemof results do not already exist, start oemof-process
+        else:
+            # creating energysystem with date-time-frame
+            micro_grid_system = oemofmodel.initialize_model()
+            oemofmodel.textblock_oem()
+            # add bus (fuel, electricity_mg)
+            micro_grid_system, bus_fuel, bus_electricity_mg     = generatemodel.bus_basic(micro_grid_system)
+            # add fuel source
+            micro_grid_system, bus_fuel                         = generatemodel.fuel_oem(micro_grid_system, bus_fuel, extract.fuel(experiment), sum(demand_profile))
+            if allow_shortage == True:
+                # add source shortage, if allowed
+                micro_grid_system, bus_electricity_mg           = generatemodel.shortage(micro_grid_system, bus_electricity_mg, sum(demand_profile), extract.shortage(experiment))
+            # add demand sink
+            micro_grid_system, bus_electricity_mg               = generatemodel.demand(micro_grid_system, bus_electricity_mg, demand_profile)
+            # add excess sink
+            micro_grid_system, bus_electricity_mg               = generatemodel.excess(micro_grid_system, bus_electricity_mg)
+            # add pv source
+            micro_grid_system, bus_electricity_mg               = generatemodel.pv_oem(micro_grid_system, bus_electricity_mg, pv_generation, extract.pv(experiment))
+            # add genset transformer
+            micro_grid_system, bus_fuel, bus_electricity_mg     = generatemodel.genset_oem(micro_grid_system, bus_fuel, bus_electricity_mg, extract.genset(experiment))
+            # add storage
+            micro_grid_system, bus_electricity_mg               = generatemodel.storage_oem(micro_grid_system, bus_electricity_mg, extract.storage(experiment))
+            # perform simulation
+            micro_grid_system                                   = oemofmodel.simulate(micro_grid_system, file_name)
+            # store simulation results to .oemof
+            oemofmodel.store_results(micro_grid_system, file_name)
+
+        # load oemof results from previous or just finished simulation
+        micro_grid_system = oemofmodel.load_oemof_results(file_name)
+
+        # process results
+        oemof_results, capacities_base                             = oemofmodel.process_oem(micro_grid_system, case_name, max(pv_generation), extract.process_oem(experiment), demand_profile)
+
+        # todo: better graph for created energysystems if NO outputfolder/outputfile_casename* exist!
+        #oemofmodel.draw(micro_grid_system)
+
+        return oemof_results, capacities_base
+
+    ###############################################################################
+    #                Dispatch optimization with fixed capacities                  #
+    ###############################################################################
+    def mg_fix(demand_profile, pv_generation, experiment, capacity_base):
+        from config import output_folder, restore_oemof_if_existant, allow_shortage, setting_batch_capacity
+        '''
+        Case: micro grid with fixed capacities = dispatch analysis
+
+                        input/output    bus_fuel        bus_electricity
+                            |               |               |
+                            |               |               |
+        source: pv          |------------------------------>|     fix cap
+                            |               |               |
+        source: fossil_fuel |-------------->|               |
+                            |               |               |
+        trafo: generator    |<--------------|               |     fix cap
+                            |------------------------------>|
+                            |               |               |
+        storage: battery    |<------------------------------|     fix cap
+                            |------------------------------>|
+                            |               |               |
+        sink: demand        |<------------------------------|     fix
+                            |               |               |
+        sink: excess        |<------------------------------|     var
+                            |               |               |
+        sink: shortage      |<------------------------------|     var
+                            |               |               |
+        '''
+        case_name = "mg_fix"
+        file_name = oemofmodel.filename(case_name, experiment['filename'])
+        if setting_batch_capacity == True:
+            capacity_batch = oemofmodel.process_oem_batch(capacity_base, case_name)
+
+        if os.path.isfile(output_folder + "/" + file_name + ".oemof") and restore_oemof_if_existant == True:
+            logging.info("Previous results of " + case_name + " restored. \n Attention! If changed, batch capacities might be different!")
+        else:
+            micro_grid_system                                   = oemofmodel.initialize_model()
+            oemofmodel.textblock_fix()
+            micro_grid_system, bus_fuel, bus_electricity_mg     = generatemodel.bus_basic(micro_grid_system)
+            micro_grid_system, bus_fuel                         = generatemodel.fuel_fix(micro_grid_system, bus_fuel, extract.fuel(experiment))
+            if allow_shortage == True:
+                micro_grid_system, bus_electricity_mg           = generatemodel.shortage(micro_grid_system, bus_electricity_mg, sum(demand_profile), extract.shortage(experiment))
+            micro_grid_system, bus_electricity_mg               = generatemodel.demand(micro_grid_system, bus_electricity_mg, demand_profile)
+            micro_grid_system, bus_electricity_mg               = generatemodel.excess(micro_grid_system, bus_electricity_mg)
+            micro_grid_system, bus_electricity_mg               = generatemodel.pv_fix(micro_grid_system, bus_electricity_mg, pv_generation, capacity_batch['pv_capacity_kW'], extract.pv(experiment))
+            micro_grid_system, bus_fuel, bus_electricity_mg     = generatemodel.genset_fix(micro_grid_system, bus_fuel, bus_electricity_mg, capacity_batch['genset_capacity_kW'], extract.genset(experiment))
+            micro_grid_system, bus_electricity_mg               = generatemodel.storage_fix(micro_grid_system, bus_electricity_mg, capacity_batch['storage_capacity_kWh'], extract.storage(experiment))
+            micro_grid_system                                   = oemofmodel.simulate(micro_grid_system, file_name)
+            oemofmodel.store_results(micro_grid_system, file_name)
+
+        micro_grid_system = oemofmodel.load_oemof_results(file_name)
+        oemof_results = oemofmodel.process_fix(micro_grid_system, case_name, capacity_batch, extract.process_fix(experiment), demand_profile)
+
+        return oemof_results
+
+################################ Not jet defined cases ################################################################
     ###############################################################################
     # Dispatch with MG as sunk costs
     ###############################################################################
@@ -138,7 +180,6 @@ class cases():
         sink: shortage      |<------------------------------|     var
                             |               |               |
         '''
-        logging.debug('            Simulation of case "buyoff" complete.')
         return
 
     ###############################################################################
@@ -169,7 +210,6 @@ class cases():
         sink: shortage      |<------------------------------|     var
                             |               |               |
         '''
-        logging.debug('            Simulation of case "parallel" complete.')
         return
 
     ###############################################################################
@@ -199,7 +239,6 @@ class cases():
         sink: shortage      |<------------------------------|     var
                             |               |               |
         '''
-        logging.debug('            Simulation of case "backupgrid" complete.')
         return
 
     ###############################################################################
@@ -232,7 +271,6 @@ class cases():
         source: ng          |               |               |<------------------------| var
         sink: ng            |               |               |------------------------>|
         '''
-        logging.debug('            Simulation of case "buysell" complete.')
         return
 
     ###############################################################################
@@ -262,7 +300,6 @@ class cases():
         sink: shortage      |<------------------------------|     var
                             |               |               |
         '''
-        logging.debug('            Simulation of case "adapted" complete.')
         return
 
     ###############################################################################
@@ -292,7 +329,4 @@ class cases():
         sink: shortage      |<------------------------------|     var
                             |               |               |
         '''
-        logging.debug('            Simulation of case "oem_interconnected" complete.')
         return
-
-    

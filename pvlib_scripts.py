@@ -16,12 +16,50 @@ except ImportError:
 
 # Import simulation settings
 from config import date_time_index, display_graphs_solar
+from general_functions import helpers
 
-class pvlib_scripts:
+class pvgen:
+
+    def get():
+        from config import use_input_file_weather, date_time_index
+        if use_input_file_weather == True:
+            pv_generation_per_kWp = pvgen.read_from_file()
+        else:
+            from input_values import pv_system_location, location_name, pv_system_parameters, pv_composite_name
+            # Solar irradiance
+            solpos, dni_extra, airmass, pressure, am_abs, tl, cs = pvgen.pvlib_irradiation(pv_system_location,
+                                                                                           location_name)
+            # PV generation
+            pv_generation_per_kWp, pv_module_kWp = pvgen.pvlib_generation(
+                pv_system_parameters, pv_composite_name, location_name, solpos, dni_extra, airmass, pressure, am_abs, tl,
+                cs)
+        return pv_generation_per_kWp[date_time_index]
+
+    # ####################################################################### #
+    #        Read weather data from file                                      #
+    # ####################################################################### #
+    def read_from_file():
+        from input_values import input_file_weather
+        from config import date_time_index, display_graphs_solar
+        data_set = pd.read_csv(input_file_weather, header=2)
+        # Anpassen des timestamps auf die analysierte Periode
+        index = pd.DatetimeIndex(data_set['local_time'].values)
+        index = [item + pd.DateOffset(year=date_time_index[0].year) for item in index]
+        # reading pv_generation values - adjust to panel area or kWp and if in Wh!
+        pv_generation_per_kWp =  pd.Series(data_set['output'].values, index = index)
+        # todo Actually, there needs to be a check for timesteps (1/0.25) here
+        logging.info('Total annual pv generation at project site (kWh/a/kWp): ' + str(round(pv_generation_per_kWp.sum())))
+        if display_graphs_solar == True:
+            helpers.plot_results(pv_generation_per_kWp[date_time_index], "PV generation at project site",
+                        "Date",
+                        "Power kW")
+
+        return pv_generation_per_kWp[date_time_index]
+
     # ####################################################################### #
     #        Calculation of general solar variables, based on location        #
     # ####################################################################### #
-    def irradiation(pv_system_location, location_name):
+    def pvlib_irradiation(pv_system_location, location_name):
 
         solpos = pvlib.solarposition.get_solarposition(date_time_index, pv_system_location.loc['latitude', location_name],
                                                        pv_system_location.loc['longitude', location_name])
@@ -40,7 +78,7 @@ class pvlib_scripts:
     # ########################################################################## #
     #      Calculation of irradiance, dc, ac power for one specific py system    #
     # ########################################################################## #
-    def generation(pv_system_parameters, pv_composite_name, location_name, solpos, dni_extra, airmass, pressure, am_abs, tl, cs):
+    def pvlib_generation(pv_system_parameters, pv_composite_name, location_name, solpos, dni_extra, airmass, pressure, am_abs, tl, cs):
         # constant ambient air temperature and wind speed for simplicity
         temp_air = 20
         wind_speed = 0
@@ -95,6 +133,7 @@ class pvlib_scripts:
             plt.show()
 
         logging.info('Calculated solar irradiation and pv generation (without white noise) for '+pv_composite_name+'_'+location_name)
-        return ac_per_kWp.clip_lower(0)/1000, module_Wp/1000  # pro installed kWp # clips all negative calues!
+        pv_generation_per_kWp = ac_per_kWp.clip_lower(0)/1000, module_Wp/1000  # pro installed kWp # clips all negative values!
+        return pv_generation_per_kWp
 
 # times = pd.DatetimeIndex(start='2018', end='2019', freq='15min')
