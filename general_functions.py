@@ -134,7 +134,11 @@ class helpers:
         return
 
     def store_result_matrix(overall_results, case_name, experiment, oemof_results, duration):
-        """Storing results to vector and then result matrix for saving it in csv."""
+        """
+        Storing results to vector and then result matrix for saving it in csv.
+        All from oemof-results have to be mentioned EXPLICITLY
+        All from (variable) sensitivity values are NOT mentioned
+        """
         round_to_comma = 5
         result_vector = []
         for item in overall_results.columns.values:
@@ -158,8 +162,16 @@ class helpers:
                 result_vector.extend([round(oemof_results['Annuity'], round_to_comma)])
             elif item ==  'Fuel consumption':
                 result_vector.extend([round(oemof_results['fuel_consumption'], round_to_comma)])
+            elif item == 'fuel_annual_expenditures':
+                result_vector.extend([round(oemof_results['fuel_annual_expenditures'], round_to_comma)])
             elif item ==  'Simulation time':
                 result_vector.extend([round(duration, round_to_comma)])
+            elif item == 'demand_annual_supplied_kWh':
+                result_vector.extend([round(oemof_results['demand_annual_supplied_kWh'], round_to_comma)])
+            elif item == 'demand_annual_kWh':
+                result_vector.extend([round(oemof_results['demand_annual_kWh'], round_to_comma)])
+            elif item == 'demand_peak_kW':
+                result_vector.extend([round(oemof_results['demand_peak_kW'], round_to_comma)])
             elif item == 'demand_profile':
                 result_vector.extend([experiment[item]])
             else:

@@ -103,7 +103,7 @@ class oemofmodel():
             pp.pprint(electricity_bus['sequences'].sum(axis=0))
         return
 
-    def process_basic(micro_grid_system, experiment):
+    def process_basic(micro_grid_system, experiment, demand_profile):
 
         # define an alias for shorter calls below (optional)
         results = micro_grid_system.results['main']
@@ -122,22 +122,27 @@ class oemofmodel():
         res_share = abs(1 - total_diesel_generation / total_supplied_demand)
 
         total_fuel_consumption = fuel_bus['sequences'][(('source_fuel', 'bus_fuel'), 'flow')].sum()
+        total_supplied_demand = electricity_bus['sequences'][(('bus_electricity_mg', 'sink_demand'), 'flow')].sum()
 
         from config import evaluated_days
         total_fuel_consumption = total_fuel_consumption * 365 / evaluated_days
+        total_supplied_demand = total_supplied_demand * 365 / evaluated_days
+        total_demand = sum(demand_profile)
+        # todo: if freq=15 min, this has to be adjusted!
 
         oemof_results = {
             'res_share':        res_share,
             'fuel_consumption': total_fuel_consumption,
-            'fuel_annual_expenditures': total_fuel_consumption*experiment['price_fuel'] / experiment['combustion_value_fuel']
+            'fuel_annual_expenditures': total_fuel_consumption*experiment['price_fuel'] / experiment['combustion_value_fuel'],
+            'demand_annual_supplied_kWh': total_supplied_demand,
+            'demand_annual_kWh': total_demand,
+            'demand_peak_kW': max(demand_profile)
              }
 
         return results, meta, electricity_bus, oemof_results
 
-    def process_fix(micro_grid_system, case_name, capacity_batch, experiment):
-        results, meta, electricity_bus, oemof_results = oemofmodel.process_basic(micro_grid_system, experiment)
-
-        total_supplied_demand = electricity_bus['sequences'][(('bus_electricity_mg', 'sink_demand'), 'flow')].sum()
+    def process_fix(micro_grid_system, case_name, capacity_batch, experiment, demand_profile):
+        results, meta, electricity_bus, oemof_results = oemofmodel.process_basic(micro_grid_system, experiment, demand_profile)
 
         annuity = experiment['pv_cost_annuity']*capacity_batch['pv_capacity_kW'] +\
                 experiment['genset_cost_annuity']*capacity_batch['genset_capacity_kW'] +\
@@ -147,13 +152,12 @@ class oemofmodel():
 
         from config import evaluated_days
         annuity = annuity * 365 / evaluated_days
-        total_supplied_demand = total_supplied_demand * 365 / evaluated_days
 
         npv = annuity * experiment['annuity_factor']
 
         oemof_results.update({'NPV':  npv})
         oemof_results.update({'Annuity': annuity})
-        oemof_results.update({'LCOE': annuity/total_supplied_demand})
+        oemof_results.update({'LCOE': annuity/oemof_results['demand_annual_supplied_kWh']})
 
         oemof_results.update({'pv_capacity_kW': capacity_batch['pv_capacity_kW']})
         oemof_results.update({'storage_capacity_kWh': capacity_batch['storage_capacity_kWh']})
@@ -171,25 +175,22 @@ class oemofmodel():
 
         return oemof_results
 
-    def process_oem(micro_grid_system, case_name, pv_generation_max, experiment):
+    def process_oem(micro_grid_system, case_name, pv_generation_max, experiment, demand_profile):
 
-        results, meta, electricity_bus, oemof_results = oemofmodel.process_basic(micro_grid_system, experiment)
+        results, meta, electricity_bus, oemof_results = oemofmodel.process_basic(micro_grid_system, experiment, demand_profile)
 
         from config import print_simulation_invest
         if print_simulation_invest == True:
             logging.info('********* Invest results *********')
             pp.pprint(electricity_bus['scalars'])
 
-        total_supplied_demand = electricity_bus['sequences'][(('bus_electricity_mg', 'sink_demand'), 'flow')].sum()
-
         annuity = meta['objective'] + experiment['project_cost_annuity']
 
         from config import evaluated_days
         annuity               = annuity * 365 / evaluated_days  # scaling to full year
-        total_supplied_demand = total_supplied_demand * 365 / evaluated_days
 
         oemof_results.update({'Annuity':    annuity})
-        oemof_results.update({'LCOE':       annuity/total_supplied_demand})
+        oemof_results.update({'LCOE':       annuity/oemof_results['demand_annual_supplied_kWh']})
         oemof_results.update({'NPV':        annuity*experiment['annuity_factor']})
 
         # ToDo issue for OEMOF: How to evaluate battery capacity

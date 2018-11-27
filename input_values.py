@@ -7,8 +7,8 @@ from oemof.tools import economics
 from config import use_input_file_demand, use_input_file_weather, setting_batch_capacity, coding_process
 #----------------------------Demand profile-----------------------------------#
 if use_input_file_demand == True:
-    input_files_demand       = {#'demand_low':        './inputs/demand_zambia_low.csv',
-                                #'demand_high':       './inputs/demand_zambia_high.csv',
+    input_files_demand       = {'demand_low':        './inputs/demand_zambia_low.csv',
+                                'demand_high':       './inputs/demand_zambia_high.csv',
                                 'demand_median':     './inputs/demand_zambia_median.csv'
                                 }
     unit_of_input_file      = 'kWh'
@@ -53,9 +53,9 @@ else:
 if setting_batch_capacity == True:
     # Minimal batch capacities (always round up, if value is exactly met, add another batch)
     round_to_batch = {
-        'PV': 0.25, # kWp
-        'GenSet': 0.25, #kW
-        'Storage': 1 #kWh
+        'PV': 0.25,     # kWp
+        'GenSet': 0.25, # kW
+        'Storage': 1    # kWh
             }
 
 #----------------------------White noise---------------------------------#
@@ -82,24 +82,24 @@ sensitivity_bounds = {
 
 # Values of the sensitivity analysis that appear constant
 sensitivity_constants = {
-    'blackout_duration':	            2,	#	hrs	per	blackout
-    'blackout_frequency':	            7,	#	blackouts	per	month
-    'combustion_value_fuel':	        10,	#	kWh/unit
-    'costs_var_unsupplied_load':	    10,	#	/kWh
-    'distance_to_grid':	                10,	#	todo	not	implemented	distance_to_grid
-    'genset_cost_investment':	        800,
-    'genset_cost_opex':	                25,
-    'genset_cost_var':	                0.023,
-    'genset_efficiency':	            0.33,	#	factor
-    'genset_lifetime':	                10,
-    'genset_max_loading':	            1,	    #	maximal	load factor	of	generator
-    'genset_min_loading':	            0,	    #	Minimal	load factor	of	generator	-	TODO	only	effective	in	dispatch	optimization,	not	OEM
-    'max_share_unsupplied_load':	    0,	    #	factor
-    'min_res_share':	                0,	    #   factor	todo	only	works	properly	for	off-grid	oem!	Create	add.	transformer	with	input	streams	fuel	(0%	res)	+	nat.grid	(x%	res)	and	limit	resshare	there!	#does	not	work	at	all	for	dispatch	oem
+    'blackout_duration':	            2,	    # hrs per blackout
+    'blackout_frequency':	            7,	    # blackouts per month
+    'combustion_value_fuel':	        10,	    # kWh/unit
+    'costs_var_unsupplied_load':	    10,	    # /kWh
+    'distance_to_grid':	                10,	    # todo not implemented distance_to_grid
+    'genset_cost_investment':	        400,    # /unit
+    'genset_cost_opex':	                25,     # /unit/a
+    'genset_cost_var':	                0.023,  # /kWh
+    'genset_efficiency':	            0.33,	# factor
+    'genset_lifetime':	                10,     # a
+    'genset_max_loading':	            1,	    # maximal load factor of generator
+    'genset_min_loading':	            0,	# Minimal load factor of generator
+    'max_share_unsupplied_load':	    0,	    # factor
+    'min_res_share':	                0,	    # factor	todo only works	properly for off-grid oem! Create add. transformer with input streams fuel (0%	res) + nat.grid (x%	res) and limit resshare there! #does not work at all for dispatch oem
     'pcoupling_cost_investment':	    1500,   # /unit
     'pcoupling_cost_opex':	            0,      # /unit/a
     'pcoupling_cost_var':	            0,      # /kWh
-    'pcoupling_efficiency':	            0.98,	# inverter inefficiency between highvoltage/mediumvoltage grid (maybe	even	split	into	feedin/feedfrom
+    'pcoupling_efficiency':	            0.98,	# inverter inefficiency between highvoltage/mediumvoltage grid (maybe even split into feedin/feedfrom
     'pcoupling_lifetime':	            20,     # a
     'price_electricity_main_grid':	    0.20,	# /unit
     'price_fuel':	                    4.4,	# /unit
