@@ -139,6 +139,7 @@ for experiment in sensitivity_experiments:
         # Extend overall results dataframe with simulation results
         overall_results = helpers.store_result_matrix(overall_results, items, experiment, oemof_results, duration)
 
+    pp.pprint(overall_results)
     if print_simulation_experiment == True:
         logging.info('The case with following parameters has been analysed:')
         pp.pprint(sensitivity_experiments)
