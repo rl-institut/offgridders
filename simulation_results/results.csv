@@ -1,0 +1,7 @@
+,Case,Filename,Capacity PV kWp,Capacity storage kWh,Capacity genset kW,Renewable Factor,NPV,LCOE,Annuity,Fuel consumption,fuel_annual_expenditures,Simulation time,demand_annual_kWh,demand_peak_kW,demand_annual_supplied_kWh,demand_profile
+0,base_oem,results_base_oem_s_demand_median,119.1589,419.91838,0.0,1.0,705556.70391,0.50171,94459.07077,0.0,0.0,0.61064,515.81886,59.109,188273.8839,demand_median
+1,mg_fixed,results_mg_fixed_s_demand_median,119.25,420.0,0.0,1.0,705758.38795,0.50185,94486.07198,0.0,0.0,0.27559,515.81886,59.109,188273.8839,demand_median
+2,base_oem,results_base_oem_s_demand_high,163.85065,617.60046,0.0,1.0,1026873.09916,0.53616,137476.51777,0.0,0.0,0.22607,702.49476,72.4444,256410.5874,demand_high
+3,mg_fixed,results_mg_fixed_s_demand_high,164.0,618.0,0.0,1.0,1027578.59226,0.53653,137570.96833,0.0,0.0,0.19919,702.49476,72.4444,256410.5874,demand_high
+4,base_oem,results_base_oem_s_demand_low,32.60585,101.50959,0.0,1.0,174169.55305,0.44547,23317.60728,0.0,0.0,0.21723,143.40738,12.719,52343.6937,demand_low
+5,mg_fixed,results_mg_fixed_s_demand_low,32.75,102.0,0.0,1.0,174998.28707,0.44759,23428.55718,0.0,0.0,0.19142,143.40738,12.719,52343.6937,demand_low

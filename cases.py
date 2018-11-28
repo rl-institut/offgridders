@@ -90,7 +90,7 @@ class cases():
         micro_grid_system = oemofmodel.load_oemof_results(file_name)
 
         # process results
-        oemof_results, capacities_base                             = oemofmodel.process_oem(micro_grid_system, case_name, max(pv_generation), extract.process_oem(experiment))
+        oemof_results, capacities_base                             = oemofmodel.process_oem(micro_grid_system, case_name, max(pv_generation), extract.process_oem(experiment), demand_profile)
 
         # todo: better graph for created energysystems if NO outputfolder/outputfile_casename* exist!
         #oemofmodel.draw(micro_grid_system)
@@ -148,7 +148,7 @@ class cases():
             oemofmodel.store_results(micro_grid_system, file_name)
 
         micro_grid_system = oemofmodel.load_oemof_results(file_name)
-        oemof_results = oemofmodel.process_fix(micro_grid_system, case_name, capacity_batch, extract.process_fix(experiment))
+        oemof_results = oemofmodel.process_fix(micro_grid_system, case_name, capacity_batch, extract.process_fix(experiment), demand_profile)
 
         return oemof_results
 

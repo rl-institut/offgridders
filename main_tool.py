@@ -72,11 +72,12 @@ logging.info(str(len(sensitivity_experiments)) + ' simulations are necessary to 
 # Creating events, that later on are constant for each case with spec. combi. #
 #-----------------------------------------------------------------------------#
 
+# Creating all possible blackout experiments (combinations of duration and frequency)
 blackout_experiments   =   sensitivity.blackout_experiments()
-logging.info(str(len(sensitivity_experiments)) + ' combinations of blackout duration and frequency will be analysed. \n')
-
-# todo create module for retrieving blackout events at specific combination of duration/frequency
-#blackout_events = { {d: XY, f: XY, pd.Dataframe},  } => from national_grid.availability(blackoutduration/100, blackoutfrequency/100)
+logging.info(str(len(blackout_experiments)) + ' combinations of blackout duration and frequency will be analysed. \n')
+# Calculation of grid_availability with randomized blackouts
+from national_grid import national_grid
+sensitivity_grid_availability = national_grid.availability(blackout_experiments)
 
 #---------------------------- Base case OEM ----------------------------------#
 # Based on demand, pv generation and subjected to sensitivity analysis SOEM   #
@@ -112,11 +113,9 @@ for experiment in sensitivity_experiments:
     # Simulations of all cases
     ###############################################################################
 
-    # todo: actually, calling all blackoutdurations/blackoutfrequencies seperately here is not helpful - the blackout
-    # could be with check for frequency / duration and appropriate event
-
-   # national_grid_availability = blackout_events['freq'=]['dur'=]
-
+    from national_grid import national_grid
+    blackout_experiment_name = national_grid.get_blackout_experiment_name(experiment['blackout_duration'], experiment['blackout_frequency'])
+    grid_availability = sensitivity_grid_availability[blackout_experiment_name]['grid_availability']
     ###############################################################################
     # Creating, simulating and storing micro grid energy systems with oemof
     # According to parameters set beforehand
@@ -128,14 +127,16 @@ for experiment in sensitivity_experiments:
         elif    items == 'buyoff':               cases.buyoff()
         elif    items == 'parallel':             cases.parallel()
         elif    items == 'adapted':              cases.adapted()
-        elif    items == 'oem_interconnected':   cases.oem_interconnected()
+        elif    items == 'oem_interconnected':   cases.oem_interconnected(grid_availability)
         elif    items == 'backupgrid':           cases.backupgrid()
         elif    items == 'buysell':              cases.buysell()
         else: logging.warning("Unknown case!")
         duration = timeit.default_timer() - start
         logging.info('    Simulation of case '+items+' complete.')
         logging.info('    Simulation time (s): ' + str(round(duration, 2)) + '\n')
-        # Create DataFrame with all data
+        # Extend oemof_results by blackout characteristics
+        oemof_results   = national_grid.extend_oemof_results(oemof_results, sensitivity_grid_availability[blackout_experiment_name])
+        # Extend overall results dataframe with simulation results
         overall_results = helpers.store_result_matrix(overall_results, items, experiment, oemof_results, duration)
 
     if print_simulation_experiment == True:
@@ -146,6 +147,8 @@ for experiment in sensitivity_experiments:
     # Writing DataFrame with all results to csv file
     overall_results.to_csv(output_folder + '/results.csv')
 
+# display all results
+pp.pprint(overall_results)
 ###############################################################################
 # Plot all graphs
 ###############################################################################

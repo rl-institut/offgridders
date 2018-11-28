@@ -1,7 +1,7 @@
 import pandas as pd
 
 ####### ------------ General simulation settings ----------------- #######
-coding_process              = False  # Defines timeframe and noise (see below)
+coding_process              = True  # Defines timeframe and noise (see below)
 restore_oemof_if_existant   = False   # If set to False, the directory with results is emptied!!
 
 # simulated cases:
@@ -38,7 +38,7 @@ setting_save_lp_file        = False  # save lp file of oemof simulation
 setting_save_oemofresults   = True   # save oemofresults to .oemof file
 display_graphs_solar        = False
 display_graphs_demand       = False
-display_graphs_simulation   = True
+display_graphs_simulation   = False
 print_simulation_meta       = False  # print information on opimization
 print_simulation_main       = False  # print accumulated flows over electricity bus
 print_simulation_invest     = False  # print investment results
@@ -68,6 +68,7 @@ else:
     time_start     = pd.to_datetime('2018-01-01 0:00', format='%Y-%m-%d %H:%M')
     time_end       = time_start + pd.DateOffset(days=evaluated_days) - pd.DateOffset(hours=1)
     time_frequency = 'H'
+    # date_time_index.freq checkts for frequency, but result is sth like <Hour> or <15 * Minutes>
 
 
 date_time_index = pd.date_range(start=time_start, end=time_end, freq=time_frequency)

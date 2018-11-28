@@ -55,7 +55,7 @@ class sensitivity():
 
         # define structure of pd.Dataframe: overall_results
         overall_results = pd.DataFrame(
-            columns=['Case', 'Filename', 'Capacity PV kWp', 'Capacity storage kWh', 'Capacity genset kW', 'Renewable Factor', 'NPV', 'LCOE', 'Annuity', 'Fuel consumption',  'Simulation time'])
+            columns=['Case', 'Filename', 'Capacity PV kWp', 'Capacity storage kWh', 'Capacity genset kW', 'Renewable Factor', 'NPV', 'LCOE', 'Annuity', 'Fuel consumption', 'fuel_annual_expenditures', 'Simulation time', 'demand_annual_kWh', 'demand_peak_kW', 'demand_annual_supplied_kWh'])
         if len(demand_array) > 1:
             overall_results = pd.concat([overall_results, pd.DataFrame(columns=['demand_profile'])], axis=1)
         for keys in sensitivity_bounds:
@@ -67,29 +67,26 @@ class sensitivity():
         import itertools
         import numpy as np
 
-        dictof_oemparameters = {}
+        dictof_blackoutparameters = {}
         for keys in sensitivity_bounds:
             if keys == 'blackout_duration' or keys == 'blackout_frequency':
                 if sensitivity_bounds[keys]['min'] == sensitivity_bounds[keys]['max']:
-                    dictof_oemparameters.update({keys: np.array([sensitivity_bounds[keys]['min']])})
+                    dictof_blackoutparameters.update({keys: np.array([sensitivity_bounds[keys]['min']])})
                 else:
-                    dictof_oemparameters.update({keys: np.arange(sensitivity_bounds[keys]['min'],
+                    dictof_blackoutparameters.update({keys: np.arange(sensitivity_bounds[keys]['min'],
                                                                  sensitivity_bounds[keys]['max']+sensitivity_bounds[keys]['step']/2,
                                                                  sensitivity_bounds[keys]['step'])})
         for keys in sensitivity_constants:
             if keys == 'blackout_duration' or keys == 'blackout_frequency':
-                dictof_oemparameters.update({keys: np.array([sensitivity_constants[keys]])})
+                dictof_blackoutparameters.update({keys: np.array([sensitivity_constants[keys]])})
 
         # create all possible combinations of sensitive parameters
-        keys, values = zip(*dictof_oemparameters.items())
-        experiments = [dict(zip(keys, v)) for v in itertools.product(*values)]
+        keys, values = zip(*dictof_blackoutparameters.items())
+        blackout_experiments = [dict(zip(keys, v)) for v in itertools.product(*values)]
 
         # define file postfix to save simulation
-        for i in range(0, len(experiments)):
-            filename = 's'
-            for keys in experiments[i]:
-                filename = filename + '_' + keys + '_' + str(round(experiments[i][keys],2))
-
-            experiments[i].update({'filename': filename})
-
-        return experiments
+        for i in range(0, len(blackout_experiments)):
+            experiment_name = 'blackout_duration'+ '_' + str(round(blackout_experiments[i]['blackout_duration'],2))+"_" \
+                              +'blackout_frequency'+ '_' + str(round(blackout_experiments[i]['blackout_frequency'],2))
+            blackout_experiments[i].update({'experiment_name': experiment_name})
+        return blackout_experiments

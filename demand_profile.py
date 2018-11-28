@@ -41,7 +41,7 @@ class demand:
                 #plt.savefig(output_folder+'/fig_'+demand_title+'.png', bbox_inches='tight')
         return
 
-
+    ##
     def get():
         from config import use_input_file_demand, write_demand_to_file
 
