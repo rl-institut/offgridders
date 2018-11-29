@@ -54,6 +54,8 @@ class sensitivity():
             experiments[i].update({'filename': filename})
 
         # define structure of pd.Dataframe: overall_results
+        # todo more automatic extension of colum header
+        # todo: add 'grid_reliability', 'grid_total_blackout_duration', 'grid_number_of_blackouts'
         overall_results = pd.DataFrame(
             columns=['Case', 'Filename', 'Capacity PV kWp', 'Capacity storage kWh', 'Capacity genset kW', 'Renewable Factor', 'NPV', 'LCOE', 'Annuity', 'Fuel consumption', 'fuel_annual_expenditures', 'Simulation time', 'demand_annual_kWh', 'demand_peak_kW', 'demand_annual_supplied_kWh'])
         if len(demand_array) > 1:
@@ -69,7 +71,7 @@ class sensitivity():
 
         dictof_blackoutparameters = {}
         for keys in sensitivity_bounds:
-            if keys == 'blackout_duration' or keys == 'blackout_frequency':
+            if keys == 'blackout_duration' or keys == 'blackout_frequency' or keys == 'blackout_duration_std_deviation' or keys == 'blackout_frequency_std_deviation':
                 if sensitivity_bounds[keys]['min'] == sensitivity_bounds[keys]['max']:
                     dictof_blackoutparameters.update({keys: np.array([sensitivity_bounds[keys]['min']])})
                 else:
@@ -77,16 +79,22 @@ class sensitivity():
                                                                  sensitivity_bounds[keys]['max']+sensitivity_bounds[keys]['step']/2,
                                                                  sensitivity_bounds[keys]['step'])})
         for keys in sensitivity_constants:
-            if keys == 'blackout_duration' or keys == 'blackout_frequency':
+            if keys == 'blackout_duration' or keys == 'blackout_frequency' or keys == 'blackout_duration_std_deviation' or keys == 'blackout_frequency_std_deviation':
                 dictof_blackoutparameters.update({keys: np.array([sensitivity_constants[keys]])})
 
         # create all possible combinations of sensitive parameters
         keys, values = zip(*dictof_blackoutparameters.items())
         blackout_experiments = [dict(zip(keys, v)) for v in itertools.product(*values)]
-
-        # define file postfix to save simulation
+        # define file name to save simulation / get grid availabilities
         for i in range(0, len(blackout_experiments)):
-            experiment_name = 'blackout_duration'+ '_' + str(round(blackout_experiments[i]['blackout_duration'],2))+"_" \
-                              +'blackout_frequency'+ '_' + str(round(blackout_experiments[i]['blackout_frequency'],2))
-            blackout_experiments[i].update({'experiment_name': experiment_name})
+            blackout_experiment_name = sensitivity.blackout_experiment_name(blackout_experiments[i])
+            blackout_experiments[i].update({'experiment_name': blackout_experiment_name})
         return blackout_experiments
+
+    # Generate names for blackout experiments, used in sensitivity.blackoutexperiments and in maintool
+    def blackout_experiment_name(blackout_experiment):
+        blackout_experiment_name = 'blackout_dur' + '_' + str(round(blackout_experiment['blackout_duration'], 2)) + "_" \
+                          + 'dur_dev' + '_' + str(round(blackout_experiment['blackout_duration_std_deviation'], 2)) + "_" \
+                          + 'freq' + '_' + str(round(blackout_experiment['blackout_frequency'], 2)) + "_" \
+                          + 'freq_dev' + '_' + str(round(blackout_experiment['blackout_frequency_std_deviation'], 2))
+        return blackout_experiment_name

@@ -70,7 +70,6 @@ class oemofmodel():
         return
 
     def store_results(micro_grid_system, file_name):
-        # todo Enter check for directory and create directory here!
         # store energy system with results
         from config import output_folder, setting_save_oemofresults
         if setting_save_oemofresults == True:
@@ -205,7 +204,14 @@ class oemofmodel():
         else:
             logging.warning("Error, Strange PV behaviour (PV gen < 0)")
 
-        oemof_results.update({'genset_capacity_kW': electricity_bus['scalars'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'invest')]})
+        # If base case OEM without minimal loading:
+        from config import base_case_with_min_loading
+        if base_case_with_min_loading == False:
+            # Optimized generator capacity
+            oemof_results.update({'genset_capacity_kW': electricity_bus['scalars'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'invest')]})
+        else:
+            # Genset capacity equals peak demand
+            oemof_results.update({'genset_capacity_kW': max(demand_profile)})
 
         logging.info ('    Exact OEM results of case "' + case_name + '" : \n'
                       +'    '+'  '+ '    ' + '    ' + '    ' + str(round(oemof_results['storage_capacity_kWh'],3)) + ' kWh battery, '

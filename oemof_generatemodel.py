@@ -38,6 +38,7 @@ class generatemodel():
 
     ######## Sources ########
     def fuel_oem(micro_grid_system, bus_fuel, experiment, total_demand):
+        # Does include intended minimal renewable factor
         source_fuel = solph.Source(label="source_fuel",
                                    outputs={bus_fuel: solph.Flow(
                                        variable_costs   = experiment['price_fuel'] / experiment['combustion_value_fuel'],
@@ -48,6 +49,7 @@ class generatemodel():
         return micro_grid_system, bus_fuel
 
     def fuel_fix(micro_grid_system, bus_fuel, experiment):
+        # Does NOT include a boundary for intendet minimal renewable factor (as in dispatch, operation costs in focus)
         source_fuel = solph.Source(label="source_fuel",
                                    outputs={bus_fuel: solph.Flow(
                                        variable_costs   = experiment['price_fuel'] / experiment['combustion_value_fuel'])})

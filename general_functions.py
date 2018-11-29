@@ -139,6 +139,8 @@ class helpers:
         All from oemof-results have to be mentioned EXPLICITLY
         All from (variable) sensitivity values are NOT mentioned
         """
+
+        # todo: add 'grid_reliability', 'grid_total_blackout_duration', 'grid_number_of_blackouts'
         round_to_comma = 5
         result_vector = []
         for item in overall_results.columns.values:
@@ -264,6 +266,14 @@ class extract():
         experiment_fix.update({'combustion_value_fuel': experiment['combustion_value_fuel']})
         experiment_fix.update({'project_cost_annuity': experiment['project_cost_annuity']})
         return experiment_fix
+
+    def blackoutparameters(experiment):
+        blackoutparameters = {}
+        blackoutparameters.update({'blackout_duration': experiment['blackout_duration']})
+        blackoutparameters.update({'blackout_duration_std_deviation': experiment['blackout_duration_std_deviation']})
+        blackoutparameters.update({'blackout_frequency': experiment['blackout_frequency']})
+        blackoutparameters.update({'blackout_frequency_std_deviation': experiment['blackout_frequency_std_deviation']})
+        return blackoutparameters
 
 """ All economic functions"""
 class economics():

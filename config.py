@@ -1,12 +1,15 @@
 import pandas as pd
 
 ####### ------------ General simulation settings ----------------- #######
-coding_process              = True  # Defines timeframe and noise (see below)
-restore_oemof_if_existant   = False   # If set to False, the directory with results is emptied!!
+coding_process                  = False  # Defines timeframe and noise (see below)
+restore_oemof_if_existant       = True  # If set to False, the directory with results is emptied!!
+restore_blackouts_if_existant   = True
+base_case_with_min_loading      = True   # If set to True, the generator capacity will be equal to peak demand in kW!
+# TOdo allow multiple generators here (or even allow multiple generators in general??)
 
 # simulated cases:
 simulated_cases = {
-    'mg_fixed': True, # dispatch with base oem capacities
+    'mg_fixed': False, # dispatch with base oem capacities
     'buyoff': False,
     'parallel': False,
     'adapted': False,
@@ -49,7 +52,7 @@ print_simulation_experiment = False  # Print data on experiment run (sensitivity
 solver = 'cbc'
 solver_verbose       = False  # show/hide solver output
 cmdline_option       = 'ratioGap' #  options for solver: allowedGap,  mipgap, ratioGap
-cmdline_option_value = 1*10**(-6)
+cmdline_option_value = 10#*10**(-1)
 
 # Debugging
 debug = True  # Set number_of_timesteps to 3 to get a readable lp-file.

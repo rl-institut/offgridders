@@ -13,6 +13,11 @@ generator.
 * pvlib
 
 # Track Versions
+29.11: Blackouts
+
+28.11: Blackouts 
+
+27.11: Preparing Zambia working (master merge), more on white noise, result file, blackouts
 
 26.11: Economics fixed (equal in OEM and fix), continue simulation with existing .oemof files, included white noise
 

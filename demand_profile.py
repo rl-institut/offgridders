@@ -159,8 +159,6 @@ class demand:
                      "Power demand in kWh/d", "demand_sector_1d")
         logging.info("Median daily demand per consumer (kWh/d): " + str( round(electricity_demand_daily.mean()/demand_input.number), 3))
 
-    # todo include white noise
-
         # Define daily profile with peak demands - without white noise the value is constant
         electricity_demand_kW_max = electricity_demand.resample('D').max()
         demand.plot_results(electricity_demand_kW_max, "Daily peak demand per sector", "Date (1-d steps)",

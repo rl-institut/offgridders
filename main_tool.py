@@ -63,6 +63,7 @@ if white_noise_irradiation != 0:
 # (point of attack: config_func.sensitivity_experiments)                      #
 #-----------------------------------------------------------------------------#
 from sensitivity import sensitivity
+# todo: maybe better to create overall_results with large empty dataframe for easier addition of new columns?
 sensitivity_experiments, overall_results     =   sensitivity.experiments()
 logging.info(str(len(sensitivity_experiments)) + ' simulations are necessary to perform the sensitivity analysis.')
 
@@ -77,7 +78,7 @@ blackout_experiments   =   sensitivity.blackout_experiments()
 logging.info(str(len(blackout_experiments)) + ' combinations of blackout duration and frequency will be analysed. \n')
 # Calculation of grid_availability with randomized blackouts
 from national_grid import national_grid
-sensitivity_grid_availability = national_grid.availability(blackout_experiments)
+sensitivity_grid_availability, blackout_results = national_grid.get_blackouts(blackout_experiments)
 
 #---------------------------- Base case OEM ----------------------------------#
 # Based on demand, pv generation and subjected to sensitivity analysis SOEM   #
@@ -100,10 +101,19 @@ for experiment in sensitivity_experiments:
     # ----------------------------Base Case OEM------------------------------------#
     # Optimization of optimal capacities in base case (off-grid micro grid)        #
     # -----------------------------------------------------------------------------#
-    # todo: this function should be called with base_experiment[] to include sensitivites
     logging.info('Starting simulation of base OEM, experiment no. ' + str(experiment_count) + '...')
     start = timeit.default_timer()
-    results, capacities_base = cases.base_oem(demand_profiles[experiment['demand_profile']], pv_generation_per_kWp, experiment)
+
+    from config import base_case_with_min_loading
+    if base_case_with_min_loading == False:
+        # Performing base case OEM without minimal loading, therefore optimizing genset capacities
+        results, capacities_base = cases.base_oem(demand_profiles[experiment['demand_profile']],
+                                                  pv_generation_per_kWp, experiment)
+    else:
+        # Performing base case OEM WITH minimal loading, thus fixing generator capacities to peak demand
+        results, capacities_base = cases.base_oem_min_loading(demand_profiles[experiment['demand_profile']],
+                                                              pv_generation_per_kWp, experiment)
+
     duration = timeit.default_timer() - start
     logging.info('    Simulation of base OEM complete.')
     logging.info('    Simulation time (s): ' + str(round(duration, 2)) + '\n')
@@ -113,9 +123,10 @@ for experiment in sensitivity_experiments:
     # Simulations of all cases
     ###############################################################################
 
-    from national_grid import national_grid
-    blackout_experiment_name = national_grid.get_blackout_experiment_name(experiment['blackout_duration'], experiment['blackout_frequency'])
-    grid_availability = sensitivity_grid_availability[blackout_experiment_name]['grid_availability']
+    from sensitivity import sensitivity
+    from general_functions import extract
+    blackout_experiment_name = sensitivity.blackout_experiment_name(extract.blackoutparameters(experiment))
+    grid_availability = sensitivity_grid_availability[blackout_experiment_name]
     ###############################################################################
     # Creating, simulating and storing micro grid energy systems with oemof
     # According to parameters set beforehand
@@ -135,11 +146,10 @@ for experiment in sensitivity_experiments:
         logging.info('    Simulation of case '+items+' complete.')
         logging.info('    Simulation time (s): ' + str(round(duration, 2)) + '\n')
         # Extend oemof_results by blackout characteristics
-        oemof_results   = national_grid.extend_oemof_results(oemof_results, sensitivity_grid_availability[blackout_experiment_name])
+        oemof_results   = national_grid.extend_oemof_results(oemof_results, blackout_results[blackout_experiment_name])
         # Extend overall results dataframe with simulation results
         overall_results = helpers.store_result_matrix(overall_results, items, experiment, oemof_results, duration)
 
-    pp.pprint(overall_results)
     if print_simulation_experiment == True:
         logging.info('The case with following parameters has been analysed:')
         pp.pprint(sensitivity_experiments)
