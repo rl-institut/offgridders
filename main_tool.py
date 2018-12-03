@@ -124,8 +124,7 @@ for experiment in sensitivity_experiments:
     ###############################################################################
 
     from sensitivity import sensitivity
-    from general_functions import extract
-    blackout_experiment_name = sensitivity.blackout_experiment_name(extract.blackoutparameters(experiment))
+    blackout_experiment_name = sensitivity.blackout_experiment_name(experiment)
     grid_availability = sensitivity_grid_availability[blackout_experiment_name]
     ###############################################################################
     # Creating, simulating and storing micro grid energy systems with oemof
@@ -134,18 +133,30 @@ for experiment in sensitivity_experiments:
     for items in listof_cases:
         logging.info('Starting simulation of case ' + items + ', experiment no. ' + str(experiment_count) + '...')
         start = timeit.default_timer()
-        if      items == 'mg_fixed':             oemof_results = cases.mg_fix(demand_profiles[experiment['demand_profile']], pv_generation_per_kWp, experiment, capacities_base)
+        if      items == 'offgrid_fixed':
+            oemof_results = \
+                cases.offgrid_fix(demand_profiles[experiment['demand_profile']], pv_generation_per_kWp, experiment, capacities_base)
+        elif    items == 'interconnected_buy':
+            oemof_results =\
+                cases.interconnected_buy(demand_profiles[experiment['demand_profile']], pv_generation_per_kWp, experiment,
+                                     capacities_base, grid_availability)
+
+        elif    items == 'interconnected_buysell':
+            oemof_results =\
+                cases.interconnected_buysell(demand_profiles[experiment['demand_profile']], pv_generation_per_kWp, experiment,
+                                         capacities_base, grid_availability)
+
         elif    items == 'buyoff':               cases.buyoff()
         elif    items == 'parallel':             cases.parallel()
         elif    items == 'adapted':              cases.adapted()
-        elif    items == 'oem_interconnected':   cases.oem_interconnected(grid_availability)
+        elif    items == 'oem_interconnected':   cases.oem_interconnected()
         elif    items == 'backupgrid':           cases.backupgrid()
-        elif    items == 'buysell':              cases.buysell()
         else: logging.warning("Unknown case!")
         duration = timeit.default_timer() - start
         logging.info('    Simulation of case '+items+' complete.')
         logging.info('    Simulation time (s): ' + str(round(duration, 2)) + '\n')
         # Extend oemof_results by blackout characteristics
+        print(blackout_results[blackout_experiment_name])
         oemof_results   = national_grid.extend_oemof_results(oemof_results, blackout_results[blackout_experiment_name])
         # Extend overall results dataframe with simulation results
         overall_results = helpers.store_result_matrix(overall_results, items, experiment, oemof_results, duration)

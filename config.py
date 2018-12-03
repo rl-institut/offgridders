@@ -1,21 +1,22 @@
 import pandas as pd
 
 ####### ------------ General simulation settings ----------------- #######
-coding_process                  = False  # Defines timeframe and noise (see below)
-restore_oemof_if_existant       = True  # If set to False, the directory with results is emptied!!
+coding_process                  = True  # Defines timeframe and noise (see below)
+restore_oemof_if_existant       = False  # If set to False, the directory with results is emptied!!
 restore_blackouts_if_existant   = True
-base_case_with_min_loading      = True   # If set to True, the generator capacity will be equal to peak demand in kW!
+base_case_with_min_loading      = False   # If set to True, the generator capacity will be equal to peak demand in kW!
 # TOdo allow multiple generators here (or even allow multiple generators in general??)
 
 # simulated cases:
 simulated_cases = {
-    'mg_fixed': False, # dispatch with base oem capacities
+    'offgrid_fixed': False,         # dispatch with base oem capacities
+    'interconnected_buy': False,    # dispatch with interconnected main grid (only consumption)
+    'interconnected_buysell': True, # dispatch with interconnected main grid (consumption+feedin)
     'buyoff': False,
     'parallel': False,
     'adapted': False,
     'oem_interconnected': False,
     'backupgrid': False,
-    'buysell': False
 }
 
 # oemof simulation
@@ -41,9 +42,9 @@ setting_save_lp_file        = False  # save lp file of oemof simulation
 setting_save_oemofresults   = True   # save oemofresults to .oemof file
 display_graphs_solar        = False
 display_graphs_demand       = False
-display_graphs_simulation   = False
+display_graphs_simulation   = True
 print_simulation_meta       = False  # print information on opimization
-print_simulation_main       = False  # print accumulated flows over electricity bus
+print_simulation_main       = True  # print accumulated flows over electricity bus
 print_simulation_invest     = False  # print investment results
 print_simulation_experiment = False  # Print data on experiment run (sensitivity analysis)
 
@@ -52,7 +53,7 @@ print_simulation_experiment = False  # Print data on experiment run (sensitivity
 solver = 'cbc'
 solver_verbose       = False  # show/hide solver output
 cmdline_option       = 'ratioGap' #  options for solver: allowedGap,  mipgap, ratioGap
-cmdline_option_value = 10#*10**(-1)
+cmdline_option_value = 1*10**(-1)
 
 # Debugging
 debug = True  # Set number_of_timesteps to 3 to get a readable lp-file.

@@ -94,6 +94,7 @@ class national_grid:
                     grid_availability, time_of_blackout_events, timestep, blackout_event_durations)
             else:
                 accumulated_blackout_duration  = 0
+                actual_number_of_blackouts     = 0
 
             total_grid_availability = sum(grid_availability)
             total_grid_blackout_duration = len(date_time_index) - total_grid_availability
@@ -199,8 +200,8 @@ class national_grid:
 
         return grid_availability, overlapping_blackouts, blackout_count
 
-    def extend_oemof_results(oemof_results, sensitivity_grid_availability):
-        oemof_results.update({'national_grid_reliability': sensitivity_grid_availability['grid_reliability'],
-                              'national_grid_total_blackout_duration': sensitivity_grid_availability['grid_total_blackout_duration'],
-                              'national_grid_number_of_blackouts': sensitivity_grid_availability['grid_number_of_blackouts']})
+    def extend_oemof_results(oemof_results, blackout_results):
+        oemof_results.update({'national_grid_reliability': blackout_results['grid_reliability'],
+                              'national_grid_total_blackout_duration': blackout_results['grid_total_blackout_duration'],
+                              'national_grid_number_of_blackouts': blackout_results['grid_number_of_blackouts']})
         return oemof_results

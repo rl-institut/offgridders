@@ -13,7 +13,9 @@ generator.
 * pvlib
 
 # Track Versions
-29.11: Blackouts
+30.11: Started buysell case, deleted function "extract", included grid_availability
+
+29.11: Blackouts, OEM with minimal loading
 
 28.11: Blackouts 
 

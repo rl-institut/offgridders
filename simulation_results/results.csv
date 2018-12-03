@@ -1,2 +1,3 @@
 ,Case,Filename,Capacity PV kWp,Capacity storage kWh,Capacity genset kW,Renewable Factor,NPV,LCOE,Annuity,Fuel consumption,fuel_annual_expenditures,Simulation time,demand_annual_kWh,demand_peak_kW,demand_annual_supplied_kWh
-0,base_oem,results_base_oem,171.87043,413.9722,59.109,0.9888,768605.51846,0.54654,102899.96914,6389.23644,2811.26403,422.49613,188273.8839,59.109,188273.8839
+0,base_oem,results_base_oem,119.1589,419.91838,0.0,1.0,705556.70391,0.50171,94459.07077,0.0,0.0,3.03665,515.81886,59.109,188273.8839
+1,interconnected_buysell,results_interconnected_buysell,119.25,420.0,0.0,1.0,795606.96894,0.56574,106514.89039,0.0,0.0,5.08554,515.81886,59.109,188273.8839

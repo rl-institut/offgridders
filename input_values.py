@@ -53,9 +53,10 @@ else:
 if setting_batch_capacity == True:
     # Minimal batch capacities (always round up, if value is exactly met, add another batch)
     round_to_batch = {
-        'PV': 0.25,     # kWp
-        'GenSet': 0.25, # kW
-        'Storage': 1    # kWh
+        'PV':           0.25,   # kWp
+        'GenSet':       0.25,   # kW
+        'Storage':      1,       # kWh
+        'Pcoupling':    1       # kW
             }
 
 #----------------------------White noise---------------------------------#
@@ -104,7 +105,8 @@ sensitivity_constants = {
     'pcoupling_cost_var':	            0,      # /kWh
     'pcoupling_efficiency':	            0.98,	# inverter inefficiency between highvoltage/mediumvoltage grid (maybe even split into feedin/feedfrom
     'pcoupling_lifetime':	            20,     # a
-    'price_electricity_main_grid':	    0.20,	# /unit
+    'maingrid_electricity_price':	    0.20,	# /unit
+    'maingrid_feedin_tariff':   	    0.12,	# /unit
     'price_fuel':	                    4.4,	# /unit
     'project_cost_fix':	                0,	    # not implemented
     'project_cost_opex':	            0,	    # not implemented
