@@ -77,14 +77,14 @@ BUT DO NOT DELETE OR ADD NEW ELEMENTS WITHOUT CHANGING THE MAIN CODE
 '''
 
 sensitivity_bounds = {
-    #'price_fuel':     {'min': 0.5,  'max': 1,     'step': 0.1}
+    'price_fuel':     {'min': 0.5,  'max': 1,     'step': 0.25},
     #'genset_min_loading':     {'min': 0.1,  'max': 0.3,     'step': 0.1}
-    #'blackout_duration':     {'min': 2,  'max': 6,     'step': 2}
+    'blackout_duration':     {'min': 2,  'max': 6,     'step': 2}
     }
 
 # Values of the sensitivity analysis that appear constant
 sensitivity_constants = {
-    'blackout_duration':	            2,	    # hrs per blackout
+    #'blackout_duration':	            2,	    # hrs per blackout
     'blackout_duration_std_deviation':  0,  # factor. Goal: 15%? (percentual)
     'blackout_frequency':	            7,	    # blackouts per month
     'blackout_frequency_std_deviation': 0,      # factor. Goal: 15%? 0 Means: No variability (percentual)
@@ -110,7 +110,7 @@ sensitivity_constants = {
     'pcoupling_cost_var':	            0,      # /kWh
     'pcoupling_efficiency':	            0.98,	# inverter inefficiency between highvoltage/mediumvoltage grid (maybe even split into feedin/feedfrom
     'pcoupling_lifetime':	            20,     # a
-    'price_fuel':	                    4.4,	# /unit
+    #'price_fuel':	                    4.4,	# /unit
     'project_cost_fix':	                0,	    # not implemented
     'project_cost_opex':	            0,	    # not implemented
     'project_life':	                    20,     # a

@@ -104,16 +104,19 @@ class sensitivity():
                      'demand_annual_kWh',
                      'demand_peak_kW',
                      'demand_annual_supplied_kWh',
+                     'national_grid_reliability',
+                     'national_grid_total_blackout_duration',
+                     'national_grid_number_of_blackouts',
                      'grid_reliability',
                      'grid_total_blackout_duration',
                      'grid_number_of_blackouts',
                      'capacity_pv_kWp',
                      'capacity_storage_kWh',
                      'capacity_genset_kW',
-                     'capacity_pcoupling_kW',  #todo
+                     'capacity_pcoupling_kW',
                      'res_share',
                      'consumption_fuel_annual',
-                     'consumption_main_grid_annual',  #todo
+                     'consumption_main_grid_annual',
                      'feedin_main_grid_annual'
                      # Annuities
                      'annuity_pv',
@@ -122,26 +125,26 @@ class sensitivity():
                      'annuity_pcoupling',
                      'annuity_grid_extension',
                      'annuity_project_fix',
-                     'expenditures_fuel_annual',  #todo
-                     'expenditures_main_grid_consumption_annual',  #todo
-                     'revenue_main_grid_feedin_annual',  # todo
+                     'expenditures_fuel_annual',
+                     'expenditures_main_grid_consumption_annual',
+                     'revenue_main_grid_feedin_annual',
                      'annuity_operational',
                      # Called costs because they include the operation, while they are also not the present value because
                      # the variable costs are included in the oem
-                     'costs_pv',  #todo
-                     'costs_storage',  #todo
-                     'costs_genset',  #todo
-                     'costs_pcoupling',  #todo
-                     'costs_grid_extension',  #todo
-                     'costs_project_fix' #todo
-                     'costs_operation' #todo
-                     'expenditures_fuel_total',  # todo
-                     'expenditures_main_grid_consumption_total',  #todo
-                     'revenue_main_grid_feedin_total',  # todo
+                     'costs_pv',
+                     'costs_storage',
+                     'costs_genset',
+                     'costs_pcoupling',
+                     'costs_grid_extension',
+                     'costs_project_fix' 
+                     'costs_operation' 
+                     'expenditures_fuel_total',
+                     'expenditures_main_grid_consumption_total',
+                     'revenue_main_grid_feedin_total',
                      # totalled values
-                     'annuity',  #todo
-                     'npv',  #todo
-                     'lcoe',  #todo
+                     'annuity',
+                     'npv',
+                     'lcoe',
                      'objective_value',
                      'simulation_time'])
         if number_of_demand_profiles > 1:

@@ -37,12 +37,22 @@ class add_results():
         annuity = annuity * 365 / evaluated_days
         annuity_operational = annuity
 
+
         oemof_results = add_results.capacities(oemof_results, capacities)
         oemof_results = add_results.annuities(oemof_results, experiment, capacities, evaluated_days)
         oemof_results = add_results.costs(oemof_results, experiment)
-        oemof_results = add_results.expenditures(oemof_results, experiment)
 
-        operation_costs = annuity
+        # Expenditures are not part of the (variable) operation costs:
+        oemof_results = add_results.expenditures_fuel(oemof_results, experiment)
+        annuity_operational = annuity_operational - oemof_results['expenditures_fuel_annual']
+
+        if case_name in ['interconnected_buysell']: # 'interconnected_buy'
+            oemof_results = add_results.expenditures_main_grid_consumption(oemof_results, experiment)
+            annuity_operational = annuity_operational - oemof_results['expenditures_main_grid_consumption_annual']
+
+        if case_name in ['interconnected_buysell']:
+            oemof_results = add_results.revenues_main_grid_feedin(oemof_results, experiment)
+            annuity_operational = annuity_operational + oemof_results['revenue_main_grid_feedin_annual']
 
         # Adding costs of fixed components where necessary for...
         # ...pv
@@ -75,15 +85,11 @@ class add_results():
             # no else, as extension costs are not variable
 
         # ... project costs
-        annuity = annuity + experiment['annuities_project_fix']
+        annuity = annuity + oemof_results['annuity_project_fix']
+
+        # Present values
         npv = annuity * experiment['annuity_factor']
         costs_operation = annuity_operational * experiment['annuity_factor']
-
-        # Expenditures are not part of the (variable) operation costs:
-        annuities_operational = annuity_operational \
-                              - oemof_results['expenditures_fuel_annual'] \
-                              - oemof_results['expenditures_main_grid_consumption_annual'] \
-                              + oemof_results['revenue_main_grid_feedin_annual']
 
         # The costs saved as annuity_operation include the variable operation costs
         # - but yearly operation costs for components are included in their annuity!
@@ -115,37 +121,42 @@ class add_results():
             'annuity_grid_extension': experiment['maingrid_extension_cost_annuity'] * experiment[
                 'maingrid_distance'] * 365 / evaluated_days,
             'annuity_project_fix': experiment['project_cost_annuity'] * 365 / evaluated_days})
+        return oemof_results
 
     def costs(oemof_results, experiment):
         oemof_results.update({
-            'costs_pv': experiment['annuity_pv'] * experiment['annuity_factor'],
-            'costs_storage': experiment['annuity_storage'] * experiment['annuity_factor'],
-            'costs_genset': experiment['annuity_genset'] * experiment['annuity_factor'],
-            'costs_pcoupling': experiment['annuity_pcoupling'] * experiment['annuity_factor'],
-            'costs_grid_extension': experiment['annuity_grid_extension'] * experiment['annuity_factor'],
-            'costs_project_fix': experiment['annuity_project_fix'] * experiment['annuity_factor']})
+            'costs_pv': oemof_results['annuity_pv'] * experiment['annuity_factor'],
+            'costs_storage': oemof_results['annuity_storage'] * experiment['annuity_factor'],
+            'costs_genset': oemof_results['annuity_genset'] * experiment['annuity_factor'],
+            'costs_pcoupling': oemof_results['annuity_pcoupling'] * experiment['annuity_factor'],
+            'costs_grid_extension': oemof_results['annuity_grid_extension'] * experiment['annuity_factor'],
+            'costs_project_fix': oemof_results['annuity_project_fix'] * experiment['annuity_factor']})
         return oemof_results
 
-    def expenditures(oemof_results, experiment):
-        '''
-        Necessary in oemof_results: consumption_fuel, consumption_main_grid_annual, feedin_main_grid_annual
-        '''
-        # annual
-        oemof_results.update({
-            'expenditures_fuel_annual':
-                oemof_results['consumption_fuel'] * experiment['price_fuel'] / experiment['combustion_value_fuel'],
-            'expenditures_main_grid_consumption_annual':
-                oemof_results['consumption_main_grid_annual'] * experiment['maingrid_electricity_price'],
-            'revenue_main_grid_feedin_annual':
+    def expenditures_fuel(oemof_results, experiment):
+        # Necessary in oemof_results: consumption_main_grid_annual
+        oemof_results.update({'expenditures_fuel_annual':
+                oemof_results['consumption_fuel_annual'] * experiment['price_fuel'] / experiment['combustion_value_fuel']})
+
+        oemof_results.update({'expenditures_fuel_total':
+                oemof_results['expenditures_fuel_annual'] * experiment['annuity_factor']})
+        return oemof_results
+
+    def expenditures_main_grid_consumption(oemof_results, experiment):
+        # Necessary in oemof_results: consumption_main_grid_annual
+        oemof_results.update({'expenditures_main_grid_consumption_annual':
+                oemof_results['consumption_main_grid_annual'] * experiment['maingrid_electricity_price']})
+
+        oemof_results.update({'expenditures_main_grid_consumption_total':
+                oemof_results['expenditures_main_grid_consumption_annual'] * experiment['annuity_factor']})
+        return oemof_results
+
+    def revenues_main_grid_feedin(oemof_results, experiment):
+        # Necessary in oemof_results: feedin_main_grid_annual
+        oemof_results.update({'revenue_main_grid_feedin_annual':
                 oemof_results['feedin_main_grid_annual'] * experiment['maingrid_feedin_tariff']})
 
-        # overall present value
-        oemof_results.update({
-            'expenditures_fuel_total':
-                oemof_results['expenditures_fuel_annual'] * experiment['annuity_factor'],
-            'expenditures_main_grid_consumption_total':
-                oemof_results['expenditures_main_grid_consumption_annual'] * experiment['annuity_factor'],
-            'revenues_main_grid_feedin_total':
+        oemof_results.update({'revenues_main_grid_feedin_total':
                 oemof_results['revenue_main_grid_feedin_annual'] * experiment['annuity_factor']})
         return oemof_results
 
@@ -160,6 +171,7 @@ class oemofmodel():
         # get all variables of a specific component/bus
         generic_storage = outputlib.views.node(results, 'generic_storage')
         electricity_bus = outputlib.views.node(results, 'bus_electricity_mg')
+
         fuel_bus = outputlib.views.node(results, 'bus_fuel')
         oemofmodel.plot_bus_electricity_mg(electricity_bus, case_name)
         oemofmodel.plot_storage(generic_storage)
@@ -185,50 +197,31 @@ class oemofmodel():
             'case':                         case_name,
             'filename':                     'results_' + case_name + experiment['filename'],
             'res_share':                    res_share,
-            'consumption_fuel':             total_fuel_consumption,
+            'consumption_fuel_annual':      total_fuel_consumption,
             'demand_annual_supplied_kWh':   total_supplied_demand,
             'demand_annual_kWh':            total_demand,
             'demand_peak_kW':               max(demand_profile),
             'objective_value':              meta['objective']
              }
 
+        if case_name in ['interconnected_buysell']:
+            maingrid_bus = outputlib.views.node(results, 'bus_electricity_ng')
+            oemof_results.update({
+                'consumption_main_grid_annual':
+                    sum(maingrid_bus['sequences'][(('bus_electricity_ng', 'transformer_pcc_consumption'), 'flow')])* 365 / evaluated_days})
+            if case_name in ['interconnected_buysell']:
+                oemof_results.update({
+                    'feedin_main_grid_annual':
+                sum(maingrid_bus['sequences'][(('transformer_pcc_feedin', 'bus_electricity_ng'), 'flow')])* 365 / evaluated_days})
+
         return results, meta, electricity_bus, oemof_results
 
     def process_fix(micro_grid_system, case_name, capacity_batch, experiment, demand_profile):
+
+        # todo: this might be possible to do a bit shorter
         results, meta, electricity_bus, oemof_results = oemofmodel.process_basic(micro_grid_system, experiment, demand_profile, case_name)
 
-
-        #oemof_results = project_annuity(oemof_results, experiment, capacities, case_name)
-
-        annuity = experiment['pv_cost_annuity']*capacity_batch['pv_capacity_kWp'] +\
-                experiment['genset_cost_annuity']*capacity_batch['genset_capacity_kW'] +\
-                experiment['storage_cost_annuity'] * capacity_batch['storage_capacity_kWh'] + \
-                experiment['pcoupling_cost_annuity'] * capacity_batch['pcoupling_capacity_kW'] + \
-                experiment['project_cost_annuity'] +\
-                meta['objective'] # here, objective function only gives the additional VARIABLE costs!
-
-        from config import evaluated_days
-        annuity = annuity * 365 / evaluated_days
-
-        npv = annuity * experiment['annuity_factor']
-
-        oemof_results.update({'npv':  npv})
-        oemof_results.update({'annuity': annuity})
-        oemof_results.update({'lcoe': annuity/oemof_results['demand_annual_supplied_kWh']})
-
-        oemof_results.update({'capacity_pv_kWp': capacity_batch['pv_capacity_kWp']})
-        oemof_results.update({'capacity_storage_kWh': capacity_batch['storage_capacity_kWh']})
-        oemof_results.update({'capacity_genset_kW': capacity_batch['genset_capacity_kW']})
-
-        oemof_results.update({'pv_investment':
-                                  experiment['pv_cost_annuity']*capacity_batch['pv_capacity_kWp']*experiment['annuity_factor']})
-        oemof_results.update({'storage_investment':
-                                  experiment['genset_cost_annuity']*capacity_batch['genset_capacity_kW']*experiment['annuity_factor']})
-        oemof_results.update({'genset_investment':
-                                  experiment['storage_cost_annuity'] * capacity_batch['storage_capacity_kWh']*experiment['annuity_factor']})
-
-
-
+        oemof_results = add_results.project_annuity(oemof_results, experiment, capacity_batch, case_name)
 
         logging.info('    Dispatch optimization for case "' + case_name + '" finished, with renewable share of ' +
                      str(round(oemof_results['res_share']*100,2)) + ' percent.')
@@ -236,82 +229,62 @@ class oemofmodel():
         return oemof_results
 
     def process_oem(micro_grid_system, case_name, pv_generation_max, experiment, demand_profile):
+        from config import evaluated_days
 
         results, meta, electricity_bus, oemof_results = oemofmodel.process_basic(micro_grid_system, experiment, demand_profile, case_name)
 
-        annuity = meta['objective'] + experiment['project_cost_annuity']
-        if case_name == "base_oem_with_min_loading":
-            annuity = annuity + experiment['genset_cost_annuity']* max(demand_profile)
-
-        # todo: if case oem of grid-tied mg, add maingrid_extension_cost_annuity
-
-        from config import evaluated_days
-        annuity               = annuity * 365 / evaluated_days  # scaling to full year
-
-        oemof_results.update({'annuity':    annuity})
-        oemof_results.update({'lcoe':       annuity/oemof_results['demand_annual_supplied_kWh']})
-        oemof_results.update({'npv':        annuity*experiment['annuity_factor']})
+        capacities_base = {}
 
         # ToDo issue for OEMOF: How to evaluate battery capacity
         capacity_battery = 1/experiment['storage_Crate']*(electricity_bus['scalars'][(('generic_storage', 'bus_electricity_mg'), 'invest')]
                               + electricity_bus['scalars'][(('bus_electricity_mg', 'generic_storage'), 'invest')])/2
-        oemof_results.update({'capacity_storage_kWh': capacity_battery})
+        capacities_base.update({'capacity_storage_kWh': capacity_battery})
 
         if pv_generation_max > 1:
-            oemof_results.update({'capacity_pv_kWp': electricity_bus['scalars'][(('source_pv', 'bus_electricity_mg'), 'invest')]* pv_generation_max })
+            capacities_base.update({'capacity_pv_kWp': electricity_bus['scalars'][(('source_pv', 'bus_electricity_mg'), 'invest')]* pv_generation_max })
         elif pv_generation_max > 0 and pv_generation_max < 1:
-            oemof_results.update({'capacity_pv_kWp': electricity_bus['scalars'][(('source_pv', 'bus_electricity_mg'), 'invest')] / pv_generation_max })
+            capacities_base.update({'capacity_pv_kWp': electricity_bus['scalars'][(('source_pv', 'bus_electricity_mg'), 'invest')] / pv_generation_max })
         else:
             logging.warning("Error, Strange PV behaviour (PV gen < 0)")
 
         if case_name == "base_oem":
             # Optimized generator capacity
-            oemof_results.update({'capacity_genset_kW': electricity_bus['scalars'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'invest')]})
+            capacities_base.update({'capacity_genset_kW': electricity_bus['scalars'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'invest')]})
         elif case_name == "base_oem_with_min_loading":
             # Genset capacity equals peak demand
-            oemof_results.update({'capacity_genset_kW': max(demand_profile)})
-        # todo: as soon as pcc optimized, put here
+            capacities_base.update({'capacity_genset_kW': max(demand_profile)})
+
+        if case_name in ["imaginarylist"]:
+            capacities_base.update({'capacity_pcoupling_kW': max(demand_profile)})
+        else:
+            capacities_base.update({'capacity_pcoupling_kW': 0})
+
+
+        oemof_results = add_results.project_annuity(oemof_results, experiment, capacities_base, case_name)
 
         logging.info ('    Exact OEM results of case "' + case_name + '" : \n'
-                      +'    '+'  '+ '    ' + '    ' + '    ' + str(round(oemof_results['capacity_storage_kWh'],3)) + ' kWh battery, '
-                      + str(round(oemof_results['capacity_pv_kWp'],3)) + ' kWp PV, '
-                      + str(round(oemof_results['capacity_genset_kW'],3)) + ' kW genset '
+                      +'    '+'  '+ '    ' + '    ' + '    ' + str(round(capacities_base['capacity_storage_kWh'],3)) + ' kWh battery, '
+                      + str(round(capacities_base['capacity_pv_kWp'],3)) + ' kWp PV, '
+                      + str(round(capacities_base['capacity_genset_kW'],3)) + ' kW genset '
                       + 'at a renewable share of ' + str(round(oemof_results['res_share']*100,2)) + ' percent.')
-
-        capacities_base = {
-            'capacity_pv_kWp': oemof_results['capacity_pv_kWp'],
-            'capacity_storage_kWh': oemof_results['capacity_storage_kWh'],
-            'capacity_genset_kW': oemof_results['capacity_genset_kW'],
-            'capacity_pcoupling_kW': 0
-                            }
-        # todo as soon as pcc optimized or more cases optimized than base_oem / base_oem_with_min_loading, redefine capacity here
-        if case_name == "base_oem" or case_name == "base_oem_with_min_loading":
-            capacities_base.update({"pcoupling_capacity_kW": 0})
-
-        oemof_results.update({'pv_investment':
-                                  experiment['pv_cost_annuity']*capacities_base['capacity_pv_kWp']*experiment['annuity_factor']})
-        oemof_results.update({'storage_investment':
-                                  experiment['genset_cost_annuity']*capacities_base['capacity_storage_kWh']*experiment['annuity_factor']})
-        oemof_results.update({'genset_investment':
-                                  experiment['storage_cost_annuity'] * capacities_base['capacity_genset_kW']*experiment['annuity_factor']})
 
         return oemof_results, capacities_base
 
     def process_oem_batch(capacities_base, case_name):
         from input_values import round_to_batch
-        capacities_base.update({'pv_capacity_kWp': round (0.5+capacities_base['capacity_pv_kWp']/round_to_batch['PV'])
+        capacities_base.update({'capacity_pv_kWp': round (0.5+capacities_base['capacity_pv_kWp']/round_to_batch['PV'])
                                                   *round_to_batch['PV']}) # immer eher 0.25 capacity mehr als eigentlich nötig
-        capacities_base.update({'genset_capacity_kW': round(0.5+capacities_base['capacity_genset_kW'] / round_to_batch['GenSet']) *
+        capacities_base.update({'capacity_genset_kW': round(0.5+capacities_base['capacity_genset_kW'] / round_to_batch['GenSet']) *
                                                   round_to_batch['GenSet']})
-        capacities_base.update({'storage_capacity_kWh': round(0.5+capacities_base['capacity_pcoupling_kW'] / round_to_batch['Storage']) *
+        capacities_base.update({'capacity_storage_kWh': round(0.5+capacities_base['capacity_storage_kWh'] / round_to_batch['Storage']) *
                                                   round_to_batch['Storage']})
         capacities_base.update(
-            {'pcoupling_capacity_kW': round(0.5 + capacities_base['pcoupling_capacity_kW'] / round_to_batch['Pcoupling']) *
+            {'capacity_pcoupling_kW': round(0.5 + capacities_base['capacity_pcoupling_kW'] / round_to_batch['Pcoupling']) *
                                      round_to_batch['Pcoupling']})
         logging.debug ('    Equivalent batch capacities of base OEM for dispatch OEM in case "' + case_name + '": \n'
-                      + '    ' + '  ' + '    ' + '    ' + '    ' + str(capacities_base['storage_capacity_kWh']) + ' kWh battery, '
-                      + str(capacities_base['pv_capacity_kWp']) + ' kWp PV, '
-                      + str(capacities_base['genset_capacity_kW']) + ' kW genset.')
+                      + '    ' + '  ' + '    ' + '    ' + '    ' + str(capacities_base['capacity_storage_kWh']) + ' kWh battery, '
+                      + str(capacities_base['capacity_pv_kWp']) + ' kWp PV, '
+                      + str(capacities_base['capacity_genset_kW']) + ' kW genset.')
         return capacities_base
 
     ######## Textblocks ########

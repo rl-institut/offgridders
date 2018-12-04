@@ -13,7 +13,7 @@ generator.
 * pvlib
 
 # Track Versions
-04.12: Updated output list, better generation of oemof results
+04.12: MAJOR UPDATE: Updated output list, better generation of oemof results, case-specific evaliation of costs
 
 03.12: Buysell case created (unfinished), links to grid_availability, delected class extract 
 

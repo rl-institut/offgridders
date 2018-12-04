@@ -158,15 +158,15 @@ class helpers:
                         pd.Series([round(oemof_results[key], round_to_comma)], index=[key]))
             # extend by simulation time
             elif key == 'simulation_time':
-                oemof_results = oemof_results.update({key: round(duration, round_to_comma)})
+                oemof_results.update({key: round(duration, round_to_comma)})
                 result_series = result_series.append(pd.Series([round(duration, round_to_comma)], index=[key]))
             # extend by name of demand profile
             elif key == 'demand_profile':
-                result_series = result_series.append(pd.Series([experiment[item]], index=[key]))
+                result_series = result_series.append(pd.Series([experiment[key]], index=[key]))
             # Check if called value is a parameter of experiments
             elif key in experiment:
                 result_series = result_series.append(
-                    pd.Series([round(experiment[item], round_to_comma)], index=[key]))
+                    pd.Series([round(experiment[key], round_to_comma)], index=[key]))
 
         result_series = result_series.reindex(overall_results.columns, fill_value=None)
 

@@ -389,11 +389,11 @@ class cases():
                 = generatemodel.demand(micro_grid_system, bus_electricity_mg, demand_profile)
             micro_grid_system, bus_electricity_mg               = generatemodel.excess(micro_grid_system, bus_electricity_mg)
             micro_grid_system, bus_electricity_mg               \
-                = generatemodel.pv_fix(micro_grid_system, bus_electricity_mg, pv_generation, capacity_batch['pv_capacity_kWp'], experiment)
+                = generatemodel.pv_fix(micro_grid_system, bus_electricity_mg, pv_generation, capacity_batch['capacity_pv_kWp'], experiment)
             micro_grid_system, bus_fuel, bus_electricity_mg     \
-                = generatemodel.genset_fix(micro_grid_system, bus_fuel, bus_electricity_mg, capacity_batch['genset_capacity_kW'], experiment)
+                = generatemodel.genset_fix(micro_grid_system, bus_fuel, bus_electricity_mg, capacity_batch['capacity_genset_kW'], experiment)
             micro_grid_system, bus_electricity_mg               \
-                = generatemodel.storage_fix(micro_grid_system, bus_electricity_mg, capacity_batch['storage_capacity_kWh'], experiment)
+                = generatemodel.storage_fix(micro_grid_system, bus_electricity_mg, capacity_batch['capacity_storage_kWh'], experiment)
             # Additional for specific case:
             # Include national grid electricity bus
             micro_grid_system, bus_electricity_ng               = generatemodel.bus_el_ng(micro_grid_system)
@@ -406,11 +406,11 @@ class cases():
             # include point of common coupling (main grid -> micro grid)
             micro_grid_system, bus_electricity_mg, bus_electricity_ng \
                 = generatemodel.pointofcoupling_consumption_fix(micro_grid_system, bus_electricity_mg, bus_electricity_ng,
-                                                                capacity_batch["pcoupling_capacity_kW"], experiment)
+                                                                capacity_batch["capacity_pcoupling_kW"], experiment)
             # include point of common coupling (micro grid -> main grid)
             micro_grid_system, bus_electricity_mg, bus_electricity_ng \
                 = generatemodel.pointofcoupling_feedin_fix(micro_grid_system, bus_electricity_mg, bus_electricity_ng,
-                                                           capacity_batch["pcoupling_capacity_kW"], experiment)
+                                                           capacity_batch["capacity_pcoupling_kW"], experiment)
 
             micro_grid_system                                   = oemofmodel.simulate(micro_grid_system, file_name)
             oemofmodel.store_results(micro_grid_system, file_name)
