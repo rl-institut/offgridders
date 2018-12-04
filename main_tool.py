@@ -117,7 +117,7 @@ for experiment in sensitivity_experiments:
     duration = timeit.default_timer() - start
     logging.info('    Simulation of base OEM complete.')
     logging.info('    Simulation time (s): ' + str(round(duration, 2)) + '\n')
-    overall_results = helpers.store_result_matrix(overall_results, 'base_oem', experiment, results, duration)
+    overall_results = helpers.store_result_matrix(overall_results, experiment, results, duration)
 
     ###############################################################################
     # Simulations of all cases
@@ -156,10 +156,9 @@ for experiment in sensitivity_experiments:
         logging.info('    Simulation of case '+items+' complete.')
         logging.info('    Simulation time (s): ' + str(round(duration, 2)) + '\n')
         # Extend oemof_results by blackout characteristics
-        print(blackout_results[blackout_experiment_name])
         oemof_results   = national_grid.extend_oemof_results(oemof_results, blackout_results[blackout_experiment_name])
         # Extend overall results dataframe with simulation results
-        overall_results = helpers.store_result_matrix(overall_results, items, experiment, oemof_results, duration)
+        overall_results = helpers.store_result_matrix(overall_results, experiment, oemof_results, duration)
 
     if print_simulation_experiment == True:
         logging.info('The case with following parameters has been analysed:')

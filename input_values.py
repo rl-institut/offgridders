@@ -90,14 +90,19 @@ sensitivity_constants = {
     'blackout_frequency_std_deviation': 0,      # factor. Goal: 15%? 0 Means: No variability (percentual)
     'combustion_value_fuel':	        10,	    # kWh/unit
     'costs_var_unsupplied_load':	    10,	    # /kWh
-    'distance_to_grid':	                10,	    # todo not implemented distance_to_grid
     'genset_cost_investment':	        400,    # /unit
     'genset_cost_opex':	                25,     # /unit/a
     'genset_cost_var':	                0.023,  # /kWh
     'genset_efficiency':	            0.33,	# factor
     'genset_lifetime':	                10,     # a
     'genset_max_loading':	            1,	    # maximal load factor of generator
-    'genset_min_loading':	            0.2,	    # Minimal load factor of generator
+    'genset_min_loading':	            0.2,	# Minimal load factor of generator
+    'maingrid_distance':	            10,	    # todo not implemented distance_to_grid
+    'maingrid_extension_cost_investment':    15000,  # /km
+    'maingrid_extension_cost_opex':     0,      # /km/a
+    'maingrid_extension_lifetime':      20,      # /km/a
+    'maingrid_electricity_price':       0.20,   # /unit
+    'maingrid_feedin_tariff':           0.12,   # /unit
     'max_share_unsupplied_load':	    0,	    # factor
     'min_res_share':	                0,	    # factor	todo only works	properly for off-grid oem! Create add. transformer with input streams fuel (0%	res) + nat.grid (x%	res) and limit resshare there! #does not work at all for dispatch oem
     'pcoupling_cost_investment':	    1500,   # /unit
@@ -105,8 +110,6 @@ sensitivity_constants = {
     'pcoupling_cost_var':	            0,      # /kWh
     'pcoupling_efficiency':	            0.98,	# inverter inefficiency between highvoltage/mediumvoltage grid (maybe even split into feedin/feedfrom
     'pcoupling_lifetime':	            20,     # a
-    'maingrid_electricity_price':	    0.20,	# /unit
-    'maingrid_feedin_tariff':   	    0.12,	# /unit
     'price_fuel':	                    4.4,	# /unit
     'project_cost_fix':	                0,	    # not implemented
     'project_cost_opex':	            0,	    # not implemented

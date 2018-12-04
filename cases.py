@@ -389,7 +389,7 @@ class cases():
                 = generatemodel.demand(micro_grid_system, bus_electricity_mg, demand_profile)
             micro_grid_system, bus_electricity_mg               = generatemodel.excess(micro_grid_system, bus_electricity_mg)
             micro_grid_system, bus_electricity_mg               \
-                = generatemodel.pv_fix(micro_grid_system, bus_electricity_mg, pv_generation, capacity_batch['pv_capacity_kW'], experiment)
+                = generatemodel.pv_fix(micro_grid_system, bus_electricity_mg, pv_generation, capacity_batch['pv_capacity_kWp'], experiment)
             micro_grid_system, bus_fuel, bus_electricity_mg     \
                 = generatemodel.genset_fix(micro_grid_system, bus_fuel, bus_electricity_mg, capacity_batch['genset_capacity_kW'], experiment)
             micro_grid_system, bus_electricity_mg               \

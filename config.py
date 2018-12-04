@@ -42,9 +42,9 @@ setting_save_lp_file        = False  # save lp file of oemof simulation
 setting_save_oemofresults   = True   # save oemofresults to .oemof file
 display_graphs_solar        = False
 display_graphs_demand       = False
-display_graphs_simulation   = True
+display_graphs_simulation   = False
 print_simulation_meta       = False  # print information on opimization
-print_simulation_main       = True  # print accumulated flows over electricity bus
+print_simulation_main       = False  # print accumulated flows over electricity bus
 print_simulation_invest     = False  # print investment results
 print_simulation_experiment = False  # Print data on experiment run (sensitivity analysis)
 

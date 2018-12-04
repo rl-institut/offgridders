@@ -56,12 +56,9 @@ class sensitivity():
         # define structure of pd.Dataframe: overall_results
         # todo more automatic extension of colum header
         # todo: add 'grid_reliability', 'grid_total_blackout_duration', 'grid_number_of_blackouts'
-        overall_results = pd.DataFrame(
-            columns=['Case', 'Filename', 'Capacity PV kWp', 'Capacity storage kWh', 'Capacity genset kW', 'Renewable Factor', 'NPV', 'LCOE', 'Annuity', 'Fuel consumption', 'fuel_annual_expenditures', 'Simulation time', 'demand_annual_kWh', 'demand_peak_kW', 'demand_annual_supplied_kWh'])
-        if len(demand_array) > 1:
-            overall_results = pd.concat([overall_results, pd.DataFrame(columns=['demand_profile'])], axis=1)
-        for keys in sensitivity_bounds:
-            overall_results = pd.concat([overall_results, pd.DataFrame(columns=[keys])], axis=1)
+
+        overall_results = sensitivity.overall_results_title(len(demand_array), sensitivity_bounds)
+
         return experiments, overall_results
 
     def blackout_experiments():
@@ -98,3 +95,58 @@ class sensitivity():
                           + 'freq' + '_' + str(round(blackout_experiment['blackout_frequency'], 2)) + "_" \
                           + 'freq_dev' + '_' + str(round(blackout_experiment['blackout_frequency_std_deviation'], 2))
         return blackout_experiment_name
+
+    # please add additional arguments here.
+    def overall_results_title(number_of_demand_profiles, sensitivity_bounds):
+        overall_results = pd.DataFrame(
+            columns=['case',
+                     'filename',
+                     'demand_annual_kWh',
+                     'demand_peak_kW',
+                     'demand_annual_supplied_kWh',
+                     'grid_reliability',
+                     'grid_total_blackout_duration',
+                     'grid_number_of_blackouts',
+                     'capacity_pv_kWp',
+                     'capacity_storage_kWh',
+                     'capacity_genset_kW',
+                     'capacity_pcoupling_kW',  #todo
+                     'res_share',
+                     'consumption_fuel_annual',
+                     'consumption_main_grid_annual',  #todo
+                     'feedin_main_grid_annual'
+                     # Annuities
+                     'annuity_pv',
+                     'annuity_storage',
+                     'annuity_genset',
+                     'annuity_pcoupling',
+                     'annuity_grid_extension',
+                     'annuity_project_fix',
+                     'expenditures_fuel_annual',  #todo
+                     'expenditures_main_grid_consumption_annual',  #todo
+                     'revenue_main_grid_feedin_annual',  # todo
+                     'annuity_operational',
+                     # Called costs because they include the operation, while they are also not the present value because
+                     # the variable costs are included in the oem
+                     'costs_pv',  #todo
+                     'costs_storage',  #todo
+                     'costs_genset',  #todo
+                     'costs_pcoupling',  #todo
+                     'costs_grid_extension',  #todo
+                     'costs_project_fix' #todo
+                     'costs_operation' #todo
+                     'expenditures_fuel_total',  # todo
+                     'expenditures_main_grid_consumption_total',  #todo
+                     'revenue_main_grid_feedin_total',  # todo
+                     # totalled values
+                     'annuity',  #todo
+                     'npv',  #todo
+                     'lcoe',  #todo
+                     'objective_value',
+                     'simulation_time'])
+        if number_of_demand_profiles > 1:
+            overall_results = pd.concat([overall_results, pd.DataFrame(columns=['demand_profile'])], axis=1)
+        for keys in sensitivity_bounds:
+            overall_results = pd.concat([overall_results, pd.DataFrame(columns=[keys])], axis=1)
+
+        return overall_results

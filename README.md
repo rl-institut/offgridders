@@ -13,6 +13,10 @@ generator.
 * pvlib
 
 # Track Versions
+04.12: Updated output list, better generation of oemof results
+
+03.12: Buysell case created (unfinished), links to grid_availability, delected class extract 
+
 30.11: Started buysell case, deleted function "extract", included grid_availability
 
 29.11: Blackouts, OEM with minimal loading

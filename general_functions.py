@@ -46,7 +46,11 @@ class config_func():
                 experiment['project_life'], experiment['wacc'], experiment['tax']),
             'pcoupling_cost_capex':
                 economics.capex_from_investment(experiment['pcoupling_cost_investment'], experiment['pcoupling_lifetime'],
-                experiment['project_life'], experiment['wacc'], experiment['tax'])
+                experiment['project_life'], experiment['wacc'], experiment['tax']),
+            'maingrid_extension_cost_capex':
+                economics.capex_from_investment(experiment['maingrid_extension_cost_investment'],
+                                                experiment['maingrid_extension_lifetime'],
+                                                experiment['project_life'], experiment['wacc'], experiment['tax'])
             })
 
         # Annuities of components including opex AND capex
@@ -60,7 +64,9 @@ class config_func():
             'pcoupling_cost_annuity':
                 economics.annuity(experiment['pcoupling_cost_capex'], experiment['crf'])+experiment['pcoupling_cost_opex'],
             'project_cost_annuity':
-                economics.annuity(experiment['project_cost_fix'], experiment['crf'])+experiment['project_cost_opex']
+                economics.annuity(experiment['project_cost_fix'], experiment['crf'])+experiment['project_cost_opex'],
+            'maingrid_extension_cost_annuity':
+                economics.annuity(experiment['maingrid_extension_cost_capex'], experiment['crf']) + experiment['maingrid_extension_cost_opex']
             })
 
         from config import coding_process
@@ -133,53 +139,38 @@ class helpers:
             plt.show()
         return
 
-    def store_result_matrix(overall_results, case_name, experiment, oemof_results, duration):
+
+    def store_result_matrix(overall_results, experiment, oemof_results, duration):
         """
         Storing results to vector and then result matrix for saving it in csv.
-        All from oemof-results have to be mentioned EXPLICITLY
-        All from (variable) sensitivity values are NOT mentioned
         """
-
-        # todo: add 'grid_reliability', 'grid_total_blackout_duration', 'grid_number_of_blackouts'
         round_to_comma = 5
-        result_vector = []
-        for item in overall_results.columns.values:
-            if item == 'Case':
-                result_vector.extend([case_name])
-            elif item ==  'Filename':
-                result_vector.extend(['results_'+case_name+experiment['filename']])
-            elif item == 'Capacity PV kWp':
-                result_vector.extend([round(oemof_results['pv_capacity_kW'], round_to_comma)])
-            elif item ==  'Capacity storage kWh':
-                result_vector.extend([round(oemof_results['storage_capacity_kWh'], round_to_comma)])
-            elif item ==  'Capacity genset kW':
-                result_vector.extend([round(oemof_results['genset_capacity_kW'], round_to_comma)])
-            elif item ==  'Renewable Factor':
-                result_vector.extend([round(oemof_results['res_share'], round_to_comma)])
-            elif item ==  'NPV':
-                result_vector.extend([round(oemof_results['NPV'], round_to_comma)])
-            elif item ==  'LCOE':
-                result_vector.extend([round(oemof_results['LCOE'], round_to_comma)])
-            elif item ==  'Annuity':
-                result_vector.extend([round(oemof_results['Annuity'], round_to_comma)])
-            elif item ==  'Fuel consumption':
-                result_vector.extend([round(oemof_results['fuel_consumption'], round_to_comma)])
-            elif item == 'fuel_annual_expenditures':
-                result_vector.extend([round(oemof_results['fuel_annual_expenditures'], round_to_comma)])
-            elif item ==  'Simulation time':
-                result_vector.extend([round(duration, round_to_comma)])
-            elif item == 'demand_annual_supplied_kWh':
-                result_vector.extend([round(oemof_results['demand_annual_supplied_kWh'], round_to_comma)])
-            elif item == 'demand_annual_kWh':
-                result_vector.extend([round(oemof_results['demand_annual_kWh'], round_to_comma)])
-            elif item == 'demand_peak_kW':
-                result_vector.extend([round(oemof_results['demand_peak_kW'], round_to_comma)])
-            elif item == 'demand_profile':
-                result_vector.extend([experiment[item]])
-            else:
-                result_vector.extend([round(experiment[item], round_to_comma)])
+        result_series = pd.Series()
 
-        overall_results = overall_results.append(pd.Series(result_vector, overall_results.columns.values),
+        for key in overall_results.columns.values:
+            # Check if called value is in oemof results -> Remember: check if pandas index has certain index: pd.object.index.contains(key)
+            if key in oemof_results:
+                if isinstance(oemof_results[key],str):
+                    result_series = result_series.append(
+                        pd.Series([oemof_results[key]], index=[key]))
+                else:
+                    result_series = result_series.append(
+                        pd.Series([round(oemof_results[key], round_to_comma)], index=[key]))
+            # extend by simulation time
+            elif key == 'simulation_time':
+                oemof_results = oemof_results.update({key: round(duration, round_to_comma)})
+                result_series = result_series.append(pd.Series([round(duration, round_to_comma)], index=[key]))
+            # extend by name of demand profile
+            elif key == 'demand_profile':
+                result_series = result_series.append(pd.Series([experiment[item]], index=[key]))
+            # Check if called value is a parameter of experiments
+            elif key in experiment:
+                result_series = result_series.append(
+                    pd.Series([round(experiment[item], round_to_comma)], index=[key]))
+
+        result_series = result_series.reindex(overall_results.columns, fill_value=None)
+
+        overall_results = overall_results.append(pd.Series(result_series),
                                                  ignore_index=True)
         return overall_results
 
