@@ -40,54 +40,59 @@ class add_results():
 
         oemof_results = add_results.capacities(oemof_results, capacities)
         oemof_results = add_results.annuities(oemof_results, experiment, capacities, evaluated_days)
-        oemof_results = add_results.costs(oemof_results, experiment)
 
         # Expenditures are not part of the (variable) operation costs:
         oemof_results = add_results.expenditures_fuel(oemof_results, experiment)
         annuity_operational = annuity_operational - oemof_results['expenditures_fuel_annual']
 
-        if case_name in ['interconnected_buysell']: # 'interconnected_buy'
+        if case_name in ['interconnected_buy', 'interconnected_buysell', 'oem_grid_tied_mg']:
             oemof_results = add_results.expenditures_main_grid_consumption(oemof_results, experiment)
             annuity_operational = annuity_operational - oemof_results['expenditures_main_grid_consumption_annual']
 
-        if case_name in ['interconnected_buysell']:
-            oemof_results = add_results.revenues_main_grid_feedin(oemof_results, experiment)
+        if case_name in ['interconnected_buysell', 'oem_grid_tied_mg']:
+            oemof_results = add_results.revenue_main_grid_feedin(oemof_results, experiment)
             annuity_operational = annuity_operational + oemof_results['revenue_main_grid_feedin_annual']
 
         # Adding costs of fixed components where necessary for...
         # ...pv
-        if case_name in ['offgrid_fix', 'interconnected_buysell']:
+        if case_name in ['offgrid_fix', 'interconnected_buy', 'interconnected_buysell']:
             annuity = annuity + oemof_results['annuity_pv']
         else:
             annuity_operational = annuity_operational -  oemof_results['annuity_pv']
 
 
         # ... storage
-        if case_name in ['offgrid_fix', 'interconnected_buysell']:
+        if case_name in ['offgrid_fix', 'interconnected_buy', 'interconnected_buysell']:
             annuity = annuity + oemof_results['annuity_storage']
         else:
             annuity_operational = annuity_operational -  oemof_results['annuity_storage']
 
         # ...generators
-        if case_name in ['base_oem_with_min_loading', 'offgrid_fix', 'interconnected_buysell']:
+        if case_name in ['base_oem_with_min_loading', 'offgrid_fix', 'interconnected_buy', 'interconnected_buysell']:
             annuity = annuity + oemof_results['annuity_genset']
         else:
             annuity_operational = annuity_operational -  oemof_results['annuity_genset']
 
         # ...point of coupling
-        if case_name in ['interconnected_buysell']:
+        if case_name in ['interconnected_buy', 'interconnected_buysell', 'oem_grid_tied_mg']:
             annuity = annuity + oemof_results['annuity_pcoupling']
             # no else, as pcoupling is not optimized in ANY case
 
         # ...main grid extension
-        if case_name in ['interconnected_buysell']:
+        if case_name in ['interconnected_buy', 'interconnected_buysell', 'oem_grid_tied_mg']:
+            oemof_results.update({
+                'annuity_grid_extension':
+                    experiment['maingrid_extension_cost_annuity'] * experiment['maingrid_distance'] * 365 / evaluated_days})
             annuity = annuity + oemof_results['annuity_grid_extension']
+        else:
+            oemof_results.update({'annuity_grid_extension': 0})
             # no else, as extension costs are not variable
 
         # ... project costs
         annuity = annuity + oemof_results['annuity_project_fix']
 
         # Present values
+        oemof_results = add_results.costs(oemof_results, experiment)
         npv = annuity * experiment['annuity_factor']
         costs_operation = annuity_operational * experiment['annuity_factor']
 
@@ -118,8 +123,6 @@ class add_results():
                 'capacity_genset_kW'] * 365 / evaluated_days,
             'annuity_pcoupling': experiment['pcoupling_cost_annuity'] * capacities[
                 'capacity_pcoupling_kW'] * 365 / evaluated_days,
-            'annuity_grid_extension': experiment['maingrid_extension_cost_annuity'] * experiment[
-                'maingrid_distance'] * 365 / evaluated_days,
             'annuity_project_fix': experiment['project_cost_annuity'] * 365 / evaluated_days})
         return oemof_results
 
@@ -151,12 +154,12 @@ class add_results():
                 oemof_results['expenditures_main_grid_consumption_annual'] * experiment['annuity_factor']})
         return oemof_results
 
-    def revenues_main_grid_feedin(oemof_results, experiment):
+    def revenue_main_grid_feedin(oemof_results, experiment):
         # Necessary in oemof_results: feedin_main_grid_annual
         oemof_results.update({'revenue_main_grid_feedin_annual':
                 oemof_results['feedin_main_grid_annual'] * experiment['maingrid_feedin_tariff']})
 
-        oemof_results.update({'revenues_main_grid_feedin_total':
+        oemof_results.update({'revenue_main_grid_feedin_total':
                 oemof_results['revenue_main_grid_feedin_annual'] * experiment['annuity_factor']})
         return oemof_results
 
@@ -173,8 +176,8 @@ class oemofmodel():
         electricity_bus = outputlib.views.node(results, 'bus_electricity_mg')
 
         fuel_bus = outputlib.views.node(results, 'bus_fuel')
-        oemofmodel.plot_bus_electricity_mg(electricity_bus, case_name)
-        oemofmodel.plot_storage(generic_storage)
+        oemofmodel.outputs_bus_electricity_mg(electricity_bus, case_name, experiment['filename'])
+        oemofmodel.outputs_storage(generic_storage, case_name, experiment['filename'])
         oemofmodel.print_oemof_meta_main_invest(meta, electricity_bus, case_name)
 
         total_supplied_demand   = electricity_bus['sequences'][(('bus_electricity_mg', 'sink_demand'), 'flow')].sum()
@@ -204,12 +207,12 @@ class oemofmodel():
             'objective_value':              meta['objective']
              }
 
-        if case_name in ['interconnected_buysell']:
+        if case_name in ['interconnected_buysell', 'interconnected_buy', 'oem_grid_tied_mg']:
             maingrid_bus = outputlib.views.node(results, 'bus_electricity_ng')
             oemof_results.update({
                 'consumption_main_grid_annual':
                     sum(maingrid_bus['sequences'][(('bus_electricity_ng', 'transformer_pcc_consumption'), 'flow')])* 365 / evaluated_days})
-            if case_name in ['interconnected_buysell']:
+            if case_name in ['interconnected_buysell', 'oem_grid_tied_mg']:
                 oemof_results.update({
                     'feedin_main_grid_annual':
                 sum(maingrid_bus['sequences'][(('transformer_pcc_feedin', 'bus_electricity_ng'), 'flow')])* 365 / evaluated_days})
@@ -247,14 +250,14 @@ class oemofmodel():
         else:
             logging.warning("Error, Strange PV behaviour (PV gen < 0)")
 
-        if case_name == "base_oem":
+        if case_name in ["base_oem", "oem_grid_tied_mg"]:
             # Optimized generator capacity
             capacities_base.update({'capacity_genset_kW': electricity_bus['scalars'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'invest')]})
         elif case_name == "base_oem_with_min_loading":
             # Genset capacity equals peak demand
             capacities_base.update({'capacity_genset_kW': max(demand_profile)})
 
-        if case_name in ["imaginarylist"]:
+        if case_name in ["oem_grid_tied_mg"]:
             capacities_base.update({'capacity_pcoupling_kW': max(demand_profile)})
         else:
             capacities_base.update({'capacity_pcoupling_kW': 0})
@@ -331,8 +334,8 @@ class oemofmodel():
         # store energy system with results
         from config import output_folder, setting_save_oemofresults
         if setting_save_oemofresults == True:
-            micro_grid_system.dump(dpath=output_folder, filename = file_name + ".oemof" )
-            logging.debug('Stored results in ' + output_folder + '/' + file_name + ".oemof")
+            micro_grid_system.dump(dpath=output_folder+'/oemof', filename = file_name + ".oemof" )
+            logging.debug('Stored results in ' + output_folder+'/oemof' + '/' + file_name + ".oemof")
         return micro_grid_system
 
     def filename(case_name, experiment_name):
@@ -344,7 +347,7 @@ class oemofmodel():
         from config import output_folder
         logging.debug('Restore the energy system and the results.')
         micro_grid_system = solph.EnergySystem()
-        micro_grid_system.restore(dpath=output_folder,
+        micro_grid_system.restore(dpath=output_folder+'/oemof',
                                   filename=file_name + ".oemof")
         return micro_grid_system
 
@@ -370,52 +373,99 @@ class oemofmodel():
     ######## Processing ########
 
     ####### Show #######
-    def plot_storage(custom_storage):
-        from config import display_graphs_simulation
-        if plt is not None and display_graphs_simulation == True:
+    def outputs_storage(custom_storage, case_name, filename):
+        from config import display_graphs_flows_storage, setting_save_flows_storage
+
+        if display_graphs_flows_storage == True or setting_save_flows_storage == True:
+            stored_capacity = custom_storage['sequences'][(('generic_storage', 'None'), 'capacity')]
+            discharge       = custom_storage['sequences'][(('generic_storage', 'bus_electricity_mg'), 'flow')]
+            charge          = custom_storage['sequences'][(('bus_electricity_mg', 'generic_storage'), 'flow')]
+
+        if setting_save_flows_storage == True:
+            from config import output_folder
+            storage_flows = pd.DataFrame(stored_capacity.values, columns=['Stored capacity in kWh'], index=stored_capacity.index)
+            storage_flows = storage_flows.join(
+                pd.DataFrame(discharge.values, columns=['Discharge storage'], index=discharge.index))
+            storage_flows = storage_flows.join(
+                pd.DataFrame(charge.values, columns=['Charge storage'], index=charge.index))
+
+            storage_flows.to_csv(output_folder  +   '/storage/' + case_name + filename + '_storage.csv')
+
+        if plt is not None and display_graphs_flows_storage == True:
             logging.debug('Plotting: Generic storage')
-            custom_storage['sequences'][(('generic_storage', 'None'), 'capacity')].plot(kind='line',
-                                                                                        drawstyle='steps-post',
-                                                                                        label='Stored capacity in kWh')
-            custom_storage['sequences'][(('generic_storage', 'bus_electricity_mg'), 'flow')].plot(kind='line',
-                                                                                                  drawstyle='steps-post',
-                                                                                                  label='Discharge storage')
-            custom_storage['sequences'][(('bus_electricity_mg', 'generic_storage'), 'flow')].plot(kind='line',
-                                                                                                  drawstyle='steps-post',
-                                                                                                  label='Charge storage')
+            stored_capacity.plot(kind='line', drawstyle='steps-post', label='Stored capacity in kWh')
+            discharge.plot(kind='line', drawstyle='steps-post', label='Discharge storage')
+            charge.plot(kind='line', drawstyle='steps-post', label='Charge storage')
             plt.legend(loc='upper right')
             plt.show()
         return
 
-    def plot_bus_electricity_mg(electricity_bus, case_name):
-        from config import allow_shortage, display_graphs_simulation
-        if plt is not None and display_graphs_simulation == True:
-            logging.debug('Plotting: Electricity bus')
-            # plot each flow to/from electricity bus with appropriate name
-            electricity_bus['sequences'][(('source_pv', 'bus_electricity_mg'), 'flow')].plot(
-                kind='line', drawstyle='steps-post', label='PV generation')
-            electricity_bus['sequences'][(('bus_electricity_mg', 'sink_demand'), 'flow')].plot(
-                kind='line', drawstyle='steps-post', label='Demand supply')
-            electricity_bus['sequences'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'flow')].plot(
-                kind='line', drawstyle='steps-post', label='GenSet')
-            electricity_bus['sequences'][(('generic_storage', 'bus_electricity_mg'), 'flow')].plot(
-                kind='line', drawstyle='steps-post', label='Discharge storage')
-            electricity_bus['sequences'][(('bus_electricity_mg', 'generic_storage'), 'flow')].plot(
-                kind='line', drawstyle='steps-post', label='Charge storage')
-            electricity_bus['sequences'][(('bus_electricity_mg', 'sink_excess'), 'flow')].plot(
-                kind='line', drawstyle='steps-post', label='Excess electricity')
+    def outputs_bus_electricity_mg(electricity_bus, case_name, filename):
+        from config import allow_shortage, display_graphs_flows_electricity_mg, setting_save_flows_electricity_mg
+
+        if display_graphs_flows_electricity_mg == True or setting_save_flows_electricity_mg == True:
+            pv_gen          = electricity_bus['sequences'][(('source_pv', 'bus_electricity_mg'), 'flow')]
+            demand_supply   = electricity_bus['sequences'][(('bus_electricity_mg', 'sink_demand'), 'flow')]
+            genset          = electricity_bus['sequences'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'flow')]
+            discharge       = electricity_bus['sequences'][(('generic_storage', 'bus_electricity_mg'), 'flow')]
+            charge          = electricity_bus['sequences'][(('bus_electricity_mg', 'generic_storage'), 'flow')]
+            excess          = electricity_bus['sequences'][(('bus_electricity_mg', 'sink_excess'), 'flow')]
 
             if allow_shortage == True:
-                electricity_bus['sequences'][(('source_shortage', 'bus_electricity_mg'), 'flow')].plot(
-                    kind='line', drawstyle='steps-post', label='Supply shortage')
+                shortage = electricity_bus['sequences'][(('source_shortage', 'bus_electricity_mg'), 'flow')]
 
-            if case_name == "interconnected_buysell" or case_name =="interconnected_buy":
-                electricity_bus['sequences'][(('transformer_pcc_consumption', 'bus_electricity_mg'), 'flow')].plot(
-                    kind='line', drawstyle='steps-post', label='Consumption from main grid')
+            if case_name in ['interconnected_buy', 'interconnected_buysell', 'oem_grid_tied_mg']:
+                consumption = electricity_bus['sequences'][(('transformer_pcc_consumption', 'bus_electricity_mg'), 'flow')]
 
-            if case_name == "interconnected_buysell":
-                electricity_bus['sequences'][(('bus_electricity_mg', 'transformer_pcc_feedin'), 'flow')].plot(
-                    kind='line', drawstyle='steps-post', label='Feed into main grid')
+            if case_name in ['interconnected_buysell', 'oem_grid_tied_mg']:
+                feedin = electricity_bus['sequences'][(('bus_electricity_mg', 'transformer_pcc_feedin'), 'flow')]
+
+        if setting_save_flows_electricity_mg == True:
+            from config import output_folder
+            electricity_mg_flows = pd.DataFrame(pv_gen.values, columns=['PV generation'], index=pv_gen.index)
+            electricity_mg_flows = electricity_mg_flows.join(
+                pd.DataFrame(demand_supply.values, columns=['Demand supply'], index=demand_supply.index))
+            electricity_mg_flows = electricity_mg_flows.join(
+                pd.DataFrame(genset.values, columns=['GenSet'], index=genset.index))
+            electricity_mg_flows = electricity_mg_flows.join(
+                pd.DataFrame(discharge.values, columns=['Discharge storage'], index=discharge.index))
+            electricity_mg_flows = electricity_mg_flows.join(
+                pd.DataFrame(charge.values, columns=['Charge storage'], index=charge.index))
+            electricity_mg_flows = electricity_mg_flows.join(
+                pd.DataFrame(excess.values, columns=['Excess electricity'], index=excess.index))
+
+            if allow_shortage == True:
+                electricity_mg_flows = electricity_mg_flows.join(
+                    pd.DataFrame(shortage.values, columns=['Supply shortage'], index=shortage.index))
+
+            if case_name in ['interconnected_buy', 'interconnected_buysell', 'oem_grid_tied_mg']:
+                electricity_mg_flows = electricity_mg_flows.join(
+                    pd.DataFrame(consumption.values, columns=['Consumption from main grid'], index=consumption.index))
+
+            if case_name in ['interconnected_buysell', 'oem_grid_tied_mg']:
+                electricity_mg_flows = electricity_mg_flows.join(
+                    pd.DataFrame(feedin.values, columns=['Feed into main grid'], index=feedin.index))
+
+            electricity_mg_flows.to_csv(output_folder + '/electricity_mg/' + case_name + filename + '_electricity_mg.csv')
+
+        if plt is not None and display_graphs_flows_electricity_mg == True:
+            logging.debug('Plotting: Electricity bus')
+            # plot each flow to/from electricity bus with appropriate name
+            pv_gen.plot(kind='line', drawstyle='steps-post', label='PV generation')
+            demand_supply.plot(kind='line', drawstyle='steps-post', label='Demand supply')
+            genset.plot(kind='line', drawstyle='steps-post', label='GenSet')
+            discharge.plot(kind='line', drawstyle='steps-post', label='Discharge storage')
+            charge.plot(kind='line', drawstyle='steps-post', label='Charge storage')
+            excess.plot(kind='line', drawstyle='steps-post', label='Excess electricity')
+
+            if allow_shortage == True:
+                shortage.plot(kind='line', drawstyle='steps-post', label='Supply shortage')
+
+            if case_name in ['interconnected_buy', 'interconnected_buysell', 'oem_grid_tied_mg']:
+                consumption.plot(kind='line', drawstyle='steps-post', label='Consumption from main grid')
+
+            if case_name in ['interconnected_buysell', 'oem_grid_tied_mg']:
+                feedin.plot(kind='line', drawstyle='steps-post', label='Feed into main grid')
 
             plt.legend(loc='upper right')
             plt.show()

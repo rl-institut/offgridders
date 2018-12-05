@@ -108,13 +108,13 @@ class sensitivity():
             overall_results = pd.concat([overall_results, pd.DataFrame(columns=[
                 'demand_annual_kWh',
                 'demand_peak_kW',
-                'demand_annual_supplied_kWh'])], axis=1)
+                'demand_annual_supplied_kWh'])], axis=1, sort=False)
 
         if results_blackout_characteristics == True:
             overall_results = pd.concat([overall_results, pd.DataFrame(columns=[
                 'national_grid_reliability',
                 'national_grid_total_blackout_duration',
-                'national_grid_number_of_blackouts'])], axis=1)
+                'national_grid_number_of_blackouts'])], axis=1, sort=False)
 
         overall_results = pd.concat([overall_results, pd.DataFrame(columns=[
             'capacity_pv_kWp',
@@ -124,7 +124,7 @@ class sensitivity():
             'res_share',
             'consumption_fuel_annual',
             'consumption_main_grid_annual',
-            'feedin_main_grid_annual'])], axis=1)
+            'feedin_main_grid_annual'])], axis=1, sort=False)
 
         if results_annuities == True:
             overall_results = pd.concat([overall_results, pd.DataFrame(columns=[
@@ -134,12 +134,12 @@ class sensitivity():
                 'annuity_pcoupling',
                 'annuity_grid_extension',
                 'annuity_project_fix',
-                'annuity_operational'])], axis=1)
+                'annuity_operational'])], axis=1, sort=False)
 
         overall_results = pd.concat([overall_results, pd.DataFrame(columns=[
             'expenditures_fuel_annual',
             'expenditures_main_grid_consumption_annual',
-            'revenue_main_grid_feedin_annual'])], axis=1)
+            'revenue_main_grid_feedin_annual'])], axis=1, sort=False)
 
         # Called costs because they include the operation, while they are also not the present value because
         # the variable costs are included in the oem
@@ -154,14 +154,14 @@ class sensitivity():
                 'costs_operation',
                 'expenditures_fuel_total',
                 'expenditures_main_grid_consumption_total',
-                'revenue_main_grid_feedin_total'])], axis=1)
+                'revenue_main_grid_feedin_total'])], axis=1, sort=False)
 
         overall_results = pd.concat([overall_results, pd.DataFrame(columns=[
             'annuity',
             'npv',
             'lcoe',
             'objective_value',
-            'simulation_time'])], axis=1)
+            'simulation_time'])], axis=1, sort=False)
 
         if number_of_demand_profiles > 1:
             overall_results = pd.concat([overall_results, pd.DataFrame(columns=['demand_profile'])], axis=1)

@@ -88,12 +88,21 @@ class config_func():
         from config import output_folder, restore_oemof_if_existant
         if os.path.isdir(output_folder)!=True:
             os.mkdir(output_folder)
+        if os.path.isdir(output_folder  +   '/oemof') != True:
+                os.mkdir(output_folder  +   '/oemof')
+        if os.path.isdir(output_folder  +   '/storage') != True:
+                os.mkdir(output_folder  +   '/storage')
+        if os.path.isdir(output_folder  +   '/electricity_mg') != True:
+                os.mkdir(output_folder  +   '/electricity_mg')
+
         else:
-            if restore_oemof_if_existant != True:
-                for root, dirs, files in os.walk(output_folder):
-                    logging.info('Deleted all files in folder "simulation_results".')
+            if restore_oemof_if_existant == False:
+                #list_of_folders = [output_folder, output_folder  +   "/oemof", output_folder  +   "/storage", output_folder  +   "/electricity_bus"]
+                #for folder in list_of_folders:
+                for root, dirs, files in os.walk(folder):
                     for f in files:
-                        os.remove(output_folder+'/'+f)
+                        os.remove(folder+'/'+f)
+                logging.info('Deleted all files in folder "simulation_results".')
         return
 
 class helpers:

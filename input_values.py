@@ -78,13 +78,13 @@ BUT DO NOT DELETE OR ADD NEW ELEMENTS WITHOUT CHANGING THE MAIN CODE
 
 sensitivity_bounds = {
     #'price_fuel':           {'min': 0.5,  'max': 1.5,     'step': 0.25},
-    'maingrid_distance':    {'min': 20,  'max': 50,     'step': 5},
-    'blackout_duration':    {'min': 2,  'max': 6,     'step': 1}
+    #'maingrid_distance':    {'min': 20,  'max': 50,     'step': 5},
+    #'blackout_duration':    {'min': 2,  'max': 6,     'step': 1}
     }
 
 # Values of the sensitivity analysis that appear constant
 sensitivity_constants = {
-    #'blackout_duration':	            2,	    # hrs per blackout
+    'blackout_duration':	            2,	    # hrs per blackout
     'blackout_duration_std_deviation':  0,  # factor. Goal: 15%? (percentual)
     'blackout_frequency':	            7,	    # blackouts per month
     'blackout_frequency_std_deviation': 0,      # factor. Goal: 15%? 0 Means: No variability (percentual)
@@ -97,7 +97,7 @@ sensitivity_constants = {
     'genset_lifetime':	                10,     # a
     'genset_max_loading':	            1,	    # maximal load factor of generator
     'genset_min_loading':	            0.2,	# Minimal load factor of generator
-    #'maingrid_distance':	            10,	    #
+    'maingrid_distance':	            10,	    #
     'maingrid_extension_cost_investment':    15000,  # /km
     'maingrid_extension_cost_opex':     50,      # /km/a
     'maingrid_extension_lifetime':      20,      # /km/a

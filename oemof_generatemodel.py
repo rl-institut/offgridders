@@ -151,7 +151,10 @@ class generatemodel():
         micro_grid_system.add(pointofcoupling)
         return micro_grid_system, bus_electricity_mg, bus_electricity_ng
 
-    def pointofcoupling_feedin_oem(micro_grid_system, bus_electricity_mg, bus_electricity_ng, experiment):
+    # todo point of coupling = max(demand) limits PV feed-in, therefore there should be a minimal pcc capacity defined with
+    # optimal larger size though OEM. existing = min_cap_pointofcoupling. but are all costs included?
+    # ERROR-Optimization failed with status ok and terminal condition unbounded when using existing = min_cap_pointofcoupling
+    def pointofcoupling_feedin_oem(micro_grid_system, bus_electricity_mg, bus_electricity_ng, min_cap_pointofcoupling, experiment):
         pointofcoupling = solph.Transformer(label="transformer_pcc_feedin",
                                                        inputs={bus_electricity_mg: solph.Flow()},
                                                        outputs={bus_electricity_ng: solph.Flow(
@@ -199,7 +202,7 @@ class generatemodel():
             capacity_loss               = experiment['storage_loss_timestep'],  # from timestep to timestep
             capacity_min                = experiment['storage_capacity_min'],
             capacity_max                = experiment['storage_capacity_max'],
-            initial_capacity            = experiment['storage_initial_soc'],  # in terms of SOC? # todo check this point
+            initial_capacity            = experiment['storage_initial_soc'],  # in terms of SOC?
             inflow_conversion_factor    = experiment['storage_inflow_efficiency'],  # storing efficiency
             outflow_conversion_factor   = experiment['storage_outflow_efficiency'])  # efficiency of discharge
         micro_grid_system.add(generic_storage)

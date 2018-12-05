@@ -133,9 +133,11 @@ for experiment in sensitivity_experiments:
     for items in listof_cases:
         logging.info('Starting simulation of case ' + items + ', experiment no. ' + str(experiment_count) + '...')
         start = timeit.default_timer()
+
         if      items == 'offgrid_fixed':
             oemof_results = \
                 cases.offgrid_fix(demand_profiles[experiment['demand_profile']], pv_generation_per_kWp, experiment, capacities_base)
+
         elif    items == 'interconnected_buy':
             oemof_results =\
                 cases.interconnected_buy(demand_profiles[experiment['demand_profile']], pv_generation_per_kWp, experiment,
@@ -146,11 +148,13 @@ for experiment in sensitivity_experiments:
                 cases.interconnected_buysell(demand_profiles[experiment['demand_profile']], pv_generation_per_kWp, experiment,
                                          capacities_base, grid_availability)
 
+        elif items == 'oem_grid_tied_mg':
+            oemof_results =\
+                cases.oem_grid_tied_mg(demand_profiles[experiment['demand_profile']], pv_generation_per_kWp, experiment, grid_availability)
+
         elif    items == 'buyoff':               cases.buyoff()
         elif    items == 'parallel':             cases.parallel()
         elif    items == 'adapted':              cases.adapted()
-        elif    items == 'oem_interconnected':   cases.oem_interconnected()
-        elif    items == 'backupgrid':           cases.backupgrid()
         else: logging.warning("Unknown case!")
         duration = timeit.default_timer() - start
         logging.info('    Simulation of case '+items+' complete.')

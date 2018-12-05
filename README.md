@@ -13,7 +13,10 @@ generator.
 * pvlib
 
 # Track Versions
-04.12: MAJOR UPDATE: Updated output list, better generation of oemof results, case-specific evaliation of costs
+05.12: MAJOR UPDATE! Updated output list, export of electricity_mg flows, added case interconnection_buy and oem_grid_tied_mg, 
+       checked interconnection_buy/interconnection_buysell based on annuity/costs, 
+
+04.12: MAJOR UPDATE! Updated output list, better generation of oemof results, case-specific evaliation of costs
 
 03.12: Buysell case created (unfinished), links to grid_availability, delected class extract 
 
@@ -33,7 +36,8 @@ generator.
  
 22.11: Cost calculations currently are complete bull, as they are not related to the individual lifetimes.
 
-21.11: Results include LCOE, NPV, fuel consumption (NPV has a pretty large margin, results in 1ct/kWh so improve on that), enabled computation of nonconvex flow
+21.11: Results include LCOE, NPV, fuel consumption (NPV has a pretty large margin, results in 1ct/kWh so improve on that), 
+       enabled computation of nonconvex flow
 
 20.11: Saving results in external file, including external pv output file (kWh/kWp), writing the WIKI
 
