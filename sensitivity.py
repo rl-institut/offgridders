@@ -98,55 +98,71 @@ class sensitivity():
 
     # please add additional arguments here.
     def overall_results_title(number_of_demand_profiles, sensitivity_bounds):
-        overall_results = pd.DataFrame(
-            columns=['case',
-                     'filename',
-                     'demand_annual_kWh',
-                     'demand_peak_kW',
-                     'demand_annual_supplied_kWh',
-                     'national_grid_reliability',
-                     'national_grid_total_blackout_duration',
-                     'national_grid_number_of_blackouts',
-                     'grid_reliability',
-                     'grid_total_blackout_duration',
-                     'grid_number_of_blackouts',
-                     'capacity_pv_kWp',
-                     'capacity_storage_kWh',
-                     'capacity_genset_kW',
-                     'capacity_pcoupling_kW',
-                     'res_share',
-                     'consumption_fuel_annual',
-                     'consumption_main_grid_annual',
-                     'feedin_main_grid_annual'
-                     # Annuities
-                     'annuity_pv',
-                     'annuity_storage',
-                     'annuity_genset',
-                     'annuity_pcoupling',
-                     'annuity_grid_extension',
-                     'annuity_project_fix',
-                     'expenditures_fuel_annual',
-                     'expenditures_main_grid_consumption_annual',
-                     'revenue_main_grid_feedin_annual',
-                     'annuity_operational',
-                     # Called costs because they include the operation, while they are also not the present value because
-                     # the variable costs are included in the oem
-                     'costs_pv',
-                     'costs_storage',
-                     'costs_genset',
-                     'costs_pcoupling',
-                     'costs_grid_extension',
-                     'costs_project_fix' 
-                     'costs_operation' 
-                     'expenditures_fuel_total',
-                     'expenditures_main_grid_consumption_total',
-                     'revenue_main_grid_feedin_total',
-                     # totalled values
-                     'annuity',
-                     'npv',
-                     'lcoe',
-                     'objective_value',
-                     'simulation_time'])
+        # Get from config which results are to be included in csv
+        from config import results_demand_characteristics, results_blackout_characteristics, results_annuities, results_costs
+        overall_results = pd.DataFrame(columns=[
+            'case',
+            'filename'])
+
+        if results_demand_characteristics == True:
+            overall_results = pd.concat([overall_results, pd.DataFrame(columns=[
+                'demand_annual_kWh',
+                'demand_peak_kW',
+                'demand_annual_supplied_kWh'])], axis=1)
+
+        if results_blackout_characteristics == True:
+            overall_results = pd.concat([overall_results, pd.DataFrame(columns=[
+                'national_grid_reliability',
+                'national_grid_total_blackout_duration',
+                'national_grid_number_of_blackouts'])], axis=1)
+
+        overall_results = pd.concat([overall_results, pd.DataFrame(columns=[
+            'capacity_pv_kWp',
+            'capacity_storage_kWh',
+            'capacity_genset_kW',
+            'capacity_pcoupling_kW',
+            'res_share',
+            'consumption_fuel_annual',
+            'consumption_main_grid_annual',
+            'feedin_main_grid_annual'])], axis=1)
+
+        if results_annuities == True:
+            overall_results = pd.concat([overall_results, pd.DataFrame(columns=[
+                'annuity_pv',
+                'annuity_storage',
+                'annuity_genset',
+                'annuity_pcoupling',
+                'annuity_grid_extension',
+                'annuity_project_fix',
+                'annuity_operational'])], axis=1)
+
+        overall_results = pd.concat([overall_results, pd.DataFrame(columns=[
+            'expenditures_fuel_annual',
+            'expenditures_main_grid_consumption_annual',
+            'revenue_main_grid_feedin_annual'])], axis=1)
+
+        # Called costs because they include the operation, while they are also not the present value because
+        # the variable costs are included in the oem
+        if results_costs == True:
+            overall_results = pd.concat([overall_results, pd.DataFrame(columns=[
+                'costs_pv',
+                'costs_storage',
+                'costs_genset',
+                'costs_pcoupling',
+                'costs_grid_extension',
+                'costs_project_fix',
+                'costs_operation',
+                'expenditures_fuel_total',
+                'expenditures_main_grid_consumption_total',
+                'revenue_main_grid_feedin_total'])], axis=1)
+
+        overall_results = pd.concat([overall_results, pd.DataFrame(columns=[
+            'annuity',
+            'npv',
+            'lcoe',
+            'objective_value',
+            'simulation_time'])], axis=1)
+
         if number_of_demand_profiles > 1:
             overall_results = pd.concat([overall_results, pd.DataFrame(columns=['demand_profile'])], axis=1)
         for keys in sensitivity_bounds:

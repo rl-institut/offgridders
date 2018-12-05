@@ -77,9 +77,9 @@ BUT DO NOT DELETE OR ADD NEW ELEMENTS WITHOUT CHANGING THE MAIN CODE
 '''
 
 sensitivity_bounds = {
-    'price_fuel':     {'min': 0.5,  'max': 1,     'step': 0.25},
-    #'genset_min_loading':     {'min': 0.1,  'max': 0.3,     'step': 0.1}
-    'blackout_duration':     {'min': 2,  'max': 6,     'step': 2}
+    #'price_fuel':           {'min': 0.5,  'max': 1.5,     'step': 0.25},
+    'maingrid_distance':    {'min': 20,  'max': 50,     'step': 5},
+    'blackout_duration':    {'min': 2,  'max': 6,     'step': 1}
     }
 
 # Values of the sensitivity analysis that appear constant
@@ -97,25 +97,25 @@ sensitivity_constants = {
     'genset_lifetime':	                10,     # a
     'genset_max_loading':	            1,	    # maximal load factor of generator
     'genset_min_loading':	            0.2,	# Minimal load factor of generator
-    'maingrid_distance':	            10,	    # todo not implemented distance_to_grid
+    #'maingrid_distance':	            10,	    #
     'maingrid_extension_cost_investment':    15000,  # /km
-    'maingrid_extension_cost_opex':     0,      # /km/a
+    'maingrid_extension_cost_opex':     50,      # /km/a
     'maingrid_extension_lifetime':      20,      # /km/a
     'maingrid_electricity_price':       0.20,   # /unit
     'maingrid_feedin_tariff':           0.12,   # /unit
     'max_share_unsupplied_load':	    0,	    # factor
     'min_res_share':	                0,	    # factor	todo only works	properly for off-grid oem! Create add. transformer with input streams fuel (0%	res) + nat.grid (x%	res) and limit resshare there! #does not work at all for dispatch oem
-    'pcoupling_cost_investment':	    1500,   # /unit
-    'pcoupling_cost_opex':	            0,      # /unit/a
+    'pcoupling_cost_investment':	    600,    # /unit
+    'pcoupling_cost_opex':	            5,      # /unit/a
     'pcoupling_cost_var':	            0,      # /kWh
     'pcoupling_efficiency':	            0.98,	# inverter inefficiency between highvoltage/mediumvoltage grid (maybe even split into feedin/feedfrom
     'pcoupling_lifetime':	            20,     # a
-    #'price_fuel':	                    4.4,	# /unit
-    'project_cost_fix':	                0,	    # not implemented
-    'project_cost_opex':	            0,	    # not implemented
+    'price_fuel':	                    2,	# /unit
+    'project_cost_fix':	                15000,	#
+    'project_cost_opex':	            200,	# /a
     'project_life':	                    20,     # a
     'pv_cost_investment':	            950,    # /unit
-    'pv_cost_opex':	                    0,      # /unit/a
+    'pv_cost_opex':	                    5,      # /unit/a
     'pv_cost_var':	                    0,      # /kWh
     'pv_lifetime':	                    20,     # a
     'storage_capacity_max':	            1,	    # factor

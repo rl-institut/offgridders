@@ -1,8 +1,8 @@
 import pandas as pd
 
 ####### ------------ General simulation settings ----------------- #######
-coding_process                  = True  # Defines timeframe and noise (see below)
-restore_oemof_if_existant       = False  # If set to False, the directory with results is emptied!!
+coding_process                  = False  # Defines timeframe and noise (see below)
+restore_oemof_if_existant       = True  # If set to False, the directory with results is emptied!!
 restore_blackouts_if_existant   = True
 base_case_with_min_loading      = False   # If set to True, the generator capacity will be equal to peak demand in kW!
 # TOdo allow multiple generators here (or even allow multiple generators in general??)
@@ -47,6 +47,12 @@ print_simulation_meta       = False  # print information on opimization
 print_simulation_main       = False  # print accumulated flows over electricity bus
 print_simulation_invest     = False  # print investment results
 print_simulation_experiment = False  # Print data on experiment run (sensitivity analysis)
+
+# Choose results saves in csv
+results_demand_characteristics      = True
+results_blackout_characteristics    = True
+results_annuities                   = True
+results_costs                       = True
 
 ####### ----------------- Oemof simulation settings ------------------- #######
 # Define solver
