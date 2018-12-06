@@ -54,12 +54,11 @@ class sensitivity():
             experiments[i].update({'filename': filename})
 
         # define structure of pd.Dataframe: overall_results
-        overall_results = pd.DataFrame(
-            columns=['Case', 'Filename', 'Capacity PV kWp', 'Capacity storage kWh', 'Capacity genset kW', 'Renewable Factor', 'NPV', 'LCOE', 'Annuity', 'Fuel consumption', 'fuel_annual_expenditures', 'Simulation time', 'demand_annual_kWh', 'demand_peak_kW', 'demand_annual_supplied_kWh'])
-        if len(demand_array) > 1:
-            overall_results = pd.concat([overall_results, pd.DataFrame(columns=['demand_profile'])], axis=1)
-        for keys in sensitivity_bounds:
-            overall_results = pd.concat([overall_results, pd.DataFrame(columns=[keys])], axis=1)
+        # todo more automatic extension of colum header
+        # todo: add 'grid_reliability', 'grid_total_blackout_duration', 'grid_number_of_blackouts'
+
+        overall_results = sensitivity.overall_results_title(len(demand_array), sensitivity_bounds)
+
         return experiments, overall_results
 
     def blackout_experiments():
@@ -67,29 +66,106 @@ class sensitivity():
         import itertools
         import numpy as np
 
-        dictof_oemparameters = {}
+        dictof_blackoutparameters = {}
         for keys in sensitivity_bounds:
-            if keys == 'blackout_duration' or keys == 'blackout_frequency':
+            if keys == 'blackout_duration' or keys == 'blackout_frequency' or keys == 'blackout_duration_std_deviation' or keys == 'blackout_frequency_std_deviation':
                 if sensitivity_bounds[keys]['min'] == sensitivity_bounds[keys]['max']:
-                    dictof_oemparameters.update({keys: np.array([sensitivity_bounds[keys]['min']])})
+                    dictof_blackoutparameters.update({keys: np.array([sensitivity_bounds[keys]['min']])})
                 else:
-                    dictof_oemparameters.update({keys: np.arange(sensitivity_bounds[keys]['min'],
+                    dictof_blackoutparameters.update({keys: np.arange(sensitivity_bounds[keys]['min'],
                                                                  sensitivity_bounds[keys]['max']+sensitivity_bounds[keys]['step']/2,
                                                                  sensitivity_bounds[keys]['step'])})
         for keys in sensitivity_constants:
-            if keys == 'blackout_duration' or keys == 'blackout_frequency':
-                dictof_oemparameters.update({keys: np.array([sensitivity_constants[keys]])})
+            if keys == 'blackout_duration' or keys == 'blackout_frequency' or keys == 'blackout_duration_std_deviation' or keys == 'blackout_frequency_std_deviation':
+                dictof_blackoutparameters.update({keys: np.array([sensitivity_constants[keys]])})
 
         # create all possible combinations of sensitive parameters
-        keys, values = zip(*dictof_oemparameters.items())
-        experiments = [dict(zip(keys, v)) for v in itertools.product(*values)]
+        keys, values = zip(*dictof_blackoutparameters.items())
+        blackout_experiments = [dict(zip(keys, v)) for v in itertools.product(*values)]
+        # define file name to save simulation / get grid availabilities
+        for i in range(0, len(blackout_experiments)):
+            blackout_experiment_name = sensitivity.blackout_experiment_name(blackout_experiments[i])
+            blackout_experiments[i].update({'experiment_name': blackout_experiment_name})
+        return blackout_experiments
 
-        # define file postfix to save simulation
-        for i in range(0, len(experiments)):
-            filename = 's'
-            for keys in experiments[i]:
-                filename = filename + '_' + keys + '_' + str(round(experiments[i][keys],2))
+    # Generate names for blackout experiments, used in sensitivity.blackoutexperiments and in maintool
+    def blackout_experiment_name(blackout_experiment):
+        blackout_experiment_name = 'blackout_dur' + '_' + str(round(blackout_experiment['blackout_duration'], 2)) + "_" \
+                          + 'dur_dev' + '_' + str(round(blackout_experiment['blackout_duration_std_deviation'], 2)) + "_" \
+                          + 'freq' + '_' + str(round(blackout_experiment['blackout_frequency'], 2)) + "_" \
+                          + 'freq_dev' + '_' + str(round(blackout_experiment['blackout_frequency_std_deviation'], 2))
+        return blackout_experiment_name
 
-            experiments[i].update({'filename': filename})
+    # please add additional arguments here.
+    def overall_results_title(number_of_demand_profiles, sensitivity_bounds):
+        # Get from config which results are to be included in csv
+        from config import results_demand_characteristics, results_blackout_characteristics, results_annuities, results_costs
+        overall_results = pd.DataFrame(columns=[
+            'case',
+            'filename'])
 
-        return experiments
+        if results_demand_characteristics == True:
+            overall_results = pd.concat([overall_results, pd.DataFrame(columns=[
+                'demand_annual_kWh',
+                'demand_peak_kW',
+                'demand_annual_supplied_kWh'])], axis=1, sort=False)
+
+        if results_blackout_characteristics == True:
+            overall_results = pd.concat([overall_results, pd.DataFrame(columns=[
+                'national_grid_reliability',
+                'national_grid_total_blackout_duration',
+                'national_grid_number_of_blackouts'])], axis=1, sort=False)
+
+        overall_results = pd.concat([overall_results, pd.DataFrame(columns=[
+            'capacity_pv_kWp',
+            'capacity_storage_kWh',
+            'capacity_genset_kW',
+            'capacity_pcoupling_kW',
+            'res_share',
+            'consumption_fuel_annual',
+            'consumption_main_grid_annual',
+            'feedin_main_grid_annual'])], axis=1, sort=False)
+
+        if results_annuities == True:
+            overall_results = pd.concat([overall_results, pd.DataFrame(columns=[
+                'annuity_pv',
+                'annuity_storage',
+                'annuity_genset',
+                'annuity_pcoupling',
+                'annuity_grid_extension',
+                'annuity_project_fix',
+                'annuity_operational'])], axis=1, sort=False)
+
+        overall_results = pd.concat([overall_results, pd.DataFrame(columns=[
+            'expenditures_fuel_annual',
+            'expenditures_main_grid_consumption_annual',
+            'revenue_main_grid_feedin_annual'])], axis=1, sort=False)
+
+        # Called costs because they include the operation, while they are also not the present value because
+        # the variable costs are included in the oem
+        if results_costs == True:
+            overall_results = pd.concat([overall_results, pd.DataFrame(columns=[
+                'costs_pv',
+                'costs_storage',
+                'costs_genset',
+                'costs_pcoupling',
+                'costs_grid_extension',
+                'costs_project_fix',
+                'costs_operation',
+                'expenditures_fuel_total',
+                'expenditures_main_grid_consumption_total',
+                'revenue_main_grid_feedin_total'])], axis=1, sort=False)
+
+        overall_results = pd.concat([overall_results, pd.DataFrame(columns=[
+            'annuity',
+            'npv',
+            'lcoe',
+            'objective_value',
+            'simulation_time'])], axis=1, sort=False)
+
+        if number_of_demand_profiles > 1:
+            overall_results = pd.concat([overall_results, pd.DataFrame(columns=['demand_profile'])], axis=1)
+        for keys in sensitivity_bounds:
+            overall_results = pd.concat([overall_results, pd.DataFrame(columns=[keys])], axis=1)
+
+        return overall_results
