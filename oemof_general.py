@@ -311,13 +311,19 @@ class oemofmodel():
         return micro_grid_system
 
     def simulate(micro_grid_system, file_name, storage, sink_demand, transformer_fuel_generator, bus_electricity_mg):
+        from config import date_time_index
         from config import solver, solver_verbose, output_folder, setting_save_lp_file, cmdline_option, cmdline_option_value
         logging.debug('Initialize the energy system to be optimized')
         model = solph.Model(micro_grid_system)
         logging.debug('Adding stability constraint:')
 
         # add stability constraint
-        constraints.stability_criterion(model, stability_limit=0.5, storage=storage, sink_demand=sink_demand, genset=transformer_fuel_generator, el_bus=bus_electricity_mg)
+        constraints.stability_criterion(model,
+                                        stability_limit=pd.Series([0.5 for date in date_time_index]),
+                                        storage=storage,
+                                        sink_demand=sink_demand,
+                                        genset=transformer_fuel_generator,
+                                        el_bus=bus_electricity_mg)
 
         logging.debug('Solve the optimization problem')
         model.solve(solver          =   solver,

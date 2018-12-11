@@ -18,7 +18,7 @@ def stability_criterion(model, stability_limit, storage, sink_demand, genset, el
     Parameters
     - - - - - - - -
 
-    lp_files: oemof.solph.lp_files
+    model: oemof.solph.model
         Model to which constraint is added. Has to contain:
         - Sink for demand flow
         - Transformer (genset)
@@ -26,43 +26,52 @@ def stability_criterion(model, stability_limit, storage, sink_demand, genset, el
 
     stability_limit: float
         Share of demand that potentially has to be covered by genset/storage flows for stable operation
+
+    storage: currently single object of class oemof.solph.components.GenericStorage
+        To get stored capacity at t
+        Has to include attibute invest_relation_output_capacity
+        Can either be an investment object or have a nominal capacity
+
+    sink_demand: currently single object of class oemof.solph.components.Sink
+        To get demand at t
+
+    genset: currently single object of class oemof.solph.network.Transformer
+        To get available capacity genset
+        Can either be an investment object or have a nominal capacity
+
+    el_bus: object of class oemof.solph.network.Bus
+        For accessing flow-parameters
     '''
     ## ------- Get CAP_genset ------- #
-
     CAP_genset = 0
-    CAP_genset_pcc = 0
-
-    # If oem, take generator capacities from variable invest
-    if hasattr(model, "InvestmentFlow"):
-        for i,o in model.InvestmentFlow.invest:
-            # This loop only adds the genset to the potential generation
-            if str(i)=='transformer_fuel_generator' and str(o)=='bus_electricity_mg':
-                if isinstance(model.InvestmentFlow.invest[i, o].value, int):
-                    CAP_genset += model.InvestmentFlow.invest[i, o].value
-
-            # This loop adds the genset as well as pcc capacities to potential generation
-            if isinstance(i, oemof.solph.network.Transformer) and str(o)=='bus_electricity_mg':
-                if isinstance(model.InvestmentFlow.invest[i, o].value, int):
-                    CAP_genset_pcc += model.InvestmentFlow.invest[i,o].value
-    # If dispatch, take generator capacities from nominal_capacity
+    # genset capacity subject to oem
+    if hasattr(model, "InvestmentFlow"):     # todo: not all generators have variable capacities, only because there are *any* investments optimized
+        if isinstance(model.InvestmentFlow.invest[genset, el_bus].value, int):
+            CAP_genset += model.InvestmentFlow.invest[genset, el_bus].value
+    # genset capacity subject to oem
     else:
-        for i, o in model.Flows:
-            if str(i) == 'transformer_fuel_generator' and str(o) == 'bus_electricity_mg':
-                CAP_genset = module.flows[i,o].nominal_capacity
-            # This loop adds the genset as well as pcc capacities to potential generation
-            if isinstance(i, oemof.solph.network.Transformer) and str(o)=='bus_electricity_mg':
-                if isinstance(model.InvestmentFlow.invest[i, o].value, int):
-                    CAP_genset_pcc += module.flows[i,o].nominal_capacity
+        #if isinstance( module.flows[genset, el_bus].nominal_capacity, int): # todo not neccessary?
+        CAP_genset = module.flows[genset, el_bus].nominal_capacity
 
     def stability_rule(model, t):
-        # get demand at t
-        demand = model.flow[el_bus,sink_demand,t]
-        # get storage_capacity at t
-        storage_capacity = model.GenericInvestmentStorageBlock.capacity[storage, t]
-        print(CAP_genset, storage_capacity, demand)
-        print (CAP_genset + storage_capacity * storage.invest_relation_output_capacity >= stability_limit * demand)
-        return CAP_genset + storage_capacity * storage.invest_relation_output_capacity >= stability_limit * demand
+        ## ------- Get demand at t ------- #
+        demand = model.flow[el_bus,sink_demand,t].value
+        ## ------- Get stored capacity storage at t------- #
+        storage_capacity = 0
+        if hasattr(model, "InvestmentFlow"): # Storage subject to OEM
+            if isinstance(model.InvestmentFlow.invest[storage, el_bus].value, int):
+                storage_capacity += model.GenericInvestmentStorageBlock.capacity[storage, t].value
+        else: # Fixed storage subject to dispatch
+            if isinstance(module.flows[genset, el_bus].nominal_capacity, int):
+                storage_capacity += model.GenericStorageBlock.capacity[storage, t].value
+        # Equation
+        print (CAP_genset, storage_capacity, storage.invest_relation_output_capacity, stability_limit[t], demand)
+        # todo adjust if timestep not 1 hr
+        expr = CAP_genset + storage_capacity * storage.invest_relation_output_capacity\
+               >= stability_limit[t] * demand
+        print(expr)
+        return expr
 
-    model.stability_criterion = po.Constraint(model.TIMESTEPS, rule=stability_rule)
+    model.stability_constraint = po.Constraint(model.TIMESTEPS, rule=stability_rule)
 
     return model
