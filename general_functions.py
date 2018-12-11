@@ -90,6 +90,8 @@ class config_func():
             os.mkdir(output_folder)
         if os.path.isdir(output_folder  +   '/oemof') != True:
                 os.mkdir(output_folder  +   '/oemof')
+        if os.path.isdir(output_folder  +   '/lp_files') != True:
+                os.mkdir(output_folder  +   '/lp_files')
         if os.path.isdir(output_folder  +   '/storage') != True:
                 os.mkdir(output_folder  +   '/storage')
         if os.path.isdir(output_folder  +   '/electricity_mg') != True:

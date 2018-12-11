@@ -126,7 +126,7 @@ class national_grid:
         # Calculation of expected blackouts per analysed timeframe
         blackout_events_per_month = np.random.normal(loc=experiment['blackout_frequency'],  # median value: blackout duration
                                                     scale=experiment['blackout_frequency_std_deviation'] * experiment['blackout_frequency'],  # Standard deviation
-                                                    size=12)  # randum values for number of blackouts
+                                                    size=12)  # random values for number of blackouts
         blackout_events_per_timeframe = int(round(sum(blackout_events_per_month) / 365 * evaluated_days))
         logging.info("Number of blackouts in simulated timeframe: " + str(blackout_events_per_timeframe))
         return blackout_events_per_timeframe
@@ -153,8 +153,8 @@ class national_grid:
     def get_blackout_event_durations(experiment, timestep, number_of_blackouts):
         # Generating blackout durations for the number of events
         blackout_event_durations = np.random.normal(loc=experiment['blackout_duration'],  # median value: blackout duration
-                                                    scale= experiment['blackout_frequency_std_deviation']* experiment['blackout_duration'],  # sigma (as far as I remember)
-                                                    size=number_of_blackouts)  # randum values for number of blackouts
+                                                    scale= experiment['blackout_frequency_std_deviation']* experiment['blackout_duration'], # Standard deviation
+                                                    size=number_of_blackouts)  # random values for number of blackouts
 
         logging.info("Accumulated blackout duration: " + str(round(float(sum(blackout_event_durations)), 3)))
 

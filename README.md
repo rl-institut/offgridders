@@ -13,6 +13,12 @@ generator.
 * pvlib
 
 # Track Versions
+11.12: Progress in coding stability constraint
+
+10.12: Starting to code stability constraint (failing)
+
+06.12: Merging Masters/Vers 05.12 (manual!)
+
 05.12: MAJOR UPDATE! Updated output list, export of electricity_mg flows, added case interconnection_buy and oem_grid_tied_mg, 
        checked interconnection_buy/interconnection_buysell based on annuity/costs, 
 
