@@ -126,7 +126,7 @@ class generatemodel():
                                                        )
 
         micro_grid_system.add(transformer_fuel_generator)
-        return micro_grid_system, bus_fuel, bus_electricity_mg
+        return micro_grid_system, bus_fuel, bus_electricity_mg, transformer_fuel_generator
 
     def genset_oem(micro_grid_system, bus_fuel, bus_electricity_mg, experiment):
         transformer_fuel_generator = solph.Transformer(label="transformer_fuel_generator",
@@ -137,7 +137,7 @@ class generatemodel():
                                                            variable_costs=experiment['genset_cost_var'])},
                                                        conversion_factors={bus_electricity_mg: experiment['genset_efficiency']})
         micro_grid_system.add(transformer_fuel_generator)
-        return micro_grid_system, bus_fuel, bus_electricity_mg
+        return micro_grid_system, bus_fuel, bus_electricity_mg, transformer_fuel_generator
 
     def pointofcoupling_feedin_fix(micro_grid_system, bus_electricity_mg, bus_electricity_ng, capacity_pointofcoupling, experiment):
         pointofcoupling = solph.Transformer(label="transformer_pcc_feedin",
@@ -206,10 +206,10 @@ class generatemodel():
             inflow_conversion_factor    = experiment['storage_inflow_efficiency'],  # storing efficiency
             outflow_conversion_factor   = experiment['storage_outflow_efficiency'])  # efficiency of discharge
         micro_grid_system.add(generic_storage)
-        return micro_grid_system, bus_electricity_mg
+        return micro_grid_system, bus_electricity_mg, generic_storage
 
     def storage_oem(micro_grid_system, bus_electricity_mg, experiment):
-        generic_storage = solph.components.GenericStorage(
+        storage = solph.components.GenericStorage(
             label='generic_storage',
             investment=solph.Investment(ep_costs=experiment['storage_cost_annuity']),
             inputs                          = {bus_electricity_mg: solph.Flow()},
@@ -223,8 +223,8 @@ class generatemodel():
             invest_relation_input_capacity  = experiment['storage_Crate'],  # storage can be charged with invest_relation_output_capacity*capacity in one timeperiod
             invest_relation_output_capacity = experiment['storage_Crate'] # storage can be emptied with invest_relation_output_capacity*capacity in one timeperiod
         )
-        micro_grid_system.add(generic_storage)
-        return micro_grid_system, bus_electricity_mg
+        micro_grid_system.add(storage)
+        return micro_grid_system, bus_electricity_mg, storage
     ######## Components ########
 
     ######## Sinks ########
@@ -243,7 +243,7 @@ class generatemodel():
                                      nominal_value=1,
                                      fixed=True)})
         micro_grid_system.add(sink_demand)
-        return micro_grid_system, bus_electricity_mg
+        return micro_grid_system, bus_electricity_mg, sink_demand
 
     def maingrid_feedin(micro_grid_system, bus_electricity_ng, experiment, grid_availability):
         # create and add demand sink to micro_grid_system - fixed

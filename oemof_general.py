@@ -15,6 +15,8 @@ import oemof.solph as solph
 import oemof.outputlib as outputlib
 import logging
 
+import constraints_custom as constraints
+
 # Try to import matplotlib librar
 try:
     import matplotlib.pyplot as plt
@@ -308,17 +310,22 @@ class oemofmodel():
         micro_grid_system = solph.EnergySystem(timeindex=date_time_index)
         return micro_grid_system
 
-    def simulate(micro_grid_system, file_name):
+    def simulate(micro_grid_system, file_name, storage, sink_demand, transformer_fuel_generator, bus_electricity_mg):
         from config import solver, solver_verbose, output_folder, setting_save_lp_file, cmdline_option, cmdline_option_value
         logging.debug('Initialize the energy system to be optimized')
         model = solph.Model(micro_grid_system)
+        logging.debug('Adding stability constraint:')
+
+        # add stability constraint
+        constraints.stability_criterion(model, stability_limit=0.5, storage=storage, sink_demand=sink_demand, genset=transformer_fuel_generator, el_bus=bus_electricity_mg)
+
         logging.debug('Solve the optimization problem')
         model.solve(solver          =   solver,
                     solve_kwargs    =   {'tee': solver_verbose}, # if tee_switch is true solver messages will be displayed
                     cmdline_options =   {cmdline_option:    str(cmdline_option_value)})   #ratioGap allowedGap mipgap
 
         if setting_save_lp_file == True:
-            model.write(output_folder + '/model_' + file_name + '.lp',
+            model.write(output_folder + '/lp_files/model_' + file_name + '.lp',
                         io_options={'symbolic_solver_labels': True})
 
         # add results to the energy system to make it possible to store them.
