@@ -169,6 +169,7 @@ class oemofmodel():
 
     ######## Processing ########
     def process_basic(micro_grid_system, experiment, demand_profile, case_name):
+        from config import include_stability_constraint
         # define an alias for shorter calls below (optional)
         results = micro_grid_system.results['main']
         meta = micro_grid_system.results['meta']
@@ -219,24 +220,30 @@ class oemofmodel():
                     'feedin_main_grid_annual':
                 sum(maingrid_bus['sequences'][(('transformer_pcc_feedin', 'bus_electricity_ng'), 'flow')])* 365 / evaluated_days})
 
-        return results, meta, electricity_bus, oemof_results
+        return results, meta, electricity_bus, oemof_results, generic_storage
 
     def process_fix(micro_grid_system, case_name, capacity_batch, experiment, demand_profile):
-
+        from config import include_stability_constraint
         # todo: this might be possible to do a bit shorter
-        results, meta, electricity_bus, oemof_results = oemofmodel.process_basic(micro_grid_system, experiment, demand_profile, case_name)
+        results, meta, electricity_bus, oemof_results, generic_storage = oemofmodel.process_basic(micro_grid_system, experiment, demand_profile, case_name)
 
         oemof_results = add_results.project_annuity(oemof_results, experiment, capacity_batch, case_name)
 
         logging.info('    Dispatch optimization for case "' + case_name + '" finished, with renewable share of ' +
                      str(round(oemof_results['res_share']*100,2)) + ' percent.')
 
+        if include_stability_constraint == True:
+            constraints.stability_criterion_test(experiment = experiment,
+                                                 storage_capacity = generic_storage['sequences'][(('generic_storage', 'None'), 'capacity')],
+                                                 demand_profile = demand_profile,
+                                                 genset_capacity = capacity_batch['capacity_genset_kW'])
+
         return oemof_results
 
     def process_oem(micro_grid_system, case_name, pv_generation_max, experiment, demand_profile):
-        from config import evaluated_days
+        from config import evaluated_days, include_stability_constraint
 
-        results, meta, electricity_bus, oemof_results = oemofmodel.process_basic(micro_grid_system, experiment, demand_profile, case_name)
+        results, meta, electricity_bus, oemof_results, generic_storage = oemofmodel.process_basic(micro_grid_system, experiment, demand_profile, case_name)
 
         capacities_base = {}
 
@@ -272,6 +279,12 @@ class oemofmodel():
                       + str(round(capacities_base['capacity_pv_kWp'],3)) + ' kWp PV, '
                       + str(round(capacities_base['capacity_genset_kW'],3)) + ' kW genset '
                       + 'at a renewable share of ' + str(round(oemof_results['res_share']*100,2)) + ' percent.')
+
+        if include_stability_constraint == True:
+            constraints.stability_criterion_test(experiment = experiment,
+                                                 storage_capacity = generic_storage['sequences'][(('generic_storage', 'None'), 'capacity')],
+                                                 demand_profile = demand_profile,
+                                                 genset_capacity = capacities_base['capacity_genset_kW'])
 
         return oemof_results, capacities_base
 
@@ -310,16 +323,16 @@ class oemofmodel():
         micro_grid_system = solph.EnergySystem(timeindex=date_time_index)
         return micro_grid_system
 
-    def simulate(micro_grid_system, file_name, storage, sink_demand, transformer_fuel_generator, bus_electricity_mg):
-        from config import date_time_index
-        from config import solver, solver_verbose, output_folder, setting_save_lp_file, cmdline_option, cmdline_option_value
+    def simulate(micro_grid_system, file_name, storage, sink_demand, transformer_fuel_generator, bus_electricity_mg, stability_limit):
+        from config import solver, solver_verbose, output_folder, setting_save_lp_file, cmdline_option, cmdline_option_value, include_stability_constraint
         logging.debug('Initialize the energy system to be optimized')
         model = solph.Model(micro_grid_system)
         logging.debug('Adding stability constraint:')
 
         # add stability constraint
-        constraints.stability_criterion(model,
-                                        stability_limit=pd.Series([0.5 for date in date_time_index]),
+        if include_stability_constraint == True:
+            constraints.stability_criterion(model,
+                                        stability_limit=stability_limit,
                                         storage=storage,
                                         sink_demand=sink_demand,
                                         genset=transformer_fuel_generator,

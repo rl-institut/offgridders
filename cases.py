@@ -93,7 +93,7 @@ class cases():
 
             # perform simulation
             micro_grid_system \
-                = oemofmodel.simulate(micro_grid_system, file_name, storage, sink_demand, transformer_fuel_generator, bus_electricity_mg)
+                = oemofmodel.simulate(micro_grid_system, file_name, storage, sink_demand, transformer_fuel_generator, bus_electricity_mg, experiment['stability_limit'])
             # store simulation results to .oemof
             oemofmodel.store_results(micro_grid_system, file_name)
 
@@ -179,7 +179,7 @@ class cases():
                 = generatemodel.storage_oem(micro_grid_system, bus_electricity_mg, experiment)
             # perform simulation
             micro_grid_system                                   \
-                = oemofmodel.simulate(micro_grid_system, file_name)
+                = oemofmodel.simulate(micro_grid_system, file_name, storage, sink_demand, transformer_fuel_generator, bus_electricity_mg, experiment['stability_limit'])
             # store simulation results to .oemof
             oemofmodel.store_results(micro_grid_system, file_name)
 
@@ -249,7 +249,8 @@ class cases():
                 = generatemodel.genset_fix(micro_grid_system, bus_fuel, bus_electricity_mg, capacity_batch['genset_capacity_kW'], experiment)
             micro_grid_system, bus_electricity_mg, generic_storage               \
                 = generatemodel.storage_fix(micro_grid_system, bus_electricity_mg, capacity_batch['storage_capacity_kWh'], experiment)
-            micro_grid_system                                   = oemofmodel.simulate(micro_grid_system, file_name)
+            micro_grid_system \
+                = oemofmodel.simulate(micro_grid_system, file_name, storage, sink_demand, transformer_fuel_generator, bus_electricity_mg, experiment['stability_limit'])
             oemofmodel.store_results(micro_grid_system, file_name)
 
         micro_grid_system = oemofmodel.load_oemof_results(file_name)
@@ -337,7 +338,8 @@ class cases():
                 = generatemodel.pointofcoupling_feedin_fix(micro_grid_system, bus_electricity_mg, bus_electricity_ng,
                                                            capacity_batch["capacity_pcoupling_kW"], experiment)
 
-            micro_grid_system                                   = oemofmodel.simulate(micro_grid_system, file_name)
+            micro_grid_system \
+                = oemofmodel.simulate(micro_grid_system, file_name, storage, sink_demand, transformer_fuel_generator, bus_electricity_mg, experiment['stability_limit'])
             oemofmodel.store_results(micro_grid_system, file_name)
 
         micro_grid_system = oemofmodel.load_oemof_results(file_name)
@@ -428,7 +430,8 @@ class cases():
                 = generatemodel.pointofcoupling_feedin_fix(micro_grid_system, bus_electricity_mg, bus_electricity_ng,
                                                            capacity_batch["capacity_pcoupling_kW"], experiment)
 
-            micro_grid_system = oemofmodel.simulate(micro_grid_system, file_name)
+            micro_grid_system \
+                = oemofmodel.simulate(micro_grid_system, file_name, storage, sink_demand, transformer_fuel_generator, bus_electricity_mg, experiment['stability_limit'])
             oemofmodel.store_results(micro_grid_system, file_name)
 
         micro_grid_system = oemofmodel.load_oemof_results(file_name)
@@ -530,7 +533,7 @@ class cases():
 
             # perform simulation
             micro_grid_system \
-                = oemofmodel.simulate(micro_grid_system, file_name)
+                = oemofmodel.simulate(micro_grid_system, file_name, storage, sink_demand, transformer_fuel_generator, bus_electricity_mg, experiment['stability_limit'])
             # store simulation results to .oemof
             oemofmodel.store_results(micro_grid_system, file_name)
 

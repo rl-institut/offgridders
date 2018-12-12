@@ -5,6 +5,7 @@ coding_process                  = False  # Defines timeframe and noise (see belo
 restore_oemof_if_existant       = True  # If set to False, the directory with results is emptied!!
 restore_blackouts_if_existant   = True
 base_case_with_min_loading      = False   # If set to True, the generator capacity will be equal to peak demand in kW!
+
 # TOdo allow multiple generators here (or even allow multiple generators in general??)
 
 # simulated cases:
@@ -13,14 +14,15 @@ simulated_cases = {
     'interconnected_buy': False,         # dispatch with interconnected main grid (only consumption)
     'interconnected_buysell': False,     # dispatch with interconnected main grid (consumption+feedin)
     'oem_grid_tied_mg': False,           # optimization of grid-tied mg (consumption+feedin)
-    'buyoff': False,
-    'parallel': False,
-    'adapted': False,
+    'buyoff': False, # todo not implemented
+    'parallel': False, # todo not implemented
+    'adapted': False, # todo not implemented
 }
 
 # oemof simulation
-allow_shortage              = False  # Allow supply shortage, details given below
-setting_batch_capacity      = True
+allow_shortage               = False  # Allow supply shortage, details given below
+setting_batch_capacity       = True
+include_stability_constraint = True
 
 ####### ----------------- Settings for files------------------- #######
 # Input (files)
@@ -37,7 +39,7 @@ output_folder='./simulation_results'
 output_file='results'
 
 # display results and graphs
-setting_save_lp_file                = True  # save lp file of oemof simulation
+setting_save_lp_file                = False  # save lp file of oemof simulation
 setting_save_oemofresults           = True   # save oemofresults to .oemof file
 display_graphs_solar                = False
 display_graphs_demand               = False
@@ -50,7 +52,7 @@ print_simulation_invest     = False  # print investment results
 print_simulation_experiment = False  # Print data on experiment run (sensitivity analysis)
 
 # Choose flows saved to csv
-setting_save_flows_storage          = False
+setting_save_flows_storage          = True
 setting_save_flows_electricity_mg   = True
 
 # Choose results saves in csv
