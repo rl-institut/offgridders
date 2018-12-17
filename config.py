@@ -52,8 +52,8 @@ print_simulation_invest     = False  # print investment results
 print_simulation_experiment = False  # Print data on experiment run (sensitivity analysis)
 
 # Choose flows saved to csv
-setting_save_flows_storage          = True
-setting_save_flows_electricity_mg   = True
+setting_save_flows_storage          = False
+setting_save_flows_electricity_mg   = False
 
 # Choose results saves in csv
 results_demand_characteristics      = True

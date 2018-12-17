@@ -13,6 +13,10 @@ generator.
 * pvlib
 
 # Track Versions
+13.12: Oemof issue (storage capacity), coded renewable share criterion (not introduced to code)
+
+12.12: Stability constraint implemented, included stability criterion test, WIKI
+
 11.12: Progress in coding stability constraint
 
 10.12: Starting to code stability constraint (failing)

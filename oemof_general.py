@@ -247,10 +247,14 @@ class oemofmodel():
 
         capacities_base = {}
 
-        # ToDo issue for OEMOF: How to evaluate battery capacity
         capacity_battery = 1/experiment['storage_Crate']*(electricity_bus['scalars'][(('generic_storage', 'bus_electricity_mg'), 'invest')]
                               + electricity_bus['scalars'][(('bus_electricity_mg', 'generic_storage'), 'invest')])/2
         capacities_base.update({'capacity_storage_kWh': capacity_battery})
+
+
+        #print(electricity_bus['scalars'][(('bus_electricity_mg', 'generic_storage'), 'invest')])
+        #print(electricity_bus['scalars'][(('generic_storage', 'bus_electricity_mg'), 'invest')])
+        #print(electricity_bus['scalars'][(('generic_storage', None), 'invest')])
 
         if pv_generation_max > 1:
             capacities_base.update({'capacity_pv_kWp': electricity_bus['scalars'][(('source_pv', 'bus_electricity_mg'), 'invest')]* pv_generation_max })

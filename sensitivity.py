@@ -4,8 +4,8 @@ This script creates all possible experiments of a sensitivity analysis with a li
 dictonary, including filenames.
 '''
 
-import pprint as pp
 import pandas as pd
+import logging
 
 class sensitivity():
     def experiments():
@@ -14,6 +14,12 @@ class sensitivity():
         import numpy as np
         # create empty dictionary
         dictof_oemparameters = {}
+
+        # check for parameters defined twice in input_values_py
+        for keys in sensitivity_constants:
+            if sensitivity_bounds.get(keys):
+                logging.warning("Key " + keys + " was used in sensitivity bounds as well as in sensitivity constants!"
+                                + "\n         The constant value will be used for proceeding simulations.")
 
         # fill dictionary with all sensitivity ranges defining the different simulations of the sensitivity analysis
         # ! do not use a key two times, as it will be overwritten by new information
