@@ -47,7 +47,7 @@ def stability_criterion(model, stability_limit, storage, sink_demand, genset, el
         CAP_genset += model.InvestmentFlow.invest[genset, el_bus]
     # genset capacity subject to oem
     else:
-        CAP_genset += module.flows[genset, el_bus].nominal_capacity
+        CAP_genset += model.flows[genset, el_bus].nominal_capacity
 
     def stability_rule(model, t):
         ## ------- Get demand at t ------- #
@@ -85,12 +85,12 @@ def stability_criterion_test(experiment, storage_capacity, demand_profile, gense
     return
 
 # todo implement renewable share criterion in oemof model and cases
-def renewable_share_criterion(model, experiment, total_demand, genset, pcc_consumption, electricity_bus_mg):
+def renewable_share_criterion(model, experiment, total_demand, genset, pcc_consumption, el_bus):
     '''
     Resulting in an energy system adhering to a minimal renewable factor
 
       .. math::
-            minimal renewable factor <= 1 - (fossil fuelled generation + main grid consumption * main grid renewable factor) / total_demand
+            minimal renewable factor <= 1 - (fossil fuelled generation + main grid consumption * (1-main grid renewable factor)) / total_demand
 
     Parameters
     - - - - - - - -
@@ -114,10 +114,12 @@ def renewable_share_criterion(model, experiment, total_demand, genset, pcc_consu
         For accessing flow-parameters
     '''
 
-    actual_fossil_generation = sum([model.flow[genset, electricity_bus_mg, t] for t in model.TIMESTEPS])
+    # generation of fossil-fuelled generator
+    actual_fossil_generation = sum([model.flow[genset, el_bus, t] for t in model.TIMESTEPS])
+
     if pcc_consumption != None:
-        actual_fossil_generation += sum(model.flow[pcc_consumption, electricity_bus_mg, :]) \
-                                    * experiment['main_grid_renewable_share']
+        actual_fossil_generation += sum(model.flow[pcc_consumption, el_bus, :]) \
+                                    * (1-experiment['maingrid_renewable_share'])
 
     def renewable_share_rule():
         expr = (experiment['min_res_share'] <= 1 - actual_fossil_generation/total_demand)
@@ -135,9 +137,9 @@ def renewable_share_test(experiment, total_demand, total_generation_genset, tota
 
     actual_fossil_generation = total_generation_genset
     if total_main_grid_consumption != None:
-        actual_fossil_generation += experiment['main_grid_renewable_share'] * total_main_grid_consumption
+        actual_fossil_generation += (1-experiment['maingrid_renewable_share']) * total_main_grid_consumption
 
-    boolean_test = (total_demand * (1-experiment['min_res_share']) >= actual_fossil_generation)
+    boolean_test = (total_demand * (1-experiment['min_renewable_share']) >= actual_fossil_generation)
 
     if boolean_test == False:
         logging.WARNING("ATTENTION: Minimal renewable share criterion NOT fullfilled!")

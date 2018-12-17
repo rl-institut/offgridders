@@ -157,6 +157,7 @@ class sensitivity():
                 'costs_pcoupling',
                 'costs_grid_extension',
                 'costs_project_fix',
+                #'costs_distibution_grid'
                 'costs_operation',
                 'expenditures_fuel_total',
                 'expenditures_main_grid_consumption_total',

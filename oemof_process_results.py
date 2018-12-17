@@ -165,7 +165,7 @@ class add_results():
                 oemof_results['revenue_main_grid_feedin_annual'] * experiment['annuity_factor']})
         return oemof_results
 
-class oemofmodel():
+class oemof_process():
 
     ######## Processing ########
     def process_basic(micro_grid_system, experiment, demand_profile, case_name):
@@ -179,9 +179,9 @@ class oemofmodel():
         electricity_bus = outputlib.views.node(results, 'bus_electricity_mg')
 
         fuel_bus = outputlib.views.node(results, 'bus_fuel')
-        oemofmodel.outputs_bus_electricity_mg(electricity_bus, case_name, experiment['filename'])
-        oemofmodel.outputs_storage(generic_storage, case_name, experiment['filename'])
-        oemofmodel.print_oemof_meta_main_invest(meta, electricity_bus, case_name)
+        oemof_process.outputs_bus_electricity_mg(electricity_bus, case_name, experiment['filename'])
+        oemof_process.outputs_storage(generic_storage, case_name, experiment['filename'])
+        oemof_process.print_oemof_meta_main_invest(meta, electricity_bus, case_name)
 
         total_supplied_demand   = electricity_bus['sequences'][(('bus_electricity_mg', 'sink_demand'), 'flow')].sum()
         total_diesel_generation = electricity_bus['sequences'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'flow')].sum()
@@ -225,7 +225,7 @@ class oemofmodel():
     def process_fix(micro_grid_system, case_name, capacity_batch, experiment, demand_profile):
         from config import include_stability_constraint
         # todo: this might be possible to do a bit shorter
-        results, meta, electricity_bus, oemof_results, generic_storage = oemofmodel.process_basic(micro_grid_system, experiment, demand_profile, case_name)
+        results, meta, electricity_bus, oemof_results, generic_storage = oemof_process.process_basic(micro_grid_system, experiment, demand_profile, case_name)
 
         oemof_results = add_results.project_annuity(oemof_results, experiment, capacity_batch, case_name)
 
@@ -243,7 +243,7 @@ class oemofmodel():
     def process_oem(micro_grid_system, case_name, pv_generation_max, experiment, demand_profile):
         from config import evaluated_days, include_stability_constraint
 
-        results, meta, electricity_bus, oemof_results, generic_storage = oemofmodel.process_basic(micro_grid_system, experiment, demand_profile, case_name)
+        results, meta, electricity_bus, oemof_results, generic_storage = oemof_process.process_basic(micro_grid_system, experiment, demand_profile, case_name)
 
         capacities_base = {}
 
@@ -308,86 +308,6 @@ class oemofmodel():
                       + str(capacities_base['capacity_pv_kWp']) + ' kWp PV, '
                       + str(capacities_base['capacity_genset_kW']) + ' kW genset.')
         return capacities_base
-
-    ######## Textblocks ########
-    def textblock_fix():
-        logging.debug('    FIXED CAPACITIES (Dispatch optimization)')
-        logging.debug('Create oemof objects for Micro Grid System (off-grid)')
-
-    def textblock_oem():
-        logging.debug('    VARIABLE CAPACITIES (OEM)')
-        logging.debug('Create oemof objects for Micro Grid System (off-grid)')
-    ######## Textblocks ########
-
-    ######## Simulation control ########
-    def initialize_model():
-        from config import date_time_index
-        logging.debug('Initialize energy system dataframe')
-        # create energy system
-        micro_grid_system = solph.EnergySystem(timeindex=date_time_index)
-        return micro_grid_system
-
-    def simulate(micro_grid_system, file_name, storage, sink_demand, transformer_fuel_generator, bus_electricity_mg, stability_limit):
-        from config import solver, solver_verbose, output_folder, setting_save_lp_file, cmdline_option, cmdline_option_value, include_stability_constraint
-        logging.debug('Initialize the energy system to be optimized')
-        model = solph.Model(micro_grid_system)
-        logging.debug('Adding stability constraint:')
-
-        # add stability constraint
-        if include_stability_constraint == True:
-            constraints.stability_criterion(model,
-                                        stability_limit=stability_limit,
-                                        storage=storage,
-                                        sink_demand=sink_demand,
-                                        genset=transformer_fuel_generator,
-                                        el_bus=bus_electricity_mg)
-        '''    
-        renewable_share_criterion(model, 
-                                  experiment = experiment, 
-                                  total_demand = , 
-                                  genset = transformer_fuel_generator, 
-                                  pcc_consumption = ,
-                                  el_bus=bus_electricity_mg)
-        '''
-
-        logging.debug('Solve the optimization problem')
-        model.solve(solver          =   solver,
-                    solve_kwargs    =   {'tee': solver_verbose}, # if tee_switch is true solver messages will be displayed
-                    cmdline_options =   {cmdline_option:    str(cmdline_option_value)})   #ratioGap allowedGap mipgap
-
-        if setting_save_lp_file == True:
-            model.write(output_folder + '/lp_files/model_' + file_name + '.lp',
-                        io_options={'symbolic_solver_labels': True})
-
-        # add results to the energy system to make it possible to store them.
-        micro_grid_system.results['main'] = outputlib.processing.results(model)
-        micro_grid_system.results['meta'] = outputlib.processing.meta_results(model)
-        return micro_grid_system
-
-    def load_energysystem_lp():
-        # based on lp file
-        return
-
-    def store_results(micro_grid_system, file_name):
-        # store energy system with results
-        from config import output_folder, setting_save_oemofresults
-        if setting_save_oemofresults == True:
-            micro_grid_system.dump(dpath=output_folder+'/oemof', filename = file_name + ".oemof" )
-            logging.debug('Stored results in ' + output_folder+'/oemof' + '/' + file_name + ".oemof")
-        return micro_grid_system
-
-    def filename(case_name, experiment_name):
-        from config import output_file
-        file_name = output_file + "_" + case_name + experiment_name
-        return file_name
-
-    def load_oemof_results(file_name):
-        from config import output_folder
-        logging.debug('Restore the energy system and the results.')
-        micro_grid_system = solph.EnergySystem()
-        micro_grid_system.restore(dpath=output_folder+'/oemof',
-                                  filename=file_name + ".oemof")
-        return micro_grid_system
 
     def print_oemof_meta_main_invest(meta, electricity_bus, case_name):
         # print the solver results

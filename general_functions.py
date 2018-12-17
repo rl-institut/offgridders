@@ -50,6 +50,10 @@ class config_func():
             'maingrid_extension_cost_capex':
                 economics.capex_from_investment(experiment['maingrid_extension_cost_investment'],
                                                 experiment['maingrid_extension_lifetime'],
+                                                experiment['project_life'], experiment['wacc'], experiment['tax']),
+            'distribution_grid_cost_capex':
+                economics.capex_from_investment(experiment['distribution_grid_cost_investment'],
+                                                experiment['distribution_grid_lifetime'],
                                                 experiment['project_life'], experiment['wacc'], experiment['tax'])
             })
 
@@ -66,7 +70,9 @@ class config_func():
             'project_cost_annuity':
                 economics.annuity(experiment['project_cost_fix'], experiment['crf'])+experiment['project_cost_opex'],
             'maingrid_extension_cost_annuity':
-                economics.annuity(experiment['maingrid_extension_cost_capex'], experiment['crf']) + experiment['maingrid_extension_cost_opex']
+                economics.annuity(experiment['maingrid_extension_cost_capex'], experiment['crf']) + experiment['maingrid_extension_cost_opex'],
+            'distribution_grid_cost_annuity':
+                economics.annuity(experiment['distribution_grid_cost_capex'], experiment['crf']) + experiment['distribution_grid_cost_opex'],
             })
 
         from config import coding_process
@@ -77,7 +83,8 @@ class config_func():
                 'genset_cost_annuity': experiment['genset_cost_annuity'] / 365*evaluated_days,
                 'storage_cost_annuity': experiment['storage_cost_annuity'] / 365*evaluated_days,
                 'pcoupling_cost_annuity': experiment['pcoupling_cost_annuity'] / 365*evaluated_days,
-                'project_cost_annuity': experiment['project_cost_annuity'] / 365 * evaluated_days
+                'project_cost_annuity': experiment['project_cost_annuity'] / 365 * evaluated_days,
+                'distribution_grid_cost_annuity': experiment['distribution_grid_cost_annuity'] / 365 * evaluated_days
             })
 
         return experiment

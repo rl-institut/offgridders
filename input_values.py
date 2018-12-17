@@ -92,6 +92,9 @@ sensitivity_constants = {
     'blackout_frequency_std_deviation': 0,      # factor. Goal: 15%? 0 Means: No variability (percentual)
     'combustion_value_fuel':	        10,	    # kWh/unit
     'costs_var_unsupplied_load':	    10,	    # /kWh
+    'distribution_grid_cost_investment': 0,
+    'distribution_grid_cost_opex':      50,  # /a
+    'distribution_grid_lifetime':       40,  #
     'genset_cost_investment':	        400,    # /unit
     'genset_cost_opex':	                25,     # /unit/a
     'genset_cost_var':	                0.023,  # /kWh
@@ -104,9 +107,10 @@ sensitivity_constants = {
     'maingrid_extension_cost_opex':     50,      # /km/a
     'maingrid_extension_lifetime':      20,      # /km/a
     'maingrid_electricity_price':       0.20,   # /unit
+    'maingrid_renewable_share':        0,      # factor of 1kWh produced renewably in main grid electricity mix
     'maingrid_feedin_tariff':           0.12,   # /unit
     'max_share_unsupplied_load':	    0,	    # factor # only active if allow_shortage = True
-    'min_res_share':	                0,	    # factor	todo only works	properly for off-grid oem! Create add. transformer with input streams fuel (0%	res) + nat.grid (x%	res) and limit resshare there! #does not work at all for dispatch oem
+    'min_renewable_share':	                0,	    # factor	todo only works	properly for off-grid oem! Create add. transformer with input streams fuel (0%	res) + nat.grid (x%	res) and limit resshare there! #does not work at all for dispatch oem
     'pcoupling_cost_investment':	    600,    # /unit
     'pcoupling_cost_opex':	            5,      # /unit/a
     'pcoupling_cost_var':	            0,      # /kWh

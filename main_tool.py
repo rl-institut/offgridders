@@ -15,7 +15,7 @@ logger.define_logging(logfile='main_tool.log',
                       screen_level=logging.INFO,
                       file_level=logging.DEBUG)
 
-from cases import cases
+from oemof_cases import cases
 #from national_grid import national_grid
 
 ###############################################################################
