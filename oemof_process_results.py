@@ -62,7 +62,6 @@ class add_results():
         else:
             annuity_operational = annuity_operational -  oemof_results['annuity_pv']
 
-
         # ... storage
         if case_name in ['offgrid_fix', 'interconnected_buy', 'interconnected_buysell']:
             annuity = annuity + oemof_results['annuity_storage']

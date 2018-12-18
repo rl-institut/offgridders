@@ -207,7 +207,7 @@ class economics():
 
     def capex_from_investment(investment_t0, lifetime, project_life, wacc, tax):
         # [quantity, investment, installation, weight, lifetime, om, first_investment]
-        number_of_investments = int(round(project_life / lifetime))
+        number_of_investments = int(round(project_life / lifetime+0.5))
 
         # costs with quantity and import tax at t=0
         first_time_investment = investment_t0 * (1+tax)

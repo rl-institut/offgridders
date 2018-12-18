@@ -77,16 +77,16 @@ BUT DO NOT DELETE OR ADD NEW ELEMENTS WITHOUT CHANGING THE MAIN CODE
 '''
 
 sensitivity_bounds = {
-    'price_fuel':           {'min': 2,  'max': 4,     'step': 1},
+    #'price_fuel':           {'min': 2,  'max': 4,     'step': 1},
     #'maingrid_distance':    {'min': 20,  'max': 50,     'step': 5},
-    'blackout_duration':    {'min': 2,  'max': 6,     'step': 2},
-    'stability_limit':       {'min': 0,  'max': 1,     'step': 0.25},
+    #'blackout_duration':    {'min': 2,  'max': 6,     'step': 2},
+    #'stability_limit':       {'min': 0,  'max': 1,     'step': 0.25},
     #'storage_cost_investment':{'min': 400,  'max': 1000,     'step': 200}
     }
 
 # Values of the sensitivity analysis that appear constant
 sensitivity_constants = {
-    #'blackout_duration':	            2,	    # hrs per blackout
+    'blackout_duration':	            2,	    # hrs per blackout
     'blackout_duration_std_deviation':  0,  # factor. Goal: 15%? (percentual)
     'blackout_frequency':	            7,	    # blackouts per month
     'blackout_frequency_std_deviation': 0,      # factor. Goal: 15%? 0 Means: No variability (percentual)
@@ -110,13 +110,13 @@ sensitivity_constants = {
     'maingrid_renewable_share':        0,      # factor of 1kWh produced renewably in main grid electricity mix
     'maingrid_feedin_tariff':           0.12,   # /unit
     'max_share_unsupplied_load':	    0,	    # factor # only active if allow_shortage = True
-    'min_renewable_share':	                0,	    # factor	todo only works	properly for off-grid oem! Create add. transformer with input streams fuel (0%	res) + nat.grid (x%	res) and limit resshare there! #does not work at all for dispatch oem
+    'min_renewable_share':	            0.2,	    # factor	todo only works	properly for off-grid oem! Create add. transformer with input streams fuel (0%	res) + nat.grid (x%	res) and limit resshare there! #does not work at all for dispatch oem
     'pcoupling_cost_investment':	    600,    # /unit
     'pcoupling_cost_opex':	            5,      # /unit/a
     'pcoupling_cost_var':	            0,      # /kWh
     'pcoupling_efficiency':	            0.98,	# inverter inefficiency between highvoltage/mediumvoltage grid (maybe even split into feedin/feedfrom
     'pcoupling_lifetime':	            20,     # a
-    #'price_fuel':	                    4,	# /unit
+    'price_fuel':	                    4,	# /unit
     'project_cost_fix':	                15000,	#
     'project_cost_opex':	            200,	# /a
     'project_life':	                    20,     # a
@@ -124,7 +124,7 @@ sensitivity_constants = {
     'pv_cost_opex':	                    5,      # /unit/a
     'pv_cost_var':	                    0,      # /kWh
     'pv_lifetime':	                    20,     # a
-    #'stability_limit':                  0.5,    # factor of demand # Only active if include_stability_constraint=True
+    'stability_limit':                  0.5,    # factor of demand # Only active if include_stability_constraint=True
     'storage_capacity_max':	            1,	    # factor
     'storage_capacity_min':	            0.2,	# factor (1-DOD)
     'storage_cost_investment':	        800,    # /unit

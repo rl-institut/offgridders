@@ -80,7 +80,7 @@ def stability_criterion_test(experiment, storage_capacity, demand_profile, gense
     if any(boolean_test) == False:
         logging.WARNING("ATTENTION: Stability criterion NOT fullfilled!")
     else:
-        logging.DEBUG("Stability criterion is fullfilled.")
+        logging.debug("Stability criterion is fullfilled.")
 
     return
 
@@ -114,16 +114,27 @@ def renewable_share_criterion(model, experiment, total_demand, genset, pcc_consu
         For accessing flow-parameters
     '''
 
-    # generation of fossil-fuelled generator
-    actual_fossil_generation = sum([model.flow[genset, el_bus, t] for t in model.TIMESTEPS])
+    #print("1")
+    #print (model.flow[genset, el_bus, 0])
+    #print (dir(model.flow[genset, el_bus, 0]))
+    #print("2")
+    #sum = 0
+    #for t in model.TIMESTEPS:
+    #    sum +=model.flow[genset, el_bus, t]
+    #print(sum)
+    #print("3")
+    #print(model.flow[genset, el_bus])
+    def renewable_share_rule(model):
+        # generation of fossil-fuelled generator
+        actual_fossil_generation = sum(model.flow[genset, el_bus, t] for t in model.TIMESTEPS)
+        # consumption from grid, if connected
+        if pcc_consumption != None:
+            actual_fossil_generation += sum(model.flow[pcc_consumption, el_bus, t] for t in model.TIMESTEPS) \
+                                        * (1 - experiment['maingrid_renewable_share'])
 
-    if pcc_consumption != None:
-        actual_fossil_generation += sum(model.flow[pcc_consumption, el_bus, :]) \
-                                    * (1-experiment['maingrid_renewable_share'])
-
-    def renewable_share_rule():
-        expr = (experiment['min_res_share'] <= 1 - actual_fossil_generation/total_demand)
+        expr = (experiment['min_renewable_share'] <= 1 - actual_fossil_generation/total_demand)
         return expr
+
 
     model.renewable_share_constraint = po.Constraint(rule=renewable_share_rule)
 
