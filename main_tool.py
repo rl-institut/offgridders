@@ -148,16 +148,18 @@ for experiment in sensitivity_experiments:
                 cases.interconnected_buysell(demand_profiles[experiment['demand_profile']], pv_generation_per_kWp, experiment,
                                          capacities_base, grid_availability)
 
-        elif items == 'oem_grid_tied_mg':
+        elif    items == 'oem_grid_tied_mg':
             oemof_results =\
                 cases.oem_grid_tied_mg(demand_profiles[experiment['demand_profile']], pv_generation_per_kWp, experiment, grid_availability)
-        elif items == 'sole_maingrid':
+
+        elif    items == 'sole_maingrid':
             oemof_results = cases.main_grid(demand_profiles[experiment['demand_profile']], experiment, grid_availability)
 
         elif    items == 'buyoff':               cases.buyoff()
         elif    items == 'parallel':             cases.parallel()
         elif    items == 'adapted':              cases.adapted()
         else: logging.warning("Unknown case!")
+
         duration = timeit.default_timer() - start
         logging.info('    Simulation of case '+items+' complete.')
         logging.info('    Simulation time (s): ' + str(round(duration, 2)) + '\n')
