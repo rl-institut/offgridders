@@ -112,7 +112,7 @@ class sensitivity():
 
         if results_demand_characteristics == True:
             overall_results = pd.concat([overall_results, pd.DataFrame(columns=[
-                'demand_annual_kWh',
+                'total_demand_annual_kWh',
                 'demand_peak_kW',
                 'demand_annual_supplied_kWh'])], axis=1, sort=False)
 
@@ -128,9 +128,9 @@ class sensitivity():
             'capacity_genset_kW',
             'capacity_pcoupling_kW',
             'res_share',
-            'consumption_fuel_annual',
-            'consumption_main_grid_annual',
-            'feedin_main_grid_annual'])], axis=1, sort=False)
+            'consumption_fuel_annual_l',
+            'consumption_main_grid_annual_kWh',
+            'feedin_main_grid_annual_kWh'])], axis=1, sort=False)
 
         if results_annuities == True:
             overall_results = pd.concat([overall_results, pd.DataFrame(columns=[
@@ -138,9 +138,9 @@ class sensitivity():
                 'annuity_storage',
                 'annuity_genset',
                 'annuity_pcoupling',
-                'annuity_grid_extension',
-                'annuity_project_fix',
-                'annuity_operational'])], axis=1, sort=False)
+                'annuity_distribution_grid',
+                'annuity_project',
+                'annuity_grid_extension'])], axis=1, sort=False)
 
         overall_results = pd.concat([overall_results, pd.DataFrame(columns=[
             'expenditures_fuel_annual',
@@ -155,10 +155,9 @@ class sensitivity():
                 'costs_storage',
                 'costs_genset',
                 'costs_pcoupling',
+                'costs_distribution_grid',
+                'costs_project',
                 'costs_grid_extension',
-                'costs_project_fix',
-                #'costs_distibution_grid'
-                'costs_operation',
                 'expenditures_fuel_total',
                 'expenditures_main_grid_consumption_total',
                 'revenue_main_grid_feedin_total'])], axis=1, sort=False)
@@ -168,7 +167,8 @@ class sensitivity():
             'npv',
             'lcoe',
             'objective_value',
-            'simulation_time'])], axis=1, sort=False)
+            'simulation_time',
+            'comments'])], axis=1, sort=False)
 
         if number_of_demand_profiles > 1:
             overall_results = pd.concat([overall_results, pd.DataFrame(columns=['demand_profile'])], axis=1)

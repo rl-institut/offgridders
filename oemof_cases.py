@@ -25,7 +25,7 @@ from oemof_process_results import oemof_process
 class cases:
 
     def extend_dictionary(case_dict, experiment, demand_profile):
-        from config import include_stability_constraint
+        from config import include_stability_constraint, allow_shortage
 
         case_dict.update({
             'total_demand': sum(demand_profile),
@@ -33,26 +33,35 @@ class cases:
         })
 
         # shortage if allowed, otherwise zero
-        if 'max_shortage' in case_dict:
-            pass
-        else:
-            if case_dict['allow_shortage']==True:
+        if 'allow_shortage' in case_dict and 'max_shortage' in case_dict:
+                pass
+        elif 'allow_shortage' in case_dict and case_dict['allow_shortage']==True:
                 case_dict.update({'max_shortage': experiment['max_share_unsupplied_load']})
-            else:
+        elif 'allow_shortage' in case_dict and case_dict['allow_shortage'] == False:
                 case_dict.update({'max_shortage': 0})
+        elif allow_shortage == True:
+            case_dict.update({'allow_shortage': True})
+            case_dict.update({'max_shortage': experiment['max_share_unsupplied_load']})
+        else:
+            case_dict.update({'allow_shortage': False})
+            case_dict.update({'max_shortage': 0})
 
         # activate stability constraint - here it is not optional!
-        if include_stability_constraint == True:
+        if 'stability_constraint' in case_dict:
+            pass
+        elif include_stability_constraint == True:
             case_dict.update({'stability_constraint': experiment['stability_limit']})
         else:
             case_dict.update({'stability_constraint': False})
 
         # not-optional renewable constraint
-
-        if experiment['min_renewable_share'] != 0:
-            case_dict.update({'renewable_share_constraint': experiment['min_renewable_share']})
+        if 'renewable_share_constraint' in case_dict:
+            pass
         else:
-            case_dict.update({'renewable_share_constraint': False})
+            if experiment['min_renewable_share'] != 0:
+                case_dict.update({'renewable_share_constraint': experiment['min_renewable_share']})
+            else:
+                case_dict.update({'renewable_share_constraint': False})
 
         return case_dict
 
@@ -61,6 +70,7 @@ class cases:
 
         file_name = oemof_model.filename(case_dict['case_name'], experiment['filename'])
         cases.extend_dictionary(case_dict, experiment, demand_profile)
+        print(case_dict)
 
         # For restoring .oemof results if that is possible (speeding up computation time)
         if os.path.isfile(output_folder + "/oemof/" + file_name + ".oemof") and restore_oemof_if_existant == True:
@@ -85,7 +95,6 @@ class cases:
     # Does not allow minimal loading of generator, but sizes it                   #
     ###############################################################################
     def base_oem(demand_profile, pv_generation_per_kWp, experiment):
-        from config import allow_shortage
         '''
         Case: micro grid with variable capacities = OEM
 
@@ -115,15 +124,14 @@ class cases:
             'storage_fixed_capacity':           False,
             'genset_fixed_capacity':            False,
             'pcc_consumption_fixed_capacity':   None,
-            'pcc_feedin_fixed_capacity':        None,
-            'allow_shortage':                   allow_shortage
+            'pcc_feedin_fixed_capacity':        None
         }
 
         micro_grid_system = cases.model_and_simulate(experiment, case_dict, demand_profile, pv_generation_per_kWp, grid_availability=None)
 
         # process results
         oemof_results, capacities_base \
-            = oemof_process.process_oem(micro_grid_system, case_dict['case_name'], max(pv_generation_per_kWp), experiment, demand_profile)
+            = oemof_process.process_oem(micro_grid_system, case_dict, max(pv_generation_per_kWp), experiment, demand_profile)
 
         # todo: better graph for created energysystems if NO outputfolder/outputfile_casename* exist!
         #oemofmodel.draw(micro_grid_system)
@@ -135,7 +143,6 @@ class cases:
     # Allows minimal loading of generator with fixed capacity = peak demand       #
     ###############################################################################
     def base_oem_min_loading(demand_profile, pv_generation_per_kWp, experiment):
-        from config import allow_shortage
         '''
         Case: micro grid with variable capacities = OEM
 
@@ -166,7 +173,6 @@ class cases:
             'genset_fixed_capacity': max(demand_profile),  # fix genset transformer, so that minimal loading can be used
             'pcc_consumption_fixed_capacity': None,
             'pcc_feedin_fixed_capacity': None,
-            'allow_shortage': allow_shortage
         }
 
         micro_grid_system = cases.model_and_simulate(experiment, case_dict, demand_profile, pv_generation_per_kWp,
@@ -174,7 +180,7 @@ class cases:
 
         # process results
         oemof_results, capacities_base \
-            = oemof_process.process_oem(micro_grid_system, case_dict['case_name'], max(pv_generation_per_kWp), experiment, demand_profile)
+            = oemof_process.process_oem(micro_grid_system, case_dict, max(pv_generation_per_kWp), experiment, demand_profile)
 
         return oemof_results, capacities_base
 
@@ -182,7 +188,7 @@ class cases:
     #                Dispatch optimization with fixed capacities                  #
     ###############################################################################
     def offgrid_fix(demand_profile, pv_generation_per_kWp, experiment, capacity_base):
-        from config import allow_shortage, setting_batch_capacity
+        from config import setting_batch_capacity
         '''
         Case: micro grid with fixed capacities = dispatch analysis
 
@@ -207,9 +213,10 @@ class cases:
                             |               |               |
         '''
 
-        case_dict = {'case_name': 'offgrid_fix'}
+        case_dict = {'case_name': 'offgrid_fixed'}
+
         if setting_batch_capacity == True:
-            capacity_batch = oemofmodel.process_oem_batch(capacity_base, case_dict['case_name'])
+            capacity_batch = oemof_process.process_oem_batch(capacity_base, case_dict['case_name'])
 
         case_dict.update({
             'pv_fixed_capacity': capacity_batch['capacity_pv_kWp'],
@@ -217,13 +224,15 @@ class cases:
             'genset_fixed_capacity': capacity_batch['capacity_genset_kW'],
             'pcc_consumption_fixed_capacity': None,
             'pcc_feedin_fixed_capacity': None,
-            'allow_shortage': allow_shortage
+            'allow_shortage': True,
+            'max_shortage': 0.05
         })
 
         micro_grid_system = cases.model_and_simulate(experiment, case_dict, demand_profile, pv_generation_per_kWp,
                                                      grid_availability=None)
+
         oemof_results \
-            = oemof_process.process_fix(micro_grid_system, case_dict['case_name'], capacity_batch, experiment, demand_profile)
+            = oemof_process.process_fix(micro_grid_system, case_dict, experiment, capacity_batch, demand_profile)
 
         return oemof_results
 
@@ -232,7 +241,7 @@ class cases:
     # consumption and feed-in                                                 #
     ###########################################################################
     def interconnected_buysell(demand_profile, pv_generation_per_kWp, experiment, capacity_base, grid_availability):
-        from config import allow_shortage, setting_batch_capacity
+        from config import setting_batch_capacity
         '''
         Case: 
         Micro grid connected to national grid, with point of common coupling allowing both consumption and
@@ -263,24 +272,22 @@ class cases:
 
         case_dict = {'case_name': 'interconnected_buysell'}
 
-        capacity_base.update({"capacity_pcoupling_kW": max(demand_profile)})
+        capacity_base.update({"capacity_pcoupling_kW": demand_profile)/experiment['pcoupling_efficiency']})
         if setting_batch_capacity == True:
-            capacity_batch = oemofmodel.process_oem_batch(capacity_base, case_dict['case_name'])
+            capacity_batch = oemof_process.process_oem_batch(capacity_base, case_dict['case_name'])
 
         case_dict.update({
             'pv_fixed_capacity': capacity_batch['capacity_pv_kWp'],
             'storage_fixed_capacity': capacity_batch['capacity_storage_kWh'],
             'genset_fixed_capacity': capacity_batch['capacity_genset_kW'],
             'pcc_consumption_fixed_capacity': capacity_batch['capacity_pcoupling_kW'],
-            'pcc_feedin_fixed_capacity': capacity_batch['capacity_pcoupling_kW'],
-            'allow_shortage': allow_shortage
+            'pcc_feedin_fixed_capacity': capacity_batch['capacity_pcoupling_kW']
         })
 
         micro_grid_system = cases.model_and_simulate(experiment, case_dict, demand_profile, pv_generation_per_kWp,
                                                      grid_availability)
         oemof_results \
-            = oemof_process.process_fix(micro_grid_system, case_dict['case_name'], capacity_batch, experiment,
-                                        demand_profile)
+            = oemof_process.process_fix(micro_grid_system, case_dict, experiment, capacity_batch, demand_profile)
 
         return oemof_results
 
@@ -289,7 +296,7 @@ class cases:
     # only consumption                                                        #
     ###########################################################################
     def interconnected_buy(demand_profile, pv_generation_per_kWp, experiment, capacity_base, grid_availability):
-        from config import output_folder, restore_oemof_if_existant, allow_shortage, setting_batch_capacity
+        from config import setting_batch_capacity
         '''
         Case: 
         Micro grid connected to national grid, with point of common coupling allowing only consumption from grid. 
@@ -318,24 +325,22 @@ class cases:
 
         case_dict = {'case_name': 'interconnected_buy'}
 
-        capacity_base.update({"capacity_pcoupling_kW": max(demand_profile)})
+        capacity_base.update({"capacity_pcoupling_kW": max(demand_profile)/experiment['pcoupling_efficiency']})
         if setting_batch_capacity == True:
-            capacity_batch = oemofmodel.process_oem_batch(capacity_base, case_dict['case_name'])
+            capacity_batch = oemof_process.process_oem_batch(capacity_base, case_dict['case_name'])
 
         case_dict.update({
             'pv_fixed_capacity': capacity_batch['capacity_pv_kWp'],
             'storage_fixed_capacity': capacity_batch['capacity_storage_kWh'],
             'genset_fixed_capacity': capacity_batch['capacity_genset_kW'],
             'pcc_consumption_fixed_capacity': capacity_batch['capacity_pcoupling_kW'],
-            'pcc_feedin_fixed_capacity': False,
-            'allow_shortage': allow_shortage
+            'pcc_feedin_fixed_capacity': None
         })
 
         micro_grid_system = cases.model_and_simulate(experiment, case_dict, demand_profile, pv_generation_per_kWp,
                                                      grid_availability)
         oemof_results \
-            = oemof_process.process_fix(micro_grid_system, case_dict['case_name'], capacity_batch, experiment,
-                                        demand_profile)
+            = oemof_process.process_fix(micro_grid_system, case_dict, experiment, capacity_batch, demand_profile)
 
         return oemof_results
 
@@ -344,7 +349,6 @@ class cases:
     # = From the start interconnected with main grid                          #
     ###########################################################################
     def oem_grid_tied_mg(demand_profile, pv_generation_per_kWp, experiment, grid_availability):
-        from config import allow_shortage
         '''
         Case: micro grid with variable capacities = OEM
 
@@ -376,21 +380,19 @@ class cases:
             'pv_fixed_capacity':                False,
             'storage_fixed_capacity':           False,
             'genset_fixed_capacity':            False,
-            'pcc_consumption_fixed_capacity':   False,
-            'pcc_feedin_fixed_capacity':        False,
-            'allow_shortage':                 allow_shortage
+            'pcc_consumption_fixed_capacity':   max(demand_profile)/experiment['pcoupling_efficiency'],
+            'pcc_feedin_fixed_capacity':        max(demand_profile)/experiment['pcoupling_efficiency']
         })
 
         micro_grid_system = cases.model_and_simulate(experiment, case_dict, demand_profile, pv_generation_per_kWp,
                                                      grid_availability)
         # process results
         oemof_results, capacities_base                            \
-            = oemofmodel.process_oem(micro_grid_system, case_dict['case_name'], max(pv_generation_per_kWp), experiment, demand_profile)
+            = oemof_process.process_oem(micro_grid_system, case_dict, max(pv_generation_per_kWp), experiment, demand_profile)
 
         return oemof_results
 
     def main_grid(demand_profile, experiment, grid_availability): #todo not competely defined
-        from config import allow_shortage
         '''
         Cost analysis of national grid supply, incl. LCOE
 
@@ -403,27 +405,29 @@ class cases:
                             |               |               |
         source: ng          |               |<--------------| var
         '''
-        case_dict = {'case_name': 'oem_grid_tied_mg'}
-
-        capacity_base.update({"capacity_pcoupling_kW": max(demand_profile)})
-
-        case_dict.update({
+        case_dict = {
+            'case_name': 'sole_maingrid',
             'pv_fixed_capacity':                None,
             'storage_fixed_capacity':           None,
             'genset_fixed_capacity':            None,
-            'pcc_consumption_fixed_capacity':   capacity_base["capacity_pcoupling_kW"],
+            'pcc_consumption_fixed_capacity':   max(demand_profile)/experiment['pcoupling_efficiency'],
             'pcc_feedin_fixed_capacity':        None,
             'allow_shortage':                   True,
-            'max_shortage':                     1
-        })
+            'max_shortage':                     1,
+            'stability_constraint':             False,
+            'renewable_share_constraint':       False
+        }
 
-        pv_generation_per_kWp = None
         micro_grid_system = cases.model_and_simulate(experiment, case_dict, demand_profile,
-                                                     pv_generation_per_kWp,
-                                                     grid_availability)
+                                                     pv_generation_per_kWp=None,
+                                                     grid_availability = grid_availability)
         # process results
         oemof_results, capacities_base                            \
-            = oemofmodel.process_oem(micro_grid_system, case_dict['case_name'], max(pv_generation_per_kWp), experiment, demand_profile)
+            = oemof_process.process_oem(micro_grid_system,
+                                        case_dict = case_dict,
+                                        pv_generation_max = None,
+                                        experiment = experiment,
+                                        demand_profile = demand_profile)
         return oemof_results
 
 

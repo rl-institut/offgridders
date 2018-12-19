@@ -53,11 +53,11 @@ else:
 if setting_batch_capacity == True:
     # Minimal batch capacities (always round up, if value is exactly met, add another batch)
     round_to_batch = {
-        'PV':           0.25,   # kWp
-        'GenSet':       0.25,   # kW
-        'Storage':      1,       # kWh
-        'Pcoupling':    1       # kW
-            }
+        'PV':           1,   # kWp
+        'GenSet':       0.5, # kW
+        'Storage':      5,   # kWh
+        'Pcoupling':    0.5  # kW
+        }
 
 #----------------------------White noise---------------------------------#
 if coding_process == True:
@@ -91,7 +91,7 @@ sensitivity_constants = {
     'blackout_frequency':	            7,	    # blackouts per month
     'blackout_frequency_std_deviation': 0,      # factor. Goal: 15%? 0 Means: No variability (percentual)
     'combustion_value_fuel':	        10,	    # kWh/unit
-    'costs_var_unsupplied_load':	    10,	    # /kWh
+    'costs_var_unsupplied_load':	    10,	    # /kWh  # todo rename
     'distribution_grid_cost_investment': 0,
     'distribution_grid_cost_opex':      50,  # /a
     'distribution_grid_lifetime':       40,  #
@@ -109,7 +109,7 @@ sensitivity_constants = {
     'maingrid_electricity_price':       0.20,   # /unit
     'maingrid_renewable_share':        0,      # factor of 1kWh produced renewably in main grid electricity mix
     'maingrid_feedin_tariff':           0.12,   # /unit
-    'max_share_unsupplied_load':	    0,	    # factor # only active if allow_shortage = True
+    'max_share_unsupplied_load':	    0,	    # factor # only active if allow_shortage = True # todo rename
     'min_renewable_share':	            0.2,	    # factor	todo only works	properly for off-grid oem! Create add. transformer with input streams fuel (0%	res) + nat.grid (x%	res) and limit resshare there! #does not work at all for dispatch oem
     'pcoupling_cost_investment':	    600,    # /unit
     'pcoupling_cost_opex':	            5,      # /unit/a
@@ -130,7 +130,8 @@ sensitivity_constants = {
     'storage_cost_investment':	        800,    # /unit
     'storage_cost_opex':	            0,      # /unit/a
     'storage_cost_var':	                0,      # a
-    'storage_Crate':	                1/6,	    # factor (possible charge/discharge ratio to total capacity)
+    'storage_Crate_charge':	            1,	    # factor (possible charge/discharge ratio to total capacity)
+    'storage_Crate_discharge':	        1/5,	    # factor (possible charge/discharge ratio to total capacity)
     'storage_inflow_efficiency':	    0.9,	# factor
     'storage_initial_soc':	            None,	# None or factor (None: start charge chosen by OEM)
     'storage_lifetime':	                6,      # a

@@ -170,11 +170,12 @@ class generate():
     # todo use min_cap_pointofcoupling
     def pointofcoupling_consumption_oem(micro_grid_system, bus_electricity_mg, bus_electricity_ng, experiment, min_cap_pointofcoupling):
         pointofcoupling_consumption = solph.Transformer(label="transformer_pcc_consumption",
-                                                       inputs={bus_electricity_ng: solph.Flow()},
+                                                       inputs={bus_electricity_ng: solph.Flow(
+                                                           variable_costs=experiment['pcoupling_cost_var']
+                                                       )},
                                                        outputs={bus_electricity_mg: solph.Flow(
                                                            investment=solph.Investment(
-                                                               ep_costs=experiment['pcoupling_cost_annuity']),
-                                                           variable_costs=experiment['pcoupling_cost_var'])},
+                                                               ep_costs=experiment['pcoupling_cost_annuity']))},
                                                        conversion_factors={bus_electricity_mg: experiment['pcoupling_efficiency']})
         micro_grid_system.add(pointofcoupling_consumption)
         return pointofcoupling_consumption
@@ -184,11 +185,11 @@ class generate():
             label                       = 'generic_storage',
             nominal_capacity            = capacity_storage,
             inputs={bus_electricity_mg: solph.Flow(
-                nominal_value= capacity_storage*experiment['storage_Crate']
+                nominal_value= capacity_storage*experiment['storage_Crate_charge'],
+                variable_costs=experiment['storage_cost_var']
                 )},  # maximum charge possible in one timestep
             outputs={bus_electricity_mg: solph.Flow(
-                nominal_value= capacity_storage*experiment['storage_Crate'],
-                variable_costs=experiment['storage_cost_var']
+                nominal_value= capacity_storage*experiment['storage_Crate_discharge']
                 )},  # maximum discharge possible in one timestep
             capacity_loss               = experiment['storage_loss_timestep'],  # from timestep to timestep
             capacity_min                = experiment['storage_capacity_min'],
@@ -203,16 +204,16 @@ class generate():
         generic_storage = solph.components.GenericStorage(
             label='generic_storage',
             investment=solph.Investment(ep_costs=experiment['storage_cost_annuity']),
-            inputs                          = {bus_electricity_mg: solph.Flow()},
-            outputs                         = {bus_electricity_mg: solph.Flow(
+            inputs                          = {bus_electricity_mg: solph.Flow(
                 variable_costs=experiment['storage_cost_var'])},
+            outputs                         = {bus_electricity_mg: solph.Flow()},
             capacity_loss                   = experiment['storage_loss_timestep'],  # from timestep to timestep
             capacity_min                    = experiment['storage_capacity_min'],
             capacity_max                    = experiment['storage_capacity_max'],
             inflow_conversion_factor        = experiment['storage_inflow_efficiency'],  # storing efficiency
             outflow_conversion_factor       = experiment['storage_outflow_efficiency'],  # efficiency of discharge
-            invest_relation_input_capacity  = experiment['storage_Crate'],  # storage can be charged with invest_relation_output_capacity*capacity in one timeperiod
-            invest_relation_output_capacity = experiment['storage_Crate'] # storage can be emptied with invest_relation_output_capacity*capacity in one timeperiod
+            invest_relation_input_capacity  = experiment['storage_Crate_charge'],  # storage can be charged with invest_relation_output_capacity*capacity in one timeperiod
+            invest_relation_output_capacity = experiment['storage_Crate_discharge'] # storage can be emptied with invest_relation_output_capacity*capacity in one timeperiod
         )
         micro_grid_system.add(generic_storage)
         return generic_storage

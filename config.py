@@ -11,9 +11,10 @@ base_case_with_min_loading      = False   # If set to True, the generator capaci
 # simulated cases:
 simulated_cases = {
     'offgrid_fixed': False,             # dispatch with base oem capacities
-    'interconnected_buy': False,         # dispatch with interconnected main grid (only consumption)
-    'interconnected_buysell': False,     # dispatch with interconnected main grid (consumption+feedin)
-    'oem_grid_tied_mg': False,           # optimization of grid-tied mg (consumption+feedin)
+    'interconnected_buy': True,        # dispatch with interconnected main grid (only consumption)
+    'interconnected_buysell': True,    # dispatch with interconnected main grid (consumption+feedin)
+    'oem_grid_tied_mg': True,          # optimization of grid-tied mg (consumption+feedin)
+    'sole_maingrid': True,             # supply only by main grid (allowed shortage variable)
     'buyoff': False, # todo not implemented
     'parallel': False, # todo not implemented
     'adapted': False, # todo not implemented

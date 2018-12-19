@@ -5,7 +5,7 @@ import pyomo.environ as po
 import pprint as pp
 import logging
 
-def stability_criterion(model, stability_limit, storage, sink_demand, genset, el_bus):
+def stability_criterion(model, case_dict, experiment, storage, sink_demand, genset, pcc_consumption, el_bus):
     '''
     Set a minimal limit for operating reserve of diesel generator + storage to aid PV generation in case of volatilities
     = Ensure stability of MG system
@@ -22,8 +22,11 @@ def stability_criterion(model, stability_limit, storage, sink_demand, genset, el
         - Transformer (genset)
         - Storage (with invest_relation_output_capacity)
 
-    stability_limit: float
-        Share of demand that potentially has to be covered by genset/storage flows for stable operation
+    case_dict: dictionary, includes
+        'stability_constraint': float
+                Share of demand that potentially has to be covered by genset/storage flows for stable operation
+        'storage_fixed_capacity': False, float, None
+        'genset_fixed_capacity': False, float, None
 
     storage: currently single object of class oemof.solph.components.GenericStorage
         To get stored capacity at t
@@ -40,52 +43,97 @@ def stability_criterion(model, stability_limit, storage, sink_demand, genset, el
     el_bus: object of class oemof.solph.network.Bus
         For accessing flow-parameters
     '''
+
+    stability_limit = case_dict['stability_constraint']
     ## ------- Get CAP_genset ------- #
     CAP_genset = 0
-    # genset capacity subject to oem
-    if hasattr(model, "InvestmentFlow"):     # todo: not all generators have variable capacities, only because there are *any* investments optimized
-        CAP_genset += model.InvestmentFlow.invest[genset, el_bus]
-    # genset capacity subject to oem
-    else:
-        CAP_genset += model.flows[genset, el_bus].nominal_capacity
+    if case_dict['genset_fixed_capacity'] != None:
+        if case_dict['genset_fixed_capacity']==False:
+            CAP_genset += model.InvestmentFlow.invest[genset, el_bus]
+        elif isinstance(case_dict['genset_fixed_capacity'], int):
+            CAP_genset += model.flows[genset, el_bus].nominal_value
 
     def stability_rule(model, t):
+        expr = CAP_genset
         ## ------- Get demand at t ------- #
         demand = model.flow[el_bus,sink_demand,t]
+        expr += - stability_limit * demand
+        ##---------Grid consumption t-------#
+        if case_dict['pcc_consumption_fixed_capacity'] != None:
+            pcc = model.flow[pcc_consumption, el_bus, t]
+            expr += pcc
         ## ------- Get stored capacity storage at t------- #
-        storage_capacity = 0
-        if hasattr(model, "InvestmentFlow"): # Storage subject to OEM
-            storage_capacity += model.GenericInvestmentStorageBlock.capacity[storage, t]
-        else: # Fixed storage subject to dispatch
-            storage_capacity += model.GenericStorageBlock.capacity[storage, t]
         # todo adjust if timestep not 1 hr
-        expr = CAP_genset + storage_capacity * storage.invest_relation_output_capacity\
-               >= stability_limit * demand
-        return expr
+        if case_dict['storage_fixed_capacity'] != None:
+            storage_capacity = 0
+            if case_dict['storage_fixed_capacity'] == False:  # Storage subject to OEM
+                storage_capacity += model.GenericInvestmentStorageBlock.capacity[storage, t]
+                #expr += storage_capacity * storage.invest_relation_output_capacity
+            elif isinstance(case_dict['storage_fixed_capacity'], int): # Fixed storage subject to dispatch
+                storage_capacity += model.GenericStorageBlock.capacity[storage, t]
+
+            expr += storage_capacity * experiment['storage_Crate_discharge']
+
+        return expr >= 0
 
     model.stability_constraint = po.Constraint(model.TIMESTEPS, rule=stability_rule)
 
     return model
 
-def stability_criterion_test(experiment, storage_capacity, demand_profile, genset_capacity):
+def stability_test(oemof_results, experiment, storage_capacity, demand_profile, genset_capacity):
     '''
     Testing simulation results for adherance to above defined stability criterion
     '''
     # todo adjust if timestep not 1 hr
     boolean_test = [
-        genset_capacity + storage_capacity[t] * experiment['storage_Crate'] \
+        genset_capacity + storage_capacity[t] * experiment['storage_Crate_discharge'] \
         >= experiment['stability_limit'] * demand_profile[t]
-        for t in demand_profile.index]
+        for t in range(0, len(demand_profile.index))
+    ]
 
-    if any(boolean_test) == False:
-        logging.WARNING("ATTENTION: Stability criterion NOT fullfilled!")
-    else:
+    if all(boolean_test) == True:
         logging.debug("Stability criterion is fullfilled.")
+    else:
+        logging.warning("ATTENTION: Stability criterion NOT fullfilled!")
+        oemof_results.update({'comments': oemof_results['comments'] + 'Stability criterion not fullfilled. '})
 
     return
 
+def storage_criterion(case_dict, model, storage, el_bus, experiment):
+    if storage == None:
+        def discharge_rule(model, t):
+            storage_capacity = 0
+            if case_dict['storage_fixed_capacity'] == False:  # Storage subject to OEM
+                storage_capacity += model.GenericInvestmentStorageBlock.capacity[storage, t]
+            elif isinstance(case_dict['storage_fixed_capacity'], int): # Fixed storage subject to dispatch
+                storage_capacity += model.GenericStorageBlock.capacity[storage, t]
+
+            allowed_discharge = storage_capacity * experiment['storage_Crate_discharge']
+            discharge = model.flow[storage, el_bus, t]
+
+            return (discharge <= allowed_discharge)
+
+        model.discharge_constraint = po.Constraint(model.TIMESTEPS, rule=discharge_rule)
+
+        def charge_rule(model, t):
+            storage_capacity = 0
+            if case_dict['storage_fixed_capacity'] == False:  # Storage subject to OEM
+                storage_capacity += model.GenericInvestmentStorageBlock.capacity[storage, t]
+            elif isinstance(case_dict['storage_fixed_capacity'], int):  # Fixed storage subject to dispatch
+                storage_capacity += model.GenericStorageBlock.capacity[storage, t]
+
+            allowed_charge = storage_capacity * experiment['storage_Crate_charge']
+            charge = model.flow[el_bus, storage, t]
+
+            return (charge <= allowed_charge)
+
+        model.charge_constraint = po.Constraint(model.TIMESTEPS, rule=charge_rule)
+
+    return model
+
 # todo implement renewable share criterion in oemof model and cases
 def renewable_share_criterion(model, experiment, total_demand, genset, pcc_consumption, el_bus):
+    # todo doesnt work
     '''
     Resulting in an energy system adhering to a minimal renewable factor
 
@@ -135,26 +183,20 @@ def renewable_share_criterion(model, experiment, total_demand, genset, pcc_consu
         expr = (experiment['min_renewable_share'] <= 1 - actual_fossil_generation/total_demand)
         return expr
 
-
     model.renewable_share_constraint = po.Constraint(rule=renewable_share_rule)
 
     return model
 
-def renewable_share_test(experiment, total_demand, total_generation_genset, total_main_grid_consumption):
+def renewable_share_test(oemof_results, experiment):
     '''
     Testing simulation results for adherance to above defined stability criterion
     '''
-    # todo adjust if timestep not 1 hr
-
-    actual_fossil_generation = total_generation_genset
-    if total_main_grid_consumption != None:
-        actual_fossil_generation += (1-experiment['maingrid_renewable_share']) * total_main_grid_consumption
-
-    boolean_test = (total_demand * (1-experiment['min_renewable_share']) >= actual_fossil_generation)
+    boolean_test = (oemof_results['res_share'] >= experiment['min_renewable_share'])
 
     if boolean_test == False:
-        logging.WARNING("ATTENTION: Minimal renewable share criterion NOT fullfilled!")
+        logging.warning("ATTENTION: Minimal renewable share criterion NOT fullfilled!")
+        oemof_results.update({'comments': oemof_results['comments'] + 'Renewable share criterion not fullfilled. '})
     else:
-        logging.DEBUG("Minimal renewable share is fullfilled.")
+        logging.debug("Minimal renewable share is fullfilled.")
 
     return

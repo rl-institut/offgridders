@@ -25,7 +25,7 @@ class config_func():
         for item in listof_cases:
             str_cases_simulated = str_cases_simulated + item + ', '
 
-        logging.info('The cases simulated are: ' + str_cases_simulated[:-2])
+        logging.info('The cases simulated are: base_oem, ' + str_cases_simulated[:-2])
         return listof_cases
 
     def input_data(experiment):
@@ -77,6 +77,11 @@ class config_func():
 
         from config import coding_process
         if coding_process == True:
+            '''
+            Updating all annuities above to annuities "for the timeframe", so that optimization is based on more adequate 
+            costs. Includes project_cost_annuity, distribution_grid_cost_annuity, maingrid_extension_cost_annuity for 
+            consistency eventhough these are not used in optimization.
+            '''
             from config import evaluated_days
             experiment.update({
                 'pv_cost_annuity': experiment['pv_cost_annuity'] / 365*evaluated_days,
@@ -84,7 +89,8 @@ class config_func():
                 'storage_cost_annuity': experiment['storage_cost_annuity'] / 365*evaluated_days,
                 'pcoupling_cost_annuity': experiment['pcoupling_cost_annuity'] / 365*evaluated_days,
                 'project_cost_annuity': experiment['project_cost_annuity'] / 365 * evaluated_days,
-                'distribution_grid_cost_annuity': experiment['distribution_grid_cost_annuity'] / 365 * evaluated_days
+                'distribution_grid_cost_annuity': experiment['distribution_grid_cost_annuity'] / 365 * evaluated_days,
+                'maingrid_extension_cost_annuity': experiment['maingrid_extension_cost_annuity'] / 365 * evaluated_days
             })
 
         return experiment
