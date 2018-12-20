@@ -10,7 +10,7 @@ base_case_with_min_loading      = False   # If set to True, the generator capaci
 
 # simulated cases:
 simulated_cases = {
-    'offgrid_fixed': True,             # dispatch with base oem capacities
+    'offgrid_fixed': False,             # dispatch with base oem capacities
     'interconnected_buy': True,        # dispatch with interconnected main grid (only consumption)
     'interconnected_buysell': True,    # dispatch with interconnected main grid (consumption+feedin)
     'oem_grid_tied_mg': True,          # optimization of grid-tied mg (consumption+feedin)
@@ -44,8 +44,8 @@ setting_save_lp_file                = False  # save lp file of oemof simulation
 setting_save_oemofresults           = True   # save oemofresults to .oemof file
 display_graphs_solar                = False
 display_graphs_demand               = False
-display_graphs_flows_storage        = False
-display_graphs_flows_electricity_mg = False
+display_graphs_flows_storage        = True
+display_graphs_flows_electricity_mg = True
 
 print_simulation_meta       = False  # print information on opimization
 print_simulation_main       = False  # print accumulated flows over electricity bus
@@ -53,8 +53,8 @@ print_simulation_invest     = False  # print investment results
 print_simulation_experiment = False  # Print data on experiment run (sensitivity analysis)
 
 # Choose flows saved to csv
-setting_save_flows_storage          = False
-setting_save_flows_electricity_mg   = False
+setting_save_flows_storage          = True
+setting_save_flows_electricity_mg   = True
 
 # Choose results saves in csv
 results_demand_characteristics      = True

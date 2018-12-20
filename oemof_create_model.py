@@ -42,6 +42,8 @@ class oemof_model:
         if case_dict['pcc_consumption_fixed_capacity'] != None or case_dict['pcc_feedin_fixed_capacity'] != None:
             bus_electricity_ng = solph.Bus(label="bus_electricity_ng")
             micro_grid_system.add(bus_electricity_ng)
+        #else:
+            #grid_availability = None
 
         if case_dict['pcc_consumption_fixed_capacity'] != None:
             # source for electricity from grid

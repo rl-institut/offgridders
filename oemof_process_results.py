@@ -453,12 +453,16 @@ class oemof_process():
         from config import display_graphs_flows_electricity_mg, setting_save_flows_electricity_mg
         # todo actually not quite true here
         if display_graphs_flows_electricity_mg == True or setting_save_flows_electricity_mg == True:
-            pv_gen          = electricity_bus['sequences'][(('source_pv', 'bus_electricity_mg'), 'flow')]
-            demand_supply   = electricity_bus['sequences'][(('bus_electricity_mg', 'sink_demand'), 'flow')]
-            genset          = electricity_bus['sequences'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'flow')]
-            discharge       = electricity_bus['sequences'][(('generic_storage', 'bus_electricity_mg'), 'flow')]
-            charge          = electricity_bus['sequences'][(('bus_electricity_mg', 'generic_storage'), 'flow')]
-            excess          = electricity_bus['sequences'][(('bus_electricity_mg', 'sink_excess'), 'flow')]
+            excess = electricity_bus['sequences'][(('bus_electricity_mg', 'sink_excess'), 'flow')]
+            demand_supply = electricity_bus['sequences'][(('bus_electricity_mg', 'sink_demand'), 'flow')]
+
+            if case_dict['pv_fixed_capacity'] != None:
+                pv_gen          = electricity_bus['sequences'][(('source_pv', 'bus_electricity_mg'), 'flow')]
+            if case_dict['genset_fixed_capacity'] != None:
+                genset          = electricity_bus['sequences'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'flow')]
+            if case_dict['storage_fixed_capacity'] != None:
+                discharge       = electricity_bus['sequences'][(('generic_storage', 'bus_electricity_mg'), 'flow')]
+                charge          = electricity_bus['sequences'][(('bus_electricity_mg', 'generic_storage'), 'flow')]
 
             if case_dict['allow_shortage'] == True:
                 shortage = electricity_bus['sequences'][(('source_shortage', 'bus_electricity_mg'), 'flow')]
@@ -471,15 +475,19 @@ class oemof_process():
 
         if setting_save_flows_electricity_mg == True:
             from config import output_folder
-            electricity_mg_flows = pd.DataFrame(pv_gen.values, columns=['PV generation'], index=pv_gen.index)
-            electricity_mg_flows = electricity_mg_flows.join(
-                pd.DataFrame(demand_supply.values, columns=['Demand supply'], index=demand_supply.index))
-            electricity_mg_flows = electricity_mg_flows.join(
+            electricity_mg_flows = pd.DataFrame(demand_supply.values, columns=['Demand supply'], index=demand_supply.index)
+            if case_dict['pv_fixed_capacity'] != None:
+                electricity_mg_flows = electricity_mg_flows.join(
+                    pd.DataFrame(pv_gen.values, columns=['PV generation'], index=pv_gen.index))
+            if case_dict['genset_fixed_capacity'] != None:
+                electricity_mg_flows = electricity_mg_flows.join(
                 pd.DataFrame(genset.values, columns=['GenSet'], index=genset.index))
-            electricity_mg_flows = electricity_mg_flows.join(
+            if case_dict['storage_fixed_capacity'] != None:
+                electricity_mg_flows = electricity_mg_flows.join(
                 pd.DataFrame(discharge.values, columns=['Discharge storage'], index=discharge.index))
-            electricity_mg_flows = electricity_mg_flows.join(
+                electricity_mg_flows = electricity_mg_flows.join(
                 pd.DataFrame(charge.values, columns=['Charge storage'], index=charge.index))
+
             electricity_mg_flows = electricity_mg_flows.join(
                 pd.DataFrame(excess.values, columns=['Excess electricity'], index=excess.index))
 
@@ -500,11 +508,14 @@ class oemof_process():
         if plt is not None and display_graphs_flows_electricity_mg == True:
             logging.debug('Plotting: Electricity bus')
             # plot each flow to/from electricity bus with appropriate name
-            pv_gen.plot(kind='line', drawstyle='steps-post', label='PV generation')
+            if case_dict['pv_fixed_capacity'] != None:
+                pv_gen.plot(kind='line', drawstyle='steps-post', label='PV generation')
             demand_supply.plot(kind='line', drawstyle='steps-post', label='Demand supply')
-            genset.plot(kind='line', drawstyle='steps-post', label='GenSet')
-            discharge.plot(kind='line', drawstyle='steps-post', label='Discharge storage')
-            charge.plot(kind='line', drawstyle='steps-post', label='Charge storage')
+            if case_dict['genset_fixed_capacity'] != None:
+                genset.plot(kind='line', drawstyle='steps-post', label='GenSet')
+            if case_dict['storage_fixed_capacity'] != None:
+                discharge.plot(kind='line', drawstyle='steps-post', label='Discharge storage')
+                charge.plot(kind='line', drawstyle='steps-post', label='Charge storage')
             excess.plot(kind='line', drawstyle='steps-post', label='Excess electricity')
 
             if case_dict['allow_shortage'] == True:
