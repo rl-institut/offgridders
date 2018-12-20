@@ -1,7 +1,7 @@
 import pandas as pd
 
 ####### ------------ General simulation settings ----------------- #######
-coding_process                  = False  # Defines timeframe and noise (see below)
+coding_process                  = True  # Defines timeframe and noise (see below)
 restore_oemof_if_existant       = True  # If set to False, the directory with results is emptied!!
 restore_blackouts_if_existant   = True
 base_case_with_min_loading      = False   # If set to True, the generator capacity will be equal to peak demand in kW!
@@ -40,7 +40,7 @@ output_folder='./simulation_results'
 output_file='results'
 
 # display results and graphs
-setting_save_lp_file                = False  # save lp file of oemof simulation
+setting_save_lp_file                = True  # save lp file of oemof simulation
 setting_save_oemofresults           = True   # save oemofresults to .oemof file
 display_graphs_solar                = False
 display_graphs_demand               = False
@@ -77,8 +77,9 @@ debug = True  # Set number_of_timesteps to 3 to get a readable lp-file.
 # Simulation timeframe
 if coding_process == True:
     evaluated_days  =  1
-    time_start      = pd.to_datetime('2018-07-07 0:00', format='%Y-%m-%d %H:%M')
+    time_start      = pd.to_datetime('2018-07-07 12:00', format='%Y-%m-%d %H:%M')
     time_end        = time_start + pd.DateOffset(days=evaluated_days) - pd.DateOffset(hours=1)
+    time_end = pd.to_datetime('2018-07-07 15:00', format='%Y-%m-%d %H:%M')
     time_frequency  = 'H'
 
 else:

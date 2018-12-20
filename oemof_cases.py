@@ -124,7 +124,8 @@ class cases:
             'storage_fixed_capacity':           False,
             'genset_fixed_capacity':            False,
             'pcc_consumption_fixed_capacity':   None,
-            'pcc_feedin_fixed_capacity':        None
+            'pcc_feedin_fixed_capacity':        None,
+            'stability_constraint':             False
         }
 
         micro_grid_system = cases.model_and_simulate(experiment, case_dict, demand_profile, pv_generation_per_kWp, grid_availability=None)

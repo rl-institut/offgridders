@@ -164,6 +164,7 @@ class oemof_model:
         #                                  el_bus = bus_electricity_mg,
         #                                  experiment=experiment)
         # add stability constraint
+        print(model.GenericInvestmentStorageBlock.max_capacity[generic_storage, 0])
         if case_dict['stability_constraint'] == False:
             pass
         elif isinstance(case_dict['stability_constraint'], float):
