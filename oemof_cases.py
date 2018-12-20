@@ -272,7 +272,8 @@ class cases:
 
         case_dict = {'case_name': 'interconnected_buysell'}
 
-        capacity_base.update({"capacity_pcoupling_kW": demand_profile)/experiment['pcoupling_efficiency']})
+        capacity_base.update({"capacity_pcoupling_kW": max(demand_profile)/experiment['pcoupling_efficiency']})
+
         if setting_batch_capacity == True:
             capacity_batch = oemof_process.process_oem_batch(capacity_base, case_dict['case_name'])
 

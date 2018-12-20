@@ -59,6 +59,7 @@ def stability_criterion(model, case_dict, experiment, storage, sink_demand, gens
         demand = model.flow[el_bus,sink_demand,t]
         expr += - stability_limit * demand
         ##---------Grid consumption t-------#
+        # this should not be actual consumption but possible one  - like grid_availability[t]*pcc_consumption_cap
         if case_dict['pcc_consumption_fixed_capacity'] != None:
             pcc = model.flow[pcc_consumption, el_bus, t]
             expr += pcc
@@ -80,6 +81,7 @@ def stability_criterion(model, case_dict, experiment, storage, sink_demand, gens
 
     return model
 
+# todo add pcc consumption here
 def stability_test(oemof_results, experiment, storage_capacity, demand_profile, genset_capacity):
     '''
     Testing simulation results for adherance to above defined stability criterion

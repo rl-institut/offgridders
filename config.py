@@ -10,7 +10,7 @@ base_case_with_min_loading      = False   # If set to True, the generator capaci
 
 # simulated cases:
 simulated_cases = {
-    'offgrid_fixed': False,             # dispatch with base oem capacities
+    'offgrid_fixed': True,             # dispatch with base oem capacities
     'interconnected_buy': True,        # dispatch with interconnected main grid (only consumption)
     'interconnected_buysell': True,    # dispatch with interconnected main grid (consumption+feedin)
     'oem_grid_tied_mg': True,          # optimization of grid-tied mg (consumption+feedin)
