@@ -56,7 +56,7 @@ class add_results():
 
         oemof_results.update({
             'npv': oemof_results['annuity'] * experiment['annuity_factor'],
-            'lcoe': oemof_results['annuity'] / oemof_results['demand_annual_supplied_kWh']
+            'lcoe': oemof_results['annuity'] / oemof_results['total_demand_supplied_annual_kWh']
         })
 
         # todo: this does not inlude costs for unsupplied demand!
@@ -158,7 +158,7 @@ class add_results():
     def expenditures_shortage(oemof_results, experiment):
         # Necessary in oemof_results: consumption_main_grid_annual
         oemof_results.update({'expenditures_shortage_annual':
-                - oemof_results['demand_shortage_annual_kWh'] * experiment['costs_var_unsupplied_load']})
+                - oemof_results['total_demand_shortage_annual_kWh'] * experiment['costs_var_unsupplied_load']})
 
         oemof_results.update({'expenditures_shortage_total':
                 oemof_results['expenditures_shortage_annual'] * experiment['annuity_factor']})
@@ -200,14 +200,14 @@ class oemof_process():
 
         oemof_process.print_oemof_meta_main_invest(meta, electricity_bus, case_dict['case_name'])
 
-        total_demand = sum(demand_profile)
+        total_demand_kWh = sum(demand_profile)
 
         if case_dict['genset_fixed_capacity'] != None:
-            total_fuel_consumption = fuel_bus['sequences'][(('source_fuel', 'bus_fuel'), 'flow')].sum()
+            total_fuel_consumption_l = fuel_bus['sequences'][(('source_fuel', 'bus_fuel'), 'flow')].sum()
             total_genset_generation_kWh = electricity_bus['sequences'][
                 (('transformer_fuel_generator', 'bus_electricity_mg'), 'flow')].sum()
         else:
-            total_fuel_consumption = 0
+            total_fuel_consumption_l = 0
             total_genset_generation_kWh = 0
 
 
@@ -216,7 +216,6 @@ class oemof_process():
         else:
             total_pv_generation_kWh = 0
 
-        total_supplied_demand = electricity_bus['sequences'][(('bus_electricity_mg', 'sink_demand'), 'flow')].sum()
 
         # As in to storage
         if case_dict['storage_fixed_capacity'] != None:
@@ -224,14 +223,23 @@ class oemof_process():
         else:
             total_battery_throughput_kWh = 0
 
+        # shortage
+        if case_dict['allow_shortage'] == True:
+            total_shortage_kWh = electricity_bus['sequences'][(('source_shortage', 'bus_electricity_mg'), 'flow')].sum()
+        else:
+            total_shortage_kWh = 0
+
+        total_supplied_demand_kWh = total_demand_kWh - total_shortage_kWh
+
         from config import evaluated_days
         # todo: if freq=15 min, this has to be adjusted!
-        for item in [total_demand,
-                     total_supplied_demand,
-                     total_fuel_consumption,
+        for item in [total_demand_kWh,
+                     total_supplied_demand_kWh,
+                     total_fuel_consumption_l,
                      total_genset_generation_kWh,
                      total_pv_generation_kWh,
-                     total_battery_throughput_kWh]:
+                     total_battery_throughput_kWh,
+                     total_shortage_kWh]:
             item = item * 365 / evaluated_days
 
         # Defining oemof_results (first entries).
@@ -240,9 +248,11 @@ class oemof_process():
         oemof_results = {
             'case':                         case_dict['case_name'],
             'filename':                     'results_' + case_dict['case_name'] + experiment['filename'],
-            'consumption_fuel_annual_l':    total_fuel_consumption,
-            'demand_annual_supplied_kWh':   total_supplied_demand,
-            'total_demand_annual_kWh':      total_demand,
+            'consumption_fuel_annual_l':    total_fuel_consumption_l,
+            'total_demand_annual_kWh':      total_demand_kWh,
+            'total_demand_supplied_annual_kWh': total_supplied_demand_kWh,
+            'total_demand_shortage_annual_kWh': total_shortage_kWh,
+            'supply_reliability':           total_supplied_demand_kWh/total_demand_kWh,
             'demand_peak_kW':               max(demand_profile),
             'total_genset_generation_kWh':  total_genset_generation_kWh,
             'total_pv_generation_kWh':      total_pv_generation_kWh,
@@ -274,7 +284,7 @@ class oemof_process():
                 total_pcoupling_throughput_kWh += oemof_results['feedin_main_grid_annual_kWh']
 
         # todo this includes actual fossil share including pcc inefficiencies
-        res_share = abs(1 - total_fossil_supply / total_supplied_demand)
+        res_share = abs(1 - total_fossil_supply / total_supplied_demand_kWh)
 
 
         oemof_results.update({'total_pcoupling_throughput_kWh':   total_pcoupling_throughput_kWh,
@@ -292,7 +302,8 @@ class oemof_process():
         oemof_results = add_results.project_annuities(case_dict, oemof_results, experiment, capacity_batch)
 
         logging.info('    Dispatch optimization for case "' + case_dict['case_name'] + '" finished, with renewable share of ' +
-                     str(round(oemof_results['res_share']*100,2)) + ' percent.')
+                     str(round(oemof_results['res_share']*100,2)) + ' percent.'
+                      + ' with a reliability of '+ str(round(oemof_results['supply_reliability']*100,2)) + ' percent')
 
         if case_dict['storage_fixed_capacity'] != None:
             storage_capacity = generic_storage['sequences'][(('generic_storage', 'None'), 'capacity')]
@@ -371,7 +382,8 @@ class oemof_process():
                       +'    '+'  '+ '    ' + '    ' + '    ' + str(round(capacities_base['capacity_storage_kWh'],3)) + ' kWh battery, '
                       + str(round(capacities_base['capacity_pv_kWp'],3)) + ' kWp PV, '
                       + str(round(capacities_base['capacity_genset_kW'],3)) + ' kW genset '
-                      + 'at a renewable share of ' + str(round(oemof_results['res_share']*100,2)) + ' percent.')
+                      + 'at a renewable share of ' + str(round(oemof_results['res_share']*100,2)) + ' percent'
+                      + ' with a reliability of '+ str(round(oemof_results['supply_reliability']*100,2)) + ' percent')
 
         if case_dict['storage_fixed_capacity'] != None:
             storage_capacity = generic_storage['sequences'][(('generic_storage', 'None'), 'capacity')]

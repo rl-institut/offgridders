@@ -418,7 +418,6 @@ class cases:
             'stability_constraint':             False,
             'renewable_share_constraint':       False
         }
-
         micro_grid_system = cases.model_and_simulate(experiment, case_dict, demand_profile,
                                                      pv_generation_per_kWp=None,
                                                      grid_availability = grid_availability)

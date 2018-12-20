@@ -6,6 +6,19 @@ import constraints_custom as constraints
 
 class oemof_model:
 
+    def case_dict_test(case_dict, case_dict_entry, do_at_none, do_at_false, do_at_float):
+        if case_dict_entry == None:
+            do_at_none
+        elif case_dict_entry == False:
+            do_at_false
+        elif isinstance(case_dict_entry, float):
+            do_at_float
+        else:
+            logging.warning('Non-valid entry in case_dict '+case_dict['case_name']+' at '+ case_dict_entry
+                            + '. Value can only be None, False or float.')
+
+        return
+
     def load_energysystem_lp():
         # based on lp file
         return
@@ -42,8 +55,8 @@ class oemof_model:
         if case_dict['pcc_consumption_fixed_capacity'] != None or case_dict['pcc_feedin_fixed_capacity'] != None:
             bus_electricity_ng = solph.Bus(label="bus_electricity_ng")
             micro_grid_system.add(bus_electricity_ng)
-        #else:
-            #grid_availability = None
+        else:
+            grid_availability = None
 
         if case_dict['pcc_consumption_fixed_capacity'] != None:
             # source for electricity from grid
@@ -144,12 +157,12 @@ class oemof_model:
         logging.debug('Initialize the energy system to be optimized')
         model = solph.Model(micro_grid_system)
 
-        if case_dict['storage_fixed_capacity'] != None:
-            logging.debug('Adding storage charge and discharge constraint.')
-            constraints.storage_criterion(case_dict, model,
-                                          storage=generic_storage,
-                                          el_bus = bus_electricity_mg,
-                                          experiment=experiment)
+        #if case_dict['storage_fixed_capacity'] != None:
+        #    logging.debug('Adding storage charge and discharge constraint.')
+        #    constraints.storage_criterion(case_dict, model,
+        #                                  storage=generic_storage,
+        #                                  el_bus = bus_electricity_mg,
+        #                                  experiment=experiment)
         # add stability constraint
         if case_dict['stability_constraint'] == False:
             pass
@@ -161,7 +174,8 @@ class oemof_model:
                                             sink_demand = sink_demand,
                                             genset = transformer_fuel_generator,
                                             pcc_consumption = pointofcoupling_consumption,
-                                            el_bus = bus_electricity_mg)
+                                            el_bus = bus_electricity_mg,
+                                            grid_availability = grid_availability)
         else:
             logging.warning('Case definition of ' + case_dict['case_name']
                             + ' faulty at stability_constraint. Value can only be False, float or None')

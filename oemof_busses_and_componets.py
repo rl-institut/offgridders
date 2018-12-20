@@ -58,6 +58,7 @@ class generate():
         source_maingrid = solph.Source(label="source_maingrid",
                                        outputs={bus_electricity_ng: solph.Flow(
                                            actual_value = grid_availability,
+                                           nominal_value = 60.5,
                                            variable_costs=experiment['maingrid_electricity_price'])})
         micro_grid_system.add(source_maingrid)
         return
@@ -241,7 +242,7 @@ class generate():
         # create and add demand sink to micro_grid_system - fixed
         sink_feedin_ng = solph.Sink(label="sink_feedin",
                                  inputs={bus_electricity_ng: solph.Flow(
-                                     actual_value=grid_availability,
+                                     actual_value = grid_availability,
                                      variable_costs = - experiment['maingrid_feedin_tariff'])})
         micro_grid_system.add(sink_feedin_ng)
         return

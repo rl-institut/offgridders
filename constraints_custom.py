@@ -5,7 +5,7 @@ import pyomo.environ as po
 import pprint as pp
 import logging
 
-def stability_criterion(model, case_dict, experiment, storage, sink_demand, genset, pcc_consumption, el_bus):
+def stability_criterion(model, case_dict, experiment, storage, sink_demand, genset, pcc_consumption, el_bus, grid_availability):
     '''
     Set a minimal limit for operating reserve of diesel generator + storage to aid PV generation in case of volatilities
     = Ensure stability of MG system
@@ -50,32 +50,40 @@ def stability_criterion(model, case_dict, experiment, storage, sink_demand, gens
     if case_dict['genset_fixed_capacity'] != None:
         if case_dict['genset_fixed_capacity']==False:
             CAP_genset += model.InvestmentFlow.invest[genset, el_bus]
-        elif isinstance(case_dict['genset_fixed_capacity'], int):
+        elif isinstance(case_dict['genset_fixed_capacity'], float):
             CAP_genset += model.flows[genset, el_bus].nominal_value
+
+    ## ------- Get CAP PCC ------- #
+    cap_pcc = 0
+    if case_dict['pcc_consumption_fixed_capacity'] != None:
+        if case_dict['pcc_consumption_fixed_capacity'] == False:
+            cap_pcc += model.InvestmentFlow.invest[pcc_consumption, el_bus]
+        elif isinstance(case_dict['pcc_consumption_fixed_capacity'], float):
+            cap_pcc += model.flows[pcc_consumption, el_bus].nominal_value
 
     def stability_rule(model, t):
         expr = CAP_genset
         ## ------- Get demand at t ------- #
-        demand = model.flow[el_bus,sink_demand,t]
+        demand = model.flows[el_bus, sink_demand].actual_value[t] * model.flows[el_bus, sink_demand].nominal_value
         expr += - stability_limit * demand
         ##---------Grid consumption t-------#
         # this should not be actual consumption but possible one  - like grid_availability[t]*pcc_consumption_cap
         if case_dict['pcc_consumption_fixed_capacity'] != None:
-            pcc = model.flow[pcc_consumption, el_bus, t]
-            expr += pcc
+            expr += cap_pcc * grid_availability[t]
         ## ------- Get stored capacity storage at t------- #
         # todo adjust if timestep not 1 hr
         if case_dict['storage_fixed_capacity'] != None:
             storage_capacity = 0
             if case_dict['storage_fixed_capacity'] == False:  # Storage subject to OEM
                 storage_capacity += model.GenericInvestmentStorageBlock.capacity[storage, t]
-                #expr += storage_capacity * storage.invest_relation_output_capacity
-            elif isinstance(case_dict['storage_fixed_capacity'], int): # Fixed storage subject to dispatch
-                storage_capacity += model.GenericStorageBlock.capacity[storage, t]
-
+                expr += storage_capacity # todo well... this actually is not quite true. storage can only stem as much as its nominal value... model.flows[generic_storage, el_bus].actual_value ?
+            elif isinstance(case_dict['storage_fixed_capacity'], float): # Fixed storage subject to dispatch
+                storage_capacity += model.GenericStorageBlock.capacity[storage, t] # todo as above
+            else:
+                print ("Error: 'storage_fixed_capacity' can only be None, False or float.")
             expr += storage_capacity * experiment['storage_Crate_discharge']
 
-        return expr >= 0
+        return (expr >= 0)
 
     model.stability_constraint = po.Constraint(model.TIMESTEPS, rule=stability_rule)
 
@@ -107,7 +115,7 @@ def storage_criterion(case_dict, model, storage, el_bus, experiment):
             storage_capacity = 0
             if case_dict['storage_fixed_capacity'] == False:  # Storage subject to OEM
                 storage_capacity += model.GenericInvestmentStorageBlock.capacity[storage, t]
-            elif isinstance(case_dict['storage_fixed_capacity'], int): # Fixed storage subject to dispatch
+            elif isinstance(case_dict['storage_fixed_capacity'], float): # Fixed storage subject to dispatch
                 storage_capacity += model.GenericStorageBlock.capacity[storage, t]
 
             allowed_discharge = storage_capacity * experiment['storage_Crate_discharge']
@@ -194,6 +202,7 @@ def renewable_share_test(oemof_results, experiment):
     Testing simulation results for adherance to above defined stability criterion
     '''
     boolean_test = (oemof_results['res_share'] >= experiment['min_renewable_share'])
+    print()
 
     if boolean_test == False:
         logging.warning("ATTENTION: Minimal renewable share criterion NOT fullfilled!")

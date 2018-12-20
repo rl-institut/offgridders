@@ -114,7 +114,8 @@ class sensitivity():
             overall_results = pd.concat([overall_results, pd.DataFrame(columns=[
                 'total_demand_annual_kWh',
                 'demand_peak_kW',
-                'demand_annual_supplied_kWh'])], axis=1, sort=False)
+                'total_demand_supplied_annual_kWh',
+                'total_demand_shortage_annual_kWh'])], axis=1, sort=False)
 
         if results_blackout_characteristics == True:
             overall_results = pd.concat([overall_results, pd.DataFrame(columns=[
@@ -166,6 +167,7 @@ class sensitivity():
             'annuity',
             'npv',
             'lcoe',
+            'supply_reliability',
             'objective_value',
             'simulation_time',
             'comments'])], axis=1, sort=False)
