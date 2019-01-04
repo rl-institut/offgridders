@@ -112,11 +112,9 @@ class config_func():
 
         else:
             if restore_oemof_if_existant == False:
-                #list_of_folders = [output_folder, output_folder  +   "/oemof", output_folder  +   "/storage", output_folder  +   "/electricity_bus"]
-                #for folder in list_of_folders:
-                for root, dirs, files in os.walk(folder):
+                for root, dirs, files in os.walk(output_folder):
                     for f in files:
-                        os.remove(folder+'/'+f)
+                        os.remove(root+'/'+f)
                 logging.info('Deleted all files in folder "simulation_results".')
         return
 

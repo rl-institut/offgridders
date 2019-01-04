@@ -126,6 +126,10 @@ for experiment in sensitivity_experiments:
     from sensitivity import sensitivity
     blackout_experiment_name = sensitivity.blackout_experiment_name(experiment)
     grid_availability = sensitivity_grid_availability[blackout_experiment_name]
+    ## todo only for testing
+    # todo remove after testing
+    print(experiment)
+    grid_availability[2]=0
     ###############################################################################
     # Creating, simulating and storing micro grid energy systems with oemof
     # According to parameters set beforehand

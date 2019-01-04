@@ -178,6 +178,10 @@ class add_results():
             {'annuity': oemof_results['annuity'] + oemof_results['revenue_main_grid_feedin_annual']})
         return oemof_results
 
+class process():
+    def annual_value(value, evaluated_days):
+        value = value * 365 / evaluated_days
+
 class oemof_process():
 
     ######## Processing ########
@@ -230,17 +234,16 @@ class oemof_process():
             total_shortage_kWh = 0
 
         total_supplied_demand_kWh = total_demand_kWh - total_shortage_kWh
+        # todo: if freq=15 min, this has to be adjusted!
 
         from config import evaluated_days
-        # todo: if freq=15 min, this has to be adjusted!
-        for item in [total_demand_kWh,
-                     total_supplied_demand_kWh,
-                     total_fuel_consumption_l,
-                     total_genset_generation_kWh,
-                     total_pv_generation_kWh,
-                     total_battery_throughput_kWh,
-                     total_shortage_kWh]:
-            item = item * 365 / evaluated_days
+        process.annual_value(total_demand_kWh, evaluated_days)
+        process.annual_value(total_supplied_demand_kWh, evaluated_days)
+        process.annual_value(total_fuel_consumption_l, evaluated_days)
+        process.annual_value(total_genset_generation_kWh, evaluated_days)
+        process.annual_value(total_pv_generation_kWh, evaluated_days)
+        process.annual_value(total_battery_throughput_kWh, evaluated_days)
+        process.annual_value(total_shortage_kWh, evaluated_days)
 
         # Defining oemof_results (first entries).
         # Added in main_tool: 'grid_reliability', 'grid_total_blackout_duration', 'grid_number_of_blackouts' (only for cases)
@@ -268,29 +271,33 @@ class oemof_process():
         if case_dict['pcc_consumption_fixed_capacity'] != None or case_dict['pcc_feedin_fixed_capacity'] != None:
             maingrid_bus = outputlib.views.node(results, 'bus_electricity_ng')
             if case_dict['pcc_consumption_fixed_capacity'] != None:
+                print(maingrid_bus['sequences'][(('bus_electricity_ng', 'transformer_pcc_consumption'), 'flow')])
                 # attention! this is from side of main grid!
-                oemof_results.update({'consumption_main_grid_annual_kWh':
-                                          sum(maingrid_bus['sequences'][(('bus_electricity_ng', 'transformer_pcc_consumption'), 'flow')])
-                                          * 365 / evaluated_days})
-                total_pcoupling_throughput_kWh += oemof_results['consumption_main_grid_annual_kWh']
+                consumption_main_grid_no_inv_loss =  maingrid_bus['sequences'][(('bus_electricity_ng', 'transformer_pcc_consumption'), 'flow')].sum()\
                 # attention: only effectively used electricity consumption counts for renewable share
-                total_fossil_supply += electricity_bus['sequences'][(('transformer_pcc_consumption', 'bus_electricity_mg'), 'flow')].sum() \
-                                       * 365 / evaluated_days \
-                                       * (1-experiment['maingrid_renewable_share'])
+                consumption_main_grid_inv_loss = electricity_bus['sequences'][(('transformer_pcc_consumption', 'bus_electricity_mg'), 'flow')].sum()
+                process.annual_value(consumption_main_grid_no_inv_loss, evaluated_days)
+                process.annual_value(consumption_main_grid_inv_loss, evaluated_days)
+
+                oemof_results.update({'consumption_main_grid_annual_kWh': consumption_main_grid_no_inv_loss})
+                # attention: only effectively used electricity consumption counts for renewable share
+                total_pcoupling_throughput_kWh += oemof_results['consumption_main_grid_annual_kWh'] # payments also for inverter loss
+                total_fossil_supply +=  consumption_main_grid_inv_loss * (1-experiment['maingrid_renewable_share'])
+
             if case_dict['pcc_feedin_fixed_capacity'] != None:
-                oemof_results.update({'feedin_main_grid_annual_kWh':
-                                          sum(maingrid_bus['sequences'][(('transformer_pcc_feedin', 'bus_electricity_ng'), 'flow')])
-                                          * 365 / evaluated_days})
+                feedin_main_grid_inv_loss  = maingrid_bus['sequences'][(('transformer_pcc_feedin', 'bus_electricity_ng'), 'flow')].sum()
+                                          # feed in only enumerated after lossy transformer
+                process.annual_value(feedin_main_grid_inv_loss, evaluated_days)
+                oemof_results.update({'feedin_main_grid_annual_kWh': feedin_main_grid_inv_loss})
                 total_pcoupling_throughput_kWh += oemof_results['feedin_main_grid_annual_kWh']
 
         # todo this includes actual fossil share including pcc inefficiencies
         res_share = abs(1 - total_fossil_supply / total_supplied_demand_kWh)
 
-
         oemof_results.update({'total_pcoupling_throughput_kWh':   total_pcoupling_throughput_kWh,
                               'res_share': res_share})
 
-        constraints.renewable_share_test(oemof_results, experiment)
+        #constraints.renewable_share_test(oemof_results, experiment)
 
         return results, meta, electricity_bus, oemof_results, generic_storage
 
@@ -310,9 +317,9 @@ class oemof_process():
         else:
             storage_capacity = pd.Series([0 for t in demand_profile.index], index=demand_profile.index)
 
-        if include_stability_constraint == True:
-            constraints.stability_test(oemof_results, experiment, storage_capacity, demand_profile,
-                                                 genset_capacity = capacity_batch['capacity_genset_kW'])
+        #if include_stability_constraint == True:
+            #constraints.stability_test(oemof_results, experiment, storage_capacity, demand_profile,
+                                                 #genset_capacity = capacity_batch['capacity_genset_kW'])
 
         return oemof_results
 
@@ -390,9 +397,9 @@ class oemof_process():
         else:
             storage_capacity = [0 for t in range(0, len(demand_profile.index))]
 
-        if include_stability_constraint == True:
-            constraints.stability_test(oemof_results, experiment, storage_capacity, demand_profile,
-                                        genset_capacity = capacities_base['capacity_genset_kW'])
+        #if include_stability_constraint == True:
+            #constraints.stability_test(oemof_results, experiment, storage_capacity, demand_profile,
+                                        #genset_capacity = capacities_base['capacity_genset_kW'])
 
         return oemof_results, capacities_base
 

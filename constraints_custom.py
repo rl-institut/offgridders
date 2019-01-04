@@ -68,8 +68,10 @@ def stability_criterion(model, case_dict, experiment, storage, sink_demand, gens
         expr += - stability_limit * demand
         ##---------Grid consumption t-------#
         # this should not be actual consumption but possible one  - like grid_availability[t]*pcc_consumption_cap
+        print(case_dict['pcc_consumption_fixed_capacity'])
         if case_dict['pcc_consumption_fixed_capacity'] != None:
             expr += cap_pcc * grid_availability[t]
+            print(cap_pcc * grid_availability[t])
         ## ------- Get stored capacity storage at t------- #
         # todo adjust if timestep not 1 hr
         if case_dict['storage_fixed_capacity'] != None:

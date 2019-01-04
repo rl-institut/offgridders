@@ -45,21 +45,35 @@ class generate():
         micro_grid_system.add(source_fuel)
         return
 
-    def shortage(micro_grid_system, bus_electricity_mg, experiment, sum_demand_profile):
+    def shortage(micro_grid_system, bus_electricity_mg, experiment, case_dict):
         source_shortage = solph.Source(label="source_shortage",
                                        outputs={bus_electricity_mg: solph.Flow(
                                            variable_costs   = experiment['costs_var_unsupplied_load'],
-                                           nominal_value    = experiment['max_share_unsupplied_load'] * sum_demand_profile,
+                                           nominal_value    = case_dict['max_shortage'] * case_dict['total_demand'],
                                            summed_max       = 1)})
         micro_grid_system.add(source_shortage)
         return
 
     def maingrid_consumption(micro_grid_system, bus_electricity_ng, experiment, grid_availability):
+
+        '''
+        Variable costs of main grid electricity consumption (/kWh) are added at inflow of pcc
+        - otherwise they would have to be paid even if the electricity is not used after all
+        '''
+        # create and add demand sink to micro_grid_system - fixed
+        sink_not_utilized = solph.Sink(label="sink_feedin",
+                                 inputs={bus_electricity_ng: solph.Flow(
+                                     actual_value = grid_availability,
+                                     fixed = True,
+                                     investment=solph.Investment(ep_costs=0))})
+        micro_grid_system.add(sink_not_utilized)
+
         source_maingrid = solph.Source(label="source_maingrid",
                                        outputs={bus_electricity_ng: solph.Flow(
                                            actual_value = grid_availability,
-                                           nominal_value = 60.5,
-                                           variable_costs=experiment['maingrid_electricity_price'])})
+                                           fixed = True,
+                                           investment = solph.Investment(ep_costs=0)
+                                           )})
         micro_grid_system.add(source_maingrid)
         return
     ######## Sources ########
@@ -131,10 +145,13 @@ class generate():
 
     def pointofcoupling_feedin_fix(micro_grid_system, bus_electricity_mg, bus_electricity_ng, experiment, capacity_pointofcoupling):
         pointofcoupling_feedin = solph.Transformer(label="transformer_pcc_feedin",
-                                                       inputs={bus_electricity_mg: solph.Flow()},
-                                                       outputs={bus_electricity_ng: solph.Flow(
+                                                       inputs={bus_electricity_mg: solph.Flow(
                                                            nominal_value=capacity_pointofcoupling,
-                                                           variable_costs=experiment['pcoupling_cost_var'])},
+                                                           variable_costs=experiment['pcoupling_cost_var']
+                                                       )},
+                                                       outputs={bus_electricity_ng: solph.Flow(
+                                                           variable_costs = - experiment['maingrid_feedin_tariff']
+                                                       )},
                                                        conversion_factors={
                                                            bus_electricity_mg: experiment['pcoupling_efficiency']})  # is efficiency of the generator?? Then this should later on be included as a function of the load factor
 
@@ -147,21 +164,25 @@ class generate():
     # todo use min_cap_pointofcoupling
     def pointofcoupling_feedin_oem(micro_grid_system, bus_electricity_mg, bus_electricity_ng, experiment, min_cap_pointofcoupling):
         pointofcoupling_feedin = solph.Transformer(label="transformer_pcc_feedin",
-                                                       inputs={bus_electricity_mg: solph.Flow()},
-                                                       outputs={bus_electricity_ng: solph.Flow(
+                                                       inputs={bus_electricity_mg: solph.Flow(
                                                            investment=solph.Investment(
                                                                ep_costs=experiment['pcoupling_cost_annuity']),
-                                                           variable_costs=experiment['pcoupling_cost_var'])},
+                                                           variable_costs=experiment['pcoupling_cost_var']
+                                                       )},
+                                                       outputs={bus_electricity_ng: solph.Flow(
+                                                           variable_costs=- experiment['maingrid_feedin_tariff']
+                                                       )},
                                                        conversion_factors={bus_electricity_mg: experiment['pcoupling_efficiency']})
         micro_grid_system.add(pointofcoupling_feedin)
         return pointofcoupling_feedin
 
     def pointofcoupling_consumption_fix(micro_grid_system, bus_electricity_mg, bus_electricity_ng, experiment, cap_pointofcoupling):
         pointofcoupling_consumption = solph.Transformer(label="transformer_pcc_consumption",
-                                                       inputs={bus_electricity_ng: solph.Flow()},
-                                                       outputs={bus_electricity_mg: solph.Flow(
-                                                           nominal_value=cap_pointofcoupling,
-                                                           variable_costs=experiment['pcoupling_cost_var'])},
+                                                       inputs={bus_electricity_ng: solph.Flow(
+                                                           nominal_value=cap_pointofcoupling, # inflow is limited to nominal value!
+                                                           variable_costs = experiment['pcoupling_cost_var'] + experiment['maingrid_electricity_price']
+                                                       )},
+                                                       outputs={bus_electricity_mg: solph.Flow()},
                                                        conversion_factors={
                                                            bus_electricity_mg: experiment['pcoupling_efficiency']})  # is efficiency of the generator?? Then this should later on be included as a function of the load factor
 
@@ -172,11 +193,11 @@ class generate():
     def pointofcoupling_consumption_oem(micro_grid_system, bus_electricity_mg, bus_electricity_ng, experiment, min_cap_pointofcoupling):
         pointofcoupling_consumption = solph.Transformer(label="transformer_pcc_consumption",
                                                        inputs={bus_electricity_ng: solph.Flow(
-                                                           variable_costs=experiment['pcoupling_cost_var']
-                                                       )},
-                                                       outputs={bus_electricity_mg: solph.Flow(
+                                                           variable_costs=experiment['pcoupling_cost_var'] + experiment['maingrid_electricity_price'],
                                                            investment=solph.Investment(
-                                                               ep_costs=experiment['pcoupling_cost_annuity']))},
+                                                               ep_costs=experiment['pcoupling_cost_annuity'])
+                                                       )},
+                                                       outputs={bus_electricity_mg: solph.Flow()},
                                                        conversion_factors={bus_electricity_mg: experiment['pcoupling_efficiency']})
         micro_grid_system.add(pointofcoupling_consumption)
         return pointofcoupling_consumption
@@ -243,7 +264,8 @@ class generate():
         sink_feedin_ng = solph.Sink(label="sink_feedin",
                                  inputs={bus_electricity_ng: solph.Flow(
                                      actual_value = grid_availability,
-                                     variable_costs = - experiment['maingrid_feedin_tariff'])})
+                                     fixed = True )})
         micro_grid_system.add(sink_feedin_ng)
         return
+
     ######## Sinks ########

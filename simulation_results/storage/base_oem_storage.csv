@@ -1,4 +1,4 @@
-,Stored capacity in kWh,Discharge storage,Charge storage
+timestep,Stored capacity in kWh,Discharge storage,Charge storage
 2018-07-07 12:00:00,0.0,0.0,0.0
 2018-07-07 13:00:00,0.0,0.0,0.0
 2018-07-07 14:00:00,0.0,0.0,0.0
