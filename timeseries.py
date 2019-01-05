@@ -29,6 +29,7 @@ class evaluate_timeseries:
         timeseries.get_shortage(case_dict, oemof_results, electricity_bus, e_flows_df)
 
         from config import setting_pcc_utility_owned
+        # todo still decide with of the flows to include in e_flow_df, and which ones to put into oemof results for cost calculation (expenditures, revenues)
         if setting_pcc_utility_owned == True:
             timeseries.get_feedin_mg_side(case_dict, oemof_results, electricity_bus, e_flows_df)
             timeseries.get_consumption_mg_side(case_dict, oemof_results, electricity_bus, e_flows_df)
