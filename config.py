@@ -24,6 +24,7 @@ simulated_cases = {
 allow_shortage               = False  # Allow supply shortage, details given below
 setting_batch_capacity       = True
 include_stability_constraint = True
+setting_pcc_utility_owned    = True # if true, then consumption/feed in is counted from mg side, ie. transformer loss is revenue loss of utility
 
 ####### ----------------- Settings for files------------------- #######
 # Input (files)

@@ -25,7 +25,7 @@ from oemof_process_results import oemof_process
 class cases:
 
     def extend_dictionary(case_dict, experiment, demand_profile):
-        from config import include_stability_constraint, allow_shortage
+        from config import include_stability_constraint, allow_shortage, evaluated_days
 
         case_dict.update({
             'total_demand': sum(demand_profile),
@@ -62,6 +62,8 @@ class cases:
                 case_dict.update({'renewable_share_constraint': experiment['min_renewable_share']})
             else:
                 case_dict.update({'renewable_share_constraint': False})
+
+        case_dict.update({'evaluated_days': evaluated_days})
 
         return case_dict
 
