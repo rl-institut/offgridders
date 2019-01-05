@@ -60,11 +60,11 @@ class oemof_model:
 
         if case_dict['pcc_consumption_fixed_capacity'] != None:
             # source for electricity from grid
-            generate.maingrid_consumption(micro_grid_system, bus_electricity_ng, experiment, grid_availability)
+            maingrid_node_consumption = generate.maingrid_consumption(micro_grid_system, bus_electricity_ng, experiment, grid_availability)
 
         if case_dict['pcc_feedin_fixed_capacity'] != None:
             # sink for feed-in
-            generate.maingrid_feedin(micro_grid_system, bus_electricity_ng, experiment, grid_availability)
+            maingrid_node_feedin = generate.maingrid_feedin(micro_grid_system, bus_electricity_ng, experiment, grid_availability)
 
         #------        demand sink ------#
         sink_demand = generate.demand(micro_grid_system, bus_electricity_mg, demand_profile)

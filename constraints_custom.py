@@ -59,7 +59,7 @@ def stability_criterion(model, case_dict, experiment, storage, sink_demand, gens
         if case_dict['pcc_consumption_fixed_capacity'] == False:
             cap_pcc += model.InvestmentFlow.invest[pcc_consumption, el_bus]
         elif isinstance(case_dict['pcc_consumption_fixed_capacity'], float):
-            cap_pcc += model.flows[pcc_consumption, el_bus].nominal_value
+            cap_pcc += case_dict['pcc_consumption_fixed_capacity'] # todo: this didnt work - model.flows[pcc_consumption, el_bus].nominal_value
 
     def stability_rule(model, t):
         expr = CAP_genset
@@ -204,7 +204,6 @@ def renewable_share_test(oemof_results, experiment):
     Testing simulation results for adherance to above defined stability criterion
     '''
     boolean_test = (oemof_results['res_share'] >= experiment['min_renewable_share'])
-    print()
 
     if boolean_test == False:
         logging.warning("ATTENTION: Minimal renewable share criterion NOT fullfilled!")

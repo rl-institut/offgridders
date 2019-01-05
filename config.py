@@ -1,8 +1,8 @@
 import pandas as pd
 
 ####### ------------ General simulation settings ----------------- #######
-coding_process                  = True  # Defines timeframe and noise (see below)
-restore_oemof_if_existant       = False  # If set to False, the directory with results is emptied!!
+coding_process                  = False  # Defines timeframe and noise (see below)
+restore_oemof_if_existant       = True  # If set to False, the directory with results is emptied!!
 restore_blackouts_if_existant   = True
 base_case_with_min_loading      = False   # If set to True, the generator capacity will be equal to peak demand in kW!
 
@@ -10,10 +10,10 @@ base_case_with_min_loading      = False   # If set to True, the generator capaci
 
 # simulated cases:
 simulated_cases = {
-    'offgrid_fixed': False,             # dispatch with base oem capacities
-    'interconnected_buy': False,        # dispatch with interconnected main grid (only consumption)
-    'interconnected_buysell': False,    # dispatch with interconnected main grid (consumption+feedin)
-    'oem_grid_tied_mg': False,          # optimization of grid-tied mg (consumption+feedin)
+    'offgrid_fixed': True,             # dispatch with base oem capacities
+    'interconnected_buy': True,        # dispatch with interconnected main grid (only consumption)
+    'interconnected_buysell': True,    # dispatch with interconnected main grid (consumption+feedin)
+    'oem_grid_tied_mg': True,          # optimization of grid-tied mg (consumption+feedin)
     'sole_maingrid': True,             # supply only by main grid (allowed shortage variable)
     'buyoff': False, # todo not implemented
     'parallel': False, # todo not implemented
