@@ -1,9 +1,30 @@
+"""
+Requires:
+oemof, matplotlib, demandlib, pvlib
+tables, tkinter
+"""
 
+# from oemof.tools import helpers
+#import pprint as pp
+import pandas as pd
+import oemof.solph as solph
+import oemof.outputlib as outputlib
 import logging
 
+import constraints_custom as constraints
+
+# Try to import matplotlib librar
+try:
+    import matplotlib.pyplot as plt
+except ImportError:
+    logging.warning('Attention! matplotlib could not be imported.')
+    plt = None
 
 class evaluate_timeseries:
-    def get_all(case_dict, electricity_bus, experiment, grid_availability):
+    def get_all(case_dict, micro_grid_system, experiment, grid_availability):
+
+        results = micro_grid_system.results['main']
+        meta = micro_grid_system.results['meta']
 
         oemof_results = {
             'case': case_dict['case_name'],
@@ -13,6 +34,9 @@ class evaluate_timeseries:
         }
 
         e_flows_df = pd.DataFrame(grid_availability.values, columns=['Grid availability'], index=grid_availability.index)
+
+        # get all from node electricity bus
+        electricity_bus = outputlib.views.node(results, 'bus_electricity_mg')
 
         timeseries.get_demand(case_dict, oemof_results, electricity_bus, e_flows_df)
         timeseries.get_shortage(case_dict, oemof_results, electricity_bus, e_flows_df)
@@ -24,9 +48,9 @@ class evaluate_timeseries:
         timeseries.get_excess(case_dict, oemof_results, electricity_bus, e_flows_df)
         timeseries.get_pv(case_dict, oemof_results, electricity_bus, e_flows_df)
         timeseries.get_genset(case_dict, oemof_results, electricity_bus, e_flows_df)
-        timeseries.get_fuel(case_dict, oemof_results, fuel_bus)
+        timeseries.get_fuel(case_dict, oemof_results, results)
 
-        timeseries.get_shortage(case_dict, oemof_results, electricity_bus, e_flows_df)
+        timeseries.get_shortage(case_dict, oemof_results, results, e_flows_df)
 
         from config import setting_pcc_utility_owned
         # todo still decide with of the flows to include in e_flow_df, and which ones to put into oemof results for cost calculation (expenditures, revenues)
@@ -39,8 +63,28 @@ class evaluate_timeseries:
 
         plausability_tests.run(e_flows_df)
 
-        return oemof_results, e_flows_df
+        # todo this is not jet implemented!
+        constraints.stability_test(oemof_results, experiment, e_flows_df)
 
+        # todo this has to be at end using e_flows_df, has to be edited
+        #oemof_process.outputs_bus_electricity_mg(case_dict, electricity_bus, experiment['filename'])
+        # oemof_process.outputs_storage(generic_storage, case_dict['case_name'], experiment['filename'])
+
+        oemof_process.print_oemof_meta_main_invest(meta, electricity_bus, case_dict['case_name'])
+
+        ## todo  why is that even necessary?? i could define base_capacities directly in oemof_results. check
+        # if directly defined, wich would be nice, then even with no grid connection value cap_pcc = 0 is added, instead on no value at all
+        # currently, that is done anyway...
+        #oemof_results = add_results.project_annuities(case_dict, oemof_results, experiment, capacities_base)
+
+        logging.info ('    Exact OEM results of case "' + case_dict['case_name'] + '" : \n'
+                      +'    '+'  '+ '    ' + '    ' + '    ' + str(round(capacities_base['capacity_storage_kWh'],3)) + ' kWh battery, '
+                      + str(round(capacities_base['capacity_pv_kWp'],3)) + ' kWp PV, '
+                      + str(round(capacities_base['capacity_genset_kW'],3)) + ' kW genset '
+                      + 'at a renewable share of ' + str(round(oemof_results['res_share']*100,2)) + ' percent'
+                      + ' with a reliability of '+ str(round(oemof_results['supply_reliability']*100,2)) + ' percent')
+
+        return oemof_results, e_flows_df
 
 class utilities:
     def join_e_flows_df(e_flows_df, timeseries, name):
@@ -57,13 +101,17 @@ class utilities:
 
 class timeseries:
     def get_demand(case_dict, oemof_results, electricity_bus, e_flows_df):
+        # Get flow
         demand = electricity_bus['sequences'][(('bus_electricity_mg', 'sink_demand'), 'flow')]
         utilities.join_e_flows_df(e_flows_df, demand, 'Demand')
         utilities.annual_value('total_demand_annual_kWh', demand, oemof_results, case_dict['evaluated_days'])
         oemof_results.update({'demand_peak_kW': max(demand)})
+
+        # Get capacity
         return e_flows_df
     
     def get_shortage(case_dict, oemof_results, electricity_bus, e_flows_df):
+        # Get flow
         if case_dict['allow_shortage'] == True:
             shortage = electricity_bus['sequences'][(('source_shortage', 'bus_electricity_mg'), 'flow')]
             demand_supplied = demand - shortage
@@ -73,69 +121,125 @@ class timeseries:
             utilities.join_e_flows_df(e_flows_df, demand_supplied, 'Demand supplied')
         else:
             oemof_results.update({'total_demand_supplied_annual_kWh': oemof_results['total_demand_annual_kWh']})
+
         return
 
     def get_pv(case_dict, oemof_results, electricity_bus, e_flows_df):
+        # Get flow
         if case_dict['pv_fixed_capacity'] != None:
             pv_gen = electricity_bus['sequences'][(('source_pv', 'bus_electricity_mg'), 'flow')]
             utilities.annual_value('total_pv_generation_kWh', pv_gen, oemof_results, case_dict)
             utilities.join_e_flows_df(e_flows_df, pv_gen, 'PV generation')
+
+        # Get capacity
+        if case_dict['pv_fixed_capacity'] == False:
+            if pv_generation_max > 1:
+                capacities_base.update({'capacity_pv_kWp': electricity_bus['scalars'][(('source_pv', 'bus_electricity_mg'), 'invest')]* pv_generation_max })
+            elif pv_generation_max > 0 and pv_generation_max < 1:
+                capacities_base.update({'capacity_pv_kWp': electricity_bus['scalars'][(('source_pv', 'bus_electricity_mg'), 'invest')] / pv_generation_max })
+            else:
+                logging.warning("Error, Strange PV behaviour (PV gen < 0)")
+        elif isinstance(case_dict['pv_fixed_capacity'], float):
+                capacities_base.update({'capacity_pv_kWp': case_dict['pv_fixed_capacity']})
+        elif case_dict['pv_fixed_capacity'] == None:
+            capacities_base.update({'capacity_pv_kWp': 0})
         return
 
     def get_excess(case_dict, oemof_results, electricity_bus, e_flows_df):
+        # Get flow
         excess = electricity_bus['sequences'][(('bus_electricity_mg', 'sink_excess'), 'flow')]
         utilities.join_e_flows_df(e_flows_df, excess, 'Excess generation')
         utilities.annual_value('total_demand_shortage_annual_kWh', excess, oemof_results, case_dict) # not given as result.csv right now
         return
 
     def get_genset(case_dict, oemof_results, electricity_bus, e_flows_df):
+        # Get flow
         if case_dict['genset_fixed_capacity'] != None:
             genset = electricity_bus['sequences'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'flow')]
             utilities.annual_value('total_genset_generation_kWh', genset, oemof_results, case_dict)
             utilities.join_e_flows_df(e_flows_df, genset, 'Genset generation')
+
+        # Get capacity
+        if case_dict['genset_fixed_capacity'] == False:
+            # Optimized generator capacity
+            capacities_base.update({'capacity_genset_kW': electricity_bus['scalars'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'invest')]})
+        elif isinstance(case_dict['genset_fixed_capacity'], float):
+            capacities_base.update({'capacity_genset_kW': case_dict['genset_fixed_capacity']})
+        elif case_dict['genset_fixed_capacity']==None:
+            capacities_base.update({'capacity_genset_kW': 0})
         return
 
-    def get_fuel(case_dict, oemof_results, fuel_bus):
-        # todo is fuel source only added if genset added?
-        # total_fuel_consumption_l = utilities.annual_value(fuel_consumption, case_dict)
-        # utilities.annual_value('consumption_fuel_annual_l', genset, oemof_results, case_dict)
+    def get_fuel(case_dict, oemof_results, results):
+        if case_dict['genset_fixed_capacity'] != None:
+            fuel_bus = outputlib.views.node(results, 'bus_fuel')
+            fuel = fuel_bus['sequences'][(('source_fuel', 'bus_fuel'), 'flow')]
+            utilities.annual_value('consumption_fuel_annual_l', fuel, oemof_results, case_dict)
         return
 
-    def get_storage(case_dict, oemof_results, electricity_bus, e_flows_df):
+    def get_storage(case_dict, oemof_results, results, e_flows_df):
+        # Get flow
         if case_dict['storage_fixed_capacity'] != None:
-            storage_discharge = electricity_bus['sequences'][(('generic_storage', 'bus_electricity_mg'), 'flow')]
-            storage_charge = electricity_bus['sequences'][(('bus_electricity_mg', 'generic_storage'), 'flow')]
+            storage = outputlib.views.node(results, 'generic_storage')
+            storage_discharge = storage['sequences'][(('generic_storage', 'bus_electricity_mg'), 'flow')]
+            storage_charge = storage['sequences'][(('bus_electricity_mg', 'generic_storage'), 'flow')]
+            stored_capacity = storage['sequences'][(('generic_storage', 'None'), 'capacity')]
             utilities.annual_value('total_battery_throughput_kWh', storage_charge, oemof_results, case_dict)
             utilities.join_e_flows_df(e_flows_df, storage_charge, 'Storage charge')
             utilities.join_e_flows_df(e_flows_df, storage_discharge, 'Storage discharge')
+            utilities.join_e_flows_df(e_flows_df, storage_discharge, 'Stored capacity')
+
+        # Get capacity
+        if case_dict['storage_fixed_capacity'] == False:
+            # Optimized storage capacity
+            # todo not most elegantly solves, das electrcity bus is called a sevcond time here...
+            electricity_bus = outputlib.views.node(results, 'bus_electricity_mg')
+            capacity_battery = electricity_bus['scalars'][(('bus_electricity_mg', 'generic_storage'), 'invest')]/experiment['storage_Crate_charge']
+            # possibly using generic_storage['scalars'][((generic_storage, None), invest)]
+            capacities_base.update({'capacity_storage_kWh': capacity_battery})
+        elif isinstance(case_dict['storage_fixed_capacity'], float):
+            capacities_base.update({'capacity_storage_kWh': case_dict['storage_fixed_capacity']})
+        elif case_dict['storage_fixed_capacity'] == None:
+            capacities_base.update({'capacity_storage_kWh': 0})
         return
 
     # if pcc belongs to utility
     def get_feedin_mg_side(case_dict, oemof_results, electricity_bus_mg, e_flows_df):
+        # Get flow
         if case_dict['pcc_feedin_fixed_capacity'] != None:
             feedin = electricity_bus_mg['sequences'][(('bus_electricity_mg', 'transformer_pcc_feedin'), 'flow')]
             utilities.join_e_flows_df(e_flows_df, feedin, 'Feed into main grid')
+
+        # Get capacity
         return
 
     def get_consumption_mg_side(case_dict, oemof_results, electricity_bus_mg, e_flows_df):
+        # Get flow
         if case_dict['pcc_consumption_fixed_capacity'] != None:
             consumption = electricity_bus_mg['sequences'][
                 (('transformer_pcc_consumption', 'bus_electricity_mg'), 'flow')]
             utilities.join_e_flows_df(e_flows_df, consumption, 'Consumption from main grid')
+
+        # Get capacity
         return
 
     # if pcc belongs to mg owner
     def get_feedin_ng_side(case_dict, oemof_results, electricity_bus_ng, e_flows_df):
+        # Get flow
         if case_dict['pcc_feedin_fixed_capacity'] != None:
             feedin = electricity_bus_ng['sequences'][(('transformer_pcc_feedin', 'electricity_bus_ng'), 'flow')]
             utilities.join_e_flows_df(e_flows_df, feedin, 'Feed into main grid')
+
+        # Get capacity
         return
 
     def get_consumption_ng_side(case_dict, oemof_results, electricity_bus_ng, e_flows_df):
+        # Get flow
         if case_dict['pcc_consumption_fixed_capacity'] != None:
             consumption = electricity_bus_ng['sequences'][
                 (('electricity_bus_ng', 'transformer_pcc_consumption'), 'flow')]
             utilities.join_e_flows_df(e_flows_df, consumption, 'Consumption from main grid')
+
+        # Get capacity
         return
 
 class plausability_tests:
@@ -296,31 +400,6 @@ class plausability_tests:
 
 
 ------------------------------------------------------
-"""
-Requires:
-oemof, matplotlib, demandlib, pvlib
-tables, tkinter
-"""
-
-###############################################################################
-# Imports and initialize
-###############################################################################
-
-# from oemof.tools import helpers
-import pprint as pp
-import pandas as pd
-import oemof.solph as solph
-import oemof.outputlib as outputlib
-import logging
-
-import constraints_custom as constraints
-
-# Try to import matplotlib librar
-try:
-    import matplotlib.pyplot as plt
-except ImportError:
-    logging.warning('Attention! matplotlib could not be imported.')
-    plt = None
 
 ###############################################################################
 # Define all oemof_functioncalls (including generate graph etc)
@@ -330,83 +409,6 @@ class add_results():
 
     ######## Processing ########
     def process_basic(micro_grid_system, case_dict, experiment, demand_profile):
-        # define an alias for shorter calls below (optional)
-        results = micro_grid_system.results['main']
-        meta = micro_grid_system.results['meta']
-
-        #get all from node electricity bus
-        electricity_bus = outputlib.views.node(results, 'bus_electricity_mg')
-        fuel_bus = outputlib.views.node(results, 'bus_fuel')
-        oemof_process.outputs_bus_electricity_mg(case_dict, electricity_bus, experiment['filename'])
-
-        # get all from node storage
-        if case_dict['storage_fixed_capacity'] != None:
-            generic_storage = outputlib.views.node(results, 'generic_storage')
-            oemof_process.outputs_storage(generic_storage, case_dict['case_name'], experiment['filename'])
-        else:
-            generic_storage = None
-
-        oemof_process.print_oemof_meta_main_invest(meta, electricity_bus, case_dict['case_name'])
-
-        total_demand_kWh = sum(demand_profile)
-
-        if case_dict['genset_fixed_capacity'] != None:
-            total_fuel_consumption_l = fuel_bus['sequences'][(('source_fuel', 'bus_fuel'), 'flow')].sum()
-            total_genset_generation_kWh = electricity_bus['sequences'][
-                (('transformer_fuel_generator', 'bus_electricity_mg'), 'flow')].sum()
-        else:
-            total_fuel_consumption_l = 0
-            total_genset_generation_kWh = 0
-
-
-        if case_dict['pv_fixed_capacity'] != None:
-            total_pv_generation_kWh = electricity_bus['sequences'][(('source_pv', 'bus_electricity_mg'), 'flow')].sum()
-        else:
-            total_pv_generation_kWh = 0
-
-
-        # As in to storage
-        if case_dict['storage_fixed_capacity'] != None:
-            total_battery_throughput_kWh = electricity_bus['sequences'][(('bus_electricity_mg', 'generic_storage'), 'flow')].sum()
-        else:
-            total_battery_throughput_kWh = 0
-
-        # shortage
-        if case_dict['allow_shortage'] == True:
-            total_shortage_kWh = electricity_bus['sequences'][(('source_shortage', 'bus_electricity_mg'), 'flow')].sum()
-        else:
-            total_shortage_kWh = 0
-
-        total_supplied_demand_kWh = total_demand_kWh - total_shortage_kWh
-        # todo: if freq=15 min, this has to be adjusted!
-
-        from config import evaluated_days
-        process.annual_value(total_demand_kWh, evaluated_days)
-        process.annual_value(total_supplied_demand_kWh, evaluated_days)
-        process.annual_value(total_fuel_consumption_l, evaluated_days)
-        process.annual_value(total_genset_generation_kWh, evaluated_days)
-        process.annual_value(total_pv_generation_kWh, evaluated_days)
-        process.annual_value(total_battery_throughput_kWh, evaluated_days)
-        process.annual_value(total_shortage_kWh, evaluated_days)
-
-        # Defining oemof_results (first entries).
-        # Added in main_tool: 'grid_reliability', 'grid_total_blackout_duration', 'grid_number_of_blackouts' (only for cases)
-        # Specific values added in process_fix/process_oem
-        oemof_results = {
-            'case':                         case_dict['case_name'],
-            'filename':                     'results_' + case_dict['case_name'] + experiment['filename'],
-            'consumption_fuel_annual_l':    total_fuel_consumption_l,
-            'total_demand_annual_kWh':      total_demand_kWh,
-            'total_demand_supplied_annual_kWh': total_supplied_demand_kWh,
-            'total_demand_shortage_annual_kWh': total_shortage_kWh,
-            'supply_reliability':           total_supplied_demand_kWh/total_demand_kWh,
-            'demand_peak_kW':               max(demand_profile),
-            'total_genset_generation_kWh':  total_genset_generation_kWh,
-            'total_pv_generation_kWh':      total_pv_generation_kWh,
-            'total_battery_throughput_kWh': total_battery_throughput_kWh,
-            'objective_value':              meta['objective'],
-            'comments':                     ''
-             }
 
         #todo change or describe where costs and revenues are generated at main grid interconenection
         # payments always for kWh FROM SIDE OF MAIN GRID
@@ -445,70 +447,12 @@ class add_results():
 
         return results, meta, electricity_bus, oemof_results, generic_storage
 
-    def process_fix(micro_grid_system, case_dict, experiment, capacity_batch, demand_profile):
-        from config import include_stability_constraint
-        # todo: this might be possible to do a bit shorter
-        results, meta, electricity_bus, oemof_results, generic_storage = oemof_process.process_basic(micro_grid_system, case_dict, experiment, demand_profile)
-
-        oemof_results = add_results.project_annuities(case_dict, oemof_results, experiment, capacity_batch)
-
-        logging.info('    Dispatch optimization for case "' + case_dict['case_name'] + '" finished, with renewable share of ' +
-                     str(round(oemof_results['res_share']*100,2)) + ' percent.'
-                      + ' with a reliability of '+ str(round(oemof_results['supply_reliability']*100,2)) + ' percent')
-
-        if case_dict['storage_fixed_capacity'] != None:
-            storage_capacity = generic_storage['sequences'][(('generic_storage', 'None'), 'capacity')]
-        else:
-            storage_capacity = pd.Series([0 for t in demand_profile.index], index=demand_profile.index)
-
-        #if include_stability_constraint == True:
-            #constraints.stability_test(oemof_results, experiment, storage_capacity, demand_profile,
-                                                 #genset_capacity = capacity_batch['capacity_genset_kW'])
-
-        return oemof_results
-
     def process_oem(micro_grid_system, case_dict, pv_generation_max, experiment, demand_profile):
         from config import include_stability_constraint
 
         results, meta, electricity_bus, oemof_results, generic_storage = oemof_process.process_basic(micro_grid_system, case_dict, experiment, demand_profile)
 
         capacities_base = {}
-        # --------------pv capacity -------------#
-        if case_dict['pv_fixed_capacity'] == False:
-            if pv_generation_max > 1:
-                capacities_base.update({'capacity_pv_kWp': electricity_bus['scalars'][(('source_pv', 'bus_electricity_mg'), 'invest')]* pv_generation_max })
-            elif pv_generation_max > 0 and pv_generation_max < 1:
-                capacities_base.update({'capacity_pv_kWp': electricity_bus['scalars'][(('source_pv', 'bus_electricity_mg'), 'invest')] / pv_generation_max })
-            else:
-                logging.warning("Error, Strange PV behaviour (PV gen < 0)")
-        elif isinstance(case_dict['pv_fixed_capacity'], float):
-                capacities_base.update({'capacity_pv_kWp': case_dict['pv_fixed_capacity']})
-        elif case_dict['pv_fixed_capacity'] == None:
-            capacities_base.update({'capacity_pv_kWp': 0})
-
-        # --------------genset capacity -------------#
-        if case_dict['genset_fixed_capacity'] == False:
-            # Optimized generator capacity
-            capacities_base.update({'capacity_genset_kW': electricity_bus['scalars'][(('transformer_fuel_generator', 'bus_electricity_mg'), 'invest')]})
-        elif isinstance(case_dict['genset_fixed_capacity'], float):
-            capacities_base.update({'capacity_genset_kW': case_dict['genset_fixed_capacity']})
-        elif case_dict['genset_fixed_capacity']==None:
-            capacities_base.update({'capacity_genset_kW': 0})
-
-        # --------------storage capacity -------------#
-            # print(electricity_bus['scalars'][(('bus_electricity_mg', 'generic_storage'), 'invest')])
-            # print(electricity_bus['scalars'][(('generic_storage', 'bus_electricity_mg'), 'invest')])
-            # print(electricity_bus['scalars'][(('generic_storage', None), 'invest')])
-
-        if case_dict['storage_fixed_capacity'] == False:
-        # Optimized generator capacity
-            capacity_battery = electricity_bus['scalars'][(('bus_electricity_mg', 'generic_storage'), 'invest')]/experiment['storage_Crate_charge']
-            # possibly using generic_storage['scalars'][((generic_storage, None), invest)]
-            capacities_base.update({'capacity_storage_kWh': capacity_battery})
-        elif isinstance(case_dict['storage_fixed_capacity'], float):
-            capacities_base.update({'capacity_storage_kWh': case_dict['storage_fixed_capacity']})
-        elif case_dict['storage_fixed_capacity'] == None:
-            capacities_base.update({'capacity_storage_kWh': 0})
 
         # --------------pcc capacity -------------#
         if case_dict['pcc_consumption_fixed_capacity'] != None or case_dict['pcc_feedin_fixed_capacity'] != None:
@@ -527,23 +471,6 @@ class add_results():
         elif case_dict['pcc_consumption_fixed_capacity'] == None and case_dict['pcc_feedin_fixed_capacity'] == None:
             capacities_base.update({'capacity_pcoupling_kW': 0})
 
-        oemof_results = add_results.project_annuities(case_dict, oemof_results, experiment, capacities_base)
-
-        logging.info ('    Exact OEM results of case "' + case_dict['case_name'] + '" : \n'
-                      +'    '+'  '+ '    ' + '    ' + '    ' + str(round(capacities_base['capacity_storage_kWh'],3)) + ' kWh battery, '
-                      + str(round(capacities_base['capacity_pv_kWp'],3)) + ' kWp PV, '
-                      + str(round(capacities_base['capacity_genset_kW'],3)) + ' kW genset '
-                      + 'at a renewable share of ' + str(round(oemof_results['res_share']*100,2)) + ' percent'
-                      + ' with a reliability of '+ str(round(oemof_results['supply_reliability']*100,2)) + ' percent')
-
-        if case_dict['storage_fixed_capacity'] != None:
-            storage_capacity = generic_storage['sequences'][(('generic_storage', 'None'), 'capacity')]
-        else:
-            storage_capacity = [0 for t in range(0, len(demand_profile.index))]
-
-        #if include_stability_constraint == True:
-            #constraints.stability_test(oemof_results, experiment, storage_capacity, demand_profile,
-                                        #genset_capacity = capacities_base['capacity_genset_kW'])
 
         return oemof_results, capacities_base
 
@@ -571,20 +498,17 @@ class add_results():
     def outputs_storage(custom_storage, case_name, filename):
         from config import display_graphs_flows_storage, setting_save_flows_storage
         if display_graphs_flows_storage == True or setting_save_flows_storage == True:
-            stored_capacity = custom_storage['sequences'][(('generic_storage', 'None'), 'capacity')]
-            discharge       = custom_storage['sequences'][(('generic_storage', 'bus_electricity_mg'), 'flow')]
-            charge          = custom_storage['sequences'][(('bus_electricity_mg', 'generic_storage'), 'flow')]
-
-        if setting_save_flows_storage == True:
-            from config import output_folder
             storage_flows = pd.DataFrame(stored_capacity.values, columns=['Stored capacity in kWh'], index=stored_capacity.index)
             storage_flows = storage_flows.join(
                 pd.DataFrame(discharge.values, columns=['Discharge storage'], index=discharge.index))
             storage_flows = storage_flows.join(
                 pd.DataFrame(charge.values, columns=['Charge storage'], index=charge.index))
 
+        if setting_save_flows_storage == True:
+            from config import output_folder
             storage_flows.to_csv(output_folder  +   '/storage/' + case_name + filename + '_storage.csv')
 
+        # adapt to plot pandas!
         if plt is not None and display_graphs_flows_storage == True:
             logging.debug('Plotting: Generic storage')
             stored_capacity.plot(kind='line', drawstyle='steps-post', label='Stored capacity in kWh')

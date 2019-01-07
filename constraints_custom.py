@@ -93,6 +93,22 @@ def stability_criterion(model, case_dict, experiment, storage, sink_demand, gens
 
 # todo add pcc consumption here
 def stability_test(oemof_results, experiment, storage_capacity, demand_profile, genset_capacity):
+
+    # todo adjust to e_flows_df included here! also use case_dict['stability_constraint'] and check for its use befor executing funtion
+    '''
+    some test for storage values in e_bus_df, else
+
+    demand = ebusdf
+
+    else:
+        storage_capacity = pd.Series([0 for t in demand_profile.index], index=demand_profile.index)
+
+    some test for generator values in df
+        genset_capacity = e_bus_df...
+    else:
+        storage_capacity = pd.Series([0 for t in demand_profile.index], index=demand_profile.index)
+
+    '''
     '''
     Testing simulation results for adherance to above defined stability criterion
     '''
