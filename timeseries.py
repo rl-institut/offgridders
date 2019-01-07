@@ -49,17 +49,10 @@ class evaluate_timeseries:
         timeseries.get_pv(case_dict, oemof_results, electricity_bus, e_flows_df)
         timeseries.get_genset(case_dict, oemof_results, electricity_bus, e_flows_df)
         timeseries.get_fuel(case_dict, oemof_results, results)
-
         timeseries.get_shortage(case_dict, oemof_results, results, e_flows_df)
 
-        from config import setting_pcc_utility_owned
         # todo still decide with of the flows to include in e_flow_df, and which ones to put into oemof results for cost calculation (expenditures, revenues)
-        if setting_pcc_utility_owned == True:
-            timeseries.get_feedin_mg_side(case_dict, oemof_results, electricity_bus, e_flows_df)
-            timeseries.get_consumption_mg_side(case_dict, oemof_results, electricity_bus, e_flows_df)
-        else:
-            timeseries.get_feedin_ng_side(case_dict, oemof_results, electricity_bus_ng, e_flows_df)
-            timeseries.get_consumption_ng_side(case_dict, oemof_results, electricity_bus_ng, e_flows_df)
+        timeseries.get_national_grid(case_dict, oemof_results, results, e_flows_df)
 
         plausability_tests.run(e_flows_df)
 
@@ -202,46 +195,57 @@ class timeseries:
             capacities_base.update({'capacity_storage_kWh': 0})
         return
 
-    # if pcc belongs to utility
-    def get_feedin_mg_side(case_dict, oemof_results, electricity_bus_mg, e_flows_df):
+    def get_national_grid(case_dict, oemof_results, results, e_flows_df):
+        micro_grid_bus = outputlib.views.node(results, 'bus_electricity_mg')
+        national_grid_bus = outputlib.views.node(results, 'bus_electricity_ng')
         # Get flow
-        if case_dict['pcc_feedin_fixed_capacity'] != None:
-            feedin = electricity_bus_mg['sequences'][(('bus_electricity_mg', 'transformer_pcc_feedin'), 'flow')]
-            utilities.join_e_flows_df(e_flows_df, feedin, 'Feed into main grid')
+        from config import setting_pcc_utility_owned
+        # decision: timeseries will always be the one for the mg side. but the accumulated value can be different.
+        # todo still decide with of the flows to include in e_flow_df, and which ones to put into oemof results for cost calculation (expenditures, revenues)
 
-        # Get capacity
-        return
-
-    def get_consumption_mg_side(case_dict, oemof_results, electricity_bus_mg, e_flows_df):
-        # Get flow
         if case_dict['pcc_consumption_fixed_capacity'] != None:
-            consumption = electricity_bus_mg['sequences'][
+            consumption = micro_grid_bus['sequences'][
                 (('transformer_pcc_consumption', 'bus_electricity_mg'), 'flow')]
             utilities.join_e_flows_df(e_flows_df, consumption, 'Consumption from main grid')
 
-        # Get capacity
-        return
+            consumption_utility = national_grid_bus['sequences'][
+                (('electricity_bus_ng', 'transformer_pcc_consumption'), 'flow')]
+            utilities.join_e_flows_df(e_flows_df, consumption, 'Consumption from main grid (utility side)')
 
-    # if pcc belongs to mg owner
-    def get_feedin_ng_side(case_dict, oemof_results, electricity_bus_ng, e_flows_df):
-        # Get flow
+            if setting_pcc_utility_owned == True:
+                utilities.annual_value('consumption_main_grid_annual_kWh', storage_charge, oemof_results, case_dict)
+            else:
+                utilities.annual_value('consumption_main_grid_annual_kWh', storage_charge, oemof_results, case_dict)
+
         if case_dict['pcc_feedin_fixed_capacity'] != None:
-            feedin = electricity_bus_ng['sequences'][(('transformer_pcc_feedin', 'electricity_bus_ng'), 'flow')]
+            feedin = micro_grid_bus['sequences'][(('bus_electricity_mg', 'transformer_pcc_feedin'), 'flow')]
             utilities.join_e_flows_df(e_flows_df, feedin, 'Feed into main grid')
 
-        # Get capacity
+            feedin_utility = national_grid_bus['sequences'][(('transformer_pcc_feedin', 'electricity_bus_ng'), 'flow')]
+            utilities.join_e_flows_df(e_flows_df, feedin, 'Feed into main grid (utility side)')
+
+            if setting_pcc_utility_owned == True:
+                utilities.annual_value('feedin_main_grid_annual_kWh', storage_charge, oemof_results, case_dict)
+            else:
+                utilities.annual_value('feedin_main_grid_annual_kWh', storage_charge, oemof_results, case_dict)
+
+        # get capacities
+        if case_dict['pcc_consumption_fixed_capacity'] != None or case_dict['pcc_feedin_fixed_capacity'] != None:
+            pcc_cap = []
+            if case_dict['pcc_consumption_fixed_capacity'] == False:
+                pcc_cap.append(national_grid_bus['sequences'][(('bus_electricity_ng', 'transformer_pcc_consumption'), 'flow')].max())
+            elif isinstance(case_dict['pcc_consumption_fixed_capacity'], float):
+                pcc_cap.append(case_dict['pcc_consumption_fixed_capacity'])
+
+            if case_dict['pcc_feedin_fixed_capacity'] == False:
+                pcc_cap.append(max(national_grid_bus['sequences'][(('transformer_pcc_feedin', 'bus_electricity_ng'), 'flow')]))
+            elif isinstance(case_dict['pcc_feedin_fixed_capacity'], float):
+                pcc_cap.append(case_dict['pcc_feedin_fixed_capacity'])
+            capacities_base.update({'capacity_pcoupling_kW': max(pcc_cap)})
+        elif case_dict['pcc_consumption_fixed_capacity'] == None and case_dict['pcc_feedin_fixed_capacity'] == None:
+            capacities_base.update({'capacity_pcoupling_kW': 0})
+
         return
-
-    def get_consumption_ng_side(case_dict, oemof_results, electricity_bus_ng, e_flows_df):
-        # Get flow
-        if case_dict['pcc_consumption_fixed_capacity'] != None:
-            consumption = electricity_bus_ng['sequences'][
-                (('electricity_bus_ng', 'transformer_pcc_consumption'), 'flow')]
-            utilities.join_e_flows_df(e_flows_df, consumption, 'Consumption from main grid')
-
-        # Get capacity
-        return
-
 class plausability_tests:
     '''
     e_flows_df can include columns with titles...
