@@ -62,6 +62,7 @@ class add_results():
         # todo: this does not inlude costs for unsupplied demand!
         return oemof_results
 
+    # todo this could also directly be generated during processing of results
     def capacities(case_dict, oemof_results, capacities):
         oemof_results.update({'capacity_pv_kWp': capacities['capacity_pv_kWp']})
         oemof_results.update({'capacity_storage_kWh': capacities['capacity_storage_kWh']})
@@ -130,6 +131,7 @@ class add_results():
             'costs_distribution_grid': oemof_results['annuity_distribution_grid'] * experiment['annuity_factor'],
             'costs_grid_extension': oemof_results['annuity_grid_extension'] * experiment['annuity_factor']
         })
+        # todo if pcc utility owned, than costs are not included in lcoe here! (at least not from perspective of mg project designer
         return oemof_results
 
     def expenditures_fuel(oemof_results, experiment):
@@ -144,6 +146,8 @@ class add_results():
         return oemof_results
 
     def expenditures_main_grid_consumption(oemof_results, experiment):
+        # todo here the decisiion of pcc utility owned -> influences where revenues are generated
+        # todo update names as well!
         # Necessary in oemof_results: consumption_main_grid_annual
         oemof_results.update({'expenditures_main_grid_consumption_annual':
                 oemof_results['consumption_main_grid_annual_kWh'] * experiment['maingrid_electricity_price']})
