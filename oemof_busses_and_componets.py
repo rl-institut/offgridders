@@ -84,7 +84,7 @@ class generate():
             )})
         micro_grid_system.add(maingrid_node_consumption)
 
-        return maingrid_node_consumption
+        return
     ######## Sources ########
 
     ######## Components ########
@@ -163,7 +163,7 @@ class generate():
                                                            bus_electricity_mg: experiment['pcoupling_efficiency']})  # is efficiency of the generator?? Then this should later on be included as a function of the load factor
 
         micro_grid_system.add(pointofcoupling_feedin)
-        return pointofcoupling_feedin
+        return
 
     # todo point of coupling = max(demand) limits PV feed-in, therefore there should be a minimal pcc capacity defined with
     # optimal larger size though OEM. existing = min_cap_pointofcoupling. but are all costs included?
@@ -179,7 +179,7 @@ class generate():
                                                        outputs={bus_electricity_ng: solph.Flow()},
                                                        conversion_factors={bus_electricity_mg: experiment['pcoupling_efficiency']})
         micro_grid_system.add(pointofcoupling_feedin)
-        return pointofcoupling_feedin
+        return
 
     def pointofcoupling_consumption_fix(micro_grid_system, bus_electricity_mg, bus_electricity_ng, experiment, cap_pointofcoupling):
         pointofcoupling_consumption = solph.Transformer(label="transformer_pcc_consumption",
@@ -292,6 +292,6 @@ class generate():
             )})
 
         micro_grid_system.add(maingrid_node_feedin)
-        return maingrid_node_feedin
+        return
 
     ######## Sinks ########

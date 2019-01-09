@@ -59,12 +59,12 @@ class oemof_model:
             grid_availability = None
 
         if case_dict['pcc_consumption_fixed_capacity'] != None:
-            # source for electricity from grid
-            maingrid_node_consumption = generate.maingrid_consumption(micro_grid_system, bus_electricity_ng, experiment, grid_availability)
+            # source + sink for electricity from grid
+            generate.maingrid_consumption(micro_grid_system, bus_electricity_ng, experiment, grid_availability)
 
         if case_dict['pcc_feedin_fixed_capacity'] != None:
-            # sink for feed-in
-            maingrid_node_feedin = generate.maingrid_feedin(micro_grid_system, bus_electricity_ng, experiment, grid_availability)
+            # sink + source for feed-in
+            generate.maingrid_feedin(micro_grid_system, bus_electricity_ng, experiment, grid_availability)
 
         #------        demand sink ------#
         sink_demand = generate.demand(micro_grid_system, bus_electricity_mg, demand_profile)
@@ -138,12 +138,12 @@ class oemof_model:
             pointofcoupling_feedin = None
         elif case_dict['pcc_feedin_fixed_capacity'] == False:
             # todo no minimal?
-            pointofcoupling_feedin = generate.pointofcoupling_feedin_oem(micro_grid_system, bus_electricity_mg,
+            generate.pointofcoupling_feedin_oem(micro_grid_system, bus_electricity_mg,
                                                                          bus_electricity_ng, experiment,
                                                                          min_cap_pointofcoupling=case_dict['peak_demand'])
 
         elif isinstance(case_dict['pcc_feedin_fixed_capacity'], float):
-            pointofcoupling_feedin = generate.pointofcoupling_feedin_fix(micro_grid_system, bus_electricity_mg,
+            generate.pointofcoupling_feedin_fix(micro_grid_system, bus_electricity_mg,
                                                                          bus_electricity_ng, experiment,
                                                                          capacity_pointofcoupling=case_dict['pcc_feedin_fixed_capacity'])
         else:
@@ -152,6 +152,7 @@ class oemof_model:
 
         #------Optional: Shortage source'''
         if case_dict['allow_shortage'] == True:
+            print("generated")
             generate.shortage(micro_grid_system, bus_electricity_mg, experiment, case_dict) # changed order
 
         logging.debug('Initialize the energy system to be optimized')

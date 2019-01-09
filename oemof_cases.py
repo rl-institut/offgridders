@@ -18,6 +18,7 @@ import logging
 # For speeding up lp_files and bus/component definition in oemof as well as processing
 from oemof_create_model import oemof_model
 from oemof_process_results import oemof_process
+from timeseries import evaluate_timeseries
 
 # This is not really a necessary class, as the whole experiement could be given to the function, but it ensures, that
 # only correct input data is included
@@ -90,349 +91,297 @@ class cases:
         # it actually is not really necessary to restore just simulated results... but for consistency and to make sure that calling results is easy, this is used nevertheless
         # load oemof results from previous or just finished simulation
         micro_grid_system = oemof_model.load_oemof_results(file_name)
-        return micro_grid_system
-
-    ###############################################################################
-    # Optimization of off-grid micro grid = Definition of base case capacities    #
-    # Does not allow minimal loading of generator, but sizes it                   #
-    ###############################################################################
-    def base_oem(demand_profile, pv_generation_per_kWp, experiment):
-        '''
-        Case: micro grid with variable capacities = OEM
-
-                        input/output    bus_fuel        bus_electricity
-                            |               |               |
-                            |               |               |
-        source: pv          |------------------------------>|     var cap
-                            |               |               |
-        source: fossil_fuel |-------------->|               |
-                            |               |               |
-        trafo: generator    |<--------------|               |     var cap
-                            |------------------------------>|
-                            |               |               |
-        storage: battery    |<------------------------------|     var cap
-                            |------------------------------>|
-                            |               |               |
-        sink: demand        |<------------------------------|     fix
-                            |               |               |
-        sink: excess        |<------------------------------|     var
-                            |               |               |
-        sink: shortage      |<------------------------------|     var
-                            |               |               |
-        '''
-        case_dict = {
-            'case_name':                        'base_oem',
-            'pv_fixed_capacity':                False,
-            'storage_fixed_capacity':           False,
-            'genset_fixed_capacity':            False,
-            'pcc_consumption_fixed_capacity':   None,
-            'pcc_feedin_fixed_capacity':        None,
-            'stability_constraint':             False
-        }
-
-        micro_grid_system = cases.model_and_simulate(experiment, case_dict, demand_profile, pv_generation_per_kWp, grid_availability=None)
-
         # process results
-        oemof_results, capacities_base \
-            = oemof_process.process_oem(micro_grid_system, case_dict, max(pv_generation_per_kWp), experiment, demand_profile)
+        oemof_results = evaluate_timeseries.get_all(case_dict, micro_grid_system, experiment, grid_availability,
+                                                    max(pv_generation_per_kWp))
+        return oemof_results
 
-        # todo: better graph for created energysystems if NO outputfolder/outputfile_casename* exist!
-        #oemofmodel.draw(micro_grid_system)
-
-        return oemof_results, capacities_base
-
-    ###############################################################################
-    # Optimization of off-grid micro grid = Definition of base case capacities    #
-    # Allows minimal loading of generator with fixed capacity = peak demand       #
-    ###############################################################################
-    def base_oem_min_loading(demand_profile, pv_generation_per_kWp, experiment):
-        '''
-        Case: micro grid with variable capacities = OEM
-
-                        input/output    bus_fuel        bus_electricity
-                            |               |               |
-                            |               |               |
-        source: pv          |------------------------------>|     var cap
-                            |               |               |
-        source: fossil_fuel |-------------->|               |
-                            |               |               |
-        trafo: generator    |<--------------|               |     var cap
-                            |------------------------------>|
-                            |               |               |
-        storage: battery    |<------------------------------|     var cap
-                            |------------------------------>|
-                            |               |               |
-        sink: demand        |<------------------------------|     fix
-                            |               |               |
-        sink: excess        |<------------------------------|     var
-                            |               |               |
-        sink: shortage      |<------------------------------|     var
-                            |               |               |
-        '''
-        case_dict = {
-            'case_name': 'base_oem_with_min_loading',
-            'pv_fixed_capacity': False,
-            'storage_fixed_capacity': False,
-            'genset_fixed_capacity': max(demand_profile),  # fix genset transformer, so that minimal loading can be used
-            'pcc_consumption_fixed_capacity': None,
-            'pcc_feedin_fixed_capacity': None,
-        }
-
-        micro_grid_system = cases.model_and_simulate(experiment, case_dict, demand_profile, pv_generation_per_kWp,
-                                                     grid_availability=None)
-
-        # process results
-        oemof_results, capacities_base \
-            = oemof_process.process_oem(micro_grid_system, case_dict, max(pv_generation_per_kWp), experiment, demand_profile)
-
-        return oemof_results, capacities_base
-
-    ###############################################################################
-    #                Dispatch optimization with fixed capacities                  #
-    ###############################################################################
-    def offgrid_fix(demand_profile, pv_generation_per_kWp, experiment, capacity_base):
+    def get_case_dict(name, experiment, demand_profile, capacities_base):
         from config import setting_batch_capacity
-        '''
-        Case: micro grid with fixed capacities = dispatch analysis
 
-                        input/output    bus_fuel        bus_electricity
-                            |               |               |
-                            |               |               |
-        source: pv          |------------------------------>|     fix cap
-                            |               |               |
-        source: fossil_fuel |-------------->|               |
-                            |               |               |
-        trafo: generator    |<--------------|               |     fix cap
-                            |------------------------------>|
-                            |               |               |
-        storage: battery    |<------------------------------|     fix cap
-                            |------------------------------>|
-                            |               |               |
-        sink: demand        |<------------------------------|     fix
-                            |               |               |
-        sink: excess        |<------------------------------|     var
-                            |               |               |
-        sink: shortage      |<------------------------------|     var
-                            |               |               |
-        '''
+        if name == 'base_oem':
+            ###############################################################################
+            # Optimization of off-grid micro grid = Definition of base case capacities    #
+            # Does not allow minimal loading of generator, but sizes it                   #
+            ###############################################################################
+            '''
+            Case: micro grid with variable capacities = OEM
 
-        case_dict = {'case_name': 'offgrid_fixed'}
+                            input/output    bus_fuel        bus_electricity
+                                |               |               |
+                                |               |               |
+            source: pv          |------------------------------>|     var cap
+                                |               |               |
+            source: fossil_fuel |-------------->|               |
+                                |               |               |
+            trafo: generator    |<--------------|               |     var cap
+                                |------------------------------>|
+                                |               |               |
+            storage: battery    |<------------------------------|     var cap
+                                |------------------------------>|
+                                |               |               |
+            sink: demand        |<------------------------------|     fix
+                                |               |               |
+            sink: excess        |<------------------------------|     var
+                                |               |               |
+            sink: shortage      |<------------------------------|     var
+                                |               |               |
+            '''
+            case_dict = {
+                'case_name': 'base_oem',
+                'pv_fixed_capacity': False,
+                'storage_fixed_capacity': False,
+                'genset_fixed_capacity': False,
+                'pcc_consumption_fixed_capacity': None,
+                'pcc_feedin_fixed_capacity': None,
+                'stability_constraint': False
+            }
 
-        if setting_batch_capacity == True:
-            capacity_batch = oemof_process.process_oem_batch(capacity_base, case_dict['case_name'])
+        elif name == 'base_oem_with_min_loading':
+            ###############################################################################
+            # Optimization of off-grid micro grid = Definition of base case capacities    #
+            # Allows minimal loading of generator with fixed capacity = peak demand       #
+            ###############################################################################
+            '''
+            Case: micro grid with variable capacities = OEM
 
-        case_dict.update({
-            'pv_fixed_capacity': capacity_batch['capacity_pv_kWp'],
-            'storage_fixed_capacity': capacity_batch['capacity_storage_kWh'],
-            'genset_fixed_capacity': capacity_batch['capacity_genset_kW'],
-            'pcc_consumption_fixed_capacity': None,
-            'pcc_feedin_fixed_capacity': None,
-            'allow_shortage': True,
-            'max_shortage': 0.05
-        })
+                            input/output    bus_fuel        bus_electricity
+                                |               |               |
+                                |               |               |
+            source: pv          |------------------------------>|     var cap
+                                |               |               |
+            source: fossil_fuel |-------------->|               |
+                                |               |               |
+            trafo: generator    |<--------------|               |     var cap
+                                |------------------------------>|
+                                |               |               |
+            storage: battery    |<------------------------------|     var cap
+                                |------------------------------>|
+                                |               |               |
+            sink: demand        |<------------------------------|     fix
+                                |               |               |
+            sink: excess        |<------------------------------|     var
+                                |               |               |
+            sink: shortage      |<------------------------------|     var
+                                |               |               |
+            '''
+            case_dict = {
+                'case_name': 'base_oem_with_min_loading',
+                'pv_fixed_capacity': False,
+                'storage_fixed_capacity': False,
+                'genset_fixed_capacity': max(demand_profile),
+            # fix genset transformer, so that minimal loading can be used
+                'pcc_consumption_fixed_capacity': None,
+                'pcc_feedin_fixed_capacity': None,
+            }
 
-        micro_grid_system = cases.model_and_simulate(experiment, case_dict, demand_profile, pv_generation_per_kWp,
-                                                     grid_availability=None)
 
-        oemof_results \
-            = oemof_process.process_fix(micro_grid_system, case_dict, experiment, capacity_batch, demand_profile)
+        elif name == 'offgrid_fixed':
+            ###############################################################################
+            #                Dispatch optimization with fixed capacities                  #
+            ###############################################################################
+            '''
+            Case: micro grid with fixed capacities = dispatch analysis
 
-        return oemof_results
+                            input/output    bus_fuel        bus_electricity
+                                |               |               |
+                                |               |               |
+            source: pv          |------------------------------>|     fix cap
+                                |               |               |
+            source: fossil_fuel |-------------->|               |
+                                |               |               |
+            trafo: generator    |<--------------|               |     fix cap
+                                |------------------------------>|
+                                |               |               |
+            storage: battery    |<------------------------------|     fix cap
+                                |------------------------------>|
+                                |               |               |
+            sink: demand        |<------------------------------|     fix
+                                |               |               |
+            sink: excess        |<------------------------------|     var
+                                |               |               |
+            sink: shortage      |<------------------------------|     var
+                                |               |               |
+            '''
 
-    ###########################################################################
-    # Dispatch of off-grid micro grid interconnecting with national grid,     #
-    # consumption and feed-in                                                 #
-    ###########################################################################
-    def interconnected_buysell(demand_profile, pv_generation_per_kWp, experiment, capacity_base, grid_availability):
-        from config import setting_batch_capacity
-        '''
-        Case: 
-        Micro grid connected to national grid, with point of common coupling allowing both consumption and
-        feed-into grid. 
+            case_dict = {'case_name': 'offgrid_fixed'}
 
-                        input/output    bus_fuel        bus_electricity      bus_electricity_ng
-                            |               |               |                         |
-                            |               |               |                         |
-        source: pv          |------------------------------>|     fix cap             |
-                            |               |               |                         |
-        source: fossil_fuel |-------------->|               |                         |
-                            |               |               |                         |
-        trafo: generator    |<--------------|               |     fix cap             |
-                            |------------------------------>|                         |
-                            |               |               |                         |
-        storage: battery    |<------------------------------|     fix cap             |
-                            |------------------------------>|                         |
-                            |               |               |                         |
-        sink: demand        |<------------------------------|     fix                 |
-                            |               |               |                         |
-        sink: excess        |<------------------------------|     var                 |
-                            |               |               |                         |
-        sink: shortage      |<------------------------------|     var                 |
-                            |               |               |                         |
-        source: ng          |               |               |<------------------------| var
-        sink: ng            |               |               |------------------------>|
-        '''
+            if setting_batch_capacity == True:
+                capacity_batch = oemof_process.process_oem_batch(capacities_base, case_dict['case_name'])
 
-        case_dict = {'case_name': 'interconnected_buysell'}
+            case_dict.update({
+                'pv_fixed_capacity': capacity_batch['capacity_pv_kWp'],
+                'storage_fixed_capacity': capacity_batch['capacity_storage_kWh'],
+                'genset_fixed_capacity': capacity_batch['capacity_genset_kW'],
+                'pcc_consumption_fixed_capacity': None,
+                'pcc_feedin_fixed_capacity': None,
+                'allow_shortage': True,
+                'max_shortage': 0.05
+            })
 
-        capacity_base.update({"capacity_pcoupling_kW": max(demand_profile)/experiment['pcoupling_efficiency']})
+        elif name == 'interconnected_buysell':
+            ###########################################################################
+            # Dispatch of off-grid micro grid interconnecting with national grid,     #
+            # consumption and feed-in                                                 #
+            ###########################################################################
+            '''
+            Case: 
+            Micro grid connected to national grid, with point of common coupling allowing both consumption and
+            feed-into grid. 
 
-        if setting_batch_capacity == True:
-            capacity_batch = oemof_process.process_oem_batch(capacity_base, case_dict['case_name'])
+                            input/output    bus_fuel        bus_electricity      bus_electricity_ng
+                                |               |               |                         |
+                                |               |               |                         |
+            source: pv          |------------------------------>|     fix cap             |
+                                |               |               |                         |
+            source: fossil_fuel |-------------->|               |                         |
+                                |               |               |                         |
+            trafo: generator    |<--------------|               |     fix cap             |
+                                |------------------------------>|                         |
+                                |               |               |                         |
+            storage: battery    |<------------------------------|     fix cap             |
+                                |------------------------------>|                         |
+                                |               |               |                         |
+            sink: demand        |<------------------------------|     fix                 |
+                                |               |               |                         |
+            sink: excess        |<------------------------------|     var                 |
+                                |               |               |                         |
+            sink: shortage      |<------------------------------|     var                 |
+                                |               |               |                         |
+            source: ng          |               |               |<------------------------| var
+            sink: ng            |               |               |------------------------>|
+            '''
 
-        case_dict.update({
-            'pv_fixed_capacity': capacity_batch['capacity_pv_kWp'],
-            'storage_fixed_capacity': capacity_batch['capacity_storage_kWh'],
-            'genset_fixed_capacity': capacity_batch['capacity_genset_kW'],
-            'pcc_consumption_fixed_capacity': capacity_batch['capacity_pcoupling_kW'],
-            'pcc_feedin_fixed_capacity': capacity_batch['capacity_pcoupling_kW']
-        })
+            case_dict = {'case_name': 'interconnected_buysell'}
 
-        micro_grid_system = cases.model_and_simulate(experiment, case_dict, demand_profile, pv_generation_per_kWp,
-                                                     grid_availability)
-        oemof_results \
-            = oemof_process.process_fix(micro_grid_system, case_dict, experiment, capacity_batch, demand_profile)
+            capacities_base.update({"capacity_pcoupling_kW": max(demand_profile) / experiment['pcoupling_efficiency']})
 
-        return oemof_results
+            if setting_batch_capacity == True:
+                capacity_batch = oemof_process.process_oem_batch(capacities_base, case_dict['case_name'])
 
-    ###########################################################################
-    # Dispatch of off-grid micro grid interconnecting with national grid,     #
-    # only consumption                                                        #
-    ###########################################################################
-    def interconnected_buy(demand_profile, pv_generation_per_kWp, experiment, capacity_base, grid_availability):
-        from config import setting_batch_capacity
-        '''
-        Case: 
-        Micro grid connected to national grid, with point of common coupling allowing only consumption from grid. 
+            case_dict.update({
+                'pv_fixed_capacity': capacity_batch['capacity_pv_kWp'],
+                'storage_fixed_capacity': capacity_batch['capacity_storage_kWh'],
+                'genset_fixed_capacity': capacity_batch['capacity_genset_kW'],
+                'pcc_consumption_fixed_capacity': capacity_batch['capacity_pcoupling_kW'],
+                'pcc_feedin_fixed_capacity': capacity_batch['capacity_pcoupling_kW']
+            })
 
-                        input/output    bus_fuel        bus_electricity      bus_electricity_ng
-                            |               |               |                         |
-                            |               |               |                         |
-        source: pv          |------------------------------>|     fix cap             |
-                            |               |               |                         |
-        source: fossil_fuel |-------------->|               |                         |
-                            |               |               |                         |
-        trafo: generator    |<--------------|               |     fix cap             |
-                            |------------------------------>|                         |
-                            |               |               |                         |
-        storage: battery    |<------------------------------|     fix cap             |
-                            |------------------------------>|                         |
-                            |               |               |                         |
-        sink: demand        |<------------------------------|     fix                 |
-                            |               |               |                         |
-        sink: excess        |<------------------------------|     var                 |
-                            |               |               |                         |
-        sink: shortage      |<------------------------------|     var                 |
-                            |               |               |                         |
-        source: ng          |               |               |<------------------------| var
-        '''
+        elif name == 'interconnected_buy':
+            ###########################################################################
+            # Dispatch of off-grid micro grid interconnecting with national grid,     #
+            # only consumption                                                        #
+            ###########################################################################
+            '''
+            Case: 
+            Micro grid connected to national grid, with point of common coupling allowing only consumption from grid. 
 
-        case_dict = {'case_name': 'interconnected_buy'}
+                            input/output    bus_fuel        bus_electricity      bus_electricity_ng
+                                |               |               |                         |
+                                |               |               |                         |
+            source: pv          |------------------------------>|     fix cap             |
+                                |               |               |                         |
+            source: fossil_fuel |-------------->|               |                         |
+                                |               |               |                         |
+            trafo: generator    |<--------------|               |     fix cap             |
+                                |------------------------------>|                         |
+                                |               |               |                         |
+            storage: battery    |<------------------------------|     fix cap             |
+                                |------------------------------>|                         |
+                                |               |               |                         |
+            sink: demand        |<------------------------------|     fix                 |
+                                |               |               |                         |
+            sink: excess        |<------------------------------|     var                 |
+                                |               |               |                         |
+            sink: shortage      |<------------------------------|     var                 |
+                                |               |               |                         |
+            source: ng          |               |               |<------------------------| var
+            '''
 
-        capacity_base.update({"capacity_pcoupling_kW": max(demand_profile)/experiment['pcoupling_efficiency']})
-        if setting_batch_capacity == True:
-            capacity_batch = oemof_process.process_oem_batch(capacity_base, case_dict['case_name'])
+            case_dict = {'case_name': 'interconnected_buy'}
 
-        case_dict.update({
-            'pv_fixed_capacity': capacity_batch['capacity_pv_kWp'],
-            'storage_fixed_capacity': capacity_batch['capacity_storage_kWh'],
-            'genset_fixed_capacity': capacity_batch['capacity_genset_kW'],
-            'pcc_consumption_fixed_capacity': capacity_batch['capacity_pcoupling_kW'],
-            'pcc_feedin_fixed_capacity': None
-        })
+            capacities_base.update({"capacity_pcoupling_kW": max(demand_profile) / experiment['pcoupling_efficiency']})
+            if setting_batch_capacity == True:
+                capacity_batch = oemof_process.process_oem_batch(capacities_base, case_dict['case_name'])
 
-        micro_grid_system = cases.model_and_simulate(experiment, case_dict, demand_profile, pv_generation_per_kWp,
-                                                     grid_availability)
-        oemof_results \
-            = oemof_process.process_fix(micro_grid_system, case_dict, experiment, capacity_batch, demand_profile)
+            case_dict.update({
+                'pv_fixed_capacity': capacity_batch['capacity_pv_kWp'],
+                'storage_fixed_capacity': capacity_batch['capacity_storage_kWh'],
+                'genset_fixed_capacity': capacity_batch['capacity_genset_kW'],
+                'pcc_consumption_fixed_capacity': capacity_batch['capacity_pcoupling_kW'],
+                'pcc_feedin_fixed_capacity': None
+            })
 
-        return oemof_results
+        elif name == 'oem_grid_tied_mg':
+            ###########################################################################
+            # Optimal energy mix of grid-tied MG                                      #
+            # = From the start interconnected with main grid                          #
+            ###########################################################################
+            '''
+            Case: micro grid with variable capacities = OEM
 
-    ###########################################################################
-    # Optimal energy mix of grid-tied MG                                      #
-    # = From the start interconnected with main grid                          #
-    ###########################################################################
-    def oem_grid_tied_mg(demand_profile, pv_generation_per_kWp, experiment, grid_availability):
-        '''
-        Case: micro grid with variable capacities = OEM
+                            input/output    bus_fuel        bus_electricity
+                                |               |               |
+                                |               |               |
+            source: pv          |------------------------------>|     var cap
+                                |               |               |
+            source: fossil_fuel |-------------->|               |
+                                |               |               |
+            trafo: generator    |<--------------|               |     var cap
+                                |------------------------------>|
+                                |               |               |
+            storage: battery    |<------------------------------|     var cap
+                                |------------------------------>|
+                                |               |               |
+            sink: demand        |<------------------------------|     fix
+                                |               |               |
+            sink: excess        |<------------------------------|     var
+                                |               |               |
+            sink: shortage      |<------------------------------|     var
+                                |               |               |
+            source: ng          |               |               |<------------------------| var
+            sink: ng            |               |               |------------------------>|
+                    '''
+            case_dict = {'case_name': 'oem_grid_tied_mg'}
 
-                        input/output    bus_fuel        bus_electricity
-                            |               |               |
-                            |               |               |
-        source: pv          |------------------------------>|     var cap
-                            |               |               |
-        source: fossil_fuel |-------------->|               |
-                            |               |               |
-        trafo: generator    |<--------------|               |     var cap
-                            |------------------------------>|
-                            |               |               |
-        storage: battery    |<------------------------------|     var cap
-                            |------------------------------>|
-                            |               |               |
-        sink: demand        |<------------------------------|     fix
-                            |               |               |
-        sink: excess        |<------------------------------|     var
-                            |               |               |
-        sink: shortage      |<------------------------------|     var
-                            |               |               |
-        source: ng          |               |               |<------------------------| var
-        sink: ng            |               |               |------------------------>|
-        '''
-        case_dict = {'case_name': 'oem_grid_tied_mg'}
+            case_dict.update({
+                'pv_fixed_capacity': False,
+                'storage_fixed_capacity': False,
+                'genset_fixed_capacity': False,
+                'pcc_consumption_fixed_capacity': max(demand_profile) / experiment['pcoupling_efficiency'],
+                'pcc_feedin_fixed_capacity': max(demand_profile) / experiment['pcoupling_efficiency']
+            })
 
-        case_dict.update({
-            'pv_fixed_capacity':                False,
-            'storage_fixed_capacity':           False,
-            'genset_fixed_capacity':            False,
-            'pcc_consumption_fixed_capacity':   max(demand_profile)/experiment['pcoupling_efficiency'],
-            'pcc_feedin_fixed_capacity':        max(demand_profile)/experiment['pcoupling_efficiency']
-        })
+        elif name == 'sole_maingrid':
+            '''
+            Cost analysis of national grid supply, incl. LCOE
 
-        micro_grid_system = cases.model_and_simulate(experiment, case_dict, demand_profile, pv_generation_per_kWp,
-                                                     grid_availability)
-        # process results
-        oemof_results, capacities_base                            \
-            = oemof_process.process_oem(micro_grid_system, case_dict, max(pv_generation_per_kWp), experiment, demand_profile)
+                            input/output  bus_electricity_mg  bus_electricity_ng
+                                |               |               |
+                                |               |               |
 
-        return oemof_results
+                                |               |               |
+            sink: demand        |<--------------|     fix
+                                |               |               |
+            source: ng          |               |<--------------| var
+            '''
+            case_dict = {
+                'case_name': 'sole_maingrid',
+                'pv_fixed_capacity': None,
+                'storage_fixed_capacity': None,
+                'genset_fixed_capacity': None,
+                'pcc_consumption_fixed_capacity': max(demand_profile) / experiment['pcoupling_efficiency'],
+                'pcc_feedin_fixed_capacity': None,
+                'allow_shortage': True,
+                'max_shortage': 1,
+                'stability_constraint': False,
+                'renewable_share_constraint': False
+            }
 
-    def main_grid(demand_profile, experiment, grid_availability): #todo not competely defined
-        '''
-        Cost analysis of national grid supply, incl. LCOE
+        else:
+            logging.warning('Error! Case ' + name + ' does not exist!')
 
-                        input/output  bus_electricity_mg  bus_electricity_ng
-                            |               |               |
-                            |               |               |
-
-                            |               |               |
-        sink: demand        |<--------------|     fix
-                            |               |               |
-        source: ng          |               |<--------------| var
-        '''
-        case_dict = {
-            'case_name': 'sole_maingrid',
-            'pv_fixed_capacity':                None,
-            'storage_fixed_capacity':           None,
-            'genset_fixed_capacity':            None,
-            'pcc_consumption_fixed_capacity':   max(demand_profile)/experiment['pcoupling_efficiency'],
-            'pcc_feedin_fixed_capacity':        None,
-            'allow_shortage':                   True,
-            'max_shortage':                     1,
-            'stability_constraint':             False,
-            'renewable_share_constraint':       False
-        }
-        micro_grid_system = cases.model_and_simulate(experiment, case_dict, demand_profile,
-                                                     pv_generation_per_kWp=None,
-                                                     grid_availability = grid_availability)
-        # process results
-        oemof_results, capacities_base                            \
-            = oemof_process.process_oem(micro_grid_system,
-                                        case_dict = case_dict,
-                                        pv_generation_max = None,
-                                        experiment = experiment,
-                                        demand_profile = demand_profile)
-        return oemof_results
-
+        return case_dict
 
 ################################ Not jet defined cases ################################################################
 

@@ -275,7 +275,6 @@ class oemof_process():
         if case_dict['pcc_consumption_fixed_capacity'] != None or case_dict['pcc_feedin_fixed_capacity'] != None:
             maingrid_bus = outputlib.views.node(results, 'bus_electricity_ng')
             if case_dict['pcc_consumption_fixed_capacity'] != None:
-                print(maingrid_bus['sequences'][(('bus_electricity_ng', 'transformer_pcc_consumption'), 'flow')])
                 # attention! this is from side of main grid!
                 consumption_main_grid_no_inv_loss =  maingrid_bus['sequences'][(('bus_electricity_ng', 'transformer_pcc_consumption'), 'flow')].sum()\
                 # attention: only effectively used electricity consumption counts for renewable share

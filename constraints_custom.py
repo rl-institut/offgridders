@@ -4,6 +4,7 @@ For defining custom constraints of the micro grid solutions
 import pyomo.environ as po
 import pprint as pp
 import logging
+import pandas as pd
 
 def stability_criterion(model, case_dict, experiment, storage, sink_demand, genset, pcc_consumption, el_bus, grid_availability):
     '''
@@ -92,29 +93,26 @@ def stability_criterion(model, case_dict, experiment, storage, sink_demand, gens
     return model
 
 # todo add pcc consumption here
-def stability_test(oemof_results, experiment, storage_capacity, demand_profile, genset_capacity):
-
-    # todo adjust to e_flows_df included here! also use case_dict['stability_constraint'] and check for its use befor executing funtion
+def stability_test(oemof_results, experiment, e_flows_df):
     '''
-    some test for storage values in e_bus_df, else
+        Testing simulation results for adherance to above defined stability criterion
+    '''
+    demand_profile = e_flows_df['Demand']
 
-    demand = ebusdf
-
+    if ('Stored capacity in kWh' in e_flows_df.columns):
+        storage_capacity = e_flows_df['Stored capacity in kWh']
     else:
         storage_capacity = pd.Series([0 for t in demand_profile.index], index=demand_profile.index)
 
-    some test for generator values in df
-        genset_capacity = e_bus_df...
-    else:
-        storage_capacity = pd.Series([0 for t in demand_profile.index], index=demand_profile.index)
+    if ('Grid availability' in e_flows_df.columns):
+        pcc_capacity = oemof_results['capacity_pcoupling_kW'] * e_flows_df['Grid availability']
 
-    '''
-    '''
-    Testing simulation results for adherance to above defined stability criterion
-    '''
+    genset_capacity = oemof_results['capacity_genset_kW']
+
+
     # todo adjust if timestep not 1 hr
     boolean_test = [
-        genset_capacity + storage_capacity[t] * experiment['storage_Crate_discharge'] \
+        genset_capacity + storage_capacity[t] * experiment['storage_Crate_discharge'] + pcc_capacity[t] \
         >= experiment['stability_limit'] * demand_profile[t]
         for t in range(0, len(demand_profile.index))
     ]
