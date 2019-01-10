@@ -12,90 +12,12 @@ new cases can easily be added.
 import os.path
 
 # Logging of info
-#from oemof.tools import logger
 import logging
-
-# For speeding up lp_files and bus/component definition in oemof as well as processing
-from oemof_create_model import oemof_model
-from oemof_process_results import oemof_process
-from timeseries import evaluate_timeseries
 
 # This is not really a necessary class, as the whole experiement could be given to the function, but it ensures, that
 # only correct input data is included
 
 class cases:
-
-    def extend_dictionary(case_dict, experiment, demand_profile):
-        from config import include_stability_constraint, allow_shortage, evaluated_days
-
-        case_dict.update({
-            'total_demand': sum(demand_profile),
-            'peak_demand': max(demand_profile)
-        })
-
-        # shortage if allowed, otherwise zero
-        if 'allow_shortage' in case_dict and 'max_shortage' in case_dict:
-                pass
-        elif 'allow_shortage' in case_dict and case_dict['allow_shortage']==True:
-                case_dict.update({'max_shortage': experiment['max_share_unsupplied_load']})
-        elif 'allow_shortage' in case_dict and case_dict['allow_shortage'] == False:
-                case_dict.update({'max_shortage': 0})
-        elif allow_shortage == True:
-            case_dict.update({'allow_shortage': True})
-            case_dict.update({'max_shortage': experiment['max_share_unsupplied_load']})
-        else:
-            case_dict.update({'allow_shortage': False})
-            case_dict.update({'max_shortage': 0})
-
-        # activate stability constraint - here it is not optional!
-        if 'stability_constraint' in case_dict:
-            pass
-        elif include_stability_constraint == True:
-            case_dict.update({'stability_constraint': experiment['stability_limit']})
-        else:
-            case_dict.update({'stability_constraint': False})
-
-        # not-optional renewable constraint
-        if 'renewable_share_constraint' in case_dict:
-            pass
-        else:
-            if experiment['min_renewable_share'] != 0:
-                case_dict.update({'renewable_share_constraint': experiment['min_renewable_share']})
-            else:
-                case_dict.update({'renewable_share_constraint': False})
-
-        case_dict.update({'evaluated_days': evaluated_days})
-
-        return case_dict
-
-    def model_and_simulate(experiment, case_dict, demand_profile, pv_generation_per_kWp, grid_availability):
-        from config import output_folder, restore_oemof_if_existant
-
-        file_name = oemof_model.filename(case_dict['case_name'], experiment['filename'])
-        cases.extend_dictionary(case_dict, experiment, demand_profile)
-        print(case_dict)
-
-        # For restoring .oemof results if that is possible (speeding up computation time)
-        if os.path.isfile(output_folder + "/oemof/" + file_name + ".oemof") and restore_oemof_if_existant == True:
-            logging.info("Previous results of " + case_dict['case_name'] + " restored.")
-
-        # If .oemof results do not already exist, start oemof-process
-        else:
-            # generate model
-            micro_grid_system, model = oemof_model.build(experiment, case_dict, demand_profile, pv_generation_per_kWp, grid_availability)
-            # perform simulation
-            micro_grid_system        = oemof_model.simulate(micro_grid_system, model, file_name)
-            # store simulation results to .oemof
-            oemof_model.store_results(micro_grid_system, file_name)
-
-        # it actually is not really necessary to restore just simulated results... but for consistency and to make sure that calling results is easy, this is used nevertheless
-        # load oemof results from previous or just finished simulation
-        micro_grid_system = oemof_model.load_oemof_results(file_name)
-        # process results
-        oemof_results = evaluate_timeseries.get_all(case_dict, micro_grid_system, experiment, grid_availability,
-                                                    max(pv_generation_per_kWp))
-        return oemof_results
-
     def get_case_dict(name, experiment, demand_profile, capacities_base):
         from config import setting_batch_capacity
 
@@ -133,8 +55,7 @@ class cases:
                 'storage_fixed_capacity': False,
                 'genset_fixed_capacity': False,
                 'pcc_consumption_fixed_capacity': None,
-                'pcc_feedin_fixed_capacity': None,
-                'stability_constraint': False
+                'pcc_feedin_fixed_capacity': None
             }
 
         elif name == 'base_oem_with_min_loading':
@@ -207,7 +128,7 @@ class cases:
             case_dict = {'case_name': 'offgrid_fixed'}
 
             if setting_batch_capacity == True:
-                capacity_batch = oemof_process.process_oem_batch(capacities_base, case_dict['case_name'])
+                capacity_batch = utilities.process_oem_batch(capacities_base, case_dict['case_name'])
 
             case_dict.update({
                 'pv_fixed_capacity': capacity_batch['capacity_pv_kWp'],
@@ -257,7 +178,7 @@ class cases:
             capacities_base.update({"capacity_pcoupling_kW": max(demand_profile) / experiment['pcoupling_efficiency']})
 
             if setting_batch_capacity == True:
-                capacity_batch = oemof_process.process_oem_batch(capacities_base, case_dict['case_name'])
+                capacity_batch = utilities.process_oem_batch(capacities_base, case_dict['case_name'])
 
             case_dict.update({
                 'pv_fixed_capacity': capacity_batch['capacity_pv_kWp'],
@@ -302,7 +223,7 @@ class cases:
 
             capacities_base.update({"capacity_pcoupling_kW": max(demand_profile) / experiment['pcoupling_efficiency']})
             if setting_batch_capacity == True:
-                capacity_batch = oemof_process.process_oem_batch(capacities_base, case_dict['case_name'])
+                capacity_batch = utilities.process_oem_batch(capacities_base, case_dict['case_name'])
 
             case_dict.update({
                 'pv_fixed_capacity': capacity_batch['capacity_pv_kWp'],
@@ -503,3 +424,69 @@ class cases:
         return
 
 
+class utilities:
+
+    def filename(case_name, experiment_name):
+        from config import output_file
+        file_name = output_file + "_" + case_name + experiment_name
+        return file_name
+
+    def extend_dictionary(case_dict, experiment, demand_profile):
+        from config import include_stability_constraint, allow_shortage, evaluated_days
+
+        case_dict.update({
+            'total_demand': sum(demand_profile),
+            'peak_demand': max(demand_profile)
+        })
+
+        # shortage if allowed, otherwise zero
+        if 'allow_shortage' in case_dict and 'max_shortage' in case_dict:
+                pass
+        elif 'allow_shortage' in case_dict and case_dict['allow_shortage']==True:
+                case_dict.update({'max_shortage': experiment['max_share_unsupplied_load']})
+        elif 'allow_shortage' in case_dict and case_dict['allow_shortage'] == False:
+                case_dict.update({'max_shortage': 0})
+        elif allow_shortage == True:
+            case_dict.update({'allow_shortage': True})
+            case_dict.update({'max_shortage': experiment['max_share_unsupplied_load']})
+        else:
+            case_dict.update({'allow_shortage': False})
+            case_dict.update({'max_shortage': 0})
+
+        # activate stability constraint - here it is not optional!
+        if 'stability_constraint' in case_dict:
+            pass
+        elif include_stability_constraint == True:
+            case_dict.update({'stability_constraint': experiment['stability_limit']})
+        else:
+            case_dict.update({'stability_constraint': False})
+
+        # not-optional renewable constraint
+        if 'renewable_share_constraint' in case_dict:
+            pass
+        else:
+            if experiment['min_renewable_share'] != 0:
+                case_dict.update({'renewable_share_constraint': experiment['min_renewable_share']})
+            else:
+                case_dict.update({'renewable_share_constraint': False})
+
+        case_dict.update({'evaluated_days': evaluated_days})
+
+        return case_dict
+
+    def process_oem_batch(capacities_base, case_name):
+        from input_values import round_to_batch
+        capacities_base.update({'capacity_pv_kWp': round (0.5+capacities_base['capacity_pv_kWp']/round_to_batch['PV'])
+                                                  *round_to_batch['PV']}) # immer eher 0.25 capacity mehr als eigentlich nötig
+        capacities_base.update({'capacity_genset_kW': round(0.5+capacities_base['capacity_genset_kW'] / round_to_batch['GenSet']) *
+                                                  round_to_batch['GenSet']})
+        capacities_base.update({'capacity_storage_kWh': round(0.5+capacities_base['capacity_storage_kWh'] / round_to_batch['Storage']) *
+                                                  round_to_batch['Storage']})
+        capacities_base.update(
+            {'capacity_pcoupling_kW': round(0.5 + capacities_base['capacity_pcoupling_kW'] / round_to_batch['Pcoupling']) *
+                                     round_to_batch['Pcoupling']})
+        logging.debug ('    Equivalent batch capacities of base OEM for dispatch OEM in case "' + case_name + '": \n'
+                      + '    ' + '  ' + '    ' + '    ' + '    ' + str(capacities_base['capacity_storage_kWh']) + ' kWh battery, '
+                      + str(capacities_base['capacity_pv_kWp']) + ' kWp PV, '
+                      + str(capacities_base['capacity_genset_kW']) + ' kW genset.')
+        return capacities_base

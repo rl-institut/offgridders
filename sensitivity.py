@@ -130,8 +130,8 @@ class sensitivity():
             'capacity_pcoupling_kW',
             'res_share',
             'consumption_fuel_annual_l',
-            'consumption_main_grid_annual_kWh',
-            'feedin_main_grid_annual_kWh'])], axis=1, sort=False)
+            'consumption_main_grid_mg_side_annual_kWh',
+            'feedin_main_grid_mg_side_annual_kWh'])], axis=1, sort=False)
 
         if results_annuities == True:
             overall_results = pd.concat([overall_results, pd.DataFrame(columns=[

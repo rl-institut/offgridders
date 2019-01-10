@@ -15,7 +15,7 @@ logger.define_logging(logfile='main_tool.log',
                       screen_level=logging.INFO,
                       file_level=logging.DEBUG)
 
-from oemof_cases import cases
+from case_definitions import cases
 #from national_grid import national_grid
 
 ###############################################################################
@@ -111,13 +111,13 @@ for experiment in sensitivity_experiments:
     start = timeit.default_timer()
 
     from config import base_case_with_min_loading
-    from oemof_cases import cases
+    from oemof_simulate import oemof_simulate
     if base_case_with_min_loading == False:
         # Performing base case OEM without minimal loading, therefore optimizing genset capacities
         # get case definition
         case_dict = cases.get_case_dict('base_oem', experiment, demand_profile_experiment, capacities_base=None)
         # run oemof model
-        oemof_results = cases.model_and_simulate(experiment, case_dict, demand_profile_experiment, pv_generation_per_kWp,
+        oemof_results = oemof_simulate.run(experiment, case_dict, demand_profile_experiment, pv_generation_per_kWp,
                                                  grid_availability)
     else:
         # Performing base case OEM WITH minimal loading, thus fixing generator capacities to peak demand
@@ -144,7 +144,7 @@ for experiment in sensitivity_experiments:
         # get definitions for cases
         case_dict = cases.get_case_dict(items, experiment, demand_profile_experiment, capacities_base)
         # run oemof model
-        oemof_results = cases.model_and_simulate(experiment, case_dict, demand_profiles[experiment['demand_profile']], pv_generation_per_kWp,
+        oemof_results = oemof_simulate.run(experiment, case_dict, demand_profile_experiment, pv_generation_per_kWp,
                                                      grid_availability)
         # Extend oemof_results by blackout characteristics
         oemof_results   = national_grid.extend_oemof_results(oemof_results, blackout_results[blackout_experiment_name])

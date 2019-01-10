@@ -6,27 +6,9 @@ import constraints_custom as constraints
 
 class oemof_model:
 
-    def case_dict_test(case_dict, case_dict_entry, do_at_none, do_at_false, do_at_float):
-        if case_dict_entry == None:
-            do_at_none
-        elif case_dict_entry == False:
-            do_at_false
-        elif isinstance(case_dict_entry, float):
-            do_at_float
-        else:
-            logging.warning('Non-valid entry in case_dict '+case_dict['case_name']+' at '+ case_dict_entry
-                            + '. Value can only be None, False or float.')
-
-        return
-
     def load_energysystem_lp():
         # based on lp file
         return
-
-    def filename(case_name, experiment_name):
-        from config import output_file
-        file_name = output_file + "_" + case_name + experiment_name
-        return file_name
 
     def build(experiment, case_dict, demand_profile, pv_generation_per_kWp, grid_availability):
         from config import date_time_index
@@ -51,21 +33,6 @@ class oemof_model:
         else:
             pass
 
-        #------     main grid bus and subsequent sources if necessary------#
-        if case_dict['pcc_consumption_fixed_capacity'] != None or case_dict['pcc_feedin_fixed_capacity'] != None:
-            bus_electricity_ng = solph.Bus(label="bus_electricity_ng")
-            micro_grid_system.add(bus_electricity_ng)
-        else:
-            grid_availability = None
-
-        if case_dict['pcc_consumption_fixed_capacity'] != None:
-            # source + sink for electricity from grid
-            generate.maingrid_consumption(micro_grid_system, bus_electricity_ng, experiment, grid_availability)
-
-        if case_dict['pcc_feedin_fixed_capacity'] != None:
-            # sink + source for feed-in
-            generate.maingrid_feedin(micro_grid_system, bus_electricity_ng, experiment, grid_availability)
-
         #------        demand sink ------#
         sink_demand = generate.demand(micro_grid_system, bus_electricity_mg, demand_profile)
 
@@ -89,12 +56,12 @@ class oemof_model:
 
         #------         genset------#
         if case_dict['genset_fixed_capacity'] == None:
-            transformer_fuel_generator = None
+            genset = None
         elif case_dict['genset_fixed_capacity'] == False:
-            transformer_fuel_generator = generate.genset_oem(micro_grid_system, bus_fuel, bus_electricity_mg, experiment)
+            genset = generate.genset_oem(micro_grid_system, bus_fuel, bus_electricity_mg, experiment)
 
         elif isinstance(case_dict['genset_fixed_capacity'], float):
-            transformer_fuel_generator = generate.genset_fix(micro_grid_system, bus_fuel,
+            genset = generate.genset_fix(micro_grid_system, bus_fuel,
                                                              bus_electricity_mg, experiment,
                                                              capacity_fuel_gen=case_dict['genset_fixed_capacity'])
         else:
@@ -115,7 +82,20 @@ class oemof_model:
             logging.warning('Case definition of ' + case_dict['case_name']
                             + ' faulty at genset_fixed_capacity. Value can only be False, float or None')
 
-        #------        point of coupling (consumption) ------#
+        #------     main grid bus and subsequent sources if necessary------#
+        if case_dict['pcc_consumption_fixed_capacity'] != None or case_dict['pcc_feedin_fixed_capacity'] != None:
+            bus_electricity_ng = solph.Bus(label="bus_electricity_ng")
+            micro_grid_system.add(bus_electricity_ng)
+
+        if case_dict['pcc_consumption_fixed_capacity'] != None:
+            # source + sink for electricity from grid
+            generate.maingrid_consumption(micro_grid_system, bus_electricity_ng, experiment, grid_availability)
+
+        if case_dict['pcc_feedin_fixed_capacity'] != None:
+            # sink + source for feed-in
+            generate.maingrid_feedin(micro_grid_system, bus_electricity_ng, experiment, grid_availability)
+
+        # ------        point of coupling (consumption) ------#
         if case_dict['pcc_consumption_fixed_capacity'] == None:
             pointofcoupling_consumption = None
         elif case_dict['pcc_consumption_fixed_capacity'] == False:
@@ -152,7 +132,6 @@ class oemof_model:
 
         #------Optional: Shortage source'''
         if case_dict['allow_shortage'] == True:
-            print("generated")
             generate.shortage(micro_grid_system, bus_electricity_mg, experiment, case_dict) # changed order
 
         logging.debug('Initialize the energy system to be optimized')
@@ -173,7 +152,7 @@ class oemof_model:
                                             experiment = experiment,
                                             storage = generic_storage,
                                             sink_demand = sink_demand,
-                                            genset = transformer_fuel_generator,
+                                            genset = genset,
                                             pcc_consumption = pointofcoupling_consumption,
                                             el_bus = bus_electricity_mg,
                                             grid_availability = grid_availability)

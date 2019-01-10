@@ -73,6 +73,7 @@ class generate():
                                            fixed = True,
                                            investment = solph.Investment(ep_costs=0)
                                            )})
+
         micro_grid_system.add(source_maingrid_consumption)
 
         # this node connects main grid consumption to main grid electricity flow - and then to pcc
@@ -118,7 +119,7 @@ class generate():
 
     def genset_fix(micro_grid_system, bus_fuel, bus_electricity_mg, experiment, capacity_fuel_gen):
         if experiment['genset_min_loading'] == 0:
-            transformer_fuel_generator = solph.Transformer(label="transformer_fuel_generator",
+            genset = solph.Transformer(label="transformer_genset",
                                                            inputs={bus_fuel: solph.Flow()},
                                                            outputs={bus_electricity_mg: solph.Flow(
                                                                nominal_value=capacity_fuel_gen,
@@ -127,7 +128,7 @@ class generate():
                                                                bus_electricity_mg: experiment['genset_efficiency']}
                                                            )
         else:
-            transformer_fuel_generator = solph.Transformer(label="transformer_fuel_generator",
+            genset = solph.Transformer(label="transformer_genset",
                                                        inputs   ={bus_fuel: solph.Flow()},
                                                        outputs  ={bus_electricity_mg: solph.Flow(
                                                            nominal_value    = capacity_fuel_gen,
@@ -138,19 +139,19 @@ class generate():
                                                        conversion_factors={ bus_electricity_mg: experiment['genset_efficiency']}
                                                        )
 
-        micro_grid_system.add(transformer_fuel_generator)
-        return transformer_fuel_generator
+        micro_grid_system.add(genset)
+        return genset
 
     def genset_oem(micro_grid_system, bus_fuel, bus_electricity_mg, experiment):
-        transformer_fuel_generator = solph.Transformer(label="transformer_fuel_generator",
+        transformer_genset = solph.Transformer(label="transformer_genset",
                                                        inputs={bus_fuel: solph.Flow()},
                                                        outputs={bus_electricity_mg: solph.Flow(
                                                            investment=solph.Investment(
                                                                ep_costs=experiment['genset_cost_annuity']),
                                                            variable_costs=experiment['genset_cost_var'])},
                                                        conversion_factors={bus_electricity_mg: experiment['genset_efficiency']})
-        micro_grid_system.add(transformer_fuel_generator)
-        return transformer_fuel_generator
+        micro_grid_system.add(transformer_genset)
+        return transformer_genset
 
     def pointofcoupling_feedin_fix(micro_grid_system, bus_electricity_mg, bus_electricity_ng, experiment, capacity_pointofcoupling):
         pointofcoupling_feedin = solph.Transformer(label="transformer_pcc_feedin",

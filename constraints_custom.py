@@ -46,7 +46,7 @@ def stability_criterion(model, case_dict, experiment, storage, sink_demand, gens
     '''
 
     stability_limit = case_dict['stability_constraint']
-    ## ------- Get CAP_genset ------- #
+    ## ------- Get CAP genset ------- #
     CAP_genset = 0
     if case_dict['genset_fixed_capacity'] != None:
         if case_dict['genset_fixed_capacity']==False:
@@ -55,12 +55,12 @@ def stability_criterion(model, case_dict, experiment, storage, sink_demand, gens
             CAP_genset += model.flows[genset, el_bus].nominal_value
 
     ## ------- Get CAP PCC ------- #
-    cap_pcc = 0
+    CAP_pcc = 0
     if case_dict['pcc_consumption_fixed_capacity'] != None:
         if case_dict['pcc_consumption_fixed_capacity'] == False:
-            cap_pcc += model.InvestmentFlow.invest[pcc_consumption, el_bus]
+            CAP_pcc += model.InvestmentFlow.invest[pcc_consumption, el_bus]
         elif isinstance(case_dict['pcc_consumption_fixed_capacity'], float):
-            cap_pcc += case_dict['pcc_consumption_fixed_capacity'] # todo: this didnt work - model.flows[pcc_consumption, el_bus].nominal_value
+            CAP_pcc += case_dict['pcc_consumption_fixed_capacity'] # todo: this didnt work - model.flows[pcc_consumption, el_bus].nominal_value
 
     def stability_rule(model, t):
         expr = CAP_genset
@@ -69,23 +69,19 @@ def stability_criterion(model, case_dict, experiment, storage, sink_demand, gens
         expr += - stability_limit * demand
         ##---------Grid consumption t-------#
         # this should not be actual consumption but possible one  - like grid_availability[t]*pcc_consumption_cap
-        print(case_dict['pcc_consumption_fixed_capacity'])
         if case_dict['pcc_consumption_fixed_capacity'] != None:
-            expr += cap_pcc * grid_availability[t]
-            print(cap_pcc * grid_availability[t])
+            expr += CAP_pcc * grid_availability[t]
         ## ------- Get stored capacity storage at t------- #
         # todo adjust if timestep not 1 hr
         if case_dict['storage_fixed_capacity'] != None:
             storage_capacity = 0
             if case_dict['storage_fixed_capacity'] == False:  # Storage subject to OEM
                 storage_capacity += model.GenericInvestmentStorageBlock.capacity[storage, t]
-                expr += storage_capacity # todo well... this actually is not quite true. storage can only stem as much as its nominal value... model.flows[generic_storage, el_bus].actual_value ?
             elif isinstance(case_dict['storage_fixed_capacity'], float): # Fixed storage subject to dispatch
-                storage_capacity += model.GenericStorageBlock.capacity[storage, t] # todo as above
+                storage_capacity += model.GenericStorageBlock.capacity[storage, t]
             else:
                 print ("Error: 'storage_fixed_capacity' can only be None, False or float.")
             expr += storage_capacity * experiment['storage_Crate_discharge']
-
         return (expr >= 0)
 
     model.stability_constraint = po.Constraint(model.TIMESTEPS, rule=stability_rule)
@@ -93,22 +89,23 @@ def stability_criterion(model, case_dict, experiment, storage, sink_demand, gens
     return model
 
 # todo add pcc consumption here
-def stability_test(oemof_results, experiment, e_flows_df):
+def stability_test(case_dict, oemof_results, experiment, e_flows_df):
     '''
         Testing simulation results for adherance to above defined stability criterion
     '''
     demand_profile = e_flows_df['Demand']
 
-    if ('Stored capacity in kWh' in e_flows_df.columns):
-        storage_capacity = e_flows_df['Stored capacity in kWh']
+    if ('Stored capacity' in e_flows_df.columns):
+        storage_capacity = e_flows_df['Stored capacity']
     else:
         storage_capacity = pd.Series([0 for t in demand_profile.index], index=demand_profile.index)
 
     if ('Grid availability' in e_flows_df.columns):
         pcc_capacity = oemof_results['capacity_pcoupling_kW'] * e_flows_df['Grid availability']
+    else:
+        pcc_capacity = pd.Series([0 for t in demand_profile.index], index=demand_profile.index)
 
     genset_capacity = oemof_results['capacity_genset_kW']
-
 
     # todo adjust if timestep not 1 hr
     boolean_test = [
