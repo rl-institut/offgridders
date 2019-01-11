@@ -135,6 +135,7 @@ for experiment in sensitivity_experiments:
     # Simulations of all cases
     ###############################################################################
     for items in listof_cases:
+        # todo define all this in sumulate.run! extract simulation time from oemof results?
         logging.info('Starting simulation of case ' + items + ', experiment no. ' + str(experiment_count) + '...')
         start = timeit.default_timer()
         ###############################################################################

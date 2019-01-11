@@ -59,7 +59,7 @@ class output:
                 fig.set(xlabel='Time', ylabel='Electricity flow in kWh')
                 fig.legend(loc='upper right')
                 plt.savefig(output_folder + '/electricity_mg/' + case_dict['case_name'] + filename + '_electricity_mg_7days.png')
-                plt.clf()
+                plt.close()
         return
 
     def outputs_storage(case_dict, e_flows_df, filename):
@@ -94,7 +94,7 @@ class output:
                     fig.set(xlabel='Time', ylabel='Electricity flow/stored in kWh')
                     fig.legend(loc='upper right')
                     plt.savefig(output_folder + '/storage/' + case_dict['case_name'] + filename + '_storage_7days.png')
-                    plt.clf()
+                    plt.close()
         return
 
     #todo not working

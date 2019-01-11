@@ -76,17 +76,21 @@ IT IS POSSIBLE TO SHIFT ELEMENTS BETWEEN THE LIST sensitivity_bounds <-> constan
 BUT DO NOT DELETE OR ADD NEW ELEMENTS WITHOUT CHANGING THE MAIN CODE
 '''
 
+# todo create extra for aspects that are in sensitivity bounds AND sensivitvity constants
+# - then the bound value can be varied with all other constant (base case as in constatnt)
+# resulting in less simulations!
+
 sensitivity_bounds = {
     #'price_fuel':           {'min': 2,  'max': 4,     'step': 1},
     #'maingrid_distance':    {'min': 20,  'max': 50,     'step': 5},
-    'blackout_duration':    {'min': 2,  'max': 6,     'step': 2},
-    'stability_limit':       {'min': 0,  'max': 1,     'step': 0.25},
-    'storage_cost_investment':{'min': 400,  'max': 1000,     'step': 200}
+    #'blackout_duration':    {'min': 2,  'max': 6,     'step': 2},
+    #'stability_limit':       {'min': 0,  'max': 1,     'step': 0.25},
+    #'storage_cost_investment':{'min': 400,  'max': 1000,     'step': 200}
     }
 
 # Values of the sensitivity analysis that appear constant
 sensitivity_constants = {
-    #'blackout_duration':	            2,	    # hrs per blackout
+    'blackout_duration':	            2,	    # hrs per blackout
     'blackout_duration_std_deviation':  0,  # factor. Goal: 15%? (percentual)
     'blackout_frequency':	            7,	    # blackouts per month
     'blackout_frequency_std_deviation': 0,      # factor. Goal: 15%? 0 Means: No variability (percentual)
@@ -124,10 +128,10 @@ sensitivity_constants = {
     'pv_cost_opex':	                    5,      # /unit/a
     'pv_cost_var':	                    0,      # /kWh
     'pv_lifetime':	                    20,     # a
-    #'stability_limit':                  0.5,    # factor of demand # Only active if include_stability_constraint=True
+    'stability_limit':                  0.5,    # factor of demand # Only active if include_stability_constraint=True
     'storage_capacity_max':	            1,	    # factor
     'storage_capacity_min':	            0.2,	# factor (1-DOD)
-    #'storage_cost_investment':	        800,    # /unit
+    'storage_cost_investment':	        800,    # /unit
     'storage_cost_opex':	            0,      # /unit/a
     'storage_cost_var':	                0,      # a
     'storage_Crate_charge':	            1,	    # factor (possible charge/discharge ratio to total capacity)

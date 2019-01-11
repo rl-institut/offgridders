@@ -66,6 +66,7 @@ def stability_criterion(model, case_dict, experiment, storage, sink_demand, gens
         expr = CAP_genset
         ## ------- Get demand at t ------- #
         demand = model.flows[el_bus, sink_demand].actual_value[t] * model.flows[el_bus, sink_demand].nominal_value
+        # todo: this should be - stability_limit * (demand - shortage)!!! otherwise it is not possible to have shortage after all.
         expr += - stability_limit * demand
         ##---------Grid consumption t-------#
         # this should not be actual consumption but possible one  - like grid_availability[t]*pcc_consumption_cap
