@@ -15,7 +15,7 @@ logger.define_logging(logfile='main_tool.log',
                       screen_level=logging.INFO,
                       file_level=logging.DEBUG)
 
-from cases import cases
+from case_definitions import cases
 #from national_grid import national_grid
 
 ###############################################################################
@@ -98,6 +98,12 @@ for experiment in sensitivity_experiments:
     from general_functions import config_func
     experiment = config_func.input_data(experiment)
 
+    demand_profile_experiment =  demand_profiles[experiment['demand_profile']]
+
+    from sensitivity import sensitivity
+    blackout_experiment_name = sensitivity.blackout_experiment_name(experiment)
+    grid_availability = sensitivity_grid_availability[blackout_experiment_name]
+
     # ----------------------------Base Case OEM------------------------------------#
     # Optimization of optimal capacities in base case (off-grid micro grid)        #
     # -----------------------------------------------------------------------------#
@@ -105,67 +111,53 @@ for experiment in sensitivity_experiments:
     start = timeit.default_timer()
 
     from config import base_case_with_min_loading
+    from oemof_simulate import oemof_simulate
     if base_case_with_min_loading == False:
         # Performing base case OEM without minimal loading, therefore optimizing genset capacities
-        results, capacities_base = cases.base_oem(demand_profiles[experiment['demand_profile']],
-                                                  pv_generation_per_kWp, experiment)
+        # get case definition
+        case_dict = cases.get_case_dict('base_oem', experiment, demand_profile_experiment, capacities_base=None)
+        # run oemof model
+        oemof_results = oemof_simulate.run(experiment, case_dict, demand_profile_experiment, pv_generation_per_kWp,
+                                                 grid_availability)
     else:
         # Performing base case OEM WITH minimal loading, thus fixing generator capacities to peak demand
-        results, capacities_base = cases.base_oem_min_loading(demand_profiles[experiment['demand_profile']],
-                                                              pv_generation_per_kWp, experiment)
+        # todo currently not operational!
+        oemof_results = cases.base_oem_min_loading(demand_profile_experiment, pv_generation_per_kWp, experiment, grid_availability)
+
+    capacities_base = helpers.define_base_capacities(oemof_results)
 
     duration = timeit.default_timer() - start
     logging.info('    Simulation of base OEM complete.')
     logging.info('    Simulation time (s): ' + str(round(duration, 2)) + '\n')
-    overall_results = helpers.store_result_matrix(overall_results, experiment, results, duration)
+    overall_results = helpers.store_result_matrix(overall_results, experiment, oemof_results, duration)
 
     ###############################################################################
     # Simulations of all cases
     ###############################################################################
-
-    from sensitivity import sensitivity
-    blackout_experiment_name = sensitivity.blackout_experiment_name(experiment)
-    grid_availability = sensitivity_grid_availability[blackout_experiment_name]
-    ###############################################################################
-    # Creating, simulating and storing micro grid energy systems with oemof
-    # According to parameters set beforehand
-    ###############################################################################
     for items in listof_cases:
+        # todo define all this in sumulate.run! extract simulation time from oemof results?
         logging.info('Starting simulation of case ' + items + ', experiment no. ' + str(experiment_count) + '...')
         start = timeit.default_timer()
-
-        if      items == 'offgrid_fixed':
-            oemof_results = \
-                cases.offgrid_fix(demand_profiles[experiment['demand_profile']], pv_generation_per_kWp, experiment, capacities_base)
-
-        elif    items == 'interconnected_buy':
-            oemof_results =\
-                cases.interconnected_buy(demand_profiles[experiment['demand_profile']], pv_generation_per_kWp, experiment,
-                                     capacities_base, grid_availability)
-
-        elif    items == 'interconnected_buysell':
-            oemof_results =\
-                cases.interconnected_buysell(demand_profiles[experiment['demand_profile']], pv_generation_per_kWp, experiment,
-                                         capacities_base, grid_availability)
-
-        elif items == 'oem_grid_tied_mg':
-            oemof_results =\
-                cases.oem_grid_tied_mg(demand_profiles[experiment['demand_profile']], pv_generation_per_kWp, experiment, grid_availability)
-
-        elif    items == 'buyoff':               cases.buyoff()
-        elif    items == 'parallel':             cases.parallel()
-        elif    items == 'adapted':              cases.adapted()
-        else: logging.warning("Unknown case!")
-        duration = timeit.default_timer() - start
-        logging.info('    Simulation of case '+items+' complete.')
-        logging.info('    Simulation time (s): ' + str(round(duration, 2)) + '\n')
+        ###############################################################################
+        # Creating, simulating and storing micro grid energy systems with oemof
+        # According to parameters set beforehand
+        ###############################################################################
+        # get definitions for cases
+        case_dict = cases.get_case_dict(items, experiment, demand_profile_experiment, capacities_base)
+        # run oemof model
+        oemof_results = oemof_simulate.run(experiment, case_dict, demand_profile_experiment, pv_generation_per_kWp,
+                                                     grid_availability)
         # Extend oemof_results by blackout characteristics
         oemof_results   = national_grid.extend_oemof_results(oemof_results, blackout_results[blackout_experiment_name])
         # Extend overall results dataframe with simulation results
         overall_results = helpers.store_result_matrix(overall_results, experiment, oemof_results, duration)
 
+        duration = timeit.default_timer() - start
+        logging.info('    Simulation of case '+items+' complete.')
+        logging.info('    Simulation time (s): ' + str(round(duration, 2)) + '\n')
+
     if print_simulation_experiment == True:
-        logging.info('The case with following parameters has been analysed:')
+        logging.info('The experiment with following parameters has been analysed:')
         pp.pprint(sensitivity_experiments)
 
     from config import output_folder

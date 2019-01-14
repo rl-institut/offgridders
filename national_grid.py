@@ -105,7 +105,7 @@ class national_grid:
             grid_reliability = 1 - total_grid_blackout_duration / len(date_time_index)
 
             logging.info("Grid is not operational for " + str(round(total_grid_blackout_duration, 2))
-                  + " hours, with an reliability of " + str(round(grid_reliability * 100, 2)) + " percent. \n")
+                  + " hours, with a reliability of " + str(round(grid_reliability * 100, 2)) + " percent. \n")
 
             blackout_results.update({experiment['experiment_name']:
                                                       {'grid_reliability': grid_reliability,

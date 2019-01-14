@@ -4,8 +4,8 @@ This script creates all possible experiments of a sensitivity analysis with a li
 dictonary, including filenames.
 '''
 
-import pprint as pp
 import pandas as pd
+import logging
 
 class sensitivity():
     def experiments():
@@ -14,6 +14,12 @@ class sensitivity():
         import numpy as np
         # create empty dictionary
         dictof_oemparameters = {}
+
+        # check for parameters defined twice in input_values_py
+        for keys in sensitivity_constants:
+            if sensitivity_bounds.get(keys):
+                logging.warning("Key " + keys + " was used in sensitivity bounds as well as in sensitivity constants!"
+                                + "\n         The constant value will be used for proceeding simulations.")
 
         # fill dictionary with all sensitivity ranges defining the different simulations of the sensitivity analysis
         # ! do not use a key two times, as it will be overwritten by new information
@@ -106,9 +112,10 @@ class sensitivity():
 
         if results_demand_characteristics == True:
             overall_results = pd.concat([overall_results, pd.DataFrame(columns=[
-                'demand_annual_kWh',
+                'total_demand_annual_kWh',
                 'demand_peak_kW',
-                'demand_annual_supplied_kWh'])], axis=1, sort=False)
+                'total_demand_supplied_annual_kWh',
+                'total_demand_shortage_annual_kWh'])], axis=1, sort=False)
 
         if results_blackout_characteristics == True:
             overall_results = pd.concat([overall_results, pd.DataFrame(columns=[
@@ -122,9 +129,9 @@ class sensitivity():
             'capacity_genset_kW',
             'capacity_pcoupling_kW',
             'res_share',
-            'consumption_fuel_annual',
-            'consumption_main_grid_annual',
-            'feedin_main_grid_annual'])], axis=1, sort=False)
+            'consumption_fuel_annual_l',
+            'consumption_main_grid_mg_side_annual_kWh',
+            'feedin_main_grid_mg_side_annual_kWh'])], axis=1, sort=False)
 
         if results_annuities == True:
             overall_results = pd.concat([overall_results, pd.DataFrame(columns=[
@@ -132,9 +139,9 @@ class sensitivity():
                 'annuity_storage',
                 'annuity_genset',
                 'annuity_pcoupling',
-                'annuity_grid_extension',
-                'annuity_project_fix',
-                'annuity_operational'])], axis=1, sort=False)
+                'annuity_distribution_grid',
+                'annuity_project',
+                'annuity_grid_extension'])], axis=1, sort=False)
 
         overall_results = pd.concat([overall_results, pd.DataFrame(columns=[
             'expenditures_fuel_annual',
@@ -149,9 +156,9 @@ class sensitivity():
                 'costs_storage',
                 'costs_genset',
                 'costs_pcoupling',
+                'costs_distribution_grid',
+                'costs_project',
                 'costs_grid_extension',
-                'costs_project_fix',
-                'costs_operation',
                 'expenditures_fuel_total',
                 'expenditures_main_grid_consumption_total',
                 'revenue_main_grid_feedin_total'])], axis=1, sort=False)
@@ -160,8 +167,10 @@ class sensitivity():
             'annuity',
             'npv',
             'lcoe',
+            'supply_reliability',
             'objective_value',
-            'simulation_time'])], axis=1, sort=False)
+            'simulation_time',
+            'comments'])], axis=1, sort=False)
 
         if number_of_demand_profiles > 1:
             overall_results = pd.concat([overall_results, pd.DataFrame(columns=['demand_profile'])], axis=1)

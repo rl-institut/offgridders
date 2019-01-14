@@ -53,11 +53,11 @@ else:
 if setting_batch_capacity == True:
     # Minimal batch capacities (always round up, if value is exactly met, add another batch)
     round_to_batch = {
-        'PV':           0.25,   # kWp
-        'GenSet':       0.25,   # kW
-        'Storage':      1,       # kWh
-        'Pcoupling':    1       # kW
-            }
+        'PV':           1,   # kWp
+        'GenSet':       0.5, # kW
+        'Storage':      5,   # kWh
+        'Pcoupling':    0.5  # kW
+        }
 
 #----------------------------White noise---------------------------------#
 if coding_process == True:
@@ -76,10 +76,16 @@ IT IS POSSIBLE TO SHIFT ELEMENTS BETWEEN THE LIST sensitivity_bounds <-> constan
 BUT DO NOT DELETE OR ADD NEW ELEMENTS WITHOUT CHANGING THE MAIN CODE
 '''
 
+# todo create extra for aspects that are in sensitivity bounds AND sensivitvity constants
+# - then the bound value can be varied with all other constant (base case as in constatnt)
+# resulting in less simulations!
+
 sensitivity_bounds = {
-    #'price_fuel':           {'min': 0.5,  'max': 1.5,     'step': 0.25},
+    #'price_fuel':           {'min': 2,  'max': 4,     'step': 1},
     #'maingrid_distance':    {'min': 20,  'max': 50,     'step': 5},
-    #'blackout_duration':    {'min': 2,  'max': 6,     'step': 1}
+    #'blackout_duration':    {'min': 2,  'max': 6,     'step': 2},
+    #'stability_limit':       {'min': 0,  'max': 1,     'step': 0.25},
+    #'storage_cost_investment':{'min': 400,  'max': 1000,     'step': 200}
     }
 
 # Values of the sensitivity analysis that appear constant
@@ -89,7 +95,10 @@ sensitivity_constants = {
     'blackout_frequency':	            7,	    # blackouts per month
     'blackout_frequency_std_deviation': 0,      # factor. Goal: 15%? 0 Means: No variability (percentual)
     'combustion_value_fuel':	        10,	    # kWh/unit
-    'costs_var_unsupplied_load':	    10,	    # /kWh
+    'costs_var_unsupplied_load':	    10,	    # /kWh  # todo rename
+    'distribution_grid_cost_investment': 0,
+    'distribution_grid_cost_opex':      50,  # /a
+    'distribution_grid_lifetime':       40,  #
     'genset_cost_investment':	        400,    # /unit
     'genset_cost_opex':	                25,     # /unit/a
     'genset_cost_var':	                0.023,  # /kWh
@@ -102,15 +111,16 @@ sensitivity_constants = {
     'maingrid_extension_cost_opex':     50,      # /km/a
     'maingrid_extension_lifetime':      20,      # /km/a
     'maingrid_electricity_price':       0.20,   # /unit
+    'maingrid_renewable_share':        0,      # factor of 1kWh produced renewably in main grid electricity mix
     'maingrid_feedin_tariff':           0.12,   # /unit
-    'max_share_unsupplied_load':	    0,	    # factor
-    'min_res_share':	                0,	    # factor	todo only works	properly for off-grid oem! Create add. transformer with input streams fuel (0%	res) + nat.grid (x%	res) and limit resshare there! #does not work at all for dispatch oem
+    'max_share_unsupplied_load':	    0,	    # factor # only active if allow_shortage = True # todo rename
+    'min_renewable_share':	            0.2,	    # factor	todo only works	properly for off-grid oem! Create add. transformer with input streams fuel (0%	res) + nat.grid (x%	res) and limit resshare there! #does not work at all for dispatch oem
     'pcoupling_cost_investment':	    600,    # /unit
     'pcoupling_cost_opex':	            5,      # /unit/a
     'pcoupling_cost_var':	            0,      # /kWh
     'pcoupling_efficiency':	            0.98,	# inverter inefficiency between highvoltage/mediumvoltage grid (maybe even split into feedin/feedfrom
     'pcoupling_lifetime':	            20,     # a
-    'price_fuel':	                    2,	# /unit
+    'price_fuel':	                    4,	# /unit
     'project_cost_fix':	                15000,	#
     'project_cost_opex':	            200,	# /a
     'project_life':	                    20,     # a
@@ -118,12 +128,14 @@ sensitivity_constants = {
     'pv_cost_opex':	                    5,      # /unit/a
     'pv_cost_var':	                    0,      # /kWh
     'pv_lifetime':	                    20,     # a
+    'stability_limit':                  0.5,    # factor of demand # Only active if include_stability_constraint=True
     'storage_capacity_max':	            1,	    # factor
     'storage_capacity_min':	            0.2,	# factor (1-DOD)
     'storage_cost_investment':	        800,    # /unit
     'storage_cost_opex':	            0,      # /unit/a
     'storage_cost_var':	                0,      # a
-    'storage_Crate':	                1,	    # factor (possible charge/discharge ratio to total capacity)
+    'storage_Crate_charge':	            1,	    # factor (possible charge/discharge ratio to total capacity)
+    'storage_Crate_discharge':	        1/5,	    # factor (possible charge/discharge ratio to total capacity)
     'storage_inflow_efficiency':	    0.9,	# factor
     'storage_initial_soc':	            None,	# None or factor (None: start charge chosen by OEM)
     'storage_lifetime':	                6,      # a

@@ -25,7 +25,7 @@ class config_func():
         for item in listof_cases:
             str_cases_simulated = str_cases_simulated + item + ', '
 
-        logging.info('The cases simulated are: ' + str_cases_simulated[:-2])
+        logging.info('The cases simulated are: base_oem, ' + str_cases_simulated[:-2])
         return listof_cases
 
     def input_data(experiment):
@@ -50,6 +50,10 @@ class config_func():
             'maingrid_extension_cost_capex':
                 economics.capex_from_investment(experiment['maingrid_extension_cost_investment'],
                                                 experiment['maingrid_extension_lifetime'],
+                                                experiment['project_life'], experiment['wacc'], experiment['tax']),
+            'distribution_grid_cost_capex':
+                economics.capex_from_investment(experiment['distribution_grid_cost_investment'],
+                                                experiment['distribution_grid_lifetime'],
                                                 experiment['project_life'], experiment['wacc'], experiment['tax'])
             })
 
@@ -66,18 +70,27 @@ class config_func():
             'project_cost_annuity':
                 economics.annuity(experiment['project_cost_fix'], experiment['crf'])+experiment['project_cost_opex'],
             'maingrid_extension_cost_annuity':
-                economics.annuity(experiment['maingrid_extension_cost_capex'], experiment['crf']) + experiment['maingrid_extension_cost_opex']
+                economics.annuity(experiment['maingrid_extension_cost_capex'], experiment['crf']) + experiment['maingrid_extension_cost_opex'],
+            'distribution_grid_cost_annuity':
+                economics.annuity(experiment['distribution_grid_cost_capex'], experiment['crf']) + experiment['distribution_grid_cost_opex'],
             })
 
         from config import coding_process
         if coding_process == True:
+            '''
+            Updating all annuities above to annuities "for the timeframe", so that optimization is based on more adequate 
+            costs. Includes project_cost_annuity, distribution_grid_cost_annuity, maingrid_extension_cost_annuity for 
+            consistency eventhough these are not used in optimization.
+            '''
             from config import evaluated_days
             experiment.update({
                 'pv_cost_annuity': experiment['pv_cost_annuity'] / 365*evaluated_days,
                 'genset_cost_annuity': experiment['genset_cost_annuity'] / 365*evaluated_days,
                 'storage_cost_annuity': experiment['storage_cost_annuity'] / 365*evaluated_days,
                 'pcoupling_cost_annuity': experiment['pcoupling_cost_annuity'] / 365*evaluated_days,
-                'project_cost_annuity': experiment['project_cost_annuity'] / 365 * evaluated_days
+                'project_cost_annuity': experiment['project_cost_annuity'] / 365 * evaluated_days,
+                'distribution_grid_cost_annuity': experiment['distribution_grid_cost_annuity'] / 365 * evaluated_days,
+                'maingrid_extension_cost_annuity': experiment['maingrid_extension_cost_annuity'] / 365 * evaluated_days
             })
 
         return experiment
@@ -99,11 +112,9 @@ class config_func():
 
         else:
             if restore_oemof_if_existant == False:
-                #list_of_folders = [output_folder, output_folder  +   "/oemof", output_folder  +   "/storage", output_folder  +   "/electricity_bus"]
-                #for folder in list_of_folders:
-                for root, dirs, files in os.walk(folder):
+                for root, dirs, files in os.walk(output_folder):
                     for f in files:
-                        os.remove(folder+'/'+f)
+                        os.remove(root+'/'+f)
                 logging.info('Deleted all files in folder "simulation_results".')
         return
 
@@ -150,11 +161,19 @@ class helpers:
             plt.show()
         return
 
+    def define_base_capacities(oemof_results):
+        capacities_base = {'capacity_pv_kWp': oemof_results['capacity_pv_kWp'],
+                         'capacity_storage_kWh': oemof_results['capacity_storage_kWh'],
+                         'capacity_genset_kW': oemof_results['capacity_genset_kW'],
+                         'capacity_pcoupling_kW': oemof_results['capacity_pcoupling_kW']}
+        return capacities_base
+
 
     def store_result_matrix(overall_results, experiment, oemof_results, duration):
         """
         Storing results to vector and then result matrix for saving it in csv.
         """
+        round_to_comma = 5
         round_to_comma = 5
         result_series = pd.Series()
 
@@ -200,7 +219,7 @@ class economics():
 
     def capex_from_investment(investment_t0, lifetime, project_life, wacc, tax):
         # [quantity, investment, installation, weight, lifetime, om, first_investment]
-        number_of_investments = int(round(project_life / lifetime))
+        number_of_investments = int(round(project_life / lifetime+0.5))
 
         # costs with quantity and import tax at t=0
         first_time_investment = investment_t0 * (1+tax)

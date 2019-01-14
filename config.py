@@ -2,25 +2,30 @@ import pandas as pd
 
 ####### ------------ General simulation settings ----------------- #######
 coding_process                  = False  # Defines timeframe and noise (see below)
-restore_oemof_if_existant       = True  # If set to False, the directory with results is emptied!!
-restore_blackouts_if_existant   = True
+restore_oemof_if_existant       = False  # If set to False, the directory with results is emptied!!
+restore_blackouts_if_existant   = False
 base_case_with_min_loading      = False   # If set to True, the generator capacity will be equal to peak demand in kW!
+
 # TOdo allow multiple generators here (or even allow multiple generators in general??)
 
 # simulated cases:
 simulated_cases = {
-    'offgrid_fixed': False,             # dispatch with base oem capacities
-    'interconnected_buy': False,         # dispatch with interconnected main grid (only consumption)
-    'interconnected_buysell': False,     # dispatch with interconnected main grid (consumption+feedin)
-    'oem_grid_tied_mg': False,           # optimization of grid-tied mg (consumption+feedin)
-    'buyoff': False,
-    'parallel': False,
-    'adapted': False,
+    'offgrid_fixed': True,             # dispatch with base oem capacities
+    'interconnected_buy': True,        # dispatch with interconnected main grid (only consumption)
+    'interconnected_buysell': True,    # dispatch with interconnected main grid (consumption+feedin)
+    'oem_grid_tied_mg': True,          # optimization of grid-tied mg (consumption+feedin)
+    'sole_maingrid': True,             # supply only by main grid (allowed shortage variable)
+    'buyoff': False, # todo not implemented
+    'parallel': False, # todo not implemented
+    # todo this could also be 1year without grid interconnection and one year with interconnection...?
+    'adapted': False, # todo not implemented
 }
 
 # oemof simulation
-allow_shortage              = False  # Allow supply shortage, details given below
-setting_batch_capacity      = True
+allow_shortage               = False  # Allow supply shortage, details given below
+setting_batch_capacity       = True
+include_stability_constraint = True
+setting_pcc_utility_owned    = True # if true, then consumption/feed in is counted from mg side, ie. transformer loss is revenue loss of utility
 
 ####### ----------------- Settings for files------------------- #######
 # Input (files)
@@ -41,8 +46,8 @@ setting_save_lp_file                = True  # save lp file of oemof simulation
 setting_save_oemofresults           = True   # save oemofresults to .oemof file
 display_graphs_solar                = False
 display_graphs_demand               = False
-display_graphs_flows_storage        = False
-display_graphs_flows_electricity_mg = False
+display_graphs_flows_storage        = True
+display_graphs_flows_electricity_mg = True
 
 print_simulation_meta       = False  # print information on opimization
 print_simulation_main       = False  # print accumulated flows over electricity bus
@@ -50,7 +55,7 @@ print_simulation_invest     = False  # print investment results
 print_simulation_experiment = False  # Print data on experiment run (sensitivity analysis)
 
 # Choose flows saved to csv
-setting_save_flows_storage          = False
+setting_save_flows_storage          = True
 setting_save_flows_electricity_mg   = True
 
 # Choose results saves in csv
@@ -74,8 +79,9 @@ debug = True  # Set number_of_timesteps to 3 to get a readable lp-file.
 # Simulation timeframe
 if coding_process == True:
     evaluated_days  =  1
-    time_start      = pd.to_datetime('2018-07-07 0:00', format='%Y-%m-%d %H:%M')
+    time_start      = pd.to_datetime('2018-07-07 12:00', format='%Y-%m-%d %H:%M')
     time_end        = time_start + pd.DateOffset(days=evaluated_days) - pd.DateOffset(hours=1)
+    #time_end = pd.to_datetime('2018-07-07 15:00', format='%Y-%m-%d %H:%M')
     time_frequency  = 'H'
 
 else:
