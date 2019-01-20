@@ -72,7 +72,6 @@ cmdline_option       = 'ratioGap' #  options for solver: allowedGap,  mipgap, ra
 cmdline_option_value = 1*10**(-1)
 
 # Debugging
-debug = True  # Set number_of_timesteps to 3 to get a readable lp-file.
 
 ####### ----------------- Input data for settings  ------------------- #######
 
@@ -83,6 +82,8 @@ if coding_process == True:
     time_end        = time_start + pd.DateOffset(days=evaluated_days) - pd.DateOffset(hours=1)
     #time_end = pd.to_datetime('2018-07-07 15:00', format='%Y-%m-%d %H:%M')
     time_frequency  = 'H'
+    debug = True  # Set number_of_timesteps to 3 to get a readable lp-file.
+
 
 else:
     evaluated_days = 365
@@ -90,6 +91,6 @@ else:
     time_end       = time_start + pd.DateOffset(days=evaluated_days) - pd.DateOffset(hours=1)
     time_frequency = 'H'
     # date_time_index.freq checkts for frequency, but result is sth like <Hour> or <15 * Minutes>
-
+    debug = False  # Set number_of_timesteps to 3 to get a readable lp-file.
 
 date_time_index = pd.date_range(start=time_start, end=time_end, freq=time_frequency)
