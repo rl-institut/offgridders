@@ -6,7 +6,7 @@ import pprint as pp
 import logging
 import pandas as pd
 
-def stability_criterion(model, case_dict, experiment, storage, sink_demand, genset, pcc_consumption, el_bus, grid_availability):
+def stability_criterion(model, case_dict, experiment, storage, sink_demand, genset, pcc_consumption, source_shortage, el_bus, grid_availability):
     '''
     Set a minimal limit for operating reserve of diesel generator + storage to aid PV generation in case of volatilities
     = Ensure stability of MG system
@@ -66,8 +66,11 @@ def stability_criterion(model, case_dict, experiment, storage, sink_demand, gens
         expr = CAP_genset
         ## ------- Get demand at t ------- #
         demand = model.flows[el_bus, sink_demand].actual_value[t] * model.flows[el_bus, sink_demand].nominal_value
-        # todo: this should be - stability_limit * (demand - shortage)!!! otherwise it is not possible to have shortage after all.
         expr += - stability_limit * demand
+        ## ------- Get shortage at t------- #
+        if case_dict['allow_shortage'] == True:
+            shortage = model.flow[source_shortage,el_bus,t]
+            expr += - stability_limit * shortage
         ##---------Grid consumption t-------#
         # this should not be actual consumption but possible one  - like grid_availability[t]*pcc_consumption_cap
         if case_dict['pcc_consumption_fixed_capacity'] != None:
@@ -83,6 +86,7 @@ def stability_criterion(model, case_dict, experiment, storage, sink_demand, gens
             else:
                 print ("Error: 'storage_fixed_capacity' can only be None, False or float.")
             expr += storage_capacity * experiment['storage_Crate_discharge']
+
         return (expr >= 0)
 
     model.stability_constraint = po.Constraint(model.TIMESTEPS, rule=stability_rule)
@@ -108,10 +112,15 @@ def stability_test(case_dict, oemof_results, experiment, e_flows_df):
 
     genset_capacity = oemof_results['capacity_genset_kW']
 
+    if case_dict['allow_shortage'] == True:
+        shortage = e_flows_df['Demand shortage']
+    else:
+        shortage = pd.Series([0 for t in demand_profile.index], index=demand_profile.index)
+
     # todo adjust if timestep not 1 hr
     boolean_test = [
         genset_capacity + storage_capacity[t] * experiment['storage_Crate_discharge'] + pcc_capacity[t] \
-        >= experiment['stability_limit'] * demand_profile[t]
+        >= experiment['stability_limit'] * (demand_profile[t] - shortage[t])
         for t in range(0, len(demand_profile.index))
     ]
 
@@ -122,38 +131,6 @@ def stability_test(case_dict, oemof_results, experiment, e_flows_df):
         oemof_results.update({'comments': oemof_results['comments'] + 'Stability criterion not fullfilled. '})
 
     return
-
-def storage_criterion(case_dict, model, storage, el_bus, experiment):
-    if storage == None:
-        def discharge_rule(model, t):
-            storage_capacity = 0
-            if case_dict['storage_fixed_capacity'] == False:  # Storage subject to OEM
-                storage_capacity += model.GenericInvestmentStorageBlock.capacity[storage, t]
-            elif isinstance(case_dict['storage_fixed_capacity'], float): # Fixed storage subject to dispatch
-                storage_capacity += model.GenericStorageBlock.capacity[storage, t]
-
-            allowed_discharge = storage_capacity * experiment['storage_Crate_discharge']
-            discharge = model.flow[storage, el_bus, t]
-
-            return (discharge <= allowed_discharge)
-
-        model.discharge_constraint = po.Constraint(model.TIMESTEPS, rule=discharge_rule)
-
-        def charge_rule(model, t):
-            storage_capacity = 0
-            if case_dict['storage_fixed_capacity'] == False:  # Storage subject to OEM
-                storage_capacity += model.GenericInvestmentStorageBlock.capacity[storage, t]
-            elif isinstance(case_dict['storage_fixed_capacity'], int):  # Fixed storage subject to dispatch
-                storage_capacity += model.GenericStorageBlock.capacity[storage, t]
-
-            allowed_charge = storage_capacity * experiment['storage_Crate_charge']
-            charge = model.flow[el_bus, storage, t]
-
-            return (charge <= allowed_charge)
-
-        model.charge_constraint = po.Constraint(model.TIMESTEPS, rule=charge_rule)
-
-    return model
 
 # todo implement renewable share criterion in oemof model and cases
 def renewable_share_criterion(model, experiment, total_demand, genset, pcc_consumption, el_bus):

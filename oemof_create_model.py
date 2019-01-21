@@ -132,7 +132,9 @@ class oemof_model:
 
         #------Optional: Shortage source'''
         if case_dict['allow_shortage'] == True:
-            generate.shortage(micro_grid_system, bus_electricity_mg, experiment, case_dict) # changed order
+            source_shortage = generate.shortage(micro_grid_system, bus_electricity_mg, experiment, case_dict) # changed order
+        else:
+            source_shortage = None
 
         logging.debug('Initialize the energy system to be optimized')
         model = solph.Model(micro_grid_system)
@@ -154,6 +156,7 @@ class oemof_model:
                                             sink_demand = sink_demand,
                                             genset = genset,
                                             pcc_consumption = pointofcoupling_consumption,
+                                            source_shortage=source_shortage,
                                             el_bus = bus_electricity_mg,
                                             grid_availability = grid_availability)
         else:

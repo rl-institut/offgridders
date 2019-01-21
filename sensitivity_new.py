@@ -29,21 +29,22 @@ class experiment_dict:
 
         experiments, total_number_of_experiments = get.project_site_experiments(sensitivity_experiments, project_sites)
 
-        title_overall_results = get.overall_results_title(number_of_project_sites, sensitivity_array_dict)
-
-        for experiment_number in sensitivity_experiments:
-            get.experiment_name(sensitivity_experiments[experiment_number], sensitivity_array_dict,
+        for experiment_number in experiments:
+            get.experiment_name(experiments[experiment_number], sensitivity_array_dict,
                             number_of_project_sites)
 
-        experiments_dataframe = pd.DataFrame.from_dict(experiments, orient='index')
-        experiments_dataframe.to_csv('s.csv')
+        title_overall_results = get.overall_results_title(number_of_project_sites, sensitivity_array_dict)
 
-        logging.info('For ' + str(number_of_project_sites)
-                     + ' with ' + str(int(total_number_of_experiments/number_of_project_sites)) + ' scenarios each'
-                     + ' a total of ' + str(total_number_of_experiments) + ' experiments will be performed')
+        experiments_dataframe = pd.DataFrame.from_dict(sensitivity_experiments, orient='index')
+        experiments_dataframe.to_csv(settings['output_folder']+'/Input_data_of_all_cases.csv')
 
-        experiments_dataframe = pd.DataFrame.from_dict(experiments, orient='index')
-        experiments_dataframe.to_csv('s.csv')
+        message = 'For ' + str(number_of_project_sites)
+        message += ' with ' + str(int(total_number_of_experiments/number_of_project_sites)) + ' scenarios each'
+        message += ' a total of ' + str(total_number_of_experiments) + ' experiments will be performed'
+
+        logging.info(message)
+        print(message)
+
         return experiments, title_overall_results
 
     def combinations_all_possible(settings, parameters_constant_values, parameters_sensitivity, project_sites):
@@ -54,12 +55,12 @@ class experiment_dict:
         universal_parameters, number_of_project_sites = get.universal_parameters(settings, parameters_constant_values, parameters_sensitivity,
                                                         project_sites)
 
-        sensitivity_array_dict = get.dict_sensitivies_arrays(parameters_sensitivity)
+        sensitivity_array_dict = get.dict_sensitivies_arrays(parameters_sensitivity, project_sites)
 
         sensitivity_experiments = get.all_combinations(sensitivity_array_dict, project_sites, number_of_project_sites)
 
-        for experiment in sensitivity_experiments:
-            experiment.update(universal_parameters)
+        for experiment_number in sensitivity_experiments:
+            sensitivity_experiments[experiment_number].update(universal_parameters.copy())
 
         return sensitivity_experiments, number_of_project_sites, sensitivity_array_dict, number_of_project_sites
 
@@ -116,21 +117,21 @@ class get:
         return sensitivity_array_dict
 
     def all_combinations(sensitivity_array_dict, project_sites, number_of_project_sites):
-
-        project_site_names = np.array([key for key in project_sites])
-        sensitivity_array_dict.update({'project_site_name': project_site_names})
-
         # create all possible combinations of sensitive parameters
         keys, values = zip(*sensitivity_array_dict.items())
-        sensitivity_experiments = [dict(zip(keys, v)) for v in itertools.product(*values)]
+        all_experiments = [dict(zip(keys, v)) for v in itertools.product(*values)]
+
+        number_of_experiment = 0
+        sensitivity_experiments = {}
+        for experiment in all_experiments:
+            number_of_experiment += 1
+            sensitivity_experiments.update({number_of_experiment: experiment.copy()})
 
         return sensitivity_experiments
 
     def experiment_name(experiment, sensitivity_array_dict, number_of_project_sites):
         # define file postfix to save simulation
          # todo some kind of sorting         sensitivity_array_ = pd.DataFrame.from_dict(sensitivity_array_dict, orient='index').sort_index(axis='index')
-        sensitivities = {}
-
         filename = '_s'
         if number_of_project_sites > 1:
             if isinstance(experiment['project_site_name'], str):
@@ -148,21 +149,17 @@ class get:
         if filename == '_s':
             filename = ''
         experiment.update({'filename': filename})
-
-        sensitivities = pd.DataFrame.from_dict(sensitivities, orient='index')
-        sensitivities.to_csv('s.csv')
-
         return
 
     def project_site_experiments(sensitivity_experiments, project_sites):
         experiments = {}
         number_of_experiments = 0
-        for number in sensitivity_experiments:
+        for experiment in sensitivity_experiments:
             for key in project_sites:
                 # fill dictionary with all constant values defining the different simulations of the sensitivity analysis
                 # ! do not use a key two times or in sensitivity_bounds as well, as it will be overwritten by new information
                 number_of_experiments += 1
-                experiments.update({number_of_experiments: sensitivity_experiments[number]})
+                experiments.update({number_of_experiments: sensitivity_experiments[experiment].copy()})
                 experiments[number_of_experiments].update({'project_site_name': key})
                 experiments[number_of_experiments].update(project_sites[key].copy())
 
@@ -249,43 +246,50 @@ class get:
 
 class remove_doubles():
     def constants_project_sites(parameters_constant_values, project_sites):
+        # todo test and describe
         # remove all entries that are doubled in parameters_constant_values, settings & project_sites from parameters_constant_values
         str = 'Attributes "'
-        for key in parameters_constant_values:
+        keys = parameters_constant_values.copy().keys()
+        for key in keys:
             if key in project_sites:
                 del parameters_constant_values[key]
-                str += key + " ,"
+                str += key + ", "
         if str != 'Attributes "':
             str = str[
-                  :-2] + "defined in constant and project site parameters. Only project site value will be used for experiments"
+                  :-2] + '" defined in constant and project site parameters. Only project site value will be used for experiments.'
             logging.warning(str)
-            print(str)
+        return
 
     def project_sites_sensitivity(parameters_sensitivity, project_sites):
+        # todo test and describe
         # remove all entries that are doubled in sensitivity_bounds, project_sites
         str = 'Attributes "'
-        for key in parameters_sensitivity:
+        keys = parameters_sensitivity.copy().keys()
+        for key in keys:
             if key in project_sites:
+                #todo this preferrs project site definition over sensitivity definition
+                # todo base case definition not based on individual project sites if sensitivity performed, instead based on constant values. meaning, eventhough for villA fuel=2 and villB fuel=3, in const fuel = 1, each has base case with const fuel = 1
                 del parameters_sensitivity[key]
-                str += key + " ,"
+                str += key + ", "
         if str != 'Attributes "':
             str = str[
-                  :-2] + "defined in project site and sensitvity parameters. Only sensitivity parameters will be used for experiments"
+                  :-2] + '" defined in project site and sensitvity parameters. Only sensitivity parameters will be used for experiments.'
             logging.warning(str)
-            print(str)
+        return
 
     def constants_senstivity(parameters_constant_values, parameters_sensitivity):
+        # todo test and describe
         # remove all entries that are doubled in parameters_constant_values, settings & parameters_sensitivity
         str = 'Attributes "'
-        for key in parameters_constant_values:
+        keys = parameters_constant_values.copy().keys()
+        for key in keys:
             if key in parameters_sensitivity:
                 del parameters_constant_values[key]
-                str += key + " ,"
+                str += key + ", "
         if str != 'Attributes "':
             str = str[
-                  :-2] + "defined in constant and sensitivity parameters. Only sensitivity parameter value will be used for experiments"
+                  :-2] + '" defined in constant and sensitivity parameters. Only sensitivity parameter value will be used for experiments.'
             logging.warning(str)
-            print(str)
         return
 
 

@@ -52,7 +52,7 @@ class generate():
                                            nominal_value    = case_dict['max_shortage'] * case_dict['total_demand'],
                                            summed_max       = 1)})
         micro_grid_system.add(source_shortage)
-        return
+        return source_shortage
 
     def maingrid_consumption(micro_grid_system, bus_electricity_ng, experiment, grid_availability):
         '''

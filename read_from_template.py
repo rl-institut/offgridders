@@ -17,24 +17,34 @@ class excel_input():
         parameters_sensitivity = excel_input.get_parameters_sensitivity(file, sheet_input_sensitivity)
         project_sites = excel_input.get_project_sites(file, sheet_project_sites)
         case_definitions = excel_input.get_case_definitions(file, sheet_case_definitions)
-
         return settings, parameters_constant_values, parameters_sensitivity, project_sites, case_definitions
 
     def get_data(file, sheet, header_row, index_column, last_column):
         data = pd.read_excel(file,
-                          sheet_name=sheet,
-                          header=header_row-1,
-                          index_col=0,
-                          usecols=index_column+":"+last_column)
-                          #usecols=[i for i in range(index_column-1,last_column)])
-
+                             sheet_name=sheet,
+                             header=header_row-1,
+                             index_col=0,
+                             usecols=index_column+":"+last_column)
         data = data.dropna()
         return data
+
+    def identify_true_false(entry):
+        if entry == 'True':
+            entry = True
+        elif entry == 'False':
+            entry = False
+        else:
+            pass
+
+        return entry
 
     def get_settings(file, sheet_settings):
         settings = excel_input.get_data(file, sheet_settings, 11, "B", "C")
         settings = settings.to_dict(orient='dict')
         settings = settings['setting_value']
+        # Translate strings 'True' and 'False' from excel sheet to True and False
+        for key in settings:
+            settings[key] = excel_input.identify_true_false(settings[key])
         return settings
 
     def get_parameters_constant(file, sheet_input_constant):
@@ -52,13 +62,23 @@ class excel_input():
     def get_project_sites(file, sheet_project_sites):
         project_sites = excel_input.get_data(file, sheet_project_sites, 2, "A", "D")
         evaluated_locations = len(project_sites.columns)
+        # todo logging of evaluated project sites
         project_site_name_list = [project_sites.columns[i] for i in range(0, len(project_sites.columns))]
         project_sites = project_sites.to_dict(orient='index')
+        # Translate strings 'True' and 'False' from excel sheet to True and False
+        for site in project_sites:
+            for key in project_sites[site]:
+                project_sites[site][key] = excel_input.identify_true_false(project_sites[site][key])
         return project_sites
 
     def get_case_definitions(file, sheet_project_sites):
         case_definitions = excel_input.get_data(file, sheet_project_sites, 16, "A", "H")
+        # todo logging message for evaluated cases - also consider setting "perform_simulation"
         case_list = [case_definitions.columns[i] for i in range(0, len(case_definitions.columns))]
         # here: if case_list perform_simulation==False: remove column
         case_definitions = case_definitions.to_dict(orient='dict')
+        # Translate strings 'True' and 'False' from excel sheet to True and False
+        for case in case_definitions:
+            for key in case_definitions[case]:
+                case_definitions[case][key] = excel_input.identify_true_false(case_definitions[case][key])
         return case_definitions
