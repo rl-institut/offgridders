@@ -40,7 +40,10 @@ class output:
         mg_flows = pd.DataFrame(e_flows_df['Demand'].values, columns=['Demand'], index=e_flows_df['Demand'].index)
         for entry in flows_connected_to_electricity_mg_bus:
             if entry in e_flows_df.columns:
-                new_column = pd.DataFrame(e_flows_df[entry].values, columns=[entry], index=e_flows_df[entry].index)
+                if entry in ['Storage discharge', 'Demand shortage', 'Feed into main grid (MG side)']:
+                    new_column = pd.DataFrame(-e_flows_df[entry].values, columns=[entry], index=e_flows_df[entry].index) # Display those values as negative in graphs/files
+                else:
+                    new_column = pd.DataFrame(e_flows_df[entry].values, columns=[entry], index=e_flows_df[entry].index)
                 mg_flows = mg_flows.join(new_column)
 
         if setting_save_flows_storage == True:
@@ -75,7 +78,10 @@ class output:
 
             for entry in flows_connected_to_electricity_mg_bus:
                 if entry in e_flows_df.columns:
-                    new_column = pd.DataFrame(e_flows_df[entry].values, columns=[entry], index=e_flows_df[entry].index)
+                    if entry == 'Storage discharge':
+                        new_column = pd.DataFrame(-e_flows_df[entry].values, columns=[entry], index=e_flows_df[entry].index)
+                    else:
+                        new_column = pd.DataFrame(e_flows_df[entry].values, columns=[entry], index=e_flows_df[entry].index)
                     storage_flows = storage_flows.join(new_column)
 
             if setting_save_flows_storage == True:

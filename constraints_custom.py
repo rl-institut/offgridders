@@ -12,7 +12,7 @@ def stability_criterion(model, case_dict, experiment, storage, sink_demand, gens
     = Ensure stability of MG system
 
       .. math:: for t in lp_files.TIMESTEPS:
-            stability_limit * demand (t) <= CAP_genset + storage_capacity (t) *invest_relation_output_capacity
+            stability_limit * demand (t) <= CAP_genset + stored_electricity (t) *invest_relation_output_capacity
 
     Parameters
     - - - - - - - -
@@ -78,15 +78,16 @@ def stability_criterion(model, case_dict, experiment, storage, sink_demand, gens
         ## ------- Get stored capacity storage at t------- #
         # todo adjust if timestep not 1 hr
         if case_dict['storage_fixed_capacity'] != None:
-            storage_capacity = 0
+            stored_electricity = 0
             if case_dict['storage_fixed_capacity'] == False:  # Storage subject to OEM
-                storage_capacity += model.GenericInvestmentStorageBlock.capacity[storage, t]
+                stored_electricity += model.GenericInvestmentStorageBlock.capacity[storage, t]  - experiment['storage_capacity_min'] * model.GenericInvestmentStorageBlock.invest[storage]
+                print(stored_electricity)
             elif isinstance(case_dict['storage_fixed_capacity'], float): # Fixed storage subject to dispatch
-                storage_capacity += model.GenericStorageBlock.capacity[storage, t]
+                stored_electricity += model.GenericStorageBlock.capacity[storage, t] - experiment['storage_capacity_min'] * storage.nominal_capacity
             else:
                 print ("Error: 'storage_fixed_capacity' can only be None, False or float.")
-            expr += storage_capacity * experiment['storage_Crate_discharge']
-
+            expr += stored_electricity * experiment['storage_Crate_discharge']
+        print (expr)
         return (expr >= 0)
 
     model.stability_constraint = po.Constraint(model.TIMESTEPS, rule=stability_rule)
@@ -101,9 +102,9 @@ def stability_test(case_dict, oemof_results, experiment, e_flows_df):
     demand_profile = e_flows_df['Demand']
 
     if ('Stored capacity' in e_flows_df.columns):
-        storage_capacity = e_flows_df['Stored capacity']
+        stored_electricity = e_flows_df['Stored capacity']
     else:
-        storage_capacity = pd.Series([0 for t in demand_profile.index], index=demand_profile.index)
+        stored_electricity = pd.Series([0 for t in demand_profile.index], index=demand_profile.index)
 
     if ('Grid availability' in e_flows_df.columns):
         pcc_capacity = oemof_results['capacity_pcoupling_kW'] * e_flows_df['Grid availability']
@@ -116,10 +117,12 @@ def stability_test(case_dict, oemof_results, experiment, e_flows_df):
         shortage = e_flows_df['Demand shortage']
     else:
         shortage = pd.Series([0 for t in demand_profile.index], index=demand_profile.index)
-
+    print(oemof_results['capacity_storage_kWh']) # todo stability criterion is not fulllfilled, eventhough included in constraint
     # todo adjust if timestep not 1 hr
     boolean_test = [
-        genset_capacity + storage_capacity[t] * experiment['storage_Crate_discharge'] + pcc_capacity[t] \
+        genset_capacity
+        + (stored_electricity[t] - oemof_results['capacity_storage_kWh'] *  experiment['storage_capacity_min']) *  experiment['storage_Crate_discharge']
+        + pcc_capacity[t] \
         >= experiment['stability_limit'] * (demand_profile[t] - shortage[t])
         for t in range(0, len(demand_profile.index))
     ]
@@ -133,7 +136,7 @@ def stability_test(case_dict, oemof_results, experiment, e_flows_df):
     return
 
 # todo implement renewable share criterion in oemof model and cases
-def renewable_share_criterion(model, experiment, total_demand, genset, pcc_consumption, el_bus):
+def renewable_share_criterion(model, experiment, genset, pcc_consumption, wind_plant, solar_plant, el_bus):
     # todo doesnt work
     '''
     Resulting in an energy system adhering to a minimal renewable factor
@@ -163,25 +166,30 @@ def renewable_share_criterion(model, experiment, total_demand, genset, pcc_consu
         For accessing flow-parameters
     '''
 
-    #print("1")
-    #print (model.flow[genset, el_bus, 0])
-    #print (dir(model.flow[genset, el_bus, 0]))
-    #print("2")
-    #sum = 0
-    #for t in model.TIMESTEPS:
-    #    sum +=model.flow[genset, el_bus, t]
-    #print(sum)
-    #print("3")
-    #print(model.flow[genset, el_bus])
     def renewable_share_rule(model):
-        # generation of fossil-fuelled generator
-        actual_fossil_generation = sum(model.flow[genset, el_bus, t] for t in model.TIMESTEPS)
-        # consumption from grid, if connected
-        if pcc_consumption != None:
-            actual_fossil_generation += sum(model.flow[pcc_consumption, el_bus, t] for t in model.TIMESTEPS) \
-                                        * (1 - experiment['maingrid_renewable_share'])
+        fossil_generation = 0
+        total_generation = 0
 
-        expr = (experiment['min_renewable_share'] <= 1 - actual_fossil_generation/total_demand)
+        if genset != None:
+            genset_generation_kWh = sum(model.flow[genset, el_bus, t] for t in model.TIMESTEPS)
+            total_generation += genset_generation_kWh
+            fossil_generation += genset_generation_kWh
+
+        if pcc_consumption != None:
+            pcc_consumption_kWh = sum(model.flow[pcc_consumption, el_bus, t] for t in model.TIMESTEPS)
+            total_generation += pcc_consumption
+            fossil_generation += pcc_consumption_kWh * (1 - experiment['maingrid_renewable_share'])
+
+        if wind_plant != None:
+            wind_plant_generation_kWh = sum(model.flow[wind_plant, el_bus, t] for t in model.TIMESTEPS)
+            total_generation += wind_plant_generation_kWh
+
+        if solar_plant != None:
+            solar_plant_generation = sum(model.flow[solar_plant, el_bus, t] for t in model.TIMESTEPS)
+            total_generation += solar_plant_generation
+
+        expr = (experiment['min_renewable_share'] <= 1 - fossil_generation/total_generation)
+
         return expr
 
     model.renewable_share_constraint = po.Constraint(rule=renewable_share_rule)

@@ -139,13 +139,6 @@ class oemof_model:
         logging.debug('Initialize the energy system to be optimized')
         model = solph.Model(micro_grid_system)
 
-        #if case_dict['storage_fixed_capacity'] != None:
-        #    logging.debug('Adding storage charge and discharge constraint.')
-        #    constraints.storage_criterion(case_dict, model,
-        #                                  storage=generic_storage,
-        #                                  el_bus = bus_electricity_mg,
-        #                                  experiment=experiment)
-        # add stability constraint
         if case_dict['stability_constraint'] == False:
             pass
         elif isinstance(case_dict['stability_constraint'], float):

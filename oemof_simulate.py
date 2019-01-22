@@ -93,6 +93,7 @@ class oemof_simulate:
 
         # todo still decide with of the flows to include in e_flow_df, and which ones to put into oemof results for cost calculation (expenditures, revenues)
         e_flows_df = timeseries.get_national_grid(case_dict, oemof_results, results, e_flows_df, grid_availability)
+
         timeseries.get_res_share(case_dict, oemof_results, experiment)
 
         plausability_tests.run(oemof_results, e_flows_df)
