@@ -78,7 +78,7 @@ cmdline_option_value = 1*10**(-1)
 # Simulation timeframe
 if coding_process == True:
     evaluated_days  =  1
-    time_start      = pd.to_datetime('2018-07-07 12:00', format='%Y-%m-%d %H:%M')
+    time_start      = pd.to_datetime('2018-07-07 00:00', format='%Y-%m-%d %H:%M')
     time_end        = time_start + pd.DateOffset(days=evaluated_days) - pd.DateOffset(hours=1)
     #time_end = pd.to_datetime('2018-07-07 15:00', format='%Y-%m-%d %H:%M')
     time_frequency  = 'H'

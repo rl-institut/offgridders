@@ -18,7 +18,7 @@ import oemof.outputlib as outputlib
 # For speeding up lp_files and bus/component definition in oemof as well as processing
 from oemof_create_model import oemof_model
 from case_definitions import utilities
-from timeseries import timeseries
+from oemof_evaluate import timeseries
 from plausability_tests import plausability_tests
 from output_functions import output
 from economic_evaluation import economic_evaluation
@@ -100,6 +100,7 @@ class oemof_simulate:
 
         # todo this is not jet implemented!
         constraints.stability_test(case_dict, oemof_results, experiment, e_flows_df)
+        #constraints.renewable_share_test(case_dict, oemof_results, experiment)
 
         # todo this has to be at end using e_flows_df, has to be edited
         output.outputs_mg_flows(case_dict, e_flows_df, experiment['filename'])

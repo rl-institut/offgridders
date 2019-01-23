@@ -9,7 +9,7 @@ from config import use_input_file_demand, use_input_file_weather, setting_batch_
 if use_input_file_demand == True:
     input_files_demand       = {#'demand_low':        './inputs/demand_zambia_low.csv',
                                 #'demand_high':       './inputs/demand_zambia_high.csv',
-                                'demand_median':     './inputs/demand_zambia_median.csv'
+                                'demand_median':     './inputs/Example1_Masbate.csv'
                                 }
     unit_of_input_file      = 'kWh'
     if unit_of_input_file == 'Wh': unit_factor = 1000

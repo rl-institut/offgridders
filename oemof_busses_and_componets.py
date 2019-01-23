@@ -99,7 +99,7 @@ class generate():
                                                                          )})
 
         micro_grid_system.add(source_pv)
-        return
+        return source_pv
 
     def pv_oem(micro_grid_system, bus_electricity_mg, experiment, pv_generation_per_kWp):
         pv_norm = pv_generation_per_kWp / max(pv_generation_per_kWp)
@@ -115,7 +115,7 @@ class generate():
                                                                          variable_costs = experiment['pv_cost_var']/max(pv_generation_per_kWp)
                                                                          )})
         micro_grid_system.add(source_pv)
-        return
+        return source_pv
 
     def genset_fix(micro_grid_system, bus_fuel, bus_electricity_mg, experiment, capacity_fuel_gen):
         if experiment['genset_min_loading'] == 0:

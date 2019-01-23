@@ -6,7 +6,7 @@ dictonary, including filenames.
 
 import pandas as pd
 import logging
-from read_from_template import excel_input
+from read_from_files import excel_template
 import itertools
 import numpy as np
 import pprint as pp
@@ -14,7 +14,7 @@ import pprint as pp
 class experiment_dict:
 
     def get():
-        settings, parameters_constant_values, parameters_sensitivity, project_sites, case_definitions = excel_input.settings()
+        settings, parameters_constant_values, parameters_sensitivity, project_sites, case_definitions = excel_template.settings()
 
         if settings['sensitivity_all_combinations'] == True:
             sensitivity_experiments, number_of_project_sites, sensitivity_array_dict, number_of_project_sites = \

@@ -41,13 +41,12 @@ class oemof_model:
 
         #------        pv ------#
         if case_dict['pv_fixed_capacity']==None:
-            pass # no pv created # todo: or does it make sense to have a pv module with cap 0 for later evaluation?
-
+            solar_plant = None
         elif case_dict['pv_fixed_capacity']==False:
-            generate.pv_oem(micro_grid_system, bus_electricity_mg, experiment, pv_generation_per_kWp)
+            solar_plant = generate.pv_oem(micro_grid_system, bus_electricity_mg, experiment, pv_generation_per_kWp)
 
         elif isinstance(case_dict['pv_fixed_capacity'], float):
-            generate.pv_fix(micro_grid_system, bus_electricity_mg, experiment, pv_generation_per_kWp,
+            solar_plant = generate.pv_fix(micro_grid_system, bus_electricity_mg, experiment, pv_generation_per_kWp,
                             capacity_pv=case_dict['pv_fixed_capacity'])
 
         else:
@@ -159,18 +158,17 @@ class oemof_model:
         if case_dict['renewable_share_constraint']==False:
             pass
         elif isinstance(case_dict['renewable_share_constraint'], float):
-            logging.debug('Adding renewable share constraint.')
+            logging.info('Adding renewable share constraint.')
             constraints.renewable_share_criterion(model,
-                                      experiment = experiment,
-                                      total_demand = case_dict['total_demand'],
-                                      genset = transformer_fuel_generator,
-                                      pcc_consumption = pointofcoupling_consumption,
-                                      el_bus=bus_electricity_mg)
+                                                  experiment = experiment,
+                                                  genset = genset,
+                                                  pcc_consumption = pointofcoupling_consumption,
+                                                  solar_plant=solar_plant,
+                                                  el_bus=bus_electricity_mg)
         else:
             logging.warning('Case definition of ' + case_dict['case_name']
                             + ' faulty at stability_constraint. Value can only be False, float or None')
         '''
-
         return micro_grid_system, model
 
     def simulate(micro_grid_system, model, file_name):

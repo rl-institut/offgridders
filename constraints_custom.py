@@ -81,13 +81,11 @@ def stability_criterion(model, case_dict, experiment, storage, sink_demand, gens
             stored_electricity = 0
             if case_dict['storage_fixed_capacity'] == False:  # Storage subject to OEM
                 stored_electricity += model.GenericInvestmentStorageBlock.capacity[storage, t]  - experiment['storage_capacity_min'] * model.GenericInvestmentStorageBlock.invest[storage]
-                print(stored_electricity)
             elif isinstance(case_dict['storage_fixed_capacity'], float): # Fixed storage subject to dispatch
                 stored_electricity += model.GenericStorageBlock.capacity[storage, t] - experiment['storage_capacity_min'] * storage.nominal_capacity
             else:
                 print ("Error: 'storage_fixed_capacity' can only be None, False or float.")
             expr += stored_electricity * experiment['storage_Crate_discharge']
-        print (expr)
         return (expr >= 0)
 
     model.stability_constraint = po.Constraint(model.TIMESTEPS, rule=stability_rule)
@@ -99,45 +97,47 @@ def stability_test(case_dict, oemof_results, experiment, e_flows_df):
     '''
         Testing simulation results for adherance to above defined stability criterion
     '''
-    demand_profile = e_flows_df['Demand']
+    if case_dict['stability_constraint']!=False:
+        demand_profile = e_flows_df['Demand']
 
-    if ('Stored capacity' in e_flows_df.columns):
-        stored_electricity = e_flows_df['Stored capacity']
+        if ('Stored capacity' in e_flows_df.columns):
+            stored_electricity = e_flows_df['Stored capacity']
+        else:
+            stored_electricity = pd.Series([0 for t in demand_profile.index], index=demand_profile.index)
+
+        if ('Grid availability' in e_flows_df.columns):
+            pcc_capacity = oemof_results['capacity_pcoupling_kW'] * e_flows_df['Grid availability']
+        else:
+            pcc_capacity = pd.Series([0 for t in demand_profile.index], index=demand_profile.index)
+
+        genset_capacity = oemof_results['capacity_genset_kW']
+
+        if case_dict['allow_shortage'] == True:
+            shortage = e_flows_df['Demand shortage']
+        else:
+            shortage = pd.Series([0 for t in demand_profile.index], index=demand_profile.index)
+
+        # todo adjust if timestep not 1 hr
+        boolean_test = [
+            genset_capacity
+            + (stored_electricity[t] - oemof_results['capacity_storage_kWh'] *  experiment['storage_capacity_min']) *  experiment['storage_Crate_discharge']
+            + pcc_capacity[t] \
+            >= experiment['stability_limit'] * (demand_profile[t] - shortage[t])
+            for t in range(0, len(demand_profile.index))
+            ]
+
+        if all(boolean_test) == True:
+            logging.debug("Stability criterion is fullfilled.")
+        else:
+            logging.warning("ATTENTION: Stability criterion NOT fullfilled!")
+            oemof_results.update({'comments': oemof_results['comments'] + 'Stability criterion not fullfilled. '})
     else:
-        stored_electricity = pd.Series([0 for t in demand_profile.index], index=demand_profile.index)
-
-    if ('Grid availability' in e_flows_df.columns):
-        pcc_capacity = oemof_results['capacity_pcoupling_kW'] * e_flows_df['Grid availability']
-    else:
-        pcc_capacity = pd.Series([0 for t in demand_profile.index], index=demand_profile.index)
-
-    genset_capacity = oemof_results['capacity_genset_kW']
-
-    if case_dict['allow_shortage'] == True:
-        shortage = e_flows_df['Demand shortage']
-    else:
-        shortage = pd.Series([0 for t in demand_profile.index], index=demand_profile.index)
-    print(oemof_results['capacity_storage_kWh']) # todo stability criterion is not fulllfilled, eventhough included in constraint
-    # todo adjust if timestep not 1 hr
-    boolean_test = [
-        genset_capacity
-        + (stored_electricity[t] - oemof_results['capacity_storage_kWh'] *  experiment['storage_capacity_min']) *  experiment['storage_Crate_discharge']
-        + pcc_capacity[t] \
-        >= experiment['stability_limit'] * (demand_profile[t] - shortage[t])
-        for t in range(0, len(demand_profile.index))
-    ]
-
-    if all(boolean_test) == True:
-        logging.debug("Stability criterion is fullfilled.")
-    else:
-        logging.warning("ATTENTION: Stability criterion NOT fullfilled!")
-        oemof_results.update({'comments': oemof_results['comments'] + 'Stability criterion not fullfilled. '})
+        pass
 
     return
 
 # todo implement renewable share criterion in oemof model and cases
-def renewable_share_criterion(model, experiment, genset, pcc_consumption, wind_plant, solar_plant, el_bus):
-    # todo doesnt work
+def renewable_share_criterion(model, experiment, genset, pcc_consumption, solar_plant, el_bus): #wind_plant
     '''
     Resulting in an energy system adhering to a minimal renewable factor
 
@@ -170,42 +170,48 @@ def renewable_share_criterion(model, experiment, genset, pcc_consumption, wind_p
         fossil_generation = 0
         total_generation = 0
 
-        if genset != None:
+        if genset is not None:
             genset_generation_kWh = sum(model.flow[genset, el_bus, t] for t in model.TIMESTEPS)
+            print(genset_generation_kWh)
             total_generation += genset_generation_kWh
             fossil_generation += genset_generation_kWh
 
-        if pcc_consumption != None:
+        if pcc_consumption is not None:
             pcc_consumption_kWh = sum(model.flow[pcc_consumption, el_bus, t] for t in model.TIMESTEPS)
+            print(pcc_consumption_kWh)
             total_generation += pcc_consumption
             fossil_generation += pcc_consumption_kWh * (1 - experiment['maingrid_renewable_share'])
 
-        if wind_plant != None:
-            wind_plant_generation_kWh = sum(model.flow[wind_plant, el_bus, t] for t in model.TIMESTEPS)
-            total_generation += wind_plant_generation_kWh
+        #if wind_plant != None:
+        #    wind_plant_generation_kWh = sum(model.flow[wind_plant, el_bus, t] for t in model.TIMESTEPS)
+        #    total_generation += wind_plant_generation_kWh
 
-        if solar_plant != None:
+        if solar_plant is not None:
             solar_plant_generation = sum(model.flow[solar_plant, el_bus, t] for t in model.TIMESTEPS)
+            print(solar_plant_generation)
             total_generation += solar_plant_generation
 
-        expr = (experiment['min_renewable_share'] <= 1 - fossil_generation/total_generation)
-
-        return expr
+        expr = (fossil_generation - (1-experiment['min_renewable_share'])*total_generation)
+        print(expr)
+        return expr <= 0
 
     model.renewable_share_constraint = po.Constraint(rule=renewable_share_rule)
 
     return model
 
-def renewable_share_test(oemof_results, experiment):
+def renewable_share_test(case_dict, oemof_results, experiment):
     '''
     Testing simulation results for adherance to above defined stability criterion
     '''
-    boolean_test = (oemof_results['res_share'] >= experiment['min_renewable_share'])
+    if case_dict['renewable_share_constraint']==True:
+        boolean_test = (oemof_results['res_share'] >= experiment['min_renewable_share'])
 
-    if boolean_test == False:
-        logging.warning("ATTENTION: Minimal renewable share criterion NOT fullfilled!")
-        oemof_results.update({'comments': oemof_results['comments'] + 'Renewable share criterion not fullfilled. '})
+        if boolean_test == False:
+            logging.warning("ATTENTION: Minimal renewable share criterion NOT fullfilled!")
+            oemof_results.update({'comments': oemof_results['comments'] + 'Renewable share criterion not fullfilled. '})
+        else:
+            logging.debug("Minimal renewable share is fullfilled.")
     else:
-        logging.debug("Minimal renewable share is fullfilled.")
+        pass
 
     return
