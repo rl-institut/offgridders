@@ -48,7 +48,7 @@ class generate_sensitvitiy_experiments:
         experiments_dataframe.to_csv(settings['output_folder']+'/Input_data_of_all_cases.csv')
 
         # Generate a overall title of the oemof-results DataFrame
-        title_overall_results = output_results.overall_results_title(number_of_project_sites, sensitivity_array_dict)
+        title_overall_results = output_results.overall_results_title(settings, number_of_project_sites, sensitivity_array_dict)
 
         message = 'For ' + str(number_of_project_sites) + ' project sites'
         message += ' with ' + str(int(total_number_of_experiments/number_of_project_sites)) + ' scenarios each'

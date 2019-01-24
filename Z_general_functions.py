@@ -38,7 +38,6 @@ class helpers:
         Storing results to vector and then result matrix for saving it in csv.
         """
         round_to_comma = 5
-        round_to_comma = 5
         result_series = pd.Series()
 
         for key in overall_results.columns.values:

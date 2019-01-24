@@ -4,16 +4,14 @@ import logging
 import os.path
 
 class central_grid:
-
     # Check for saved blackout scenarios/grid availability, else continue randomization of backout events
-    def get_blackouts(blackout_experiments):
-        from config import restore_blackouts_if_existant, output_folder, date_time_index
+    def get_blackouts(settings, blackout_experiments):
         # Search, if file is existant (and should be used)
-        if os.path.isfile(output_folder + "/grid_availability.csv") and restore_blackouts_if_existant == True:
+        if os.path.isfile(settings['output_folder'] + "/grid_availability.csv") and settings['restore_blackouts_if_existant'] == True:
             # todo read to csv: timestamp as first row -> not equal column number, date time without index
-            data_set = pd.read_csv(output_folder + '/grid_availability.csv')
+            data_set = pd.read_csv(settings['output_folder'] + '/grid_availability.csv')
             index = pd.DatetimeIndex(data_set['timestep'].values)
-            index = [item + pd.DateOffset(year=date_time_index[0].year) for item in index]
+            index = [item + pd.DateOffset(year=settings['date_time_index'][0].year) for item in index]
             data_set = data_set.drop(columns=['timestep'])
             sensitivity_grid_availability = pd.DataFrame(data_set.values, index = index, columns = data_set.columns.values)
 
@@ -56,14 +54,16 @@ class central_grid:
         # if data not saved, generate blackouts
         if data_complete == False:
             from E_blackouts_central_grid import central_grid
-            sensitivity_grid_availability, blackout_results = central_grid.availability(blackout_experiments)
+            sensitivity_grid_availability, blackout_results = central_grid.availability(settings, blackout_experiments)
             sensitivity_grid_availability.index.name = 'timestep'
-            sensitivity_grid_availability.to_csv(output_folder + '/grid_availability.csv')
+            sensitivity_grid_availability.to_csv(settings['output_folder'] + '/grid_availability.csv')
 
         return sensitivity_grid_availability, blackout_results
 
-    def availability(blackout_experiments):
-        from config import date_time_index
+    def availability(settings, blackout_experiments):
+
+        date_time_index = settings['date_time_index']
+
         # get timestep frequency: timestep = date_time_index.freq()
         timestep = 1
         experiment_count = 0
@@ -77,16 +77,16 @@ class central_grid:
                   "Blackout duration " + str(blackout_experiments[experiment]['blackout_duration']) + " hrs, "
                   "blackout frequency " + str(blackout_experiments[experiment]['blackout_frequency'])+ " per month")
 
-            number_of_blackouts =  central_grid.number_of_blackouts(blackout_experiments[experiment])
+            number_of_blackouts =  central_grid.number_of_blackouts(settings['evaluated_days'], blackout_experiments[experiment])
 
             # 0-1-Series for grid availability
             grid_availability = pd.Series([1 for i in range(0, len(date_time_index))], index=date_time_index)
 
             if number_of_blackouts != 0:
-                time_of_blackout_events = central_grid.get_time_of_blackout_events(number_of_blackouts)
+                time_of_blackout_events = central_grid.get_time_of_blackout_events(number_of_blackouts, date_time_index)
 
                 blackout_event_durations, accumulated_blackout_duration = \
-                    central_grid.get_blackout_event_durations(experiment, timestep, number_of_blackouts)
+                    central_grid.get_blackout_event_durations(blackout_experiments[experiment], timestep, number_of_blackouts)
 
                 grid_availability, overlapping_blackouts, actual_number_of_blackouts = central_grid.availability_series(
                     grid_availability, time_of_blackout_events, timestep, blackout_event_durations)
@@ -119,8 +119,7 @@ class central_grid:
 
         return sensitivity_grid_availability, blackout_results
 
-    def number_of_blackouts(experiment):
-        from config import evaluated_days
+    def number_of_blackouts(evaluated_days, experiment):
         # Calculation of expected blackouts per analysed timeframe
         blackout_events_per_month = np.random.normal(loc=experiment['blackout_frequency'],  # median value: blackout duration
                                                     scale=experiment['blackout_frequency_std_deviation'] * experiment['blackout_frequency'],  # Standard deviation
@@ -129,8 +128,7 @@ class central_grid:
         logging.info("Number of blackouts in simulated timeframe: " + str(blackout_events_per_timeframe))
         return blackout_events_per_timeframe
 
-    def get_time_of_blackout_events(blackout_events_per_timeframe):
-        from config import date_time_index
+    def get_time_of_blackout_events(blackout_events_per_timeframe, date_time_index):
         # Choosing blackout event starts randomly from whole duration
         # (probability set by data_time_index and blackout_events_per_timeframe)
         time_of_blackout_events = pd.Series([1 for i in range(0, len(date_time_index))],

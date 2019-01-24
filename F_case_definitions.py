@@ -424,67 +424,63 @@ class cases:
         return
 
 
-class utilities:
+    class utilities:
 
-    def filename(case_name, experiment_name):
-        from config import output_file
-        file_name = output_file + "_" + case_name + experiment_name
-        return file_name
+        def filename(case_name, experiment_name):
+            file_name = output_file + "_" + case_name + experiment_name
+            return file_name
 
-    def extend_dictionary(case_dict, experiment, demand_profile):
-        from config import include_stability_constraint, allow_shortage, evaluated_days
+        def extend_dictionary(case_dict, experiment, demand_profile):
+            case_dict.update({
+                'total_demand': sum(demand_profile),
+                'peak_demand': max(demand_profile)
+            })
 
-        case_dict.update({
-            'total_demand': sum(demand_profile),
-            'peak_demand': max(demand_profile)
-        })
-
-        # shortage if allowed, otherwise zero
-        if 'allow_shortage' in case_dict and 'max_shortage' in case_dict:
+            # shortage if allowed, otherwise zero
+            if 'allow_shortage' in case_dict and 'max_shortage' in case_dict:
                 pass
-        elif 'allow_shortage' in case_dict and case_dict['allow_shortage']==True:
+            elif 'allow_shortage' in case_dict and case_dict['allow_shortage'] == True:
                 case_dict.update({'max_shortage': experiment['max_share_unsupplied_load']})
-        elif 'allow_shortage' in case_dict and case_dict['allow_shortage'] == False:
+            elif 'allow_shortage' in case_dict and case_dict['allow_shortage'] == False:
                 case_dict.update({'max_shortage': 0})
-        elif allow_shortage == True:
-            case_dict.update({'allow_shortage': True})
-            case_dict.update({'max_shortage': experiment['max_share_unsupplied_load']})
-        else:
-            case_dict.update({'allow_shortage': False})
-            case_dict.update({'max_shortage': 0})
-
-        # activate stability constraint - here it is not optional!
-        if 'stability_constraint' in case_dict:
-            pass
-        elif include_stability_constraint == True:
-            case_dict.update({'stability_constraint': experiment['stability_limit']})
-        else:
-            case_dict.update({'stability_constraint': False})
-
-        # not-optional renewable constraint
-        if 'renewable_share_constraint' in case_dict:
-            pass
-        else:
-            if experiment['min_renewable_share'] != 0:
-                case_dict.update({'renewable_share_constraint': experiment['min_renewable_share']})
+            elif allow_shortage == True:
+                case_dict.update({'allow_shortage': True})
+                case_dict.update({'max_shortage': experiment['max_share_unsupplied_load']})
             else:
-                case_dict.update({'renewable_share_constraint': False})
+                case_dict.update({'allow_shortage': False})
+                case_dict.update({'max_shortage': 0})
 
-        case_dict.update({'evaluated_days': evaluated_days})
+            # activate stability constraint - here it is not optional!
+            if 'stability_constraint' in case_dict:
+                pass
+            elif include_stability_constraint == True:
+                case_dict.update({'stability_constraint': experiment['stability_limit']})
+            else:
+                case_dict.update({'stability_constraint': False})
 
-        return case_dict
+            # not-optional renewable constraint
+            if 'renewable_share_constraint' in case_dict:
+                pass
+            else:
+                if experiment['min_renewable_share'] != 0:
+                    case_dict.update({'renewable_share_constraint': experiment['min_renewable_share']})
+                else:
+                    case_dict.update({'renewable_share_constraint': False})
 
-    def process_oem_batch(capacities_base, case_name):
-        from input_values import round_to_batch
-        capacities_base.update({'capacity_pv_kWp': round (0.5+capacities_base['capacity_pv_kWp']/round_to_batch['PV'])
-                                                  *round_to_batch['PV']}) # immer eher 0.25 capacity mehr als eigentlich nötig
-        capacities_base.update({'capacity_genset_kW': round(0.5+capacities_base['capacity_genset_kW'] / round_to_batch['GenSet']) *
-                                                  round_to_batch['GenSet']})
-        capacities_base.update({'capacity_storage_kWh': round(0.5+capacities_base['capacity_storage_kWh'] / round_to_batch['Storage']) *
-                                                  round_to_batch['Storage']})
+            case_dict.update({'evaluated_days': evaluated_days})
+
+            return case_dict
+
+    def process_oem_batch(experiment, capacities_base, case_name):
+        capacities_base.update({'capacity_pv_kWp': round (0.5+capacities_base['capacity_pv_kWp']/experiment['pv_batch'])
+                                                  *experiment['pv_batch']}) # immer eher 0.25 capacity mehr als eigentlich nötig
+        capacities_base.update({'capacity_genset_kW': round(0.5+capacities_base['capacity_genset_kW'] / experiment['genset_batch']) *
+                                                      experiment['genset_batch']})
+        capacities_base.update({'capacity_storage_kWh': round(0.5+capacities_base['capacity_storage_kWh'] / experiment['storage']) *
+                                                        experiment['storage']})
         capacities_base.update(
-            {'capacity_pcoupling_kW': round(0.5 + capacities_base['capacity_pcoupling_kW'] / round_to_batch['Pcoupling']) *
-                                     round_to_batch['Pcoupling']})
+            {'capacity_pcoupling_kW': round(0.5 + capacities_base['capacity_pcoupling_kW'] / experiment['pcoupling_batch']) *
+                                      experiment['pcoupling_batch']})
         logging.debug ('    Equivalent batch capacities of base OEM for dispatch OEM in case "' + case_name + '": \n'
                       + '    ' + '  ' + '    ' + '    ' + '    ' + str(capacities_base['capacity_storage_kWh']) + ' kWh battery, '
                       + str(capacities_base['capacity_pv_kWp']) + ' kWp PV, '

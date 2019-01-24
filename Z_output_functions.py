@@ -7,22 +7,19 @@ import matplotlib.pyplot as plt
 import logging
 
 class output_results:
-    def overall_results_title(number_of_project_sites, sensitivity_array_dict):
-        # Get from config which results are to be included in csv
-        from config import results_demand_characteristics, results_blackout_characteristics, results_annuities, \
-            results_costs
+    def overall_results_title(settings, number_of_project_sites, sensitivity_array_dict):
         title_overall_results = pd.DataFrame(columns=[
             'case',
             'filename'])
 
-        if results_demand_characteristics == True:
+        if settings['results_demand_characteristics'] == True:
             title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[
                 'total_demand_annual_kWh',
                 'demand_peak_kW',
                 'total_demand_supplied_annual_kWh',
                 'total_demand_shortage_annual_kWh'])], axis=1, sort=False)
 
-        if results_blackout_characteristics == True:
+        if settings['results_blackout_characteristics'] == True:
             title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[
                 'national_grid_reliability',
                 'national_grid_total_blackout_duration',
@@ -38,7 +35,7 @@ class output_results:
             'consumption_main_grid_mg_side_annual_kWh',
             'feedin_main_grid_mg_side_annual_kWh'])], axis=1, sort=False)
 
-        if results_annuities == True:
+        if settings['results_annuities'] == True:
             title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[
                 'annuity_pv',
                 'annuity_storage',
@@ -55,7 +52,7 @@ class output_results:
 
         # Called costs because they include the operation, while they are also not the present value because
         # the variable costs are included in the oem
-        if results_costs == True:
+        if settings['results_costs'] == True:
             title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[
                 'costs_pv',
                 'costs_storage',
@@ -112,27 +109,24 @@ class output:
                 logging.info('Deleted all files in folder "simulation_results".')
         return
 
-    def print_oemof_meta_main_invest(meta, electricity_bus, case_name):
-        from config import print_simulation_meta, print_simulation_main, print_simulation_invest
-
-        if print_simulation_meta == True:
+    def print_oemof_meta_main_invest(experiment, meta, electricity_bus, case_name):
+        if experiment['print_simulation_meta'] == True:
             logging.info('********* Meta results *********')
             pp.pprint(meta)
 
         # print the sums of the flows around the electricity bus
-        if print_simulation_main == True:
+        if experiment['print_simulation_main'] == True:
             logging.info('********* Main results *********')
             pp.pprint(electricity_bus['sequences'].sum(axis=0))
 
         # print the scalars of investment optimization (not equal to capacities!)
         if case_name == "base_oem" or case_name == "base_oem_with_min_loading":
-            if print_simulation_invest == True:
+            if experiment['print_simulation_invest'] == True:
                 logging.info('********* Invest results *********')
                 pp.pprint(electricity_bus['scalars'])
         return
 
-    def save_mg_flows(case_dict, e_flows_df, filename):
-        from config import display_graphs_flows_electricity_mg, setting_save_flows_storage
+    def save_mg_flows(experiment, case_dict, e_flows_df, filename):
         flows_connected_to_electricity_mg_bus = [
             'Demand shortage',
             'Demand supplied',
@@ -153,28 +147,26 @@ class output:
                     new_column = pd.DataFrame(e_flows_df[entry].values, columns=[entry], index=e_flows_df[entry].index)
                 mg_flows = mg_flows.join(new_column)
 
-        if setting_save_flows_storage == True:
-            from config import output_folder
-            mg_flows.to_csv(output_folder + '/electricity_mg/' + case_dict['case_name'] + filename + '_electricity_mg.csv')
+        if experiment['setting_save_flows_storage'] == True:
+            mg_flows.to_csv(experiment['output_folder'] + '/electricity_mg/' + case_dict['case_name'] + filename + '_electricity_mg.csv')
 
-        if display_graphs_flows_electricity_mg == True:
+        if experiment['display_graphs_flows_electricity_mg'] == True:
             fig = mg_flows.plot(title = 'MG Operation of case ' + case_dict['case_name'])
             fig.set(xlabel='Time', ylabel='Electricity flow in kWh')
             fig.legend(loc='upper right')
-            plt.savefig(output_folder + '/electricity_mg/' + case_dict['case_name'] + filename + '_electricity_mg.png')
+            plt.savefig(experiment['output_folder'] + '/electricity_mg/' + case_dict['case_name'] + filename + '_electricity_mg.png')
             plt.clf()
             # todo change if 15-min intervals
             if (len(mg_flows['Demand']) >= 7 * 24):
                 fig = mg_flows[0:7 * 24].plot(title = 'MG Operation of case ' + case_dict['case_name'])
                 fig.set(xlabel='Time', ylabel='Electricity flow in kWh')
                 fig.legend(loc='upper right')
-                plt.savefig(output_folder + '/electricity_mg/' + case_dict['case_name'] + filename + '_electricity_mg_7days.png')
+                plt.savefig(experiment['output_folder'] + '/electricity_mg/' + case_dict['case_name'] + filename + '_electricity_mg_7days.png')
                 plt.close()
         return
 
-    def save_storage(case_dict, e_flows_df, filename):
+    def save_storage(experiment, case_dict, e_flows_df, filename):
         if case_dict['storage_fixed_capacity'] != None:
-            from config import display_graphs_flows_storage, setting_save_flows_storage
 
             flows_connected_to_electricity_mg_bus = [
                 'Storage discharge',
@@ -191,35 +183,20 @@ class output:
                         new_column = pd.DataFrame(e_flows_df[entry].values, columns=[entry], index=e_flows_df[entry].index)
                     storage_flows = storage_flows.join(new_column)
 
-            if setting_save_flows_storage == True:
-                from config import output_folder
-                storage_flows.to_csv(output_folder + '/storage/' + case_dict['case_name'] + filename + '_storage.csv')
+            if experiment['setting_save_flows_storage'] == True:
+                storage_flows.to_csv(experiment['output_folder'] + '/storage/' + case_dict['case_name'] + filename + '_storage.csv')
 
-            if display_graphs_flows_storage == True:
+            if experiment['display_graphs_flows_storage'] == True:
                 fig = storage_flows.plot(title = 'Storage flows of case ' + case_dict['case_name'])
                 fig.set(xlabel='Time', ylabel='Electricity flow/stored in kWh')
                 fig.legend(loc='upper right')
-                plt.savefig(output_folder + '/storage/' + case_dict['case_name'] + filename + '_storage.png')
+                plt.savefig(experiment['output_folder'] + '/storage/' + case_dict['case_name'] + filename + '_storage.png')
                 plt.clf()
                 #todo change if 15-min intervals
                 if (len(storage_flows['Stored capacity']) >= 7*24):
                     fig = storage_flows[0:7*24].plot(title='Storage flows of case ' + case_dict['case_name'])
                     fig.set(xlabel='Time', ylabel='Electricity flow/stored in kWh')
                     fig.legend(loc='upper right')
-                    plt.savefig(output_folder + '/storage/' + case_dict['case_name'] + filename + '_storage_7days.png')
+                    plt.savefig(experiment['output_folder'] + '/storage/' + case_dict['case_name'] + filename + '_storage_7days.png')
                     plt.close()
-        return
-
-    #todo not working
-    def draw(energysystem):
-        '''
-        Compare with https://oemof.readthedocs.io/en/stable/api/oemof.html?highlight=graph#module-oemof.graph for additional settings
-        '''
-        import oemof.graph as graph
-        import networkx as nx
-        import matplotlib.pyplot as plt
-        from config import output_folder
-
-        energysystem_graph = graph.create_nx_graph(energysystem, filename=output_folder+'/'+'case_graph')
-
         return

@@ -45,7 +45,9 @@ case_list = process_input.list_of_cases(case_definitions)
 # with demand, pv_generation_per_kWp, wind_generation_per_kW                  #
 #-----------------------------------------------------------------------------#
 from B_read_from_files import csv_input
-csv_input.project_site_timeseries(sensitivity_experiment_s, project_site_s) # delete pv_system_location, location_name, pv_system_parameters, pv_composite_name, delete use_input_file_weather
+max_date_time_index, max_evaluated_days = csv_input.project_site_timeseries(sensitivity_experiment_s, project_site_s)
+settings.update({'date_time_index': max_date_time_index})
+settings.update({'evaluated_days': max_evaluated_days})
 
 # Apply noise
 from D_process_input import noise
@@ -53,12 +55,14 @@ noise.apply(sensitivity_experiment_s)
 
 # Calculation of grid_availability with randomized blackouts
 from E_blackouts_central_grid import central_grid
-sensitivity_grid_availability, blackout_results = central_grid.get_blackouts(blackout_experiment_s)
+sensitivity_grid_availability, blackout_results = central_grid.get_blackouts(settings, blackout_experiment_s)
 
 #---------------------------- Base case OEM ----------------------------------#
 # Based on demand, pv generation and subjected to sensitivity analysis SOEM   #
 #-----------------------------------------------------------------------------#
-from general_functions import helpers
+# import all scripts necessary for loop
+from Z_general_functions import helpers
+from G0_oemof_simulate import oemof_simulate
 
 # todo show figures but continue script!
 experiment_count= 0
@@ -79,8 +83,7 @@ for experiment in sensitivity_experiment_s:
     logging.info('Starting simulation of base OEM, experiment no. ' + str(experiment_count) + '...')
     start = timeit.default_timer()
 
-    from config import base_case_with_min_loading
-    from oemof_simulate import oemof_simulate
+
     if base_case_with_min_loading == False:
         # Performing base case OEM without minimal loading, therefore optimizing genset capacities
         # get case definition

@@ -143,7 +143,7 @@ class timeseries:
             national_grid_bus = outputlib.views.node(results, 'bus_electricity_ng')
         # todo if we really use setting_pcc_utility_owned and it influences the revenue, we have to use it in oemof object definitions as well!
 
-        from config import setting_pcc_utility_owned
+        #from config import setting_pcc_utility_owned
         # if utility owned, these pcc_cap costs would actually NOT be in the LCOE, rigfht?
         # decision: timeseries will always be the one for the mg side. but the accumulated value can be different.
         # todo still decide with of the flows to include in e_flow_df, and which ones to put into oemof results for cost calculation (expenditures, revenues)

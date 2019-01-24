@@ -1,8 +1,8 @@
 import logging
 import oemof.solph as solph
 import oemof.outputlib as outputlib
-from oemof_busses_and_componets import generate
-import constraints_custom as constraints
+from G2a_oemof_busses_and_componets import generate
+import G2b_constraints_custom as constraints
 
 class oemof_model:
 
@@ -11,11 +11,10 @@ class oemof_model:
         return
 
     def build(experiment, case_dict, demand_profile, pv_generation_per_kWp, grid_availability):
-        from config import date_time_index
         logging.debug('Initialize energy system dataframe')
 
         # create energy system
-        micro_grid_system = solph.EnergySystem(timeindex=date_time_index)
+        micro_grid_system = solph.EnergySystem(timeindex=experiment['date_time_index'])
 
         #------        fuel and electricity bus------#
         bus_fuel = solph.Bus(label="bus_fuel")
@@ -171,17 +170,14 @@ class oemof_model:
         '''
         return micro_grid_system, model
 
-    def simulate(micro_grid_system, model, file_name):
-        from config import solver, solver_verbose, output_folder, setting_save_lp_file, \
-            cmdline_option, cmdline_option_value
-
+    def simulate(experiment, micro_grid_system, model, file_name):
         logging.debug('Solve the optimization problem')
-        model.solve(solver          =   solver,
-                    solve_kwargs    =   {'tee': solver_verbose}, # if tee_switch is true solver messages will be displayed
-                    cmdline_options =   {cmdline_option:    str(cmdline_option_value)})   #ratioGap allowedGap mipgap
+        model.solve(solver          =   experiment['solver'],
+                    solve_kwargs    =   {'tee': experiment['solver_verbose']}, # if tee_switch is true solver messages will be displayed
+                    cmdline_options =   {experiment['cmdline_option']:    str(experiment['cmdline_option_value'])})   #ratioGap allowedGap mipgap
 
-        if setting_save_lp_file == True:
-            model.write(output_folder + '/lp_files/model_' + file_name + '.lp',
+        if experiment['setting_save_lp_file'] == True:
+            model.write(experiment['output_folder'] + '/lp_files/model_' + file_name + '.lp',
                         io_options={'symbolic_solver_labels': True})
 
         # add results to the energy system to make it possible to store them.
@@ -189,16 +185,14 @@ class oemof_model:
         micro_grid_system.results['meta'] = outputlib.processing.meta_results(model)
         return micro_grid_system
 
-    def store_results(micro_grid_system, file_name):
+    def store_results(micro_grid_system, file_name, output_folder, setting_save_oemofresults):
         # store energy system with results
-        from config import output_folder, setting_save_oemofresults
         if setting_save_oemofresults == True:
             micro_grid_system.dump(dpath=output_folder+'/oemof', filename = file_name + ".oemof" )
             logging.debug('Stored results in ' + output_folder+'/oemof' + '/' + file_name + ".oemof")
         return micro_grid_system
 
-    def load_oemof_results(file_name):
-        from config import output_folder
+    def load_oemof_results(output_folder, file_name):
         logging.debug('Restore the energy system and the results.')
         micro_grid_system = solph.EnergySystem()
         micro_grid_system.restore(dpath=output_folder+'/oemof',

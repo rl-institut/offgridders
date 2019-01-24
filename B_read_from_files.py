@@ -3,38 +3,48 @@ import logging
 # requires xlrd
 
 class csv_input():
-    def project_site_timeseries(experiments, project_sites):
+    def project_site_timeseries(experiment_s, project_site_s):
+        # Update experiments and add longest date_time_index to settings
+        entries = 0
+        longest = ""
 
-        for experiment in experiments:
-            experiments[experiment].update({'time_end': experiments[experiment]['time_start']
-                                                        + pd.DateOffset(days=experiments[experiment]['evaluated_days'])
-                                                        - pd.DateOffset(hours=1)})
-            experiments[experiment].update({'date_time_index': pd.date_range(start=experiments[experiment]['time_start'],
-                                                                             end=experiments[experiment]['time_end'],
-                                                                             freq=experiments[experiment]['time_frequency'])})
+        for experiment in experiment_s:
+            experiment_s[experiment].update({'time_end': experiment_s[experiment]['time_start']
+                                                         + pd.DateOffset(days=experiment_s[experiment]['evaluated_days'])
+                                                         - pd.DateOffset(hours=1)})
+            experiment_s[experiment].update({'date_time_index': pd.date_range(start=experiment_s[experiment]['time_start'],
+                                                                              end=experiment_s[experiment]['time_end'],
+                                                                              freq=experiment_s[experiment]['time_frequency'])})
 
-        for project_site in project_sites:
-            file_index, demand, pv_generation_per_kWp, wind_generation_per_kW = csv_input.from_file(project_sites[project_site])
+            if len(experiment_s[experiment]['date_time_index']) > entries:
+                entries = len(experiment_s[experiment]['date_time_index'])
+                longest = experiment
 
-        for experiment in experiments:
-            for project_site in project_sites:
-                if experiments[experiment]['project_site_name']==project_site:
+        max_date_time_index = experiment_s[longest]['date_time_index']
+        max_evaluated_days = experiment_s[longest]['evaluated_days']
+
+        for project_site in project_site_s:
+            file_index, demand, pv_generation_per_kWp, wind_generation_per_kW = csv_input.from_file(project_site_s[project_site])
+
+        for experiment in experiment_s:
+            for project_site in project_site_s:
+                if experiment_s[experiment]['project_site_name']==project_site:
                     # todo include test if index from file has same resulution as index from date_time_index
                     if file_index == None:
-                        index = experiments[experiment]['date_time_index']
+                        index = experiment_s[experiment]['date_time_index']
                     else:
-                        index = [item + pd.DateOffset(year=experiments[experiment]['date_time_index'][0].year) for item in file_index]
+                        index = [item + pd.DateOffset(year=experiment_s[experiment]['date_time_index'][0].year) for item in file_index]
 
                     # Adjust values from file to analysed timeframe
                     demand = pd.Series(demand[index], index=index)
                     pv_generation_per_kWp = pd.Series(pv_generation_per_kWp[index], index=index)
                     wind_generation_per_kW = pd.Series(wind_generation_per_kW[index], index=index)
 
-                    experiments[experiment].update({'demand_profile': demand,
+                    experiment_s[experiment].update({'demand_profile': demand,
                                        'pv_generation_per_kWp': pv_generation_per_kWp,
                                        'wind_generation_per_kW': wind_generation_per_kW})
 
-        return
+        return max_date_time_index, max_evaluated_days
 
     def from_file(project_site):
         data_set = pd.read_csv(project_site['timeseries_file'], sep=';')

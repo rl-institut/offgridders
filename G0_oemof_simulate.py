@@ -2,7 +2,7 @@
 Overlying script for tool for the analysis of possible
 operational modes of micro grids interconnecting with an unreliable national grid
 
-General settings from config.py, simulation-specific input data taken from dictionary experiment
+General settings, simulation-specific input data taken from dictionary experiment
 
 Utilizing the bus/component library oemof_generatemodel and the process oemof library oemof_general
 new cases can easily be added.
@@ -16,13 +16,13 @@ import logging
 import oemof.outputlib as outputlib
 
 # For speeding up lp_files and bus/component definition in oemof as well as processing
-from oemof_create_model import oemof_model
-from case_definitions import utilities
-from oemof_evaluate import timeseries
-from plausability_tests import plausability_tests
+from G1_oemof_create_model import oemof_model
+from F_case_definitions import utilities
+from G3_oemof_evaluate import timeseries
+from G3b_plausability_tests import plausability_tests
 from Z_output_functions import output
-from economic_evaluation import economic_evaluation
-import constraints_custom as constraints
+from G3aeconomic_evaluation import economic_evaluation
+import G2b_constraints_custom as constraints
 
 # This is not really a necessary class, as the whole experiement could be given to the function, but it ensures, that
 # only correct input data is included
@@ -30,7 +30,6 @@ import constraints_custom as constraints
 class oemof_simulate:
 
     def run(experiment, case_dict, demand_profile, pv_generation_per_kWp, grid_availability):
-        from config import output_folder, restore_oemof_if_existant
         '''
         Funktion to generate oemof-lp file, simulate and extract simulation results from oemof-results,
         including extraction of time series, accumulated values, optimized capacities.
@@ -45,7 +44,7 @@ class oemof_simulate:
         utilities.extend_dictionary(case_dict, experiment, demand_profile)
 
         # For restoring .oemof results if that is possible (speeding up computation time)
-        if os.path.isfile(output_folder + "/oemof/" + file_name + ".oemof") and restore_oemof_if_existant == True:
+        if os.path.isfile(experiment['output_folder'] + "/oemof/" + file_name + ".oemof") and experiment['restore_oemof_if_existant'] == True:
             logging.info("Previous results of " + case_dict['case_name'] + " restored.")
 
         # If .oemof results do not already exist, start oemof-process
@@ -53,13 +52,13 @@ class oemof_simulate:
             # generate model
             micro_grid_system, model = oemof_model.build(experiment, case_dict, demand_profile, pv_generation_per_kWp, grid_availability)
             # perform simulation
-            micro_grid_system        = oemof_model.simulate(micro_grid_system, model, file_name)
+            micro_grid_system        = oemof_model.simulate(experiment, micro_grid_system, model, file_name)
             # store simulation results to .oemof
-            oemof_model.store_results(micro_grid_system, file_name)
+            oemof_model.store_results(micro_grid_system, file_name, experiment['setting_save_oemofresults'])
 
         # it actually is not really necessary to restore just simulated results... but for consistency and to make sure that calling results is easy, this is used nevertheless
         # load oemof results from previous or just finished simulation
-        micro_grid_system = oemof_model.load_oemof_results(file_name)
+        micro_grid_system = oemof_model.load_oemof_results(experiment['output_folder'], file_name)
         # process results
         pv_generation_max = max(pv_generation_per_kWp)
 
@@ -103,10 +102,10 @@ class oemof_simulate:
         #constraints.renewable_share_test(case_dict, oemof_results, experiment)
 
         # todo this has to be at end using e_flows_df, has to be edited
-        output.save_mg_flows(case_dict, e_flows_df, experiment['filename'])
-        output.save_storage(case_dict, e_flows_df, experiment['filename'])
+        output.save_mg_flows(experiment, case_dict, e_flows_df, experiment['filename'])
+        output.save_storage(experiment, case_dict, e_flows_df, experiment['filename'])
 
-        output.print_oemof_meta_main_invest(meta, electricity_bus, case_dict['case_name'])
+        output.print_oemof_meta_main_invest(experiment, meta, electricity_bus, case_dict['case_name'])
 
         oemof_results = economic_evaluation.project_annuities(case_dict, oemof_results, experiment)
 
