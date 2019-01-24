@@ -4,27 +4,111 @@ Collect all functions regarding outputs in this file
 
 import pandas as pd
 import matplotlib.pyplot as plt
+import logging
+
+class output_results:
+    def overall_results_title(number_of_project_sites, sensitivity_array_dict):
+        # Get from config which results are to be included in csv
+        from config import results_demand_characteristics, results_blackout_characteristics, results_annuities, \
+            results_costs
+        title_overall_results = pd.DataFrame(columns=[
+            'case',
+            'filename'])
+
+        if results_demand_characteristics == True:
+            title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[
+                'total_demand_annual_kWh',
+                'demand_peak_kW',
+                'total_demand_supplied_annual_kWh',
+                'total_demand_shortage_annual_kWh'])], axis=1, sort=False)
+
+        if results_blackout_characteristics == True:
+            title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[
+                'national_grid_reliability',
+                'national_grid_total_blackout_duration',
+                'national_grid_number_of_blackouts'])], axis=1, sort=False)
+
+        title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[
+            'capacity_pv_kWp',
+            'capacity_storage_kWh',
+            'capacity_genset_kW',
+            'capacity_pcoupling_kW',
+            'res_share',
+            'consumption_fuel_annual_l',
+            'consumption_main_grid_mg_side_annual_kWh',
+            'feedin_main_grid_mg_side_annual_kWh'])], axis=1, sort=False)
+
+        if results_annuities == True:
+            title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[
+                'annuity_pv',
+                'annuity_storage',
+                'annuity_genset',
+                'annuity_pcoupling',
+                'annuity_distribution_grid',
+                'annuity_project',
+                'annuity_grid_extension'])], axis=1, sort=False)
+
+        title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[
+            'expenditures_fuel_annual',
+            'expenditures_main_grid_consumption_annual',
+            'revenue_main_grid_feedin_annual'])], axis=1, sort=False)
+
+        # Called costs because they include the operation, while they are also not the present value because
+        # the variable costs are included in the oem
+        if results_costs == True:
+            title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[
+                'costs_pv',
+                'costs_storage',
+                'costs_genset',
+                'costs_pcoupling',
+                'costs_distribution_grid',
+                'costs_project',
+                'costs_grid_extension',
+                'expenditures_fuel_total',
+                'expenditures_main_grid_consumption_total',
+                'revenue_main_grid_feedin_total'])], axis=1, sort=False)
+
+        title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[
+            'annuity',
+            'npv',
+            'lcoe',
+            'supply_reliability',
+            'objective_value',
+            'simulation_time',
+            'comments'])], axis=1, sort=False)
+
+        if number_of_project_sites > 1:
+            title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=['project_site_name'])], axis=1)
+
+        for keys in sensitivity_array_dict:
+            title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[keys])], axis=1)
+
+        return title_overall_results
+
 class output:
-    def check_output_directory():
+    def check_output_directory(experiments):
         """ Checking for output folder, creating it if nonexistant and deleting files if needed """
         import os
-        from config import output_folder, restore_oemof_if_existant
-        if os.path.isdir(output_folder)!=True:
-            os.mkdir(output_folder)
-        if os.path.isdir(output_folder  +   '/oemof') != True:
-                os.mkdir(output_folder  +   '/oemof')
-        if os.path.isdir(output_folder  +   '/lp_files') != True:
-                os.mkdir(output_folder  +   '/lp_files')
-        if os.path.isdir(output_folder  +   '/storage') != True:
-                os.mkdir(output_folder  +   '/storage')
-        if os.path.isdir(output_folder  +   '/electricity_mg') != True:
-                os.mkdir(output_folder  +   '/electricity_mg')
+        for experiment in experiments:
+            output_folder = experiments[experiment]['output_folder']
+            # First check for or create all necessary sub-folders
+            if os.path.isdir(output_folder) != True:
+                os.mkdir(output_folder)
+            if os.path.isdir(output_folder + '/oemof') != True:
+                os.mkdir(output_folder + '/oemof')
+            if os.path.isdir(output_folder + '/lp_files') != True:
+                os.mkdir(output_folder + '/lp_files')
+            if os.path.isdir(output_folder + '/storage') != True:
+                os.mkdir(output_folder + '/storage')
+            if os.path.isdir(output_folder + '/electricity_mg') != True:
+                os.mkdir(output_folder + '/electricity_mg')
 
-        else:
-            if restore_oemof_if_existant == False:
+            # If oemof results are not to be used, ALL files will be deleted from subfolders
+            # This includes lp files, oemof files, csv and png results
+            if  experiments[experiment]['restore_oemof_if_existant'] == False:
                 for root, dirs, files in os.walk(output_folder):
                     for f in files:
-                        os.remove(root+'/'+f)
+                        os.remove(root + '/' + f)
                 logging.info('Deleted all files in folder "simulation_results".')
         return
 

@@ -4,27 +4,30 @@ Small scripts to keep the main file clean
 
 import pandas as pd
 
-from oemof.tools import logger
 import logging
-try:
-    import matplotlib.pyplot as plt
-except ImportError:
-    print("Matplotlib.pyplot could not be loaded")
-    plt = None
 
+from economic_functions import economics
 
 class process_input_parameters():
-
     def list_of_cases(case_definitions):
         case_list = []
-        for keys in case_definitions:
-            if case_definitions['perform_simulation'] == True: case_list.append(keys)
-
         str_cases_simulated = ''
-        for item in case_list:
-            str_cases_simulated = str_cases_simulated + item + ', '
+        # Certain ORDER of simulation: First base capacities are optimized
+        for case in case_definitions:
+            if case_definitions[case]['perform_simulation'] == True \
+                    and case_definitions[case]['based_on_case']==False:
+                case_list.append(case)
+                str_cases_simulated += case + ', '
 
-        logging.info('The cases simulated are: base_oem, ' + str_cases_simulated[:-2])
+        logging.info('Base capacities provided by: ' + str_cases_simulated[:-2])
+
+        for case in case_definitions:
+            if case_definitions[case]['perform_simulation'] == True \
+                    and case_definitions[case]['based_on_case'] == False:
+                case_list.append(case)
+                str_cases_simulated += case + ', '
+
+        logging.info('All simulated cases: ' + str_cases_simulated[:-2])
         return case_list
 
     def economic_values(experiment):
@@ -74,41 +77,39 @@ class process_input_parameters():
                 economics.annuity(experiment['distribution_grid_cost_capex'], experiment['crf']) + experiment['distribution_grid_cost_opex'],
             })
 
-        if experiment['coding_process'] == True:
-            #todo this is valid even if coding process NOT in place. if evaluated days == 365... so this can be deleted,
-            # as well as the item coding process itself can
-            '''
-            Updating all annuities above to annuities "for the timeframe", so that optimization is based on more adequate 
-            costs. Includes project_cost_annuity, distribution_grid_cost_annuity, maingrid_extension_cost_annuity for 
-            consistency eventhough these are not used in optimization.
-            '''
-            from config import evaluated_days
-            experiment.update({
-                'pv_cost_annuity': experiment['pv_cost_annuity'] / 365*experiment['evaluated_days'],
-                'genset_cost_annuity': experiment['genset_cost_annuity'] / 365*experiment['evaluated_days'],
-                'storage_cost_annuity': experiment['storage_cost_annuity'] / 365*experiment['evaluated_days'],
-                'pcoupling_cost_annuity': experiment['pcoupling_cost_annuity'] / 365*experiment['evaluated_days'],
-                'project_cost_annuity': experiment['project_cost_annuity'] / 365 * experiment['evaluated_days'],
-                'distribution_grid_cost_annuity': experiment['distribution_grid_cost_annuity'] / 365 * experiment['evaluated_days'],
-                'maingrid_extension_cost_annuity': experiment['maingrid_extension_cost_annuity'] / 365 * experiment['evaluated_days']
-            })
+        '''
+        Updating all annuities above to annuities "for the timeframe", so that optimization is based on more adequate 
+        costs. Includes project_cost_annuity, distribution_grid_cost_annuity, maingrid_extension_cost_annuity for 
+        consistency eventhough these are not used in optimization.
+        '''
+        experiment.update({
+            'pv_cost_annuity': experiment['pv_cost_annuity'] / 365*experiment['evaluated_days'],
+            'genset_cost_annuity': experiment['genset_cost_annuity'] / 365*experiment['evaluated_days'],
+            'storage_cost_annuity': experiment['storage_cost_annuity'] / 365*experiment['evaluated_days'],
+            'pcoupling_cost_annuity': experiment['pcoupling_cost_annuity'] / 365*experiment['evaluated_days'],
+            'project_cost_annuity': experiment['project_cost_annuity'] / 365 * experiment['evaluated_days'],
+            'distribution_grid_cost_annuity': experiment['distribution_grid_cost_annuity'] / 365 * experiment['evaluated_days'],
+            'maingrid_extension_cost_annuity': experiment['maingrid_extension_cost_annuity'] / 365 * experiment['evaluated_days']
+        })
 
         return experiment
 
 class noise:
     def apply(experiments):
         for experiment in experiments:
-            if experiment['white_noise_demand'] != 0:
-                experiment.update({'demand':
-                                       noise.on_demand(experiment['white_noise_demand'], experiment['demand'])})
-            if experiment['white_noise_pv'] != 0:
-                experiment.update({'pv_generation_per_kWp':
-                                       noise.on_demand(experiment['white_noise_pv'], experiment['pv_generation_per_kWp'])})
+            noise.on_series(experiments[experiment], 'white_noise_demand', 'demand')
+            noise.on_series(experiments[experiment], 'white_noise_pv', 'pv_generation_per_kWp')
+            # noise.on_series(sensitivity_experiment_s[experiment], 'white_noise_wind', 'wind_generation_per_kW')
 
-            #if experiment['white_noise_wind'] != 0:
-            #
-            #
-    return
+        return
+
+    def on_series(experiment, noise_name, series_name):
+        if experiment[noise_name] != 0:
+            series_values = pd.Series(noise.randomized(experiment[noise_name], experiment[series_name]),
+                               index=experiment[series_name].index)
+            experiment.update({series_name: series_values})
+            # todo add display of series with noise
+        return
 
     def randomized(white_noise_percentage, data_subframe):
         import numpy as np
@@ -117,25 +118,4 @@ class noise:
             if data_subframe[i] != 0:
                 data_subframe[i] = data_subframe[i] * (1 - noise[i])
         return data_subframe.clip_lower(0)  # do not allow values <0
-
-    def on_demand(white_noise_demand, data_frame):
-        """Not completed, adds noise to dict demand"""
-        for key in data_frame:
-            data_subframe = data_frame[key]
-            data_subframe = noise.randomized(white_noise_demand, data_subframe)
-            from config import display_graphs_demand
-            if display_graphs_demand == True:
-                noise.plot_results(data_subframe, "Demand with noise: " + key, "time", "Power in kW")
-            data_frame.update({key: data_subframe})
-        return  data_frame
-
-    def on_pv(white_noise_irradiation, data_frame):
-        """Not completed, adds noise to dict demand"""
-        # todo irradiation vs generation
-        logging.info("White noise on solar based on irradiation, but is used for generation!")
-        data_frame = noise.randomized(white_noise_irradiation, data_frame)
-        from config import display_graphs_solar
-        if display_graphs_solar == True:
-            noise.plot_results(data_frame, "PV generation with noise (only based on irradiation)", "time", "Power in kW")
-        return  data_frame
 

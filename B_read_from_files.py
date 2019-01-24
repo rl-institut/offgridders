@@ -1,42 +1,63 @@
 import pandas as pd
-from process_input import noise
+import logging
 # requires xlrd
 
 class csv_input():
     def project_site_timeseries(experiments, project_sites):
 
+        for experiment in experiments:
+            experiments[experiment].update({'time_end': experiments[experiment]['time_start']
+                                                        + pd.DateOffset(days=experiments[experiment]['evaluated_days'])
+                                                        - pd.DateOffset(hours=1)})
+            experiments[experiment].update({'date_time_index': pd.date_range(start=experiments[experiment]['time_start'],
+                                                                             end=experiments[experiment]['time_end'],
+                                                                             freq=experiments[experiment]['time_frequency'])})
+
         for project_site in project_sites:
-            demand, pv_generation_per_kWp, wind_generation_per_kW = csv_input.from_file(project_site)
+            file_index, demand, pv_generation_per_kWp, wind_generation_per_kW = csv_input.from_file(project_sites[project_site])
 
         for experiment in experiments:
             for project_site in project_sites:
-                if experiment['project_site_name']==project_site['project_site_name']:
-                    experiment.update({'demand': demand,
+                if experiments[experiment]['project_site_name']==project_site:
+                    # todo include test if index from file has same resulution as index from date_time_index
+                    if file_index == None:
+                        index = experiments[experiment]['date_time_index']
+                    else:
+                        index = [item + pd.DateOffset(year=experiments[experiment]['date_time_index'][0].year) for item in file_index]
+
+                    # Adjust values from file to analysed timeframe
+                    demand = pd.Series(demand[index], index=index)
+                    pv_generation_per_kWp = pd.Series(pv_generation_per_kWp[index], index=index)
+                    wind_generation_per_kW = pd.Series(wind_generation_per_kW[index], index=index)
+
+                    experiments[experiment].update({'demand_profile': demand,
                                        'pv_generation_per_kWp': pv_generation_per_kWp,
                                        'wind_generation_per_kW': wind_generation_per_kW})
 
         return
 
     def from_file(project_site):
-        data_set = pd.read_csv(project_site['timeseries_file'])
-
+        data_set = pd.read_csv(project_site['timeseries_file'], sep=';')
+        #print(data_set)
         # Anpassen des timestamps auf die analysierte Periode
-        index = pd.DatetimeIndex(data_set[project_site['title_demand']].values)
-        index = [item + pd.DateOffset(year=date_time_index[0].year) for item in index]
+        if project_site['title_time']=='None':
+            file_index = None
+        else:
+            file_index = pd.DatetimeIndex(data_set[project_site['title_time']].values)
 
-        # reading pv_generation values - adjust to panel area or kWp and if in Wh!
-        pv_generation_per_kWp = pd.Series(data_set[project_site['title_pv']].values, index=index)
-        wind_generation_per_kW = pd.Series(data_set[project_site['title_wind']].values, index=index)
+        demand = data_set[project_site['title_demand']]
+        pv_generation_per_kWp = data_set[project_site['title_pv']] # reading pv_generation values - adjust to panel area or kWp and if in Wh!
+        wind_generation_per_kW = data_set[project_site['title_wind']]
 
-        logging.info(
-            'Total annual pv generation at project site (kWh/a/kWp): ' + str(round(pv_generation_per_kWp.sum())))
-
+        #logging.info(
+        #    'Total annual pv generation at project site (kWh/a/kWp): ' + str(round(pv_generation_per_kWp.sum())))
+        '''
         if display_graphs_solar == True:
             helpers.plot_results(pv_generation_per_kWp[date_time_index], "PV generation at project site",
                                  "Date",
                                  "Power kW")
-
-        return demand[date_time_index], pv_generation_per_kWp[date_time_index], wind_generation_per_kW[date_time_index]
+        '''
+        return file_index, demand, pv_generation_per_kWp, wind_generation_per_kW
 
 class excel_template():
 
@@ -56,12 +77,19 @@ class excel_template():
         return settings, parameters_constant_values, parameters_sensitivity, project_sites, case_definitions
 
     def get_data(file, sheet, header_row, index_column, last_column):
-        data = pd.read_excel(file,
-                             sheet_name=sheet,
-                             header=header_row-1,
-                             index_col=0,
-                             usecols=index_column+":"+last_column)
-        data = data.dropna()
+        if index_column==None and last_column==None:
+            data = pd.read_excel(file,
+                                 sheet_name=sheet,
+                                 header=header_row - 1,
+                                 index_col=0)
+            data = data.dropna()
+        else:
+            data = pd.read_excel(file,
+                                 sheet_name=sheet,
+                                 header=header_row-1,
+                                 index_col=0,
+                                 usecols=index_column+":"+last_column)
+            data = data.dropna()
         return data
 
     def identify_true_false(entry):
@@ -96,7 +124,7 @@ class excel_template():
         return parameters_sensitivity
 
     def get_project_sites(file, sheet_project_sites):
-        project_sites = excel_template.get_data(file, sheet_project_sites, 2, "A", "D")
+        project_sites = excel_template.get_data(file, sheet_project_sites, 2, None, None)
         evaluated_locations = len(project_sites.columns)
         # todo logging of evaluated project sites
         project_site_name_list = [project_sites.columns[i] for i in range(0, len(project_sites.columns))]

@@ -3,9 +3,7 @@ import numpy as np
 import logging
 import os.path
 
-from sensitivity import sensitivity
-
-class national_grid:
+class central_grid:
 
     # Check for saved blackout scenarios/grid availability, else continue randomization of backout events
     def get_blackouts(blackout_experiments):
@@ -57,8 +55,8 @@ class national_grid:
 
         # if data not saved, generate blackouts
         if data_complete == False:
-            from national_grid import national_grid
-            sensitivity_grid_availability, blackout_results = national_grid.availability(blackout_experiments)
+            from E_blackouts_central_grid import central_grid
+            sensitivity_grid_availability, blackout_results = central_grid.availability(blackout_experiments)
             sensitivity_grid_availability.index.name = 'timestep'
             sensitivity_grid_availability.to_csv(output_folder + '/grid_availability.csv')
 
@@ -76,21 +74,21 @@ class national_grid:
             experiment_count = experiment_count + 1
 
             logging.info("Experiment "+ str(experiment_count) + ": " +
-                  "Blackout duration " + str(experiment['blackout_duration']) + " hrs, "
-                  "blackout frequency " + str(experiment['blackout_frequency'])+ " per month")
+                  "Blackout duration " + str(blackout_experiments[experiment]['blackout_duration']) + " hrs, "
+                  "blackout frequency " + str(blackout_experiments[experiment]['blackout_frequency'])+ " per month")
 
-            number_of_blackouts =  national_grid.number_of_blackouts(experiment)
+            number_of_blackouts =  central_grid.number_of_blackouts(blackout_experiments[experiment])
 
             # 0-1-Series for grid availability
             grid_availability = pd.Series([1 for i in range(0, len(date_time_index))], index=date_time_index)
 
             if number_of_blackouts != 0:
-                time_of_blackout_events = national_grid.get_time_of_blackout_events(number_of_blackouts)
+                time_of_blackout_events = central_grid.get_time_of_blackout_events(number_of_blackouts)
 
                 blackout_event_durations, accumulated_blackout_duration = \
-                    national_grid.get_blackout_event_durations(experiment, timestep, number_of_blackouts)
+                    central_grid.get_blackout_event_durations(experiment, timestep, number_of_blackouts)
 
-                grid_availability, overlapping_blackouts, actual_number_of_blackouts = national_grid.availability_series(
+                grid_availability, overlapping_blackouts, actual_number_of_blackouts = central_grid.availability_series(
                     grid_availability, time_of_blackout_events, timestep, blackout_event_durations)
             else:
                 accumulated_blackout_duration  = 0
@@ -107,17 +105,17 @@ class national_grid:
             logging.info("Grid is not operational for " + str(round(total_grid_blackout_duration, 2))
                   + " hours, with a reliability of " + str(round(grid_reliability * 100, 2)) + " percent. \n")
 
-            blackout_results.update({experiment['experiment_name']:
+            blackout_results.update({blackout_experiments[experiment]['experiment_name']:
                                                       {'grid_reliability': grid_reliability,
                                                        'grid_total_blackout_duration': total_grid_blackout_duration,
                                                        'grid_number_of_blackouts': actual_number_of_blackouts
                                                        }})
             if experiment_count == 1:
                 # initial entries
-                sensitivity_grid_availability = pd.DataFrame(grid_availability, index=date_time_index, columns=[experiment['experiment_name']])
+                sensitivity_grid_availability = pd.DataFrame(grid_availability, index=date_time_index, columns=[blackout_experiments[experiment]['experiment_name']])
             else:
                 # add columns with headers = experiment_name
-                sensitivity_grid_availability = sensitivity_grid_availability.join(pd.DataFrame({experiment['experiment_name']: grid_availability.values}))
+                sensitivity_grid_availability = sensitivity_grid_availability.join(pd.DataFrame({blackout_experiments[experiment]['experiment_name']: grid_availability.values}))
 
         return sensitivity_grid_availability, blackout_results
 

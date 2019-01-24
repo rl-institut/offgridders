@@ -20,7 +20,7 @@ from oemof_create_model import oemof_model
 from case_definitions import utilities
 from oemof_evaluate import timeseries
 from plausability_tests import plausability_tests
-from output_functions import output
+from Z_output_functions import output
 from economic_evaluation import economic_evaluation
 import constraints_custom as constraints
 
