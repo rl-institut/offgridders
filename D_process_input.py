@@ -6,7 +6,7 @@ import pandas as pd
 
 import logging
 
-from economic_functions import economics
+from Z_economic_functions import economics
 
 class process_input_parameters():
     def list_of_cases(case_definitions):
