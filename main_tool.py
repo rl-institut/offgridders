@@ -11,41 +11,39 @@ import timeit
 from oemof.tools import logger
 import logging
 # Logging
+
 logger.define_logging(logfile='main_tool.log',
                       screen_level=logging.INFO,
                       file_level=logging.DEBUG)
 
-from case_definitions import cases
-#from national_grid import national_grid
+###############################################################################
+# Get values from excel_template:                                             #
+# * Experiments: Settings, project sites                                      #
+# * List of simulated cases                                                   #
+###############################################################################
+#-------- Get all settings ---------------------------------------------------#
+settings, parameters_constant_values, parameters_sensitivity, project_sites, case_definitions = excel_template.settings()
+
+#-------- Define all experiments, define result parameters -------------------#
+from sensitivity_new import sensitvitiy_experiments
+experiments, title_overall_results = sensitvitiy_experiments.get(settings, parameters_constant_values, parameters_sensitivity, project_sites, case_definitions)
 
 ###############################################################################
-# Check for, create or empty results dictionary                               #
+# Process and initialize        #
 ###############################################################################
-from general_functions import config_func
-config_func.check_results_dir()
+#-------- Check for, create or empty results directory -----------------------#
+from output_functions import output
+output.check_output_directory()
 
-###############################################################################
-# Create lists
-###############################################################################
-#-------------------------------Cases-----------------------------------------#
-# Cases to be evaluated during simulation                                     #
-#-----------------------------------------------------------------------------#
-from general_functions import config_func
-listof_cases        =   config_func.cases()
-###############################################################################
-# Generation of initializing data (demand, pv generation)
-###############################################################################
-#-----------------------------Demand profile----------------------------------#
-# If demand profile is supposed to be subjected to sensitivity analysis as    #
-# well, additional action has to be applied                                   #
-#-----------------------------------------------------------------------------#
-from demand_profile import demand
-demand_profiles = demand.get()
+#-------- Generate list of cases analysed in simulation ----------------------#
+from process_input import process_input_parameters as process_input
+case_list = process_input.list_of_cases(case_definitions)
 
-from input_values import white_noise_demand
-if white_noise_demand != 0:
-    from general_functions import helpers
-    demand_profiles = helpers.noise_demand(white_noise_demand, demand_profiles)
+#-------- Extend experiments with input time series
+#-------- (demand, pv_generation_per_kWp, wind_generation_per_kW)
+from read_from_files import csv_input
+project_site_timeseries(experiments, project_sites)
+
 #-------------------------------PV system-------------------------------------#
 # Currently only based on generic data, specific panel/inverter               #
 #-----------------------------------------------------------------------------#

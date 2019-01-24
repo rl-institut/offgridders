@@ -6,47 +6,51 @@ dictonary, including filenames.
 
 import pandas as pd
 import logging
-from read_from_files import excel_template
+
 import itertools
 import numpy as np
 import pprint as pp
+from read_from_files import excel_template
+from process_input import process_input_parameters as process_input
 
-class experiment_dict:
-
-    def get():
-        settings, parameters_constant_values, parameters_sensitivity, project_sites, case_definitions = excel_template.settings()
-
+class sensitvitiy_experiments:
+    def get(settings, parameters_constant_values, parameters_sensitivity, project_sites):
+        # Get Experiments based on sensitivity analysis
         if settings['sensitivity_all_combinations'] == True:
             sensitivity_experiments, number_of_project_sites, sensitivity_array_dict, number_of_project_sites = \
-                experiment_dict.combinations_all_possible(settings, parameters_constant_values, parameters_sensitivity, project_sites)
+                get.combinations_all_possible(settings, parameters_constant_values, parameters_sensitivity, project_sites)
 
         elif settings['sensitivity_all_combinations'] == False:
             sensitivity_experiments, number_of_project_sites, sensitivity_array_dict, number_of_project_sites = \
-                experiment_dict.combinations_with_base_case(settings, parameters_constant_values, parameters_sensitivity, project_sites)
+                get.combinations_with_base_case(settings, parameters_constant_values, parameters_sensitivity, project_sites)
 
         else:
             logging.warning('Setting "sensitivity_all_combinations" not valid! Has to be TRUE or FALSE.')
 
+        # Analyse each sensitivity experiment for each and every project site
         experiments, total_number_of_experiments = get.project_site_experiments(sensitivity_experiments, project_sites)
 
+        # Give a file name to the experiments
         for experiment_number in experiments:
             get.experiment_name(experiments[experiment_number], sensitivity_array_dict,
                             number_of_project_sites)
+            process_input.economic_values(experiments[experiment_number])
 
-        title_overall_results = get.overall_results_title(number_of_project_sites, sensitivity_array_dict)
-
+        # save all Experiments with all used input data to csv (not really necessary)
         experiments_dataframe = pd.DataFrame.from_dict(sensitivity_experiments, orient='index')
         experiments_dataframe.to_csv(settings['output_folder']+'/Input_data_of_all_cases.csv')
+
+        # Generate a overall title of the oemof-results DataFrame
+        title_overall_results = get.overall_results_title(number_of_project_sites, sensitivity_array_dict)
 
         message = 'For ' + str(number_of_project_sites)
         message += ' with ' + str(int(total_number_of_experiments/number_of_project_sites)) + ' scenarios each'
         message += ' a total of ' + str(total_number_of_experiments) + ' experiments will be performed'
 
         logging.info(message)
-        print(message)
-
         return experiments, title_overall_results
 
+class get:
     def combinations_all_possible(settings, parameters_constant_values, parameters_sensitivity, project_sites):
 
         remove_doubles.constants_senstivity(parameters_constant_values, parameters_sensitivity)
@@ -85,7 +89,6 @@ class experiment_dict:
 
         return sensitivity_experiments, number_of_project_sites, sensitivity_array_dict, number_of_project_sites
 
-class get:
     def universal_parameters(settings, parameters_constant_values, parameters_sensitivity, project_sites):
 
         remove_doubles.constants_project_sites(parameters_constant_values, project_sites)
@@ -329,5 +332,3 @@ class sensitivity():
                           + 'freq' + '_' + str(round(blackout_experiment['blackout_frequency'], 2)) + "_" \
                           + 'freq_dev' + '_' + str(round(blackout_experiment['blackout_frequency_std_deviation'], 2))
         return blackout_experiment_name
-
-experiment_dict.get()

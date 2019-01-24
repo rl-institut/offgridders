@@ -103,8 +103,8 @@ class oemof_simulate:
         #constraints.renewable_share_test(case_dict, oemof_results, experiment)
 
         # todo this has to be at end using e_flows_df, has to be edited
-        output.outputs_mg_flows(case_dict, e_flows_df, experiment['filename'])
-        output.outputs_storage(case_dict, e_flows_df, experiment['filename'])
+        output.save_mg_flows(case_dict, e_flows_df, experiment['filename'])
+        output.save_storage(case_dict, e_flows_df, experiment['filename'])
 
         output.print_oemof_meta_main_invest(meta, electricity_bus, case_dict['case_name'])
 

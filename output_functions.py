@@ -5,6 +5,29 @@ Collect all functions regarding outputs in this file
 import pandas as pd
 import matplotlib.pyplot as plt
 class output:
+    def check_output_directory():
+        """ Checking for output folder, creating it if nonexistant and deleting files if needed """
+        import os
+        from config import output_folder, restore_oemof_if_existant
+        if os.path.isdir(output_folder)!=True:
+            os.mkdir(output_folder)
+        if os.path.isdir(output_folder  +   '/oemof') != True:
+                os.mkdir(output_folder  +   '/oemof')
+        if os.path.isdir(output_folder  +   '/lp_files') != True:
+                os.mkdir(output_folder  +   '/lp_files')
+        if os.path.isdir(output_folder  +   '/storage') != True:
+                os.mkdir(output_folder  +   '/storage')
+        if os.path.isdir(output_folder  +   '/electricity_mg') != True:
+                os.mkdir(output_folder  +   '/electricity_mg')
+
+        else:
+            if restore_oemof_if_existant == False:
+                for root, dirs, files in os.walk(output_folder):
+                    for f in files:
+                        os.remove(root+'/'+f)
+                logging.info('Deleted all files in folder "simulation_results".')
+        return
+
     def print_oemof_meta_main_invest(meta, electricity_bus, case_name):
         from config import print_simulation_meta, print_simulation_main, print_simulation_invest
 
@@ -24,7 +47,7 @@ class output:
                 pp.pprint(electricity_bus['scalars'])
         return
 
-    def outputs_mg_flows(case_dict, e_flows_df, filename):
+    def save_mg_flows(case_dict, e_flows_df, filename):
         from config import display_graphs_flows_electricity_mg, setting_save_flows_storage
         flows_connected_to_electricity_mg_bus = [
             'Demand shortage',
@@ -65,7 +88,7 @@ class output:
                 plt.close()
         return
 
-    def outputs_storage(case_dict, e_flows_df, filename):
+    def save_storage(case_dict, e_flows_df, filename):
         if case_dict['storage_fixed_capacity'] != None:
             from config import display_graphs_flows_storage, setting_save_flows_storage
 

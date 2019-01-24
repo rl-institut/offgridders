@@ -14,20 +14,6 @@ except ImportError:
 
 
 class config_func():
-    def cases():
-        """Creating list of cases to be analysed based on config file"""
-        from config import simulated_cases
-        listof_cases = []
-        for keys in simulated_cases:
-            if simulated_cases[keys] == True: listof_cases.append(keys)
-
-        str_cases_simulated = ''
-        for item in listof_cases:
-            str_cases_simulated = str_cases_simulated + item + ', '
-
-        logging.info('The cases simulated are: base_oem, ' + str_cases_simulated[:-2])
-        return listof_cases
-
     def input_data(experiment):
         """Pre-processing of input data (calculation of economic values)"""
         experiment.update({'annuity_factor': economics.annuity_factor(experiment['project_life'], experiment['wacc'])})
@@ -94,29 +80,6 @@ class config_func():
             })
 
         return experiment
-
-    def check_results_dir():
-        """ Checking for output folder, creating it if nonexistant and deleting files if needed """
-        import os
-        from config import output_folder, restore_oemof_if_existant
-        if os.path.isdir(output_folder)!=True:
-            os.mkdir(output_folder)
-        if os.path.isdir(output_folder  +   '/oemof') != True:
-                os.mkdir(output_folder  +   '/oemof')
-        if os.path.isdir(output_folder  +   '/lp_files') != True:
-                os.mkdir(output_folder  +   '/lp_files')
-        if os.path.isdir(output_folder  +   '/storage') != True:
-                os.mkdir(output_folder  +   '/storage')
-        if os.path.isdir(output_folder  +   '/electricity_mg') != True:
-                os.mkdir(output_folder  +   '/electricity_mg')
-
-        else:
-            if restore_oemof_if_existant == False:
-                for root, dirs, files in os.walk(output_folder):
-                    for f in files:
-                        os.remove(root+'/'+f)
-                logging.info('Deleted all files in folder "simulation_results".')
-        return
 
 class helpers:
 
