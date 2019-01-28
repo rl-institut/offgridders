@@ -35,7 +35,8 @@ class generate_sensitvitiy_experiments:
             # Give a file name to the sensitivity_experiment_s
             get_names.experiment_name(sensitivitiy_experiments_s[experiment], sensitivity_array_dict,
                                 number_of_project_sites)
-
+            if sensitivitiy_experiments_s[experiment]['storage_initial_soc']=='None':
+                sensitivitiy_experiments_s[experiment].update({'storage_initial_soc': None})
         #######################################################
         # Get blackout_experiment_s for sensitvitiy           #
         #######################################################
@@ -138,7 +139,6 @@ class generate_experiments():
         for blackout_experiment in blackout_experiment_s:
             blackout_experiment_name = get_names.blackout_experiment_name(blackout_experiment_s[blackout_experiment])
             blackout_experiment_s[blackout_experiment].update({'experiment_name': blackout_experiment_name})
-            print(blackout_experiment_s[blackout_experiment]['experiment_name'])
 
         logging.info(
             str(len(blackout_experiment_s)) + ' combinations of blackout duration and frequency will be analysed.')

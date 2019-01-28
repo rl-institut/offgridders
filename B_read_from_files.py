@@ -3,62 +3,20 @@ import logging
 # requires xlrd
 
 class csv_input():
-    def project_site_timeseries(experiment_s, project_site_s):
-        # Update experiments and add longest date_time_index to settings
-        entries = 0
-        longest = ""
 
-        for experiment in experiment_s:
-            experiment_s[experiment].update({'time_end': experiment_s[experiment]['time_start']
-                                                         + pd.DateOffset(days=experiment_s[experiment]['evaluated_days'])
-                                                         - pd.DateOffset(hours=1)})
-            experiment_s[experiment].update({'date_time_index': pd.date_range(start=experiment_s[experiment]['time_start'],
-                                                                              end=experiment_s[experiment]['time_end'],
-                                                                              freq=experiment_s[experiment]['time_frequency'])})
-
-            if len(experiment_s[experiment]['date_time_index']) > entries:
-                entries = len(experiment_s[experiment]['date_time_index'])
-                longest = experiment
-
-        max_date_time_index = experiment_s[longest]['date_time_index']
-        max_evaluated_days = experiment_s[longest]['evaluated_days']
-
-        for project_site in project_site_s:
-            file_index, demand, pv_generation_per_kWp, wind_generation_per_kW = csv_input.from_file(project_site_s[project_site])
-
-        for experiment in experiment_s:
-            for project_site in project_site_s:
-                if experiment_s[experiment]['project_site_name']==project_site:
-                    # todo include test if index from file has same resulution as index from date_time_index
-                    if file_index == None:
-                        index = experiment_s[experiment]['date_time_index']
-                    else:
-                        index = [item + pd.DateOffset(year=experiment_s[experiment]['date_time_index'][0].year) for item in file_index]
-
-                    # Adjust values from file to analysed timeframe
-                    demand = pd.Series(demand[index], index=index)
-                    pv_generation_per_kWp = pd.Series(pv_generation_per_kWp[index], index=index)
-                    wind_generation_per_kW = pd.Series(wind_generation_per_kW[index], index=index)
-
-                    experiment_s[experiment].update({'demand_profile': demand,
-                                       'pv_generation_per_kWp': pv_generation_per_kWp,
-                                       'wind_generation_per_kW': wind_generation_per_kW})
-
-        return max_date_time_index, max_evaluated_days
 
     def from_file(project_site):
+        print(project_site['timeseries_file'])
         data_set = pd.read_csv(project_site['timeseries_file'], sep=';')
-        #print(data_set)
-        # Anpassen des timestamps auf die analysierte Periode
         if project_site['title_time']=='None':
             file_index = None
         else:
             file_index = pd.DatetimeIndex(data_set[project_site['title_time']].values)
 
-        demand = data_set[project_site['title_demand']]
-        pv_generation_per_kWp = data_set[project_site['title_pv']] # reading pv_generation values - adjust to panel area or kWp and if in Wh!
-        wind_generation_per_kW = data_set[project_site['title_wind']]
-
+        project_site.update({'demand': data_set[project_site['title_demand']]})
+        project_site.update({'pv_generation_per_kWp': data_set[project_site['title_pv']]})  # reading pv_generation values - adjust to panel area or kWp and if in Wh!
+        project_site.update({'wind_generation_per_kW': data_set[project_site['title_wind']]})
+        project_site.update({'file_index': file_index})
         #logging.info(
         #    'Total annual pv generation at project site (kWh/a/kWp): ' + str(round(pv_generation_per_kWp.sum())))
         '''
@@ -67,7 +25,7 @@ class csv_input():
                                  "Date",
                                  "Power kW")
         '''
-        return file_index, demand, pv_generation_per_kWp, wind_generation_per_kW
+        return
 
 class excel_template():
 
@@ -82,9 +40,13 @@ class excel_template():
         settings = excel_template.get_settings(file, sheet_settings)
         parameters_constant_units, parameters_constant_values = excel_template.get_parameters_constant(file, sheet_input_constant)
         parameters_sensitivity = excel_template.get_parameters_sensitivity(file, sheet_input_sensitivity)
-        project_sites = excel_template.get_project_sites(file, sheet_project_sites)
+
+        project_site_s = excel_template.get_project_sites(file, sheet_project_sites)
+        for project_site in project_site_s:
+            csv_input.from_file(project_site_s[project_site])
+
         case_definitions = excel_template.get_case_definitions(file, sheet_case_definitions)
-        return settings, parameters_constant_values, parameters_sensitivity, project_sites, case_definitions
+        return settings, parameters_constant_values, parameters_sensitivity, project_site_s, case_definitions
 
     def get_data(file, sheet, header_row, index_column, last_column):
         if index_column==None and last_column==None:
@@ -147,12 +109,13 @@ class excel_template():
 
     def get_case_definitions(file, sheet_project_sites):
         case_definitions = excel_template.get_data(file, sheet_project_sites, 16, "A", "H")
-        # todo logging message for evaluated cases - also consider setting "perform_simulation"
-        case_list = [case_definitions.columns[i] for i in range(0, len(case_definitions.columns))]
         # here: if case_list perform_simulation==False: remove column
         case_definitions = case_definitions.to_dict(orient='dict')
         # Translate strings 'True' and 'False' from excel sheet to True and False
         for case in case_definitions:
+            case_definitions[case].update({'case_name': case})
             for key in case_definitions[case]:
                 case_definitions[case][key] = excel_template.identify_true_false(case_definitions[case][key])
+            if case_definitions[case]['max_shortage'] != 'default':
+                case_definitions[case].update({'max_shortage': float(case_definitions[case]['max_shortage'])})
         return case_definitions

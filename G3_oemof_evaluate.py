@@ -48,13 +48,14 @@ class timeseries:
             e_flows_df = utilities.join_e_flows_df(demand_supplied, 'Demand supplied', e_flows_df)
         else:
             oemof_results.update({'total_demand_supplied_annual_kWh': oemof_results['total_demand_annual_kWh']})
+            oemof_results.update({'total_demand_shortage_annual_kWh': 0})
         return e_flows_df
 
     def get_excess(case_dict, oemof_results, electricity_bus, e_flows_df):
         # Get flow
         excess = electricity_bus['sequences'][(('bus_electricity_mg', 'sink_excess'), 'flow')]
         e_flows_df = utilities.join_e_flows_df(excess, 'Excess generation', e_flows_df)
-        utilities.annual_value('total_demand_shortage_annual_kWh', excess, oemof_results, case_dict) # not given as result.csv right now
+        utilities.annual_value('total_demand_excess_annual_kWh', excess, oemof_results, case_dict) # not given as result.csv right now
         return e_flows_df
 
     def get_pv(case_dict, oemof_results, electricity_bus, e_flows_df, pv_generation_max):
@@ -78,6 +79,29 @@ class timeseries:
                 oemof_results.update({'capacity_pv_kWp': case_dict['pv_fixed_capacity']})
         elif case_dict['pv_fixed_capacity'] == None:
             oemof_results.update({'capacity_pv_kWp': 0})
+        return e_flows_df
+
+    def get_wind(case_dict, oemof_results, electricity_bus, e_flows_df, wind_generation_max):
+        # Get flow
+        if case_dict['wind_fixed_capacity'] != None:
+            wind_gen = electricity_bus['sequences'][(('source_wind', 'bus_electricity_mg'), 'flow')]
+            utilities.annual_value('total_wind_generation_kWh', wind_gen, oemof_results, case_dict)
+            e_flows_df = utilities.join_e_flows_df(wind_gen, 'Wind generation', e_flows_df)
+        else:
+            oemof_results.update({'total_wind_generation_kWh': 0})
+
+        # Get capacity
+        if case_dict['wind_fixed_capacity'] == False:
+            if wind_generation_max > 1:
+                oemof_results.update({'capacity_wind_kW': electricity_bus['scalars'][(('source_wind', 'bus_electricity_mg'), 'invest')]* wind_generation_max })
+            elif wind_generation_max > 0 and wind_generation_max < 1:
+                oemof_results.update({'capacity_wind_kW': electricity_bus['scalars'][(('source_wind', 'bus_electricity_mg'), 'invest')] / wind_generation_max })
+            else:
+                logging.warning("Error, Strange Wind behaviour (Wind gen < 0)")
+        elif isinstance(case_dict['wind_fixed_capacity'], float):
+                oemof_results.update({'capacity_wind_kW': case_dict['wind_fixed_capacity']})
+        elif case_dict['wind_fixed_capacity'] == None:
+            oemof_results.update({'capacity_wind_kW': 0})
         return e_flows_df
 
     def get_genset(case_dict, oemof_results, electricity_bus, e_flows_df):
@@ -220,6 +244,7 @@ class timeseries:
         total_generation += oemof_results['consumption_main_grid_mg_side_annual_kWh']
         #total_generation += oemof_results['total_wind_generation_kWh']
         total_generation += oemof_results['total_pv_generation_kWh']
+        total_generation += oemof_results['total_wind_generation_kWh']
 
         total_fossil_generation = oemof_results['total_genset_generation_kWh']
         # attention: only effectively used electricity consumption counts for renewable share

@@ -10,6 +10,7 @@ new cases can easily be added.
 
 # to check for files and paths
 import os.path
+import timeit
 
 # Logging of info
 import logging
@@ -17,19 +18,18 @@ import oemof.outputlib as outputlib
 
 # For speeding up lp_files and bus/component definition in oemof as well as processing
 from G1_oemof_create_model import oemof_model
-from F_case_definitions import utilities
+import G2b_constraints_custom as constraints
 from G3_oemof_evaluate import timeseries
+from G3aeconomic_evaluation import economic_evaluation
 from G3b_plausability_tests import plausability_tests
 from Z_output_functions import output
-from G3aeconomic_evaluation import economic_evaluation
-import G2b_constraints_custom as constraints
 
 # This is not really a necessary class, as the whole experiement could be given to the function, but it ensures, that
 # only correct input data is included
 
 class oemof_simulate:
 
-    def run(experiment, case_dict, demand_profile, pv_generation_per_kWp, grid_availability):
+    def run(experiment, case_dict):
         '''
         Funktion to generate oemof-lp file, simulate and extract simulation results from oemof-results,
         including extraction of time series, accumulated values, optimized capacities.
@@ -39,9 +39,9 @@ class oemof_simulate:
         results itself should change (eg. in the future allowing a finer timestep resulution),
         this is the right place.
         '''
+        start = timeit.default_timer()
 
-        file_name = utilities.filename(case_dict['case_name'], experiment['filename'])
-        utilities.extend_dictionary(case_dict, experiment, demand_profile)
+        file_name = case_dict['filename']
 
         # For restoring .oemof results if that is possible (speeding up computation time)
         if os.path.isfile(experiment['output_folder'] + "/oemof/" + file_name + ".oemof") and experiment['restore_oemof_if_existant'] == True:
@@ -50,17 +50,15 @@ class oemof_simulate:
         # If .oemof results do not already exist, start oemof-process
         else:
             # generate model
-            micro_grid_system, model = oemof_model.build(experiment, case_dict, demand_profile, pv_generation_per_kWp, grid_availability)
+            micro_grid_system, model = oemof_model.build(experiment, case_dict)
             # perform simulation
             micro_grid_system        = oemof_model.simulate(experiment, micro_grid_system, model, file_name)
             # store simulation results to .oemof
-            oemof_model.store_results(micro_grid_system, file_name, experiment['setting_save_oemofresults'])
+            oemof_model.store_results(micro_grid_system, file_name, experiment['output_folder'], experiment['setting_save_oemofresults'])
 
         # it actually is not really necessary to restore just simulated results... but for consistency and to make sure that calling results is easy, this is used nevertheless
         # load oemof results from previous or just finished simulation
         micro_grid_system = oemof_model.load_oemof_results(experiment['output_folder'], file_name)
-        # process results
-        pv_generation_max = max(pv_generation_per_kWp)
 
         ######################
         # Processing
@@ -85,13 +83,14 @@ class oemof_simulate:
                                       'total_demand_annual_kWh']})
 
         e_flows_df = timeseries.get_excess(case_dict, oemof_results, electricity_bus, e_flows_df)
-        e_flows_df = timeseries.get_pv(case_dict, oemof_results, electricity_bus, e_flows_df, pv_generation_max)
+        e_flows_df = timeseries.get_pv(case_dict, oemof_results, electricity_bus, e_flows_df, experiment['peak_pv_generation_per_kWp'])
+        e_flows_df = timeseries.get_wind(case_dict, oemof_results, electricity_bus, e_flows_df, experiment['peak_wind_generation_per_kW'])
         e_flows_df = timeseries.get_genset(case_dict, oemof_results, electricity_bus, e_flows_df)
         e_flows_df = timeseries.get_storage(case_dict, oemof_results, experiment, results, e_flows_df)
         timeseries.get_fuel(case_dict, oemof_results, results)
 
         # todo still decide with of the flows to include in e_flow_df, and which ones to put into oemof results for cost calculation (expenditures, revenues)
-        e_flows_df = timeseries.get_national_grid(case_dict, oemof_results, results, e_flows_df, grid_availability)
+        e_flows_df = timeseries.get_national_grid(case_dict, oemof_results, results, e_flows_df, experiment['grid_availability'])
 
         timeseries.get_res_share(case_dict, oemof_results, experiment)
 
@@ -126,4 +125,8 @@ class oemof_simulate:
                      + ' with a reliability of ' + str(
             round(oemof_results['supply_reliability'] * 100, 2)) + ' percent')
 
+        duration = timeit.default_timer() - start
+        logging.debug('    Simulation of case ' + case_dict['case_name'] + ' complete.')
+        logging.info('    Simulation time (s): ' + str(round(duration, 2)) + '\n')
+        oemof_results.update({'simulation_time': round(duration, 5)})
         return oemof_results

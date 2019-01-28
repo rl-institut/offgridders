@@ -136,13 +136,13 @@ class central_grid:
                                                                     replace=False) # no replacements
         # Chronological order
         time_of_blackout_events.sort_index(inplace=True)
-
+        '''
         # Display all events
         string_blackout_events = ""
         for item in time_of_blackout_events.index:
             string_blackout_events = string_blackout_events + str(item) + ", "
         logging.info("Blackouts events occur on following dates: " + string_blackout_events[:-2])
-
+        '''
         time_of_blackout_events = time_of_blackout_events.reindex(index=date_time_index, fill_value=0)
         return time_of_blackout_events
 

@@ -6,7 +6,7 @@ import pprint as pp
 import logging
 import pandas as pd
 
-def stability_criterion(model, case_dict, experiment, storage, sink_demand, genset, pcc_consumption, source_shortage, el_bus, grid_availability):
+def stability_criterion(model, case_dict, experiment, storage, sink_demand, genset, pcc_consumption, source_shortage, el_bus):
     '''
     Set a minimal limit for operating reserve of diesel generator + storage to aid PV generation in case of volatilities
     = Ensure stability of MG system
@@ -44,7 +44,6 @@ def stability_criterion(model, case_dict, experiment, storage, sink_demand, gens
     el_bus: object of class oemof.solph.network.Bus
         For accessing flow-parameters
     '''
-
     stability_limit = case_dict['stability_constraint']
     ## ------- Get CAP genset ------- #
     CAP_genset = 0
@@ -74,7 +73,8 @@ def stability_criterion(model, case_dict, experiment, storage, sink_demand, gens
         ##---------Grid consumption t-------#
         # this should not be actual consumption but possible one  - like grid_availability[t]*pcc_consumption_cap
         if case_dict['pcc_consumption_fixed_capacity'] != None:
-            expr += CAP_pcc * grid_availability[t]
+            expr += CAP_pcc * experiment['grid_availability'][t]
+
         ## ------- Get stored capacity storage at t------- #
         # todo adjust if timestep not 1 hr
         if case_dict['storage_fixed_capacity'] != None:

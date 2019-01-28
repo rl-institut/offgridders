@@ -27,6 +27,7 @@ class output_results:
 
         title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[
             'capacity_pv_kWp',
+            'capacity_wind_kW',
             'capacity_storage_kWh',
             'capacity_genset_kW',
             'capacity_pcoupling_kW',
@@ -38,6 +39,7 @@ class output_results:
         if settings['results_annuities'] == True:
             title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[
                 'annuity_pv',
+                'annuity_wind',
                 'annuity_storage',
                 'annuity_genset',
                 'annuity_pcoupling',
@@ -55,6 +57,7 @@ class output_results:
         if settings['results_costs'] == True:
             title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[
                 'costs_pv',
+                'costs_wind',
                 'costs_storage',
                 'costs_genset',
                 'costs_pcoupling',
@@ -106,7 +109,7 @@ class output:
                 for root, dirs, files in os.walk(output_folder):
                     for f in files:
                         os.remove(root + '/' + f)
-                logging.info('Deleted all files in folder "simulation_results".')
+                logging.info('Deleted all files in folder "simulation_results".') # todo multiple times due to multiple experiments - possible t save each experimentin seperate folder?!
         return
 
     def print_oemof_meta_main_invest(experiment, meta, electricity_bus, case_name):
@@ -131,6 +134,7 @@ class output:
             'Demand shortage',
             'Demand supplied',
             'PV generation',
+            'Wind generation',
             'Excess electricity',
             'Consumption from main grid (MG side)',
             'Feed into main grid (MG side)',
@@ -151,18 +155,22 @@ class output:
             mg_flows.to_csv(experiment['output_folder'] + '/electricity_mg/' + case_dict['case_name'] + filename + '_electricity_mg.csv')
 
         if experiment['display_graphs_flows_electricity_mg'] == True:
-            fig = mg_flows.plot(title = 'MG Operation of case ' + case_dict['case_name'])
+            fig = mg_flows.plot(title = 'MG Operation of case ' + case_dict['case_name'] + ' in ' + experiment['project_site_name'])
             fig.set(xlabel='Time', ylabel='Electricity flow in kWh')
             fig.legend(loc='upper right')
             plt.savefig(experiment['output_folder'] + '/electricity_mg/' + case_dict['case_name'] + filename + '_electricity_mg.png')
+            plt.close()
             plt.clf()
+            plt.cla()
             # todo change if 15-min intervals
             if (len(mg_flows['Demand']) >= 7 * 24):
-                fig = mg_flows[0:7 * 24].plot(title = 'MG Operation of case ' + case_dict['case_name'])
+                fig = mg_flows[0:7 * 24].plot(title = 'MG Operation of case ' + case_dict['case_name'] + ' in ' + experiment['project_site_name'])
                 fig.set(xlabel='Time', ylabel='Electricity flow in kWh')
                 fig.legend(loc='upper right')
                 plt.savefig(experiment['output_folder'] + '/electricity_mg/' + case_dict['case_name'] + filename + '_electricity_mg_7days.png')
                 plt.close()
+                plt.clf()
+                plt.cla()
         return
 
     def save_storage(experiment, case_dict, e_flows_df, filename):
@@ -187,16 +195,20 @@ class output:
                 storage_flows.to_csv(experiment['output_folder'] + '/storage/' + case_dict['case_name'] + filename + '_storage.csv')
 
             if experiment['display_graphs_flows_storage'] == True:
-                fig = storage_flows.plot(title = 'Storage flows of case ' + case_dict['case_name'])
+                fig = storage_flows.plot(title = 'Storage flows of case ' + case_dict['case_name'] + ' in ' + experiment['project_site_name'])
                 fig.set(xlabel='Time', ylabel='Electricity flow/stored in kWh')
                 fig.legend(loc='upper right')
                 plt.savefig(experiment['output_folder'] + '/storage/' + case_dict['case_name'] + filename + '_storage.png')
+                plt.close()
                 plt.clf()
+                plt.cla()
                 #todo change if 15-min intervals
                 if (len(storage_flows['Stored capacity']) >= 7*24):
-                    fig = storage_flows[0:7*24].plot(title='Storage flows of case ' + case_dict['case_name'])
+                    fig = storage_flows[0:7*24].plot(title='Storage flows of case ' + case_dict['case_name'] + ' in ' + experiment['project_site_name'])
                     fig.set(xlabel='Time', ylabel='Electricity flow/stored in kWh')
                     fig.legend(loc='upper right')
                     plt.savefig(experiment['output_folder'] + '/storage/' + case_dict['case_name'] + filename + '_storage_7days.png')
                     plt.close()
+                    plt.clf()
+                    plt.cla()
         return

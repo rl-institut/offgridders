@@ -49,6 +49,7 @@ class economic_evaluation():
     # todo this could also directly be generated during processing of results
     def capacities(case_dict, oemof_results, capacities):
         oemof_results.update({'capacity_pv_kWp': capacities['capacity_pv_kWp']})
+        oemof_results.update({'capacity_wind_kWp': capacities['capacity_wind_kWp']})
         oemof_results.update({'capacity_storage_kWh': capacities['capacity_storage_kWh']})
         oemof_results.update({'capacity_genset_kW': capacities['capacity_genset_kW']})
         oemof_results.update({'capacity_pcoupling_kW': capacities['capacity_pcoupling_kW']})
@@ -59,6 +60,7 @@ class economic_evaluation():
 
         interval_annuity={
             'annuity_pv': experiment['pv_cost_annuity'] * oemof_results['capacity_pv_kWp'],
+            'annuity_wind': experiment['wind_cost_annuity'] * oemof_results['capacity_wind_kW'],
             'annuity_storage': experiment['storage_cost_annuity'] * oemof_results['capacity_storage_kWh'],
             'annuity_genset': experiment['genset_cost_annuity'] * oemof_results['capacity_genset_kW'],
             'annuity_pcoupling': experiment['pcoupling_cost_annuity'] * oemof_results['capacity_pcoupling_kW'] ,
@@ -75,6 +77,7 @@ class economic_evaluation():
 
         om_var_interval={
             'om_var_pv': oemof_results['total_pv_generation_kWh']*experiment['pv_cost_var'],
+            'om_var_wind': oemof_results['total_wind_generation_kWh'] * experiment['wind_cost_var'],
             'om_var_storage': oemof_results['total_battery_throughput_kWh']*experiment['storage_cost_var'],
             'om_var_genset': oemof_results['total_genset_generation_kWh']*experiment['genset_cost_var'],
             'om_var_pcoupling': oemof_results['total_pcoupling_throughput_kWh']*experiment['pcoupling_cost_var']
@@ -83,6 +86,8 @@ class economic_evaluation():
         oemof_results.update({
             'annuity_pv':
                 (interval_annuity['annuity_pv'] + om_var_interval['om_var_pv'])* 365 / evaluated_days,
+            'annuity_wind':
+                (interval_annuity['annuity_wind'] + om_var_interval['om_var_wind'])* 365 / evaluated_days,
             'annuity_storage':
                 (interval_annuity['annuity_storage'] + om_var_interval['om_var_storage'])* 365 / evaluated_days,
             'annuity_genset':
@@ -97,6 +102,7 @@ class economic_evaluation():
                 (interval_annuity['annuity_grid_extension'])* 365 / evaluated_days})
 
         oemof_results.update({'annuity': oemof_results['annuity_pv']
+                                         + oemof_results['annuity_wind']
                                          + oemof_results['annuity_storage']
                                          + oemof_results['annuity_genset']
                                          + oemof_results['annuity_pcoupling']
@@ -109,6 +115,7 @@ class economic_evaluation():
     def costs(oemof_results, experiment):
         oemof_results.update({
             'costs_pv': oemof_results['annuity_pv'] * experiment['annuity_factor'],
+            'costs_wind': oemof_results['annuity_wind'] * experiment['annuity_factor'],
             'costs_storage': oemof_results['annuity_storage'] * experiment['annuity_factor'],
             'costs_genset': oemof_results['annuity_genset'] * experiment['annuity_factor'],
             'costs_pcoupling': oemof_results['annuity_pcoupling'] * experiment['annuity_factor'],

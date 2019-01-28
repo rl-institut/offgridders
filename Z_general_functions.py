@@ -27,13 +27,14 @@ class helpers:
 
     def define_base_capacities(oemof_results):
         capacities_base = {'capacity_pv_kWp': oemof_results['capacity_pv_kWp'],
+                           'capacity_wind_kW': oemof_results['capacity_wind_kW'],
                          'capacity_storage_kWh': oemof_results['capacity_storage_kWh'],
                          'capacity_genset_kW': oemof_results['capacity_genset_kW'],
                          'capacity_pcoupling_kW': oemof_results['capacity_pcoupling_kW']}
         return capacities_base
 
 
-    def store_result_matrix(overall_results, experiment, oemof_results, duration):
+    def store_result_matrix(overall_results, experiment, oemof_results):
         """
         Storing results to vector and then result matrix for saving it in csv.
         """
@@ -49,16 +50,16 @@ class helpers:
                 else:
                     result_series = result_series.append(
                         pd.Series([round(oemof_results[key], round_to_comma)], index=[key]))
-            # extend by simulation time
-            elif key == 'simulation_time':
-                oemof_results.update({key: round(duration, round_to_comma)})
-                result_series = result_series.append(pd.Series([round(duration, round_to_comma)], index=[key]))
             # extend by name of demand profile
             elif key == 'demand_profile':
                 result_series = result_series.append(pd.Series([experiment[key]], index=[key]))
             # Check if called value is a parameter of sensitivity_experiment_s
             elif key in experiment:
-                result_series = result_series.append(
+                if isinstance(experiment[key], str):
+                    result_series = result_series.append(
+                        pd.Series([experiment[key]], index=[key]))
+                else:
+                    result_series = result_series.append(
                     pd.Series([round(experiment[key], round_to_comma)], index=[key]))
 
         result_series = result_series.reindex(overall_results.columns, fill_value=None)

@@ -24,14 +24,14 @@ except ImportError:
 
 class generate():
     ######## Sources ########
-    def fuel_oem(micro_grid_system, bus_fuel, experiment, total_demand):
+    def fuel_oem(micro_grid_system, bus_fuel, experiment):
         # Does include intended minimal renewable factor as total max for fuel consumption -> just do decrease horizon
         # of possible solutions
         # todo i would delete this criterion here, if i add an additional constraint
         source_fuel = solph.Source(label="source_fuel",
                                    outputs={bus_fuel: solph.Flow(
                                        variable_costs   = experiment['price_fuel'] / experiment['combustion_value_fuel'],
-                                       nominal_value    = (1-experiment['min_renewable_share']) * total_demand / experiment['genset_efficiency'],
+                                       nominal_value    = (1-experiment['min_renewable_share']) * experiment['total_demand'] / experiment['genset_efficiency'],
                                        summed_max       = 1
                                    )})
         micro_grid_system.add(source_fuel)
@@ -54,7 +54,7 @@ class generate():
         micro_grid_system.add(source_shortage)
         return source_shortage
 
-    def maingrid_consumption(micro_grid_system, bus_electricity_ng, experiment, grid_availability):
+    def maingrid_consumption(micro_grid_system, bus_electricity_ng, experiment):
         '''
         Variable costs of main grid electricity consumption (/kWh) are added at inflow of pcc
         - otherwise they would have to be paid even if the electricity is not used after all
@@ -69,7 +69,7 @@ class generate():
 
         source_maingrid_consumption = solph.Source(label="source_maingrid_consumption",
                                        outputs={bus_electricity_ng_consumption: solph.Flow(
-                                           actual_value = grid_availability,
+                                           actual_value = experiment['grid_availability'],
                                            fixed = True,
                                            investment = solph.Investment(ep_costs=0)
                                            )})
@@ -89,10 +89,10 @@ class generate():
     ######## Sources ########
 
     ######## Components ########
-    def pv_fix(micro_grid_system, bus_electricity_mg, experiment, pv_generation_per_kWp, capacity_pv):
+    def pv_fix(micro_grid_system, bus_electricity_mg, experiment, capacity_pv):
         source_pv = solph.Source(label="source_pv",
                                  outputs={bus_electricity_mg: solph.Flow(label='PV generation',
-                                                                         actual_value   = pv_generation_per_kWp,
+                                                                         actual_value   = experiment['pv_generation_per_kWp'],
                                                                          fixed          = True,
                                                                          nominal_value  = capacity_pv,
                                                                          variable_costs = experiment['pv_cost_var']
@@ -101,8 +101,9 @@ class generate():
         micro_grid_system.add(source_pv)
         return source_pv
 
-    def pv_oem(micro_grid_system, bus_electricity_mg, experiment, pv_generation_per_kWp):
-        pv_norm = pv_generation_per_kWp / max(pv_generation_per_kWp)
+    def pv_oem(micro_grid_system, bus_electricity_mg, experiment):
+        peak_pv_generation = experiment['peak_pv_generation_per_kWp']
+        pv_norm = experiment['pv_generation_per_kWp'] / peak_pv_generation
         if pv_norm.any() > 1: logging.warning("Error, PV generation not normalized, greater than 1")
         if pv_norm.any() < 0: logging.warning("Error, PV generation negative")
 
@@ -111,33 +112,65 @@ class generate():
                                                                          actual_value=pv_norm,
                                                                          fixed=True,
                                                                          investment=solph.Investment(
-                                                                             ep_costs=experiment['pv_cost_annuity']/max(pv_generation_per_kWp)),
-                                                                         variable_costs = experiment['pv_cost_var']/max(pv_generation_per_kWp)
+                                                                             ep_costs=experiment['pv_cost_annuity']/peak_pv_generation),
+                                                                         variable_costs = experiment['pv_cost_var']/peak_pv_generation
                                                                          )})
         micro_grid_system.add(source_pv)
         return source_pv
 
+    ######## Components ########
+    def wind_fix(micro_grid_system, bus_electricity_mg, experiment, capacity_wind):
+        source_wind = solph.Source(label="source_wind",
+                                 outputs={bus_electricity_mg: solph.Flow(label='Wind generation',
+                                                                         actual_value   = experiment['wind_generation_per_kW'],
+                                                                         fixed          = True,
+                                                                         nominal_value  = capacity_wind,
+                                                                         variable_costs = experiment['wind_cost_var']
+                                                                         )})
+
+        micro_grid_system.add(source_wind)
+        return source_wind
+
+    def wind_oem(micro_grid_system, bus_electricity_mg, experiment):
+        peak_wind_generation = experiment['peak_wind_generation_per_kW']
+        wind_norm = experiment['wind_generation_per_kW'] / peak_wind_generation
+        if wind_norm.any() > 1: logging.warning("Error, Wind generation not normalized, greater than 1")
+        if wind_norm.any() < 0: logging.warning("Error, Wind generation negative")
+
+        source_wind = solph.Source(label="source_wind",
+                                 outputs={bus_electricity_mg: solph.Flow(label='Wind generation',
+                                                                         actual_value=wind_norm,
+                                                                         fixed=True,
+                                                                         investment=solph.Investment(
+                                                                             ep_costs=experiment['wind_cost_annuity']/peak_wind_generation),
+                                                                         variable_costs = experiment['wind_cost_var']/peak_wind_generation
+                                                                         )})
+        micro_grid_system.add(source_wind)
+        return source_wind
+
     def genset_fix(micro_grid_system, bus_fuel, bus_electricity_mg, experiment, capacity_fuel_gen):
-        if experiment['genset_min_loading'] == 0:
-            genset = solph.Transformer(label="transformer_genset",
-                                                           inputs={bus_fuel: solph.Flow()},
-                                                           outputs={bus_electricity_mg: solph.Flow(
-                                                               nominal_value=capacity_fuel_gen,
-                                                               variable_costs=experiment['genset_cost_var'])},
-                                                           conversion_factors={
-                                                               bus_electricity_mg: experiment['genset_efficiency']}
-                                                           )
-        else:
-            genset = solph.Transformer(label="transformer_genset",
-                                                       inputs   ={bus_fuel: solph.Flow()},
-                                                       outputs  ={bus_electricity_mg: solph.Flow(
-                                                           nominal_value    = capacity_fuel_gen,
-                                                           variable_costs   = experiment['genset_cost_var'],
-                                                           min=experiment['genset_min_loading'],
-                                                           max=experiment['genset_max_loading'],
-                                                           nonconvex=solph.NonConvex())},
-                                                       conversion_factors={ bus_electricity_mg: experiment['genset_efficiency']}
+        genset = solph.Transformer(label="transformer_genset",
+                                                       inputs={bus_fuel: solph.Flow()},
+                                                       outputs={bus_electricity_mg: solph.Flow(
+                                                           nominal_value=capacity_fuel_gen,
+                                                           variable_costs=experiment['genset_cost_var'])},
+                                                       conversion_factors={
+                                                           bus_electricity_mg: experiment['genset_efficiency']}
                                                        )
+        micro_grid_system.add(genset)
+        return genset
+
+    def genset_fix_minload(micro_grid_system, bus_fuel, bus_electricity_mg, experiment, capacity_fuel_gen):
+        genset = solph.Transformer(label="transformer_genset",
+                                                   inputs   ={bus_fuel: solph.Flow()},
+                                                   outputs  ={bus_electricity_mg: solph.Flow(
+                                                       nominal_value    = capacity_fuel_gen,
+                                                       variable_costs   = experiment['genset_cost_var'],
+                                                       min=experiment['genset_min_loading'],
+                                                       max=experiment['genset_max_loading'],
+                                                       nonconvex=solph.NonConvex())},
+                                                   conversion_factors={ bus_electricity_mg: experiment['genset_efficiency']}
+                                                   )
 
         micro_grid_system.add(genset)
         return genset
@@ -150,6 +183,21 @@ class generate():
                                                                ep_costs=experiment['genset_cost_annuity']),
                                                            variable_costs=experiment['genset_cost_var'])},
                                                        conversion_factors={bus_electricity_mg: experiment['genset_efficiency']})
+        micro_grid_system.add(transformer_genset)
+        return transformer_genset
+
+    def genset_oem_minload(micro_grid_system, bus_fuel, bus_electricity_mg, experiment):
+        genset = solph.Transformer(label="transformer_genset",
+                                                   inputs   ={bus_fuel: solph.Flow()},
+                                                   outputs  ={bus_electricity_mg: solph.Flow(
+                                                       investment=solph.Investment(
+                                                           ep_costs=experiment['genset_cost_annuity']),
+                                                       variable_costs   = experiment['genset_cost_var'],
+                                                       min=experiment['genset_min_loading'],
+                                                       max=experiment['genset_max_loading'],
+                                                       nonconvex=solph.NonConvex())},
+                                                   conversion_factors={ bus_electricity_mg: experiment['genset_efficiency']}
+                                                   )
         micro_grid_system.add(transformer_genset)
         return transformer_genset
 
@@ -228,6 +276,7 @@ class generate():
         return generic_storage
 
     def storage_oem(micro_grid_system, bus_electricity_mg, experiment):
+
         generic_storage = solph.components.GenericStorage(
             label='generic_storage',
             investment=solph.Investment(ep_costs=experiment['storage_cost_annuity']),
@@ -264,7 +313,7 @@ class generate():
         micro_grid_system.add(sink_demand)
         return sink_demand
 
-    def maingrid_feedin(micro_grid_system, bus_electricity_ng, experiment, grid_availability):
+    def maingrid_feedin(micro_grid_system, bus_electricity_ng, experiment):
         '''
         Variable costs of main grid electricity consumption (/kWh) are added at inflow of pcc
         - otherwise they would have to be paid even if the electricity is not used after all
@@ -275,7 +324,7 @@ class generate():
         # create and add demand sink to micro_grid_system - fixed
         sink_maingrid_feedin = solph.Sink(label="sink_maingrid_feedin",
                                  inputs={bus_electricity_ng_feedin: solph.Flow(
-                                     actual_value = grid_availability,
+                                     actual_value = experiment['grid_availability'],
                                      fixed = True,
                                      investment=solph.Investment(ep_costs=0))})
         micro_grid_system.add(sink_maingrid_feedin)

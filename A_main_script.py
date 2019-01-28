@@ -27,30 +27,30 @@ settings, parameters_constant_values, parameters_sensitivity, project_site_s, ca
 
 #-------- Define all sensitivity_experiment_s, define result parameters -------------------#
 from C_sensitivity_experiments import generate_sensitvitiy_experiments, get_names
-sensitivity_experiment_s, blackout_experiment_s, title_overall_results = generate_sensitvitiy_experiments.get(settings, parameters_constant_values, parameters_sensitivity, project_site_s)
+sensitivity_experiment_s, blackout_experiment_s, overall_results = generate_sensitvitiy_experiments.get(settings, parameters_constant_values, parameters_sensitivity, project_site_s)
 
 ###############################################################################
 # Process and initialize        #
 ###############################################################################
 #-------- Check for, create or empty results directory -----------------------#
 from Z_output_functions import output
-output.check_output_directory(sensitivity_experiment_s)
+output.check_output_directory(sensitivity_experiment_s) # todo too many times folders generated and/or deleted
 
 #-------- Generate list of cases analysed in simulation ----------------------#
 # missing process input: date time frame -> does it make more sense to keep settings konstant and give to each function or increase disc volume by having it for EACH EXPERIMENT?
 from D_process_input import process_input_parameters as process_input
 case_list = process_input.list_of_cases(case_definitions)
-
+# todo shortage at no shortage!!
 #----------------- Extend sensitivity_experiment_s----------------------------#
 # with demand, pv_generation_per_kWp, wind_generation_per_kW                  #
 #-----------------------------------------------------------------------------#
-from B_read_from_files import csv_input
-max_date_time_index, max_evaluated_days = csv_input.project_site_timeseries(sensitivity_experiment_s, project_site_s)
+from D_process_input import noise, process_input_parameters
+# adapt timestamp for timeseries
+max_date_time_index, max_evaluated_days = process_input_parameters.add_timeseries(sensitivity_experiment_s)
 settings.update({'date_time_index': max_date_time_index})
 settings.update({'evaluated_days': max_evaluated_days})
 
 # Apply noise
-from D_process_input import noise
 noise.apply(sensitivity_experiment_s)
 
 # Calculation of grid_availability with randomized blackouts
@@ -62,79 +62,50 @@ sensitivity_grid_availability, blackout_results = central_grid.get_blackouts(set
 #-----------------------------------------------------------------------------#
 # import all scripts necessary for loop
 from Z_general_functions import helpers
+from F_case_definitions import cases
 from G0_oemof_simulate import oemof_simulate
 
 # todo show figures but continue script!
-experiment_count= 0
+experiment_count = 0
+capacities_oem = {}
 
 for experiment in sensitivity_experiment_s:
 
     experiment_count = experiment_count + 1
 
-    demand_profile_experiment =  sensitivity_experiment_s[experiment]['demand_profile']
-    pv_generation_per_kWp = sensitivity_experiment_s[experiment]['pv_generation_per_kWp']
 
     blackout_experiment_name = get_names.blackout_experiment_name(sensitivity_experiment_s[experiment])
-    grid_availability = sensitivity_grid_availability[blackout_experiment_name]
-
-    # ----------------------------Base Case OEM------------------------------------#
-    # Optimization of optimal capacities in base case (off-grid micro grid)        #
-    # -----------------------------------------------------------------------------#
-    logging.info('Starting simulation of base OEM, experiment no. ' + str(experiment_count) + '...')
-    start = timeit.default_timer()
-
-
-    if base_case_with_min_loading == False:
-        # Performing base case OEM without minimal loading, therefore optimizing genset capacities
-        # get case definition
-        case_dict = cases.get_case_dict('base_oem', experiment, demand_profile_experiment, capacities_base=None)
-        # run oemof model
-        oemof_results = oemof_simulate.run(experiment, case_dict, demand_profile_experiment, pv_generation_per_kWp,
-                                                 grid_availability)
-    else:
-        # Performing base case OEM WITH minimal loading, thus fixing generator capacities to peak demand
-        # todo currently not operational!
-        oemof_results = cases.base_oem_min_loading(demand_profile_experiment, pv_generation_per_kWp, experiment, grid_availability)
-
-    capacities_base = helpers.define_base_capacities(oemof_results)
-
-    duration = timeit.default_timer() - start
-    logging.info('    Simulation of base OEM complete.')
-    logging.info('    Simulation time (s): ' + str(round(duration, 2)) + '\n')
-    overall_results = helpers.store_result_matrix(overall_results, experiment, oemof_results, duration)
-
+    sensitivity_experiment_s[experiment].update({'grid_availability': sensitivity_grid_availability[blackout_experiment_name]})
     ###############################################################################
     # Simulations of all cases                                                    #
     # first the ones defining base capacities, then the others                    #
     ###############################################################################
-    for items in case_list:
-        # todo define all this in sumulate.run! extract simulation time from oemof results?
-        logging.info('Starting simulation of case ' + items + ', experiment no. ' + str(experiment_count) + '...')
-        start = timeit.default_timer()
+    for specific_case in case_list:
+        # get case definition
+        experiment_case_dict = cases.update_dict(capacities_oem, case_definitions[specific_case], sensitivity_experiment_s[experiment])
         ###############################################################################
         # Creating, simulating and storing micro grid energy systems with oemof
         # According to parameters set beforehand
         ###############################################################################
-        # get definitions for cases
-        case_dict = cases.get_case_dict(items, experiment, demand_profile_experiment, capacities_base)
-        # run oemof model
-        oemof_results = oemof_simulate.run(experiment, case_dict, demand_profile_experiment, pv_generation_per_kWp,
-                                                     grid_availability)
+        logging.info(
+            'Starting simulation of case ' + specific_case + ', experiment no. ' + str(experiment_count) + '...')
+
+        oemof_results = oemof_simulate.run(sensitivity_experiment_s[experiment], experiment_case_dict)
+
+        if case_definitions[specific_case]['based_on_case'] == False:
+            capacities_oem.update({experiment_case_dict['case_name']: helpers.define_base_capacities(oemof_results)})
+        #todo off-grid right now COMPLETELY failing storage capacity compilation - why?!
         # Extend oemof_results by blackout characteristics
         oemof_results   = central_grid.extend_oemof_results(oemof_results, blackout_results[blackout_experiment_name])
         # Extend overall results dataframe with simulation results
-        overall_results = helpers.store_result_matrix(overall_results, experiment, oemof_results, duration)
+        overall_results = helpers.store_result_matrix(overall_results, sensitivity_experiment_s[experiment], oemof_results)
 
-        duration = timeit.default_timer() - start
-        logging.info('    Simulation of case '+items+' complete.')
-        logging.info('    Simulation time (s): ' + str(round(duration, 2)) + '\n')
-
-    if experiment['print_simulation_experiment'] == True:
+    if settings['print_simulation_experiment'] == True:
         logging.info('The experiment with following parameters has been analysed:')
-        pp.pprint(sensitivity_experiment_s)
+        pp.pprint(sensitivity_experiment_s[experiment])
 
     # Writing DataFrame with all results to csv file
-    overall_results.to_csv(experiment['output_folder'] + '/results.csv')
+    overall_results.to_csv(sensitivity_experiment_s[experiment]['output_folder'] + '/results.csv')
 
 # display all results
 pp.pprint(overall_results)
