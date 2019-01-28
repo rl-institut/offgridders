@@ -6,7 +6,6 @@ class csv_input():
 
 
     def from_file(project_site):
-        print(project_site['timeseries_file'])
         data_set = pd.read_csv(project_site['timeseries_file'], sep=';')
         if project_site['title_time']=='None':
             file_index = None

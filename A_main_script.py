@@ -88,7 +88,7 @@ for experiment in sensitivity_experiment_s:
         # According to parameters set beforehand
         ###############################################################################
         logging.info(
-            'Starting simulation of case ' + specific_case + ', experiment no. ' + str(experiment_count) + '...')
+            'Starting simulation of case ' + specific_case + ', project site ' + sensitivity_experiment_s[experiment]['project_site_name'] + ', experiment no. ' + str(experiment_count) + '...')
 
         oemof_results = oemof_simulate.run(sensitivity_experiment_s[experiment], experiment_case_dict)
 
