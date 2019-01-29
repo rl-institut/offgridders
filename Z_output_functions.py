@@ -3,6 +3,7 @@ Collect all functions regarding outputs in this file
 '''
 
 import pandas as pd
+import pprint as pp
 import matplotlib.pyplot as plt
 import logging
 
@@ -21,7 +22,7 @@ class output_results:
 
         if settings['results_blackout_characteristics'] == True:
             title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[
-                'national_grid_reliability',
+                'national_grid_reliability_h',
                 'national_grid_total_blackout_duration',
                 'national_grid_number_of_blackouts'])], axis=1, sort=False)
 
@@ -72,7 +73,7 @@ class output_results:
             'annuity',
             'npv',
             'lcoe',
-            'supply_reliability',
+            'supply_reliability_kWh',
             'objective_value',
             'simulation_time',
             'comments'])], axis=1, sort=False)
@@ -105,11 +106,12 @@ class output:
 
             # If oemof results are not to be used, ALL files will be deleted from subfolders
             # This includes lp files, oemof files, csv and png results
+            # todo multiple times due to multiple experiments - possible t save each experimentin seperate folder?!
             if  experiments[experiment]['restore_oemof_if_existant'] == False:
                 for root, dirs, files in os.walk(output_folder):
                     for f in files:
                         os.remove(root + '/' + f)
-                logging.info('Deleted all files in folder "simulation_results".') # todo multiple times due to multiple experiments - possible t save each experimentin seperate folder?!
+                logging.debug('Deleted all files in folder ' + experiments[experiment]['output_folder'])
         return
 
     def print_oemof_meta_main_invest(experiment, meta, electricity_bus, case_name):

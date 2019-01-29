@@ -4,32 +4,38 @@ import logging
 
 class csv_input():
 
-
     def from_file(project_site):
+        ##########################################################
+        # Reads timeseries from files connected to project sites #
+        ##########################################################
+
         data_set = pd.read_csv(project_site['timeseries_file'], sep=';')
         if project_site['title_time']=='None':
             file_index = None
         else:
             file_index = pd.DatetimeIndex(data_set[project_site['title_time']].values)
 
+        # Attached data to each project site analysed. Does NOT apply noise here,
+        # as noise might be subject to sensitivity analysis
+
+        # Necessary: All of these input timeseries in same unit (kWh)
         project_site.update({'demand': data_set[project_site['title_demand']]})
         project_site.update({'pv_generation_per_kWp': data_set[project_site['title_pv']]})  # reading pv_generation values - adjust to panel area or kWp and if in Wh!
         project_site.update({'wind_generation_per_kW': data_set[project_site['title_wind']]})
         project_site.update({'file_index': file_index})
-        #logging.info(
-        #    'Total annual pv generation at project site (kWh/a/kWp): ' + str(round(pv_generation_per_kWp.sum())))
-        '''
-        if display_graphs_solar == True:
-            helpers.plot_results(pv_generation_per_kWp[date_time_index], "PV generation at project site",
-                                 "Date",
-                                 "Power kW")
-        '''
+
         return
 
 class excel_template():
 
     def settings():
+        #######################################
+        # Reads all input from excel template #
+        #######################################
+
+        # location of excel template
         file = './inputs/input_template_excel.xlsx'
+        # Name of tabs
         sheet_settings = 'settings'
         sheet_input_constant = 'input_constant'
         sheet_input_sensitivity = 'input_sensitivity'
@@ -41,6 +47,7 @@ class excel_template():
         parameters_sensitivity = excel_template.get_parameters_sensitivity(file, sheet_input_sensitivity)
 
         project_site_s = excel_template.get_project_sites(file, sheet_project_sites)
+        # extend by timeseries
         for project_site in project_site_s:
             csv_input.from_file(project_site_s[project_site])
 
@@ -48,6 +55,7 @@ class excel_template():
         return settings, parameters_constant_values, parameters_sensitivity, project_site_s, case_definitions
 
     def get_data(file, sheet, header_row, index_column, last_column):
+        # Gets data from excel template
         if index_column==None and last_column==None:
             data = pd.read_excel(file,
                                  sheet_name=sheet,
@@ -64,6 +72,7 @@ class excel_template():
         return data
 
     def identify_true_false(entry):
+        # Translates strings True/False to boolean
         if entry == 'True':
             entry = True
         elif entry == 'False':
@@ -74,15 +83,18 @@ class excel_template():
         return entry
 
     def get_settings(file, sheet_settings):
+        # defines dictionary connected to settings
         settings = excel_template.get_data(file, sheet_settings, 11, "B", "C")
         settings = settings.to_dict(orient='dict')
         settings = settings['setting_value']
+
         # Translate strings 'True' and 'False' from excel sheet to True and False
         for key in settings:
             settings[key] = excel_template.identify_true_false(settings[key])
         return settings
 
     def get_parameters_constant(file, sheet_input_constant):
+        # defines dictionary connected to parameters
         parameters_constant = excel_template.get_data(file, sheet_input_constant, 1, "A", "C")
         parameters_constant = parameters_constant.to_dict(orient='dict')
         parameters_constant_units = parameters_constant['Unit']
@@ -90,15 +102,18 @@ class excel_template():
         return parameters_constant_units, parameters_constant_values
 
     def get_parameters_sensitivity(file, sheet_input_sensitivity):
+        # defines dictionary connected to senstivity analysis
         parameters_sensitivity = excel_template.get_data(file, sheet_input_sensitivity, 1, "A", "D")
         parameters_sensitivity = parameters_sensitivity.to_dict(orient='index')
         return parameters_sensitivity
 
     def get_project_sites(file, sheet_project_sites):
+        # defines dictionary connected to project sites
         project_sites = excel_template.get_data(file, sheet_project_sites, 2, None, None)
-        evaluated_locations = len(project_sites.columns)
-        # todo logging of evaluated project sites
-        project_site_name_list = [project_sites.columns[i] for i in range(0, len(project_sites.columns))]
+        project_site_name_string = ''
+        for i in range(0, len(project_sites.columns)):
+            project_site_name_string += project_sites.columns[i] + ', '
+        logging.info('Following project locations are evaluated: ' + project_site_name_string[:-2])
         project_sites = project_sites.to_dict(orient='index')
         # Translate strings 'True' and 'False' from excel sheet to True and False
         for site in project_sites:
@@ -107,8 +122,9 @@ class excel_template():
         return project_sites
 
     def get_case_definitions(file, sheet_project_sites):
+        # defines dictionary connected to project sites
         case_definitions = excel_template.get_data(file, sheet_project_sites, 16, "A", "H")
-        # here: if case_list perform_simulation==False: remove column
+        # todo: if case_list perform_simulation==False: remove column
         case_definitions = case_definitions.to_dict(orient='dict')
         # Translate strings 'True' and 'False' from excel sheet to True and False
         for case in case_definitions:

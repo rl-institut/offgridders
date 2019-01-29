@@ -70,6 +70,7 @@ class oemof_simulate:
             'case': case_dict['case_name'],
             'filename': 'results_' + case_dict['case_name'] + experiment['filename'],
             'objective_value': meta['objective'],
+            'simulation_time': meta['solver']['Time'],
             'comments': ''
         }
 
@@ -78,7 +79,7 @@ class oemof_simulate:
         e_flows_df = timeseries.get_demand(case_dict, oemof_results, electricity_bus)
         e_flows_df = timeseries.get_shortage(case_dict, oemof_results, electricity_bus, e_flows_df)
         # todo specify reliability into supply_reliability_kWh, national_grid_reliability_h
-        oemof_results.update({'supply_reliability':
+        oemof_results.update({'supply_reliability_kWh':
                                   oemof_results['total_demand_supplied_annual_kWh'] / oemof_results[
                                       'total_demand_annual_kWh']})
 
@@ -88,34 +89,45 @@ class oemof_simulate:
         e_flows_df = timeseries.get_genset(case_dict, oemof_results, electricity_bus, e_flows_df)
         e_flows_df = timeseries.get_storage(case_dict, oemof_results, experiment, results, e_flows_df)
         timeseries.get_fuel(case_dict, oemof_results, results)
-
-        # todo still decide with of the flows to include in e_flow_df, and which ones to put into oemof results for cost calculation (expenditures, revenues)
         e_flows_df = timeseries.get_national_grid(case_dict, oemof_results, results, e_flows_df, experiment['grid_availability'])
 
+        # determine renewable share of system - not of demand, but of total generation + consumption.
         timeseries.get_res_share(case_dict, oemof_results, experiment)
 
+        # Run plausability test on energy flows
         plausability_tests.run(oemof_results, e_flows_df)
 
-        # todo this is not jet implemented!
+        # Run test on oemof constraints
         constraints.stability_test(case_dict, oemof_results, experiment, e_flows_df)
-        #constraints.renewable_share_test(case_dict, oemof_results, experiment)
+        #constraints.renewable_share_test(case_dict, oemof_results, experiment) # todo this is not jet implemented!
 
-        # todo this has to be at end using e_flows_df, has to be edited
+        # Generate output (csv, png) for energy/storage flows
         output.save_mg_flows(experiment, case_dict, e_flows_df, experiment['filename'])
         output.save_storage(experiment, case_dict, e_flows_df, experiment['filename'])
 
+        # print meta/main results in command window
         output.print_oemof_meta_main_invest(experiment, meta, electricity_bus, case_dict['case_name'])
 
-        oemof_results = economic_evaluation.project_annuities(case_dict, oemof_results, experiment)
+        # Evaluate simulated systems regarding costs
+        economic_evaluation.project_annuities(case_dict, oemof_results, experiment)
 
+        #
+        duration = timeit.default_timer() - start
+
+        oemof_results.update({'evaluation_time': round(duration, 5)})
+
+        # Command window results
+        # Infos on simulation
         logging.info('Simulation of case "' + case_dict['case_name'] + '" resulted in : \n'
                      + '    ' + '  ' + '    ' + '    ' + '    '
                      + str(round(oemof_results['lcoe']*100, 1)) + ' EuroCt/kWh, '
                      + 'at a renewable share of '
                      + str(round(oemof_results['res_share'] * 100, 2)) + ' percent'
                      + ' with a reliability of '
-                     + str(round(oemof_results['supply_reliability'] * 100, 2)) + ' percent')
+                     + str(round(oemof_results['supply_reliability_kWh'] * 100, 2)) + ' percent')
+        logging.info('    Simulation/evaluation time (s): ' + str(round(oemof_results['simulation_time'], 2)) + '/' + str(round(duration, 2)) + '\n')
 
+        # Debug messages
         logging.debug('    Exact OEM results of case "' + case_dict['case_name'] + '" : \n'
                      + '    ' + '  ' + '    ' + '    ' + '    ' + str(
             round(oemof_results['capacity_storage_kWh'], 3)) + ' kWh battery, '
@@ -123,10 +135,7 @@ class oemof_simulate:
                      + str(round(oemof_results['capacity_genset_kW'], 3)) + ' kW genset '
                      + 'at a renewable share of ' + str(round(oemof_results['res_share'] * 100, 2)) + ' percent'
                      + ' with a reliability of ' + str(
-            round(oemof_results['supply_reliability'] * 100, 2)) + ' percent')
-
-        duration = timeit.default_timer() - start
+            round(oemof_results['supply_reliability_kWh'] * 100, 2)) + ' percent')
         logging.debug('    Simulation of case ' + case_dict['case_name'] + ' complete.')
-        logging.info('    Simulation time (s): ' + str(round(duration, 2)) + '\n')
-        oemof_results.update({'simulation_time': round(duration, 5)})
+
         return oemof_results

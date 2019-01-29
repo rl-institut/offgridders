@@ -11,7 +11,7 @@ class central_grid:
             # todo read to csv: timestamp as first row -> not equal column number, date time without index
             data_set = pd.read_csv(settings['output_folder'] + '/grid_availability.csv')
             index = pd.DatetimeIndex(data_set['timestep'].values)
-            index = [item + pd.DateOffset(year=settings['date_time_index'][0].year) for item in index]
+            index = [item + pd.DateOffset(year=settings['max_date_time_index'][0].year) for item in index]
             data_set = data_set.drop(columns=['timestep'])
             sensitivity_grid_availability = pd.DataFrame(data_set.values, index = index, columns = data_set.columns.values)
 
@@ -62,7 +62,7 @@ class central_grid:
 
     def availability(settings, blackout_experiments):
 
-        date_time_index = settings['date_time_index']
+        date_time_index = settings['max_date_time_index']
 
         # get timestep frequency: timestep = date_time_index.freq()
         timestep = 1
@@ -77,7 +77,7 @@ class central_grid:
                   "Blackout duration " + str(blackout_experiments[experiment]['blackout_duration']) + " hrs, "
                   "blackout frequency " + str(blackout_experiments[experiment]['blackout_frequency'])+ " per month")
 
-            number_of_blackouts =  central_grid.number_of_blackouts(settings['evaluated_days'], blackout_experiments[experiment])
+            number_of_blackouts =  central_grid.number_of_blackouts(settings['max_evaluated_days'], blackout_experiments[experiment])
 
             # 0-1-Series for grid availability
             grid_availability = pd.Series([1 for i in range(0, len(date_time_index))], index=date_time_index)
@@ -136,13 +136,13 @@ class central_grid:
                                                                     replace=False) # no replacements
         # Chronological order
         time_of_blackout_events.sort_index(inplace=True)
-        '''
+
         # Display all events
         string_blackout_events = ""
         for item in time_of_blackout_events.index:
             string_blackout_events = string_blackout_events + str(item) + ", "
-        logging.info("Blackouts events occur on following dates: " + string_blackout_events[:-2])
-        '''
+        logging.debug("Blackouts events occur on following dates: " + string_blackout_events[:-2])
+
         time_of_blackout_events = time_of_blackout_events.reindex(index=date_time_index, fill_value=0)
         return time_of_blackout_events
 
@@ -197,7 +197,7 @@ class central_grid:
         return grid_availability, overlapping_blackouts, blackout_count
 
     def extend_oemof_results(oemof_results, blackout_results):
-        oemof_results.update({'national_grid_reliability': blackout_results['grid_reliability'],
+        oemof_results.update({'national_grid_reliability_h': blackout_results['grid_reliability'],
                               'national_grid_total_blackout_duration': blackout_results['grid_total_blackout_duration'],
                               'national_grid_number_of_blackouts': blackout_results['grid_number_of_blackouts']})
         return oemof_results

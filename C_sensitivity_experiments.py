@@ -244,7 +244,6 @@ class get_names():
 
     def experiment_name(experiment, sensitivity_array_dict, number_of_project_sites):
         # define file postfix to save simulation
-        # todo some kind of sorting         sensitivity_array_ = pd.DataFrame.from_dict(sensitivity_array_dict, orient='index').sort_index(axis='index')
         filename = '_s'
         if number_of_project_sites > 1:
             if isinstance(experiment['project_site_name'], str):
@@ -254,12 +253,16 @@ class get_names():
         else:
             filename = filename
 
+        # this generates alphabetically sorted file/experiment titles
+        # ensuring that simulations can be restarted and old results are recognized
         sensitivity_titles = pd.DataFrame.from_dict(sensitivity_array_dict, orient='index').sort_index().index
+        #generating all names
         for keys in sensitivity_titles:
             if isinstance(experiment[keys], str):
                 filename = filename + '_' + keys + '_' + experiment[keys]
             else:
                 filename = filename + '_' + keys + '_' + str(round(experiment[keys], 2))
+        # is no sensitivity analysis performed, do not add filename
         if filename == '_s':
             filename = ''
         experiment.update({'filename': filename})

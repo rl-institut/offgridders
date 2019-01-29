@@ -26,11 +26,12 @@ class helpers:
         return
 
     def define_base_capacities(oemof_results):
-        capacities_base = {'capacity_pv_kWp': oemof_results['capacity_pv_kWp'],
-                           'capacity_wind_kW': oemof_results['capacity_wind_kW'],
-                         'capacity_storage_kWh': oemof_results['capacity_storage_kWh'],
-                         'capacity_genset_kW': oemof_results['capacity_genset_kW'],
-                         'capacity_pcoupling_kW': oemof_results['capacity_pcoupling_kW']}
+        capacities_base = {
+            'capacity_pv_kWp': oemof_results['capacity_pv_kWp'],
+            'capacity_wind_kW': oemof_results['capacity_wind_kW'],
+            'capacity_storage_kWh': oemof_results['capacity_storage_kWh'],
+            'capacity_genset_kW': oemof_results['capacity_genset_kW'],
+            'capacity_pcoupling_kW': oemof_results['capacity_pcoupling_kW']}
         return capacities_base
 
 

@@ -17,43 +17,33 @@ except ImportError:
 class economic_evaluation():
 
     def project_annuities(case_dict, oemof_results, experiment):
-        # Define all capacities of the case
-        # (capacity_pv_kWp, capacity_storage_kWh, capacity_genset_kW, capacity_pcoupling_kW)
-
         # Define all annuities based on component capacities (Capex+Opex), add var. operational costs
         # Extrapolate to costs of whole year
-        oemof_results = economic_evaluation.annuities_365(case_dict, oemof_results, experiment)
+        economic_evaluation.annuities_365(case_dict, oemof_results, experiment)
 
         # Add costs related to annuities
-        oemof_results = economic_evaluation.costs(oemof_results, experiment)
+        economic_evaluation.costs(oemof_results, experiment)
 
-        # Expenditures for fuel:
-        oemof_results = economic_evaluation.expenditures_fuel(oemof_results, experiment)
+        # Expenditures for fuel
+        economic_evaluation.expenditures_fuel(oemof_results, experiment)
+
+        # Expenditures for shortage
+        economic_evaluation.expenditures_shortage(oemof_results, experiment)
+
 
         if case_dict['pcc_consumption_fixed_capacity'] != None or case_dict['pcc_feedin_fixed_capacity'] != None:
             #---------Expenditures from electricity consumption from main grid ----------#
-            oemof_results = economic_evaluation.expenditures_main_grid_consumption(oemof_results, experiment)
+            economic_evaluation.expenditures_main_grid_consumption(oemof_results, experiment)
 
         if case_dict['pcc_feedin_fixed_capacity'] != None:
             # ---------Revenues from electricity feed-in to main grid ----------#
-            oemof_results = economic_evaluation.revenue_main_grid_feedin(oemof_results, experiment)
+            economic_evaluation.revenue_main_grid_feedin(oemof_results, experiment)
 
         oemof_results.update({
             'npv': oemof_results['annuity'] * experiment['annuity_factor'],
             'lcoe': oemof_results['annuity'] / oemof_results['total_demand_supplied_annual_kWh']
         })
-
-        # todo: this does not inlude costs for unsupplied demand!
-        return oemof_results
-
-    # todo this could also directly be generated during processing of results
-    def capacities(case_dict, oemof_results, capacities):
-        oemof_results.update({'capacity_pv_kWp': capacities['capacity_pv_kWp']})
-        oemof_results.update({'capacity_wind_kWp': capacities['capacity_wind_kWp']})
-        oemof_results.update({'capacity_storage_kWh': capacities['capacity_storage_kWh']})
-        oemof_results.update({'capacity_genset_kW': capacities['capacity_genset_kW']})
-        oemof_results.update({'capacity_pcoupling_kW': capacities['capacity_pcoupling_kW']})
-        return oemof_results
+        return
 
     def annuities_365(case_dict, oemof_results, experiment):
         evaluated_days = case_dict['evaluated_days']
@@ -110,7 +100,7 @@ class economic_evaluation():
                                          + oemof_results['annuity_distribution_grid']
                                          + oemof_results['annuity_grid_extension']})
 
-        return oemof_results
+        return
 
     def costs(oemof_results, experiment):
         oemof_results.update({
@@ -124,7 +114,7 @@ class economic_evaluation():
             'costs_grid_extension': oemof_results['annuity_grid_extension'] * experiment['annuity_factor']
         })
         # todo if pcc utility owned, than costs are not included in lcoe here! (at least not from perspective of mg project designer
-        return oemof_results
+        return
 
     def expenditures_fuel(oemof_results, experiment):
         # Necessary in oemof_results: consumption_main_grid_annual
@@ -135,11 +125,10 @@ class economic_evaluation():
                 oemof_results['expenditures_fuel_annual'] * experiment['annuity_factor']})
 
         oemof_results.update({'annuity': oemof_results['annuity'] + oemof_results['expenditures_fuel_annual']})
-        return oemof_results
+        return
 
     def expenditures_main_grid_consumption(oemof_results, experiment):
         # todo here the decisiion of pcc utility owned -> influences where revenues are generated
-        # todo update names as well!
         # Necessary in oemof_results: consumption_main_grid_annual
         oemof_results.update({'expenditures_main_grid_consumption_annual':
                 oemof_results['consumption_main_grid_mg_side_annual_kWh'] * experiment['maingrid_electricity_price']})
@@ -148,9 +137,8 @@ class economic_evaluation():
                 oemof_results['expenditures_main_grid_consumption_annual'] * experiment['annuity_factor']})
 
         oemof_results.update({'annuity': oemof_results['annuity'] + oemof_results['expenditures_main_grid_consumption_annual']})
-        return oemof_results
+        return
 
-    # todo include above
     def expenditures_shortage(oemof_results, experiment):
         # Necessary in oemof_results: consumption_main_grid_annual
         oemof_results.update({'expenditures_shortage_annual':
@@ -160,7 +148,7 @@ class economic_evaluation():
                 oemof_results['expenditures_shortage_annual'] * experiment['annuity_factor']})
 
         oemof_results.update({'annuity': oemof_results['annuity'] + oemof_results['expenditures_shortage_annual']})
-        return oemof_results
+        return
 
     def revenue_main_grid_feedin(oemof_results, experiment):
         # Necessary in oemof_results: feedin_main_grid_annual
@@ -172,7 +160,7 @@ class economic_evaluation():
 
         oemof_results.update(
             {'annuity': oemof_results['annuity'] + oemof_results['revenue_main_grid_feedin_annual']})
-        return oemof_results
+        return
 
 class process():
     def annual_value(value, evaluated_days):
