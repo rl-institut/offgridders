@@ -194,35 +194,47 @@ class get:
         sensitivity_experiment_s = {}
 
         for project_site in project_site_s:
-            defined_base = False
-            for key in sensitivity_array_dict:
-                for interval_entry in range(0, len(sensitivity_array_dict[key])):
-                    if key in project_site_s[project_site]:
-                        # if defined in project sites, use this value as base case value
-                        key_value = project_site_s[project_site][key]
-                    elif key in universal_parameters:
-                        # if not defined in project sites, use this value as base case value
-                        key_value = universal_parameters[key]
-                    else:
-                        # if not defined in project sites or universal values, use sensitivity value
-                        key_value = None
+            print(project_site)
+            # if no sensitivity analysis performed (other than multiple locations)
+            if len(sensitivity_array_dict.keys()) == 0:
+                experiment_number += 1
+                sensitivity_experiment_s.update({experiment_number: universal_parameters.copy()})
+                sensitivity_experiment_s[experiment_number].update({'project_site_name': project_site})
+                sensitivity_experiment_s[experiment_number].update(project_site_s[project_site].copy())
+            # generate cases with sensitivity parameters
+            else:
+                defined_base = False
 
-                    if sensitivity_array_dict[key][interval_entry] != key_value:
-                        # All parameters like base case except for sensitivity parameter
-                        experiment_number += 1
-                        sensitivity_experiment_s.update({experiment_number: universal_parameters.copy()})
-                        sensitivity_experiment_s[experiment_number].update({key: sensitivity_array_dict[key][interval_entry]})
-                        sensitivity_experiment_s[experiment_number].update({'project_site_name': project_site})
-                        sensitivity_experiment_s[experiment_number].update(project_site_s[project_site].copy())
+                for key in sensitivity_array_dict:
+                    for interval_entry in range(0, len(sensitivity_array_dict[key])):
+                        if key in project_site_s[project_site]:
+                            # if defined in project sites, use this value as base case value
+                            key_value = project_site_s[project_site][key]
+                        elif key in universal_parameters:
+                            # if not defined in project sites, use this value as base case value
+                            key_value = universal_parameters[key]
+                        else:
+                            # if not defined in project sites or universal values, use sensitivity value
+                            key_value = None
 
-                    elif sensitivity_array_dict[key][interval_entry] == key_value and defined_base == False:
-                        # Defining scenario only with base case values for universal parameter / specific to project site (once!)
-                        experiment_number += 1
-                        sensitivity_experiment_s.update({experiment_number: universal_parameters.copy()})
-                        sensitivity_experiment_s[experiment_number].update({key: key_value})
-                        sensitivity_experiment_s[experiment_number].update({'project_site_name': project_site})
-                        sensitivity_experiment_s[experiment_number].update(project_site_s[project_site].copy())
-                        defined_base == True
+                        if sensitivity_array_dict[key][interval_entry] != key_value:
+                            # All parameters like base case except for sensitivity parameter
+                            experiment_number += 1
+                            sensitivity_experiment_s.update({experiment_number: universal_parameters.copy()})
+                            sensitivity_experiment_s[experiment_number].update({key: sensitivity_array_dict[key][interval_entry]})
+                            sensitivity_experiment_s[experiment_number].update({'project_site_name': project_site})
+                            sensitivity_experiment_s[experiment_number].update(project_site_s[project_site].copy())
+
+                        elif sensitivity_array_dict[key][interval_entry] == key_value and defined_base == False:
+                            # Defining scenario only with base case values for universal parameter / specific to project site (once!)
+                            experiment_number += 1
+                            sensitivity_experiment_s.update({experiment_number: universal_parameters.copy()})
+                            sensitivity_experiment_s[experiment_number].update({key: key_value})
+                            sensitivity_experiment_s[experiment_number].update({'project_site_name': project_site})
+                            sensitivity_experiment_s[experiment_number].update(project_site_s[project_site].copy())
+                            defined_base == True
+
+
 
         total_number_of_experiments = experiment_number
         return sensitivity_experiment_s, total_number_of_experiments
