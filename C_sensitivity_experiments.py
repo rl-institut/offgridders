@@ -194,7 +194,6 @@ class get:
         sensitivity_experiment_s = {}
 
         for project_site in project_site_s:
-            print(project_site)
             # if no sensitivity analysis performed (other than multiple locations)
             if len(sensitivity_array_dict.keys()) == 0:
                 experiment_number += 1

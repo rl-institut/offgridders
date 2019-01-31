@@ -125,7 +125,7 @@ class oemof_simulate:
                      + str(round(oemof_results['res_share'] * 100, 2)) + ' percent'
                      + ' with a reliability of '
                      + str(round(oemof_results['supply_reliability_kWh'] * 100, 2)) + ' percent')
-        logging.info('    Simulation/evaluation time (s): ' + str(round(oemof_results['simulation_time'], 2)) + '/' + str(round(duration, 2)) + '\n')
+        logging.info('    Initial simulation time (s): ' + str(round(oemof_results['simulation_time'], 2)) + ' / Actual evaluation time (s): '  + str(round(duration, 2)) + '\n')
 
         # Debug messages
         logging.debug('    Exact OEM results of case "' + case_dict['case_name'] + '" : \n'

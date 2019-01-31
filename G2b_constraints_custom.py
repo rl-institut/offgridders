@@ -130,7 +130,15 @@ def stability_test(case_dict, oemof_results, experiment, e_flows_df):
             logging.debug("Stability criterion is fullfilled.")
         else:
             logging.warning("ATTENTION: Stability criterion NOT fullfilled!")
-            oemof_results.update({'comments': oemof_results['comments'] + 'Stability criterion not fullfilled. '})
+            logging.warning('Number of timesteps not meeting criteria: ' + str(sum(boolean_test)))
+            ratio = pd.Series([
+                (genset_capacity + (stored_electricity[t] - oemof_results['capacity_storage_kWh'] * experiment['storage_capacity_min']) *
+                experiment['storage_Crate_discharge'] + pcc_capacity[t] - experiment['stability_limit'] * (demand_profile[t] - shortage[t]))
+                / (experiment['peak_demand'])
+                for t in range(0, len(demand_profile.index))], index=demand_profile.index)
+            ratio_below_zero=ratio.clip_upper(0)
+            logging.warning('Deviation from stability criterion: '+ str(ratio_below_zero.values.mean()) + '(mean) / '+ str(ratio_below_zero.values.min()) + '(max).')
+            oemof_results.update({'comments': oemof_results['comments'] + 'Stability criterion not fullfilled (max deviation '+ str(round(100*ratio_below_zero.values.min(), 4)) + '%). '})
     else:
         pass
 
@@ -208,6 +216,7 @@ def renewable_share_test(case_dict, oemof_results, experiment):
 
         if boolean_test == False:
             logging.warning("ATTENTION: Minimal renewable share criterion NOT fullfilled!")
+            logging.warning('Number of timesteps not meeting criteria: ' + str(sum(boolean_test)))
             oemof_results.update({'comments': oemof_results['comments'] + 'Renewable share criterion not fullfilled. '})
         else:
             logging.debug("Minimal renewable share is fullfilled.")

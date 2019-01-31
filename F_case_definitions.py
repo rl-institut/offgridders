@@ -71,9 +71,9 @@ class cases:
                                                    experiment[list_of_batch_names[item]])
             # Correction factor for oversizing generator and pcc by factor (and include inefficiency of transformer)
             if case_dict_entry == 'peak_demand':
-                if component_name == 'genset_capacity':
+                if component_name == 'capacity_genset_kW':
                     case_dict_capacity = case_dict_capacity * 1.2
-                elif component_name == 'pcc_consumption_capacity' or component_name == 'pcc_feedin_capacity':
+                elif component_name == 'capacity_pcc_consumption_kW' or component_name == 'capacity_pcc_feedin_kW':
                     case_dict_capacity = round(case_dict_capacity / experiment['pcoupling_efficiency'] * 1.05, 3)
 
             utilities.define_capacity(experiment_case_dict, case_dict_capacity, list_build_oemof_names[item])

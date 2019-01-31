@@ -110,11 +110,14 @@ class excel_template():
     def get_project_sites(file, sheet_project_sites):
         # defines dictionary connected to project sites
         project_sites = excel_template.get_data(file, sheet_project_sites, 2, None, None)
-        project_site_name_string = ''
-        for i in range(0, len(project_sites.columns)):
-            project_site_name_string += project_sites.columns[i] + ', '
-        logging.info('Following project locations are evaluated: ' + project_site_name_string[:-2])
         project_sites = project_sites.to_dict(orient='index')
+
+        # Print all evaluated locations in terminal
+        project_site_name_string = ''
+        for project_site_name in project_sites.keys():
+            project_site_name_string += project_site_name + ', '
+        logging.info('Following project locations are evaluated: ' + project_site_name_string[:-2])
+
         # Translate strings 'True' and 'False' from excel sheet to True and False
         for site in project_sites:
             for key in project_sites[site]:
