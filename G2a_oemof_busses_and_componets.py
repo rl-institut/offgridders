@@ -187,6 +187,7 @@ class generate():
         return transformer_genset
 
     def genset_oem_minload(micro_grid_system, bus_fuel, bus_electricity_mg, experiment):
+        logging.warning('Currently not possible to optimize capacities of generator with minimal loading with OEMOF!')
         genset = solph.Transformer(label="transformer_genset",
                                                    inputs   ={bus_fuel: solph.Flow()},
                                                    outputs  ={bus_electricity_mg: solph.Flow(
