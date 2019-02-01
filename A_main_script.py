@@ -34,20 +34,16 @@ settings, parameters_constant_values, parameters_sensitivity, project_site_s, ca
 from C_sensitivity_experiments import generate_sensitvitiy_experiments, get_names
 sensitivity_experiment_s, blackout_experiment_s, overall_results = \
     generate_sensitvitiy_experiments.get(settings, parameters_constant_values, parameters_sensitivity, project_site_s)
-# todo: save disc space by saving all experiments to file and read from file?
-# todo experiments not properly defined -> if definition in project site & sensitivity, ONLY project site analysed
 
 ###############################################################################
 # Process and initialize                                                      #
 ###############################################################################
 #-------- Check for, create or empty results directory -----------------------#
 from Z_output_functions import output
-# todo too many times folders generated and/or deleted - change loop?
 output.check_output_directory(sensitivity_experiment_s)
 
 #-------- Generate list of cases analysed in simulation ----------------------#
 from D_process_input import process_input_parameters as process_input
-# todo can this be moved above sensitivity experiemtns?
 case_list = process_input.list_of_cases(case_definitions)
 
 #----------------- Extend sensitivity_experiment_s----------------------------#
@@ -114,8 +110,6 @@ for experiment in sensitivity_experiment_s:
         # Extend base capacities for cases utilizing these values, only valid for specific experiment
         if case_definitions[specific_case]['based_on_case'] == False:
             capacities_oem.update({experiment_case_dict['case_name']: helpers.define_base_capacities(oemof_results)})
-
-        #todo off-grid right now COMPLETELY failing storage capacity compilation - why?!
 
         # Extend oemof_results by blackout characteristics
         oemof_results   = central_grid.extend_oemof_results(oemof_results, blackout_results[blackout_experiment_name])

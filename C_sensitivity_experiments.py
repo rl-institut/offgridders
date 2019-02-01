@@ -28,7 +28,6 @@ class generate_sensitvitiy_experiments:
 
         else:
             logging.warning('Setting "sensitivity_all_combinations" not valid! Has to be TRUE or FALSE.')
-
         for experiment in sensitivitiy_experiments_s:
             #  Add economic values to sensitivity sensitivity_experiment_s
             process_input.economic_values(sensitivitiy_experiments_s[experiment])
@@ -292,7 +291,6 @@ class get_names():
 
 class remove_doubles():
     def constants_project_sites(parameters_constant_values, project_sites):
-        # todo test and describe
         # remove all entries that are doubled in parameters_constant_values, settings & project_site_s from parameters_constant_values
         str = 'Attributes "'
         keys = parameters_constant_values.copy().keys()
@@ -307,14 +305,13 @@ class remove_doubles():
         return
 
     def project_sites_sensitivity(parameters_sensitivity, project_sites):
-        # todo test and describe
         # remove all entries that are doubled in sensitivity_bounds, project_site_s
         str = 'Attributes "'
         keys = parameters_sensitivity.copy().keys()
         for key in keys:
             if key in project_sites:
-                #todo this preferrs project site definition over sensitivity definition
-                # todo base case definition not based on individual project sites if sensitivity performed, instead based on constant values. meaning, eventhough for villA fuel=2 and villB fuel=3, in const fuel = 1, each has base case with const fuel = 1
+                # ?? this preferrs project site definition over sensitivity definition
+                # ?? base case definition not based on individual project sites if sensitivity performed, instead based on constant values. meaning, eventhough for villA fuel=2 and villB fuel=3, in const fuel = 1, each has base case with const fuel = 1
                 del parameters_sensitivity[key]
                 str += key + ", "
         if str != 'Attributes "':
@@ -324,7 +321,6 @@ class remove_doubles():
         return
 
     def constants_senstivity(parameters_constant_values, parameters_sensitivity):
-        # todo test and describe
         # remove all entries that are doubled in parameters_constant_values, settings & parameters_sensitivity
         str = 'Attributes "'
         keys = parameters_constant_values.copy().keys()
