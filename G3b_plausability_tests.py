@@ -46,7 +46,6 @@ class plausability_tests:
         if ('Storage discharge' in e_flows_df.columns and 'Storage charge' in e_flows_df.columns):
             boolean = True
 
-            # todo generate reverse test
             test = [(e_flows_df['Storage discharge'][t] != 0 and e_flows_df['Storage charge'][t] == 0) for t in e_flows_df.index]
 
             if any(test) == False:

@@ -118,7 +118,7 @@ for experiment in sensitivity_experiment_s:
         # Writing DataFrame with all results to csv file
         overall_results.to_csv(sensitivity_experiment_s[experiment]['output_folder'] + '/results.csv') # moved from below
 
-    if settings['print_simulation_experiment'] == True:
+    if settings['display_experiment'] == True:
         logging.info('The experiment with following parameters has been analysed:')
         pp.pprint(sensitivity_experiment_s[experiment])
 

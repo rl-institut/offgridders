@@ -65,7 +65,7 @@ class cases:
         for item in range(0, len(list_base_capacities)):
             case_dict_entry = specific_case[list_base_capacities[item]]
             component_name = list_base_capacities[item]
-            # todo next 3 lines not beautifully defined, could be one funtion in total
+            #  next 3 lines not beautifully defined, could be one funtion in total
             case_dict_capacity = utilities.get_base_capacity(experiment_case_dict, case_dict_entry,
                                                    capacities_oem, component_name,
                                                    experiment[list_of_batch_names[item]])
@@ -152,7 +152,7 @@ class utilities:
         elif case_dict_entry == 'peak_demand':
             case_dict_capacity =  round(experiment_case_dict['peak_demand'],3)
             case_dict_capacity = float(case_dict_capacity)
-        elif case_dict_entry in capacities: # todo names not equivalent to base_case_resutlts capacities
+        elif case_dict_entry in capacities:
             case_dict_capacity = capacities[case_dict_entry][component_name]
             case_dict_capacity = round(0.5 + case_dict_capacity /batch_size) * batch_size
             case_dict_capacity = float(case_dict_capacity)

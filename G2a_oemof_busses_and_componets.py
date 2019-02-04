@@ -27,7 +27,7 @@ class generate():
     def fuel_oem(micro_grid_system, bus_fuel, experiment):
         # Does include intended minimal renewable factor as total max for fuel consumption -> just do decrease horizon
         # of possible solutions
-        # todo i would delete this criterion here, if i add an additional constraint
+        # i would delete this criterion here, if i add an additional constraint
         source_fuel = solph.Source(label="source_fuel",
                                    outputs={bus_fuel: solph.Flow(
                                        variable_costs   = experiment['price_fuel'] / experiment['combustion_value_fuel'],
@@ -215,10 +215,8 @@ class generate():
         micro_grid_system.add(pointofcoupling_feedin)
         return
 
-    # todo point of coupling = max(demand) limits PV feed-in, therefore there should be a minimal pcc capacity defined with
+    # point of coupling = max(demand) limits PV feed-in, therefore there should be a minimal pcc capacity defined with
     # optimal larger size though OEM. existing = min_cap_pointofcoupling. but are all costs included?
-    # ERROR-Optimization failed with status ok and terminal condition unbounded when using existing = min_cap_pointofcoupling
-    # todo use min_cap_pointofcoupling
     def pointofcoupling_feedin_oem(micro_grid_system, bus_electricity_mg, bus_electricity_ng, experiment, min_cap_pointofcoupling):
         pointofcoupling_feedin = solph.Transformer(label="transformer_pcc_feedin",
                                                        inputs={bus_electricity_mg: solph.Flow(
@@ -243,7 +241,6 @@ class generate():
         micro_grid_system.add(pointofcoupling_consumption)
         return pointofcoupling_consumption
 
-    # todo use min_cap_pointofcoupling
     def pointofcoupling_consumption_oem(micro_grid_system, bus_electricity_mg, bus_electricity_ng, experiment, min_cap_pointofcoupling):
         pointofcoupling_consumption = solph.Transformer(label="transformer_pcc_consumption",
                                                        inputs={bus_electricity_ng: solph.Flow(

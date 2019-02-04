@@ -147,10 +147,8 @@ class timeseries:
             oemof_results.update({'total_battery_throughput_kWh': 0})
 
         # Get capacity
-        #todo cant this be shortened as well?!
         if case_dict['storage_fixed_capacity'] == False:
             # Optimized storage capacity
-            # todo not most elegantly solves, das electrcity bus is called a sevcond time here...
             electricity_bus = outputlib.views.node(results, 'bus_electricity_mg')
             capacity_battery = electricity_bus['scalars'][(('bus_electricity_mg', 'generic_storage'), 'invest')]/experiment['storage_Crate_charge']
             # possibly using generic_storage['scalars'][((generic_storage, None), invest)]
@@ -165,12 +163,10 @@ class timeseries:
         micro_grid_bus = outputlib.views.node(results, 'bus_electricity_mg')
         if case_dict['pcc_consumption_fixed_capacity'] != None or case_dict['pcc_feedin_fixed_capacity'] != None:
             national_grid_bus = outputlib.views.node(results, 'bus_electricity_ng')
-        # todo if we really use setting_pcc_utility_owned and it influences the revenue, we have to use it in oemof object definitions as well!
+        # if we really use setting_pcc_utility_owned and it influences the revenue, we have to use it in oemof object definitions as well!
 
-        #from config import setting_pcc_utility_owned
         # if utility owned, these pcc_cap costs would actually NOT be in the LCOE, rigfht?
         # decision: timeseries will always be the one for the mg side. but the accumulated value can be different.
-        # todo still decide with of the flows to include in e_flow_df, and which ones to put into oemof results for cost calculation (expenditures, revenues)
         # Get flow
 
         # define grid availability
@@ -189,7 +185,7 @@ class timeseries:
             e_flows_df = utilities.join_e_flows_df(consumption_utility_side, 'Consumption from main grid (utility side)', e_flows_df)
             utilities.annual_value('consumption_main_grid_utility_side_annual_kWh', consumption_utility_side, oemof_results,
                                    case_dict)
-            # todo dependent on from config import setting_pcc_utility_owned either choose first or last for expenditures!
+            # dependent on from config import setting_pcc_utility_owned either choose first or last for expenditures!
             # if setting_pcc_utility_owned == True:
         else:
             oemof_results.update({'consumption_main_grid_mg_side_annual_kWh': 0,
@@ -226,7 +222,6 @@ class timeseries:
         else:
             logging.warning("Invalid value of pcc_consumption_fixed_capacity and/or pcc_feedin_fixed_capacity.")
 
-        #todo change or describe where costs and revenues are generated at main grid interconenection
         total_pcoupling_throughput_kWh = 0
         if case_dict['pcc_consumption_fixed_capacity'] != None or case_dict['pcc_feedin_fixed_capacity'] != None:
             if case_dict['pcc_consumption_fixed_capacity'] != None:

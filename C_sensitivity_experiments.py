@@ -222,6 +222,8 @@ class get:
                             sensitivity_experiment_s[experiment_number].update({key: sensitivity_array_dict[key][interval_entry]})
                             sensitivity_experiment_s[experiment_number].update({'project_site_name': project_site})
                             sensitivity_experiment_s[experiment_number].update(project_site_s[project_site].copy())
+                            # scaling demand according to scaling factor - used for tests regarding tool application
+                            sensitivity_experiment_s[experiment_number].update({'demand': sensitivity_experiment_s[experiment_number]['demand'] * sensitivity_experiment_s[experiment_number]['demand_scaling_factor']})
 
                         elif sensitivity_array_dict[key][interval_entry] == key_value and defined_base == False:
                             # Defining scenario only with base case values for universal parameter / specific to project site (once!)
@@ -230,6 +232,8 @@ class get:
                             sensitivity_experiment_s[experiment_number].update({key: key_value})
                             sensitivity_experiment_s[experiment_number].update({'project_site_name': project_site})
                             sensitivity_experiment_s[experiment_number].update(project_site_s[project_site].copy())
+                            # scaling demand according to scaling factor - used for tests regarding tool application
+                            sensitivity_experiment_s[experiment_number].update({'demand': sensitivity_experiment_s[experiment_number]['demand'] * sensitivity_experiment_s[experiment_number]['demand_scaling_factor']})
                             defined_base == True
 
 
@@ -251,7 +255,6 @@ class get:
 
 
 class get_names():
-
     def experiment_name(experiment, sensitivity_array_dict, number_of_project_sites):
         # define file postfix to save simulation
         filename = '_s'

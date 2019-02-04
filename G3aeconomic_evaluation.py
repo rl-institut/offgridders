@@ -113,7 +113,7 @@ class economic_evaluation():
             'costs_distribution_grid': oemof_results['annuity_distribution_grid'] * experiment['annuity_factor'],
             'costs_grid_extension': oemof_results['annuity_grid_extension'] * experiment['annuity_factor']
         })
-        # todo if pcc utility owned, than costs are not included in lcoe here! (at least not from perspective of mg project designer
+        # if pcc utility owned, than costs are not included in lcoe here! (at least not from perspective of mg project designer
         return
 
     def expenditures_fuel(oemof_results, experiment):
@@ -128,7 +128,7 @@ class economic_evaluation():
         return
 
     def expenditures_main_grid_consumption(oemof_results, experiment):
-        # todo here the decisiion of pcc utility owned -> influences where revenues are generated
+        # here the decisiion of pcc utility owned -> influences where revenues are generated
         # Necessary in oemof_results: consumption_main_grid_annual
         oemof_results.update({'expenditures_main_grid_consumption_annual':
                 oemof_results['consumption_main_grid_mg_side_annual_kWh'] * experiment['maingrid_electricity_price']})
