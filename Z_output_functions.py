@@ -32,7 +32,6 @@ class output_results:
             'capacity_storage_kWh',
             'capacity_genset_kW',
             'capacity_pcoupling_kW',
-            'res_share',
             'consumption_fuel_annual_l',
             'consumption_main_grid_mg_side_annual_kWh',
             'feedin_main_grid_mg_side_annual_kWh'])], axis=1, sort=False)
@@ -70,10 +69,12 @@ class output_results:
                 'revenue_main_grid_feedin_total'])], axis=1, sort=False)
 
         title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[
+            'res_share',
+            'autonomy_factor',
+            'supply_reliability_kWh',
             'annuity',
             'npv',
             'lcoe',
-            'supply_reliability_kWh',
             'objective_value',
             'simulation_time',
             'comments'])], axis=1, sort=False)

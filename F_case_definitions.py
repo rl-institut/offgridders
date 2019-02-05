@@ -138,7 +138,6 @@ class cases:
         else:
             logging.warning(
                 warning_string + ' value "renewable_share_constraint" (True/False/default) not defined properly')
-
         return experiment_case_dict
 
 class utilities:

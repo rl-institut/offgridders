@@ -191,6 +191,10 @@ class timeseries:
             oemof_results.update({'consumption_main_grid_mg_side_annual_kWh': 0,
                                   'consumption_main_grid_utility_side_annual_kWh': 0})
 
+        oemof_results.update({'autonomy_factor':
+                                  (oemof_results['total_demand_supplied_annual_kWh']-oemof_results['consumption_main_grid_mg_side_annual_kWh'])
+                                  /oemof_results['total_demand_supplied_annual_kWh']})
+
         if case_dict['pcc_feedin_fixed_capacity'] != None:
             feedin_mg_side = micro_grid_bus['sequences'][(('bus_electricity_mg', 'transformer_pcc_feedin'), 'flow')]
             e_flows_df = utilities.join_e_flows_df(feedin_mg_side, 'Feed into main grid (MG side)', e_flows_df)
