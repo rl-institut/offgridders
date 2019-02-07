@@ -8,14 +8,14 @@ class central_grid:
     def get_blackouts(settings, blackout_experiments):
         # Search, if file is existant (and should be used)
         if os.path.isfile(settings['output_folder'] + "/grid_availability.csv") and settings['restore_blackouts_if_existant'] == True:
-            # todo read to csv: timestamp as first row -> not equal column number, date time without index
+            #? read to csv: timestamp as first row -> not equal column number, date time without index
             data_set = pd.read_csv(settings['output_folder'] + '/grid_availability.csv')
             index = pd.DatetimeIndex(data_set['timestep'].values)
             index = [item + pd.DateOffset(year=settings['max_date_time_index'][0].year) for item in index]
             data_set = data_set.drop(columns=['timestep'])
             sensitivity_grid_availability = pd.DataFrame(data_set.values, index = index, columns = data_set.columns.values)
 
-            # todo this is very lazy and not "clean" - same number doesnt mean same entries. check for ENTRIES!!
+            #this is very lazy and not "clean" - same number doesnt mean same entries. check for ENTRIES!!
             if len(sensitivity_grid_availability.columns) != len(blackout_experiments):
                 data_complete = False
                 logging.info("Saved blackout file not compatible (number of columns not conform).")

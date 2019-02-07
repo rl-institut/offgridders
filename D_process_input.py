@@ -167,7 +167,7 @@ class noise:
             series_values = pd.Series(noise.randomized(experiment[noise_name], experiment[series_name]),
                                index=experiment[series_name].index)
             experiment.update({series_name: series_values})
-            # todo add display of series with noise
+            # add display of series with noise
         return
 
     def randomized(white_noise_percentage, data_subframe):

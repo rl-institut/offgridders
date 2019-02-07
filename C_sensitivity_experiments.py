@@ -28,7 +28,6 @@ class generate_sensitvitiy_experiments:
 
         else:
             logging.warning('Setting "sensitivity_all_combinations" not valid! Has to be TRUE or FALSE.')
-
         for experiment in sensitivitiy_experiments_s:
             #  Add economic values to sensitivity sensitivity_experiment_s
             process_input.economic_values(sensitivitiy_experiments_s[experiment])
@@ -194,35 +193,50 @@ class get:
         sensitivity_experiment_s = {}
 
         for project_site in project_site_s:
-            defined_base = False
-            for key in sensitivity_array_dict:
-                for interval_entry in range(0, len(sensitivity_array_dict[key])):
-                    if key in project_site_s[project_site]:
-                        # if defined in project sites, use this value as base case value
-                        key_value = project_site_s[project_site][key]
-                    elif key in universal_parameters:
-                        # if not defined in project sites, use this value as base case value
-                        key_value = universal_parameters[key]
-                    else:
-                        # if not defined in project sites or universal values, use sensitivity value
-                        key_value = None
+            # if no sensitivity analysis performed (other than multiple locations)
+            if len(sensitivity_array_dict.keys()) == 0:
+                experiment_number += 1
+                sensitivity_experiment_s.update({experiment_number: universal_parameters.copy()})
+                sensitivity_experiment_s[experiment_number].update({'project_site_name': project_site})
+                sensitivity_experiment_s[experiment_number].update(project_site_s[project_site].copy())
+            # generate cases with sensitivity parameters
+            else:
+                defined_base = False
 
-                    if sensitivity_array_dict[key][interval_entry] != key_value:
-                        # All parameters like base case except for sensitivity parameter
-                        experiment_number += 1
-                        sensitivity_experiment_s.update({experiment_number: universal_parameters.copy()})
-                        sensitivity_experiment_s[experiment_number].update({key: sensitivity_array_dict[key][interval_entry]})
-                        sensitivity_experiment_s[experiment_number].update({'project_site_name': project_site})
-                        sensitivity_experiment_s[experiment_number].update(project_site_s[project_site].copy())
+                for key in sensitivity_array_dict:
+                    for interval_entry in range(0, len(sensitivity_array_dict[key])):
+                        if key in project_site_s[project_site]:
+                            # if defined in project sites, use this value as base case value
+                            key_value = project_site_s[project_site][key]
+                        elif key in universal_parameters:
+                            # if not defined in project sites, use this value as base case value
+                            key_value = universal_parameters[key]
+                        else:
+                            # if not defined in project sites or universal values, use sensitivity value
+                            key_value = None
 
-                    elif sensitivity_array_dict[key][interval_entry] == key_value and defined_base == False:
-                        # Defining scenario only with base case values for universal parameter / specific to project site (once!)
-                        experiment_number += 1
-                        sensitivity_experiment_s.update({experiment_number: universal_parameters.copy()})
-                        sensitivity_experiment_s[experiment_number].update({key: key_value})
-                        sensitivity_experiment_s[experiment_number].update({'project_site_name': project_site})
-                        sensitivity_experiment_s[experiment_number].update(project_site_s[project_site].copy())
-                        defined_base == True
+                        if sensitivity_array_dict[key][interval_entry] != key_value:
+                            # All parameters like base case except for sensitivity parameter
+                            experiment_number += 1
+                            sensitivity_experiment_s.update({experiment_number: universal_parameters.copy()})
+                            sensitivity_experiment_s[experiment_number].update({key: sensitivity_array_dict[key][interval_entry]})
+                            sensitivity_experiment_s[experiment_number].update({'project_site_name': project_site})
+                            sensitivity_experiment_s[experiment_number].update(project_site_s[project_site].copy())
+                            # scaling demand according to scaling factor - used for tests regarding tool application
+                            sensitivity_experiment_s[experiment_number].update({'demand': sensitivity_experiment_s[experiment_number]['demand'] * sensitivity_experiment_s[experiment_number]['demand_scaling_factor']})
+
+                        elif sensitivity_array_dict[key][interval_entry] == key_value and defined_base == False:
+                            # Defining scenario only with base case values for universal parameter / specific to project site (once!)
+                            experiment_number += 1
+                            sensitivity_experiment_s.update({experiment_number: universal_parameters.copy()})
+                            sensitivity_experiment_s[experiment_number].update({key: key_value})
+                            sensitivity_experiment_s[experiment_number].update({'project_site_name': project_site})
+                            sensitivity_experiment_s[experiment_number].update(project_site_s[project_site].copy())
+                            # scaling demand according to scaling factor - used for tests regarding tool application
+                            sensitivity_experiment_s[experiment_number].update({'demand': sensitivity_experiment_s[experiment_number]['demand'] * sensitivity_experiment_s[experiment_number]['demand_scaling_factor']})
+                            defined_base == True
+
+
 
         total_number_of_experiments = experiment_number
         return sensitivity_experiment_s, total_number_of_experiments
@@ -241,7 +255,6 @@ class get:
 
 
 class get_names():
-
     def experiment_name(experiment, sensitivity_array_dict, number_of_project_sites):
         # define file postfix to save simulation
         filename = '_s'
@@ -281,7 +294,6 @@ class get_names():
 
 class remove_doubles():
     def constants_project_sites(parameters_constant_values, project_sites):
-        # todo test and describe
         # remove all entries that are doubled in parameters_constant_values, settings & project_site_s from parameters_constant_values
         str = 'Attributes "'
         keys = parameters_constant_values.copy().keys()
@@ -296,14 +308,13 @@ class remove_doubles():
         return
 
     def project_sites_sensitivity(parameters_sensitivity, project_sites):
-        # todo test and describe
         # remove all entries that are doubled in sensitivity_bounds, project_site_s
         str = 'Attributes "'
         keys = parameters_sensitivity.copy().keys()
         for key in keys:
             if key in project_sites:
-                #todo this preferrs project site definition over sensitivity definition
-                # todo base case definition not based on individual project sites if sensitivity performed, instead based on constant values. meaning, eventhough for villA fuel=2 and villB fuel=3, in const fuel = 1, each has base case with const fuel = 1
+                # ?? this preferrs project site definition over sensitivity definition
+                # ?? base case definition not based on individual project sites if sensitivity performed, instead based on constant values. meaning, eventhough for villA fuel=2 and villB fuel=3, in const fuel = 1, each has base case with const fuel = 1
                 del parameters_sensitivity[key]
                 str += key + ", "
         if str != 'Attributes "':
@@ -313,7 +324,6 @@ class remove_doubles():
         return
 
     def constants_senstivity(parameters_constant_values, parameters_sensitivity):
-        # todo test and describe
         # remove all entries that are doubled in parameters_constant_values, settings & parameters_sensitivity
         str = 'Attributes "'
         keys = parameters_constant_values.copy().keys()

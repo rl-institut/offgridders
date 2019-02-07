@@ -65,15 +65,15 @@ class cases:
         for item in range(0, len(list_base_capacities)):
             case_dict_entry = specific_case[list_base_capacities[item]]
             component_name = list_base_capacities[item]
-            # todo next 3 lines not beautifully defined, could be one funtion in total
+            #  next 3 lines not beautifully defined, could be one funtion in total
             case_dict_capacity = utilities.get_base_capacity(experiment_case_dict, case_dict_entry,
                                                    capacities_oem, component_name,
                                                    experiment[list_of_batch_names[item]])
             # Correction factor for oversizing generator and pcc by factor (and include inefficiency of transformer)
             if case_dict_entry == 'peak_demand':
-                if component_name == 'genset_capacity':
+                if component_name == 'capacity_genset_kW':
                     case_dict_capacity = case_dict_capacity * 1.2
-                elif component_name == 'pcc_consumption_capacity' or component_name == 'pcc_feedin_capacity':
+                elif component_name == 'capacity_pcc_consumption_kW' or component_name == 'capacity_pcc_feedin_kW':
                     case_dict_capacity = round(case_dict_capacity / experiment['pcoupling_efficiency'] * 1.05, 3)
 
             utilities.define_capacity(experiment_case_dict, case_dict_capacity, list_build_oemof_names[item])
@@ -138,7 +138,6 @@ class cases:
         else:
             logging.warning(
                 warning_string + ' value "renewable_share_constraint" (True/False/default) not defined properly')
-
         return experiment_case_dict
 
 class utilities:
@@ -152,7 +151,7 @@ class utilities:
         elif case_dict_entry == 'peak_demand':
             case_dict_capacity =  round(experiment_case_dict['peak_demand'],3)
             case_dict_capacity = float(case_dict_capacity)
-        elif case_dict_entry in capacities: # todo names not equivalent to base_case_resutlts capacities
+        elif case_dict_entry in capacities:
             case_dict_capacity = capacities[case_dict_entry][component_name]
             case_dict_capacity = round(0.5 + case_dict_capacity /batch_size) * batch_size
             case_dict_capacity = float(case_dict_capacity)

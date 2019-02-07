@@ -54,7 +54,7 @@ class oemof_simulate:
             # perform simulation
             micro_grid_system        = oemof_model.simulate(experiment, micro_grid_system, model, file_name)
             # store simulation results to .oemof
-            oemof_model.store_results(micro_grid_system, file_name, experiment['output_folder'], experiment['setting_save_oemofresults'])
+            oemof_model.store_results(micro_grid_system, file_name, experiment['output_folder'], experiment['save_oemofresults'])
 
         # it actually is not really necessary to restore just simulated results... but for consistency and to make sure that calling results is easy, this is used nevertheless
         # load oemof results from previous or just finished simulation
@@ -78,7 +78,6 @@ class oemof_simulate:
         electricity_bus = outputlib.views.node(results, 'bus_electricity_mg')
         e_flows_df = timeseries.get_demand(case_dict, oemof_results, electricity_bus)
         e_flows_df = timeseries.get_shortage(case_dict, oemof_results, electricity_bus, e_flows_df)
-        # todo specify reliability into supply_reliability_kWh, national_grid_reliability_h
         oemof_results.update({'supply_reliability_kWh':
                                   oemof_results['total_demand_supplied_annual_kWh'] / oemof_results[
                                       'total_demand_annual_kWh']})
@@ -99,7 +98,7 @@ class oemof_simulate:
 
         # Run test on oemof constraints
         constraints.stability_test(case_dict, oemof_results, experiment, e_flows_df)
-        #constraints.renewable_share_test(case_dict, oemof_results, experiment) # todo this is not jet implemented!
+        constraints.renewable_share_test(case_dict, oemof_results, experiment)
 
         # Generate output (csv, png) for energy/storage flows
         output.save_mg_flows(experiment, case_dict, e_flows_df, experiment['filename'])
@@ -125,7 +124,7 @@ class oemof_simulate:
                      + str(round(oemof_results['res_share'] * 100, 2)) + ' percent'
                      + ' with a reliability of '
                      + str(round(oemof_results['supply_reliability_kWh'] * 100, 2)) + ' percent')
-        logging.info('    Simulation/evaluation time (s): ' + str(round(oemof_results['simulation_time'], 2)) + '/' + str(round(duration, 2)) + '\n')
+        logging.info('    Initial simulation time (s): ' + str(round(oemof_results['simulation_time'], 2)) + ' / Actual evaluation time (s): '  + str(round(duration, 2)) + '\n')
 
         # Debug messages
         logging.debug('    Exact OEM results of case "' + case_dict['case_name'] + '" : \n'

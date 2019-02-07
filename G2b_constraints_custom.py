@@ -59,7 +59,7 @@ def stability_criterion(model, case_dict, experiment, storage, sink_demand, gens
         if case_dict['pcc_consumption_fixed_capacity'] == False:
             CAP_pcc += model.InvestmentFlow.invest[pcc_consumption, el_bus]
         elif isinstance(case_dict['pcc_consumption_fixed_capacity'], float):
-            CAP_pcc += case_dict['pcc_consumption_fixed_capacity'] # todo: this didnt work - model.flows[pcc_consumption, el_bus].nominal_value
+            CAP_pcc += case_dict['pcc_consumption_fixed_capacity'] # this didnt work - model.flows[pcc_consumption, el_bus].nominal_value
 
     def stability_rule(model, t):
         expr = CAP_genset
@@ -76,7 +76,6 @@ def stability_criterion(model, case_dict, experiment, storage, sink_demand, gens
             expr += CAP_pcc * experiment['grid_availability'][t]
 
         ## ------- Get stored capacity storage at t------- #
-        # todo adjust if timestep not 1 hr
         if case_dict['storage_fixed_capacity'] != None:
             stored_electricity = 0
             if case_dict['storage_fixed_capacity'] == False:  # Storage subject to OEM
@@ -92,7 +91,6 @@ def stability_criterion(model, case_dict, experiment, storage, sink_demand, gens
 
     return model
 
-# todo add pcc consumption here
 def stability_test(case_dict, oemof_results, experiment, e_flows_df):
     '''
         Testing simulation results for adherance to above defined stability criterion
@@ -117,7 +115,6 @@ def stability_test(case_dict, oemof_results, experiment, e_flows_df):
         else:
             shortage = pd.Series([0 for t in demand_profile.index], index=demand_profile.index)
 
-        # todo adjust if timestep not 1 hr
         boolean_test = [
             genset_capacity
             + (stored_electricity[t] - oemof_results['capacity_storage_kWh'] *  experiment['storage_capacity_min']) *  experiment['storage_Crate_discharge']
@@ -130,14 +127,21 @@ def stability_test(case_dict, oemof_results, experiment, e_flows_df):
             logging.debug("Stability criterion is fullfilled.")
         else:
             logging.warning("ATTENTION: Stability criterion NOT fullfilled!")
-            oemof_results.update({'comments': oemof_results['comments'] + 'Stability criterion not fullfilled. '})
+            logging.warning('Number of timesteps not meeting criteria: ' + str(sum(boolean_test)))
+            ratio = pd.Series([
+                (genset_capacity + (stored_electricity[t] - oemof_results['capacity_storage_kWh'] * experiment['storage_capacity_min']) *
+                experiment['storage_Crate_discharge'] + pcc_capacity[t] - experiment['stability_limit'] * (demand_profile[t] - shortage[t]))
+                / (experiment['peak_demand'])
+                for t in range(0, len(demand_profile.index))], index=demand_profile.index)
+            ratio_below_zero=ratio.clip_upper(0)
+            logging.warning('Deviation from stability criterion: '+ str(ratio_below_zero.values.mean()) + '(mean) / '+ str(ratio_below_zero.values.min()) + '(max).')
+            oemof_results.update({'comments': oemof_results['comments'] + 'Stability criterion not fullfilled (max deviation '+ str(round(100*ratio_below_zero.values.min(), 4)) + '%). '})
     else:
         pass
 
     return
 
-# todo implement renewable share criterion in oemof model and cases
-def renewable_share_criterion(model, experiment, genset, pcc_consumption, solar_plant, el_bus): #wind_plant
+def renewable_share_criterion(model, experiment, genset, pcc_consumption, solar_plant, wind_plant, el_bus): #wind_plant
     '''
     Resulting in an energy system adhering to a minimal renewable factor
 
@@ -182,18 +186,78 @@ def renewable_share_criterion(model, experiment, genset, pcc_consumption, solar_
             total_generation += pcc_consumption
             fossil_generation += pcc_consumption_kWh * (1 - experiment['maingrid_renewable_share'])
 
-        #if wind_plant != None:
-        #    wind_plant_generation_kWh = sum(model.flow[wind_plant, el_bus, t] for t in model.TIMESTEPS)
-        #    total_generation += wind_plant_generation_kWh
-
         if solar_plant is not None:
             solar_plant_generation = sum(model.flow[solar_plant, el_bus, t] for t in model.TIMESTEPS)
             print(solar_plant_generation)
             total_generation += solar_plant_generation
 
+        if wind_plant is not None:
+            wind_plant_generation = sum(model.flow[wind_plant, el_bus, t] for t in model.TIMESTEPS)
+            print(wind_plant_generation)
+            total_generation += wind_plant_generation
+
         expr = (fossil_generation - (1-experiment['min_renewable_share'])*total_generation)
         print(expr)
         return expr <= 0
+
+    model.renewable_share_constraint = po.Constraint(rule=renewable_share_rule)
+
+    return model
+
+def renewable_share_criterion_new(model, experiment, genset, pcc_consumption, solar_plant, wind_plant, el_bus): #wind_plant
+    '''
+    Resulting in an energy system adhering to a minimal renewable factor
+
+      .. math::
+            minimal renewable factor <= 1 - (fossil fuelled generation + main grid consumption * (1-main grid renewable factor)) / total_demand
+
+    Parameters
+    - - - - - - - -
+    model: oemof.solph.model
+        Model to which constraint is added. Has to contain:
+        - Transformer (genset)
+        - optional: pcc
+
+    experiment: dict with entries...
+        - 'min_res_share': Share of demand that can be met by fossil fuelled generation (genset, from main grid) to meet minimal renewable share
+        - optional: 'main_grid_renewable_share': Share of main grid electricity that is generated renewably
+
+    genset: currently single object of class oemof.solph.network.Transformer
+        To get available capacity genset
+        Can either be an investment object or have a nominal capacity
+
+    pcc_consumption: currently single object of class oemof.solph.network.Transformer
+        Connecting main grid bus to electricity bus of micro grid (consumption)
+
+    el_bus: object of class oemof.solph.network.Bus
+        For accessing flow-parameters
+    '''
+
+    def renewable_share_rule(model):
+        fossil_generation = 0
+        total_generation = 0
+
+        if genset is not None:
+            genset_generation_kWh = sum(model.flow[genset, el_bus, t] for t in model.TIMESTEPS)
+            total_generation += genset_generation_kWh
+            fossil_generation += genset_generation_kWh
+
+        if pcc_consumption is not None:
+            pcc_consumption_kWh = sum(model.flow[pcc_consumption, el_bus, t] for t in model.TIMESTEPS)
+            total_generation += pcc_consumption
+            fossil_generation += pcc_consumption_kWh * (1 - experiment['maingrid_renewable_share'])
+
+        if solar_plant is not None:
+            solar_plant_generation = sum(model.flow[solar_plant, el_bus, t] for t in model.TIMESTEPS)
+            total_generation += solar_plant_generation
+
+        if wind_plant is not None:
+            wind_plant_generation = sum(model.flow[wind_plant, el_bus, t] for t in model.TIMESTEPS)
+            total_generation += wind_plant_generation
+
+        expr = (fossil_generation - (1-experiment['min_renewable_share'])*total_generation)
+        print(expr)
+        return (expr <= 0)
 
     model.renewable_share_constraint = po.Constraint(rule=renewable_share_rule)
 
@@ -208,6 +272,7 @@ def renewable_share_test(case_dict, oemof_results, experiment):
 
         if boolean_test == False:
             logging.warning("ATTENTION: Minimal renewable share criterion NOT fullfilled!")
+            logging.warning('Number of timesteps not meeting criteria: ' + str(sum(boolean_test)))
             oemof_results.update({'comments': oemof_results['comments'] + 'Renewable share criterion not fullfilled. '})
         else:
             logging.debug("Minimal renewable share is fullfilled.")

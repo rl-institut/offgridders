@@ -13,7 +13,7 @@ except ImportError:
     plt = None
 
 class helpers:
-    # todo better display of plots
+    # currently not used
     def plot_results(pandas_dataframe, title, xaxis, yaxis):
         """ general function for plots"""
         if plt is not None:

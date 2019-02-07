@@ -32,7 +32,6 @@ class output_results:
             'capacity_storage_kWh',
             'capacity_genset_kW',
             'capacity_pcoupling_kW',
-            'res_share',
             'consumption_fuel_annual_l',
             'consumption_main_grid_mg_side_annual_kWh',
             'feedin_main_grid_mg_side_annual_kWh'])], axis=1, sort=False)
@@ -70,10 +69,12 @@ class output_results:
                 'revenue_main_grid_feedin_total'])], axis=1, sort=False)
 
         title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[
+            'res_share',
+            'autonomy_factor',
+            'supply_reliability_kWh',
             'annuity',
             'npv',
             'lcoe',
-            'supply_reliability_kWh',
             'objective_value',
             'simulation_time',
             'comments'])], axis=1, sort=False)
@@ -106,7 +107,7 @@ class output:
 
             # If oemof results are not to be used, ALL files will be deleted from subfolders
             # This includes lp files, oemof files, csv and png results
-            # todo multiple times due to multiple experiments - possible t save each experimentin seperate folder?!
+            # multiple times due to multiple experiments - possible t save each experimentin seperate folder?!
             if  experiments[experiment]['restore_oemof_if_existant'] == False:
                 for root, dirs, files in os.walk(output_folder):
                     for f in files:
@@ -115,18 +116,18 @@ class output:
         return
 
     def print_oemof_meta_main_invest(experiment, meta, electricity_bus, case_name):
-        if experiment['print_simulation_meta'] == True:
+        if experiment['display_meta'] == True:
             logging.info('********* Meta results *********')
             pp.pprint(meta)
 
         # print the sums of the flows around the electricity bus
-        if experiment['print_simulation_main'] == True:
+        if experiment['display_main'] == True:
             logging.info('********* Main results *********')
             pp.pprint(electricity_bus['sequences'].sum(axis=0))
 
         # print the scalars of investment optimization (not equal to capacities!)
         if case_name == "base_oem" or case_name == "base_oem_with_min_loading":
-            if experiment['print_simulation_invest'] == True:
+            if experiment['display_invest'] == True:
                 logging.info('********* Invest results *********')
                 pp.pprint(electricity_bus['scalars'])
         return
@@ -153,10 +154,10 @@ class output:
                     new_column = pd.DataFrame(e_flows_df[entry].values, columns=[entry], index=e_flows_df[entry].index)
                 mg_flows = mg_flows.join(new_column)
 
-        if experiment['setting_save_flows_storage'] == True:
+        if experiment['save_to_csv_flows_storage'] == True:
             mg_flows.to_csv(experiment['output_folder'] + '/electricity_mg/' + case_dict['case_name'] + filename + '_electricity_mg.csv')
 
-        if experiment['display_graphs_flows_electricity_mg'] == True:
+        if experiment['save_to_png_flows_electricity_mg'] == True:
             fig = mg_flows.plot(title = 'MG Operation of case ' + case_dict['case_name'] + ' in ' + experiment['project_site_name'])
             fig.set(xlabel='Time', ylabel='Electricity flow in kWh')
             fig.legend(loc='upper right')
@@ -164,7 +165,6 @@ class output:
             plt.close()
             plt.clf()
             plt.cla()
-            # todo change if 15-min intervals
             if (len(mg_flows['Demand']) >= 7 * 24):
                 fig = mg_flows[0:7 * 24].plot(title = 'MG Operation of case ' + case_dict['case_name'] + ' in ' + experiment['project_site_name'])
                 fig.set(xlabel='Time', ylabel='Electricity flow in kWh')
@@ -193,10 +193,10 @@ class output:
                         new_column = pd.DataFrame(e_flows_df[entry].values, columns=[entry], index=e_flows_df[entry].index)
                     storage_flows = storage_flows.join(new_column)
 
-            if experiment['setting_save_flows_storage'] == True:
+            if experiment['save_to_csv_flows_storage'] == True:
                 storage_flows.to_csv(experiment['output_folder'] + '/storage/' + case_dict['case_name'] + filename + '_storage.csv')
 
-            if experiment['display_graphs_flows_storage'] == True:
+            if experiment['save_to_png_flows_storage'] == True:
                 fig = storage_flows.plot(title = 'Storage flows of case ' + case_dict['case_name'] + ' in ' + experiment['project_site_name'])
                 fig.set(xlabel='Time', ylabel='Electricity flow/stored in kWh')
                 fig.legend(loc='upper right')
@@ -204,7 +204,6 @@ class output:
                 plt.close()
                 plt.clf()
                 plt.cla()
-                #todo change if 15-min intervals
                 if (len(storage_flows['Stored capacity']) >= 7*24):
                     fig = storage_flows[0:7*24].plot(title='Storage flows of case ' + case_dict['case_name'] + ' in ' + experiment['project_site_name'])
                     fig.set(xlabel='Time', ylabel='Electricity flow/stored in kWh')

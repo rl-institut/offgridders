@@ -22,8 +22,7 @@ class oemof_model:
         micro_grid_system.add(bus_electricity_mg, bus_fuel)
 
         #------        fuel source------#
-        #  todo can be without limit if constraint is inluded
-        # todo define total_demand as entry of experiment eraly on! needed for generatemodel.fuel_oem
+        # can be without limit if constraint is inluded
 
         if case_dict['genset_fixed_capacity'] == False:
             generate.fuel_oem(micro_grid_system, bus_fuel, experiment)
@@ -119,8 +118,6 @@ class oemof_model:
         if case_dict['pcc_consumption_fixed_capacity'] == None:
             pointofcoupling_consumption = None
         elif case_dict['pcc_consumption_fixed_capacity'] == False:
-            # todo no minimal?
-            # todo min_cap_pointofcoupling should be entry in case_dict
             pointofcoupling_consumption = generate.pointofcoupling_consumption_oem(micro_grid_system, bus_electricity_mg,
                                                                                    bus_electricity_ng, experiment,
                                                                                    min_cap_pointofcoupling=case_dict['peak_demand'])
@@ -137,7 +134,6 @@ class oemof_model:
         if case_dict['pcc_feedin_fixed_capacity'] == None:
             pointofcoupling_feedin = None
         elif case_dict['pcc_feedin_fixed_capacity'] == False:
-            # todo no minimal?
             generate.pointofcoupling_feedin_oem(micro_grid_system, bus_electricity_mg,
                                                                          bus_electricity_ng, experiment,
                                                                          min_cap_pointofcoupling=case_dict['peak_demand'])
@@ -175,7 +171,6 @@ class oemof_model:
             logging.warning('Case definition of ' + case_dict['case_name']
                             + ' faulty at stability_constraint. Value can only be False, float or None')
         '''
-        # todo: add wind plant
         if case_dict['renewable_share_constraint']==False:
             pass
         elif isinstance(case_dict['renewable_share_constraint'], float):
@@ -185,6 +180,7 @@ class oemof_model:
                                                   genset = genset,
                                                   pcc_consumption = pointofcoupling_consumption,
                                                   solar_plant=solar_plant,
+                                                  wind_plant = wind_plant,
                                                   el_bus=bus_electricity_mg)
         else:
             logging.warning('Case definition of ' + case_dict['case_name']
@@ -198,7 +194,7 @@ class oemof_model:
                     solve_kwargs    =   {'tee': experiment['solver_verbose']}, # if tee_switch is true solver messages will be displayed
                     cmdline_options =   {experiment['cmdline_option']:    str(experiment['cmdline_option_value'])})   #ratioGap allowedGap mipgap
 
-        if experiment['setting_save_lp_file'] == True:
+        if experiment['save_lp_file'] == True:
             model.write(experiment['output_folder'] + '/lp_files/model_' + file_name + '.lp',
                         io_options={'symbolic_solver_labels': True})
 
