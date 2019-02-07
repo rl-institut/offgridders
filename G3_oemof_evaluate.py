@@ -157,6 +157,11 @@ class timeseries:
             oemof_results.update({'capacity_storage_kWh': case_dict['storage_fixed_capacity']})
         elif case_dict['storage_fixed_capacity'] == None:
             oemof_results.update({'capacity_storage_kWh': 0})
+
+        #calculate SOC of battery:
+        if oemof_results['capacity_storage_kWh']>0:
+            e_flows_df = utilities.join_e_flows_df(stored_capacity/oemof_results['capacity_storage_kWh'], 'Storage SOC', e_flows_df)
+
         return e_flows_df
 
     def get_national_grid(case_dict, oemof_results, results, e_flows_df, grid_availability):
@@ -238,17 +243,14 @@ class timeseries:
         return e_flows_df
 
     def get_res_share(case_dict, oemof_results, experiment):
-
         total_generation = oemof_results['total_genset_generation_kWh']
         total_generation += oemof_results['consumption_main_grid_mg_side_annual_kWh']
-        #total_generation += oemof_results['total_wind_generation_kWh']
         total_generation += oemof_results['total_pv_generation_kWh']
         total_generation += oemof_results['total_wind_generation_kWh']
 
         total_fossil_generation = oemof_results['total_genset_generation_kWh']
         # attention: only effectively used electricity consumption counts for renewable share
         total_fossil_generation += oemof_results['consumption_main_grid_mg_side_annual_kWh'] * (1 - experiment['maingrid_renewable_share'])
-
         res_share = abs(1 - total_fossil_generation / total_generation)
 
         oemof_results.update({'res_share': res_share})
