@@ -107,16 +107,25 @@ class timeseries:
     def get_genset(case_dict, oemof_results, electricity_bus, e_flows_df):
         # Get flow
         if case_dict['genset_fixed_capacity'] != None:
-            genset = electricity_bus['sequences'][(('transformer_genset', 'bus_electricity_mg'), 'flow')]
-            utilities.annual_value('total_genset_generation_kWh', genset, oemof_results, case_dict)
-            e_flows_df = utilities.join_e_flows_df(genset, 'Genset generation', e_flows_df)
+            genset = electricity_bus['sequences'][(('transformer_genset_1', 'bus_electricity_mg'), 'flow')]
+            e_flows_df = utilities.join_e_flows_df(genset, 'Genset 1 generation', e_flows_df)
+            total_genset = genset
+            for number in range(2, case_dict['number_of_equal_generators']+1):
+                genset = electricity_bus['sequences'][(('transformer_genset_'+str(number), 'bus_electricity_mg'), 'flow')]
+                e_flows_df = utilities.join_e_flows_df(genset, 'Genset '+str(number)+ ' generation', e_flows_df)
+                total_genset += genset
+            utilities.annual_value('total_genset_generation_kWh', total_genset, oemof_results, case_dict)
+            e_flows_df = utilities.join_e_flows_df(total_genset, 'Genset generation', e_flows_df)
         else:
             oemof_results.update({'total_genset_generation_kWh': 0})
 
         # Get capacity
         if case_dict['genset_fixed_capacity'] == False:
-            # Optimized generator capacity
-            oemof_results.update({'capacity_genset_kW': electricity_bus['scalars'][(('transformer_genset', 'bus_electricity_mg'), 'invest')]})
+            # Optimized generator capacity (sum)
+            genset_capacity = 0
+            for number in range(1, case_dict['number_of_equal_generators'] + 1):
+                genset_capacity += electricity_bus['scalars'][(('transformer_genset_'+str(number), 'bus_electricity_mg'), 'invest')]
+            oemof_results.update({'capacity_genset_kW': genset_capacity})
         elif isinstance(case_dict['genset_fixed_capacity'], float):
             oemof_results.update({'capacity_genset_kW': case_dict['genset_fixed_capacity']})
         elif case_dict['genset_fixed_capacity']==None:

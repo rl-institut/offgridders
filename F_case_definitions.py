@@ -139,6 +139,8 @@ class cases:
             logging.warning(
                 warning_string + ' value "renewable_share_constraint" (True/False/default) not defined properly')
 
+        experiment_case_dict['number_of_equal_generators'] = specific_case['number_of_equal_generators']
+        pp.pprint(experiment_case_dict)
         return experiment_case_dict
 
 class utilities:

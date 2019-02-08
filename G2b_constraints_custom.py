@@ -49,7 +49,8 @@ def stability_criterion(model, case_dict, experiment, storage, sink_demand, gens
     CAP_genset = 0
     if case_dict['genset_fixed_capacity'] != None:
         if case_dict['genset_fixed_capacity']==False:
-            CAP_genset += model.InvestmentFlow.invest[genset, el_bus]
+            for number in range(1, case_dict['number_of_equal_generators']+ 1):
+                CAP_genset += model.InvestmentFlow.invest[genset[number], el_bus]
         elif isinstance(case_dict['genset_fixed_capacity'], float):
             CAP_genset += model.flows[genset, el_bus].nominal_value
 

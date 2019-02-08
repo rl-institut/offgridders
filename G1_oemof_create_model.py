@@ -70,19 +70,23 @@ class oemof_model:
             genset = None
         elif case_dict['genset_fixed_capacity'] == False:
             if case_dict['genset_with_minimal_loading']==True:
-                genset = generate.genset_oem_minload(micro_grid_system, bus_fuel, bus_electricity_mg, experiment)
+                # not possible with oemof
+                genset = generate.genset_oem_minload(micro_grid_system, bus_fuel, bus_electricity_mg, experiment, case_dict['number_of_equal_generators'])
             else:
-                genset = generate.genset_oem(micro_grid_system, bus_fuel, bus_electricity_mg, experiment)
+                genset = generate.genset_oem(micro_grid_system, bus_fuel, bus_electricity_mg, experiment,
+                                                             case_dict['number_of_equal_generators'])
 
         elif isinstance(case_dict['genset_fixed_capacity'], float):
             if case_dict['genset_with_minimal_loading'] == True:
                 genset = generate.genset_fix_minload(micro_grid_system, bus_fuel,
                                                              bus_electricity_mg, experiment,
-                                                             capacity_fuel_gen=case_dict['genset_fixed_capacity'])
+                                                             capacity_fuel_gen=case_dict['genset_fixed_capacity'],
+                                                             number_of_generators=case_dict['number_of_equal_generators'])
             else:
                 genset = generate.genset_fix(micro_grid_system, bus_fuel,
                                                              bus_electricity_mg, experiment,
-                                                             capacity_fuel_gen=case_dict['genset_fixed_capacity'])
+                                                             capacity_fuel_gen=case_dict['genset_fixed_capacity'],
+                                                             number_of_generators=case_dict['number_of_equal_generators'])
         else:
             logging.warning('Case definition of ' + case_dict['case_name']
                             + ' faulty at genset_fixed_capacity. Value can only be False, float or None')

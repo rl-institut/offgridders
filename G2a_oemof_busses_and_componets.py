@@ -148,43 +148,52 @@ class generate():
         micro_grid_system.add(source_wind)
         return source_wind
 
-    def genset_fix(micro_grid_system, bus_fuel, bus_electricity_mg, experiment, capacity_fuel_gen):
-        genset = solph.Transformer(label="transformer_genset",
+    def genset_fix(micro_grid_system, bus_fuel, bus_electricity_mg, experiment, capacity_fuel_gen, number_of_equal_generators):
+        dict_of_generators = {}
+        for number in range(1, number_of_equal_generators + 1):
+            genset = solph.Transformer(label="transformer_genset_"+ str(number),
                                                        inputs={bus_fuel: solph.Flow()},
                                                        outputs={bus_electricity_mg: solph.Flow(
-                                                           nominal_value=capacity_fuel_gen,
+                                                           nominal_value=capacity_fuel_gen / number_of_equal_generators,
                                                            variable_costs=experiment['genset_cost_var'])},
                                                        conversion_factors={
                                                            bus_electricity_mg: experiment['genset_efficiency']}
                                                        )
-        micro_grid_system.add(genset)
-        return genset
+            micro_grid_system.add(genset)
+            dict_of_generators.update({number: genset})
+        return dict_of_generators
 
-    def genset_fix_minload(micro_grid_system, bus_fuel, bus_electricity_mg, experiment, capacity_fuel_gen):
-        genset = solph.Transformer(label="transformer_genset",
-                                                   inputs   ={bus_fuel: solph.Flow()},
-                                                   outputs  ={bus_electricity_mg: solph.Flow(
-                                                       nominal_value    = capacity_fuel_gen,
-                                                       variable_costs   = experiment['genset_cost_var'],
-                                                       min=experiment['genset_min_loading'],
-                                                       max=experiment['genset_max_loading'],
-                                                       nonconvex=solph.NonConvex())},
-                                                   conversion_factors={ bus_electricity_mg: experiment['genset_efficiency']}
-                                                   )
+    def genset_fix_minload(micro_grid_system, bus_fuel, bus_electricity_mg, experiment, capacity_fuel_gen, number_of_generators):
+        dict_of_generators = {}
+        for number in range(1, number_of_generators +1):
+            genset = solph.Transformer(label="transformer_genset_"+ str(number),
+                                                       inputs   ={bus_fuel: solph.Flow()},
+                                                       outputs  ={bus_electricity_mg: solph.Flow(
+                                                           nominal_value    = capacity_fuel_gen/number_of_generators,
+                                                           variable_costs   = experiment['genset_cost_var'],
+                                                           min=experiment['genset_min_loading'],
+                                                           max=experiment['genset_max_loading'],
+                                                           nonconvex=solph.NonConvex())},
+                                                       conversion_factors={ bus_electricity_mg: experiment['genset_efficiency']}
+                                                       )
+            micro_grid_system.add(genset)
+            dict_of_generators.update({number: genset})
 
-        micro_grid_system.add(genset)
-        return genset
+        return dict_of_generators
 
-    def genset_oem(micro_grid_system, bus_fuel, bus_electricity_mg, experiment):
-        transformer_genset = solph.Transformer(label="transformer_genset",
-                                                       inputs={bus_fuel: solph.Flow()},
-                                                       outputs={bus_electricity_mg: solph.Flow(
-                                                           investment=solph.Investment(
-                                                               ep_costs=experiment['genset_cost_annuity']),
-                                                           variable_costs=experiment['genset_cost_var'])},
-                                                       conversion_factors={bus_electricity_mg: experiment['genset_efficiency']})
-        micro_grid_system.add(transformer_genset)
-        return transformer_genset
+    def genset_oem(micro_grid_system, bus_fuel, bus_electricity_mg, experiment, number_of_generators):
+        dict_of_generators = {}
+        for number in range(1, number_of_generators + 1):
+            genset = solph.Transformer(label="transformer_genset_"+ str(number),
+                                                           inputs={bus_fuel: solph.Flow()},
+                                                           outputs={bus_electricity_mg: solph.Flow(
+                                                               investment=solph.Investment(
+                                                                   ep_costs=experiment['genset_cost_annuity']),
+                                                               variable_costs=experiment['genset_cost_var'])},
+                                                           conversion_factors={bus_electricity_mg: experiment['genset_efficiency']})
+            micro_grid_system.add(genset)
+            dict_of_generators.update({number: genset})
+        return dict_of_generators
 
     def genset_oem_minload(micro_grid_system, bus_fuel, bus_electricity_mg, experiment):
         logging.warning('Currently not possible to optimize capacities of generator with minimal loading with OEMOF!')
@@ -199,8 +208,8 @@ class generate():
                                                        nonconvex=solph.NonConvex())},
                                                    conversion_factors={ bus_electricity_mg: experiment['genset_efficiency']}
                                                    )
-        micro_grid_system.add(transformer_genset)
-        return transformer_genset
+        micro_grid_system.add(genset)
+        return genset
 
     def pointofcoupling_feedin_fix(micro_grid_system, bus_electricity_mg, bus_electricity_ng, experiment, capacity_pointofcoupling):
         pointofcoupling_feedin = solph.Transformer(label="transformer_pcc_feedin",

@@ -135,4 +135,6 @@ class excel_template():
                 case_definitions[case][key] = excel_template.identify_true_false(case_definitions[case][key])
             if case_definitions[case]['max_shortage'] != 'default':
                 case_definitions[case].update({'max_shortage': float(case_definitions[case]['max_shortage'])})
+
+            case_definitions[case].update({'number_of_equal_generators': int(case_definitions[case]['number_of_equal_generators'])})
         return case_definitions
