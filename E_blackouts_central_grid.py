@@ -73,7 +73,7 @@ class central_grid:
         for experiment in blackout_experiments:
             experiment_count = experiment_count + 1
 
-            logging.info("Experiment "+ str(experiment_count) + ": " +
+            logging.info("Blackout experiment "+ str(experiment_count) + ": " +
                   "Blackout duration " + str(blackout_experiments[experiment]['blackout_duration']) + " hrs, "
                   "blackout frequency " + str(blackout_experiments[experiment]['blackout_frequency'])+ " per month")
 

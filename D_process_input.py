@@ -27,7 +27,7 @@ class process_input_parameters():
                 case_list.append(case)
                 str_cases_simulated += case + ', '
 
-        logging.info('All simulated cases: ' + str_cases_simulated[:-2])
+        logging.info('All simulated cases: ' + str_cases_simulated[:-2]+ '\n')
         return case_list
 
     def economic_values(experiment):
