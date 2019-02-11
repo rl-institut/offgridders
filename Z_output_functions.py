@@ -50,6 +50,7 @@ class output_results:
         title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[
             'expenditures_fuel_annual',
             'expenditures_main_grid_consumption_annual',
+            'expenditures_shortage_annual',
             'revenue_main_grid_feedin_annual'])], axis=1, sort=False)
 
         # Called costs because they include the operation, while they are also not the present value because
@@ -66,6 +67,7 @@ class output_results:
                 'costs_grid_extension',
                 'expenditures_fuel_total',
                 'expenditures_main_grid_consumption_total',
+                'expenditures_shortage_total',
                 'revenue_main_grid_feedin_total'])], axis=1, sort=False)
 
         title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[

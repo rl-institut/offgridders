@@ -81,12 +81,12 @@ class oemof_model:
                 genset = generate.genset_fix_minload(micro_grid_system, bus_fuel,
                                                              bus_electricity_mg, experiment,
                                                              capacity_fuel_gen=case_dict['genset_fixed_capacity'],
-                                                             number_of_generators=case_dict['number_of_equal_generators'])
+                                                     number_of_equal_generators=case_dict['number_of_equal_generators'])
             else:
                 genset = generate.genset_fix(micro_grid_system, bus_fuel,
                                                              bus_electricity_mg, experiment,
                                                              capacity_fuel_gen=case_dict['genset_fixed_capacity'],
-                                                             number_of_generators=case_dict['number_of_equal_generators'])
+                                             number_of_equal_generators=case_dict['number_of_equal_generators'])
         else:
             logging.warning('Case definition of ' + case_dict['case_name']
                             + ' faulty at genset_fixed_capacity. Value can only be False, float or None')

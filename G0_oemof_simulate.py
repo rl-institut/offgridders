@@ -20,7 +20,7 @@ import oemof.outputlib as outputlib
 from G1_oemof_create_model import oemof_model
 import G2b_constraints_custom as constraints
 from G3_oemof_evaluate import timeseries
-from G3aeconomic_evaluation import economic_evaluation
+from G3a_economic_evaluation import economic_evaluation
 from G3b_plausability_tests import plausability_tests
 from Z_output_functions import output
 
