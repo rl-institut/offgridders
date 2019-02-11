@@ -32,7 +32,6 @@ class output_results:
             'capacity_storage_kWh',
             'capacity_genset_kW',
             'capacity_pcoupling_kW',
-            'res_share',
             'consumption_fuel_annual_l',
             'consumption_main_grid_mg_side_annual_kWh',
             'feedin_main_grid_mg_side_annual_kWh'])], axis=1, sort=False)
@@ -70,12 +69,15 @@ class output_results:
                 'revenue_main_grid_feedin_total'])], axis=1, sort=False)
 
         title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[
+            'res_share',
+            'autonomy_factor',
+            'supply_reliability_kWh',
             'annuity',
             'npv',
             'lcoe',
-            'supply_reliability_kWh',
             'objective_value',
             'simulation_time',
+            'evaluation_time',
             'comments'])], axis=1, sort=False)
 
         if number_of_project_sites > 1:
@@ -141,6 +143,92 @@ class output:
             'Consumption from main grid (MG side)',
             'Feed into main grid (MG side)',
             'Storage discharge',
+            'Storage SOC'
+            'Storage charge',
+            'Genset generation',
+            'Excess generation']
+        mg_flows = pd.DataFrame(e_flows_df['Demand'].values, columns=['Demand'], index=e_flows_df['Demand'].index)
+        for entry in flows_connected_to_electricity_mg_bus:
+            if entry in e_flows_df.columns:
+                if entry in ['Storage discharge', 'Demand shortage', 'Feed into main grid (MG side)']:
+                    new_column = pd.DataFrame(-e_flows_df[entry].values, columns=[entry], index=e_flows_df[entry].index) # Display those values as negative in graphs/files
+                else:
+                    new_column = pd.DataFrame(e_flows_df[entry].values, columns=[entry], index=e_flows_df[entry].index)
+                mg_flows = mg_flows.join(new_column)
+
+        if experiment['save_to_csv_flows_storage'] == True:
+            mg_flows.to_csv(experiment['output_folder'] + '/electricity_mg/' + case_dict['case_name'] + filename + '_electricity_mg.csv')
+
+        if experiment['save_to_png_flows_electricity_mg'] == True:
+            if 'Storage SOC' in mg_flows.columns:
+                mg_flows.drop(['Storage SOC'], axis=1)
+            fig = mg_flows.plot(title = 'MG Operation of case ' + case_dict['case_name'] + ' in ' + experiment['project_site_name'])
+            fig.set(xlabel='Time', ylabel='Electricity flow in kWh')
+            fig.legend(loc='upper right')
+            plt.savefig(experiment['output_folder'] + '/electricity_mg/' + case_dict['case_name'] + filename + '_electricity_mg.png')
+            plt.close()
+            plt.clf()
+            plt.cla()
+            if (len(mg_flows['Demand']) >= 7 * 24):
+                fig = mg_flows[0:7 * 24].plot(title = 'MG Operation of case ' + case_dict['case_name'] + ' in ' + experiment['project_site_name'])
+                fig.set(xlabel='Time', ylabel='Electricity flow in kWh')
+                fig.legend(loc='upper right')
+                plt.savefig(experiment['output_folder'] + '/electricity_mg/' + case_dict['case_name'] + filename + '_electricity_mg_7days.png')
+                plt.close()
+                plt.clf()
+                plt.cla()
+        return
+
+    def save_storage(experiment, case_dict, e_flows_df, filename):
+        if case_dict['storage_fixed_capacity'] != None:
+
+            flows_connected_to_electricity_mg_bus = [
+                'Storage discharge',
+                'Storage charge',
+                'Storage SOC']
+            storage_flows = pd.DataFrame(e_flows_df['Stored capacity'].values,
+                                    columns=['Stored capacity'],
+                                    index=e_flows_df['Stored capacity'].index)
+
+            for entry in flows_connected_to_electricity_mg_bus:
+                if entry in e_flows_df.columns:
+                    if entry == 'Storage discharge':
+                        new_column = pd.DataFrame(-e_flows_df[entry].values, columns=[entry], index=e_flows_df[entry].index)
+                    else:
+                        new_column = pd.DataFrame(e_flows_df[entry].values, columns=[entry], index=e_flows_df[entry].index)
+                    storage_flows = storage_flows.join(new_column)
+
+            if experiment['save_to_csv_flows_storage'] == True:
+                storage_flows.to_csv(experiment['output_folder'] + '/storage/' + case_dict['case_name'] + filename + '_storage.csv')
+
+            if experiment['save_to_png_flows_storage'] == True:
+                fig = storage_flows.plot(title = 'Storage flows of case ' + case_dict['case_name'] + ' in ' + experiment['project_site_name'])
+                fig.set(xlabel='Time', ylabel='Electricity flow/stored in kWh')
+                fig.legend(loc='upper right')
+                plt.savefig(experiment['output_folder'] + '/storage/' + case_dict['case_name'] + filename + '_storage.png')
+                plt.close()
+                plt.clf()
+                plt.cla()
+                if (len(storage_flows['Stored capacity']) >= 7*24):
+                    fig = storage_flows[0:7*24].plot(title='Storage flows of case ' + case_dict['case_name'] + ' in ' + experiment['project_site_name'])
+                    fig.set(xlabel='Time', ylabel='Electricity flow/stored in kWh')
+                    fig.legend(loc='upper right')
+                    plt.savefig(experiment['output_folder'] + '/storage/' + case_dict['case_name'] + filename + '_storage_7days.png')
+                    plt.close()
+                    plt.clf()
+                    plt.cla()
+        return
+
+    def save_double_diagram(experiment, case_dict, e_flows_df, filename):
+        flows_connected_to_electricity_mg_bus = [
+            'Demand shortage',
+            'Demand supplied',
+            'PV generation',
+            'Wind generation',
+            'Excess electricity',
+            'Consumption from main grid (MG side)',
+            'Feed into main grid (MG side)',
+            'Storage discharge',
             'Storage charge',
             'Genset generation',
             'Excess generation']
@@ -174,41 +262,159 @@ class output:
                 plt.cla()
         return
 
-    def save_storage(experiment, case_dict, e_flows_df, filename):
-        if case_dict['storage_fixed_capacity'] != None:
+class sarah:
+    import pandas as pd
+    import matplotlib.pyplot as plt
 
-            flows_connected_to_electricity_mg_bus = [
-                'Storage discharge',
-                'Storage charge']
-            storage_flows = pd.DataFrame(e_flows_df['Stored capacity'].values,
-                                    columns=['Stored capacity'],
-                                    index=e_flows_df['Stored capacity'].index)
+    def shape_legend(node, reverse=False, **kwargs):
+        handels = kwargs['handles']
+        labels = kwargs['labels']
+        axes = kwargs['ax']
+        parameter = {}
 
-            for entry in flows_connected_to_electricity_mg_bus:
-                if entry in e_flows_df.columns:
-                    if entry == 'Storage discharge':
-                        new_column = pd.DataFrame(-e_flows_df[entry].values, columns=[entry], index=e_flows_df[entry].index)
-                    else:
-                        new_column = pd.DataFrame(e_flows_df[entry].values, columns=[entry], index=e_flows_df[entry].index)
-                    storage_flows = storage_flows.join(new_column)
+        new_labels = []
+        for label in labels:
+            label = label.replace('(', '')
+            label = label.replace('), flow)', '')
+            label = label.replace(node, '')
+            label = label.replace(',', '')
+            label = label.replace(' ', '')
+            new_labels.append(label)
+        labels = new_labels
 
-            if experiment['save_to_csv_flows_storage'] == True:
-                storage_flows.to_csv(experiment['output_folder'] + '/storage/' + case_dict['case_name'] + filename + '_storage.csv')
+        parameter['bbox_to_anchor'] = kwargs.get('bbox_to_anchor', (1, 0.5))
+        parameter['loc'] = kwargs.get('loc', 'center left')
+        parameter['ncol'] = kwargs.get('ncol', 1)
+        plotshare = kwargs.get('plotshare', 0.9)
 
-            if experiment['save_to_png_flows_storage'] == True:
-                fig = storage_flows.plot(title = 'Storage flows of case ' + case_dict['case_name'] + ' in ' + experiment['project_site_name'])
-                fig.set(xlabel='Time', ylabel='Electricity flow/stored in kWh')
-                fig.legend(loc='upper right')
-                plt.savefig(experiment['output_folder'] + '/storage/' + case_dict['case_name'] + filename + '_storage.png')
-                plt.close()
-                plt.clf()
-                plt.cla()
-                if (len(storage_flows['Stored capacity']) >= 7*24):
-                    fig = storage_flows[0:7*24].plot(title='Storage flows of case ' + case_dict['case_name'] + ' in ' + experiment['project_site_name'])
-                    fig.set(xlabel='Time', ylabel='Electricity flow/stored in kWh')
-                    fig.legend(loc='upper right')
-                    plt.savefig(experiment['output_folder'] + '/storage/' + case_dict['case_name'] + filename + '_storage_7days.png')
-                    plt.close()
-                    plt.clf()
-                    plt.cla()
-        return
+        if reverse:
+            handels = handels.reverse()
+            labels = labels.reverse()
+
+        box = axes.get_position()
+        axes.set_position([box.x0, box.y0, box.width * plotshare, box.height])
+
+        parameter['handles'] = handels
+        parameter['labels'] = labels
+        axes.legend(**parameter)
+        return axes
+
+    def plotfcn(filepath):
+
+        fig, ax = plt.subplots(2, 1, sharex=True, figsize=(16 / 2.54, 10 / 2.54))
+        plt.rc('legend', **{'fontsize': 10})
+        plt.rcParams.update({'font.size': 10})
+        # plt.rc('text', usetex=True)
+        # plt.rcParams.update({'text.usetex':True})
+
+        params = {'font.size': 11,
+                  'font.family': 'serif',
+                  'font.serif': 'cmr10'}
+        plt.rcParams.update(params)
+        fig.subplots_adjust(left=0.1, bottom=0.12, right=0.86, top=0.93,
+                            wspace=0.03, hspace=0.2)
+
+        # read in plotdata as pd.DataFrame
+
+        df = pd.read_csv(filepath)
+
+        # set index to pd.DatetimeIndex from colum['timestamp']
+
+        df.set_index(pd.DatetimeIndex(df['timestamp'], freq='H'), drop=True, inplace=True)
+
+        # slice df to sequence that should be plotted
+
+        df_slice = df.iloc[4334:4430]
+
+        col = list(df_slice)
+
+        # subplot 1
+        order = [1, 2, 3, 5, 7, 10, 13, 15]
+
+        neworder = [col[x] for x in order]
+
+        df_no = df_slice[neworder]
+
+        df_no = df_no.rename(columns={"(('electricity', 'demand'), 'flow')": 'load',
+                                      "(('PV', 'electricity_dc'), 'flow')": 'PV',
+                                      "(('electricity_dc', 'storage'), 'flow')": 'BSS_{in}',
+                                      "(('storage', 'electricity_dc'), 'flow')": 'BSS_{out}',
+                                      "(('pp_oil_1', 'electricity'), 'flow')": 'DG1',
+                                      "(('pp_oil_2', 'electricity'), 'flow')": 'DG2',
+                                      "(('pp_oil_3', 'electricity'), 'flow')": 'DG3',
+                                      "(('electricity', 'excess'), 'flow')": 'excess'})
+
+        cdict1 = {
+            'load': '#ce27d1',
+            'PV': '#ffde32',
+            'BSS_{in}': '#42c77a',
+            'DG2': '#636f6b',
+            'DG1': '#435cb2',
+            'DG3': '#20b4b6',
+            'BSS_{out}': '#42c77a',
+            'excess': '#5b5bae'
+        }
+
+        in_flow = ['PV', 'BSS_{out}', 'DG1', 'DG2', 'DG3']
+        out_flow = ['load', 'BSS_{in}', 'excess']
+        df_in = df_no.loc[:, in_flow]
+        myplot = oev.io_plot(df_in=df_no.loc[:, in_flow], df_out=df_no.loc[:, out_flow],
+                             inorder=['PV', 'BSS_{out}', 'DG1', 'DG2', 'DG3'], outorder=['load', 'BSS_{in}', 'excess'],
+                             cdict=cdict1, ax=ax[0], line_kwa={'linewidth': 1})
+        # ax[0] = shape_legend('electricity', **myplot)
+        # oev.set_datetime_ticks(ax[0], df.index[4344:4440], tick_distance=24,
+        # date_format='%d-%m %H ', offset=10)
+        myplot['ax'].set_ylabel('Power / kW')
+        myplot['ax'].set_xlabel('')
+        # myplot['ax'].set_xticklabels('')
+
+        myplot['ax'].get_xaxis().set_visible(False)
+        # myplot['ax'].set_xlim(0, x_length)
+        # myplot['ax'].set_title("Electric power output")
+        myplot['ax'].legend_.remove()
+
+        # subplot 2
+        df_soc = df_slice.loc[:, "(('storage', 'None'), 'capacity')"]
+        df_soc.rename(columns={"(('storage', 'None'), 'capacity')": 'SOC_{BSS}'})
+        df_soc = df_soc / df_soc.max()
+
+        df_soc.reset_index(drop=True, inplace=True)
+
+        ax1 = df_soc.plot(kind='line', linewidth=1, color='r', ax=ax[1], legend=True, drawstyle='steps-mid')
+        oev.set_datetime_ticks(ax1, df.index[4344:4440], tick_distance=24,
+                               date_format='%d-%m %H ', offset=10)
+        ax1.set_ylabel('State of Charge $SOC$ ')
+        ax1.set_xlabel('Datetime / DD-MM hh')
+        ax1.set_ylim(0.5, 1.005, 0.1)
+        ax1.grid(True, linestyle='--')
+        # myplot['ax'].get_xaxis().set_visible(False)
+        # myplot['ax'].set_xlim(0, x_length)
+        ax1.legend_.remove()
+
+        parameters = {}
+
+        handles, labels = ax1.get_legend_handles_labels()
+
+        parameters['handles'] = myplot['handles']
+        parameters['handles'] += handles
+
+        parameters['labels'] = myplot['labels']
+        parameters['labels'] += ['SOC_{BSS}']
+
+        box = ax[0].get_position()
+        ax[0].set_position([box.x0, box.y0, box.width * 0.9, box.height])
+
+        box1 = ax[1].get_position()
+        ax[1].set_position([box1.x0, box1.y0, box1.width * 0.9, box1.height])
+
+        fig.legend(parameters['handles'], parameters['labels'], 'center right', bbox_to_anchor=(1, 0.5))
+
+        plt.show()
+
+        # ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
+
+        # Put a legend to the right of the current axis
+        # ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+
+    if __name__ == '__main__':
+        plotfcn('data/diesel_pv_batt_sim_P1_B1_2_8760.csv')

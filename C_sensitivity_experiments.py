@@ -100,7 +100,7 @@ class generate_experiments():
                 del blackout_constants[parameter]
 
         if settings['sensitivity_all_combinations'] == True:
-            blackout_experiment_s = get.all_possible_combinations(blackout_parameters, {})
+            blackout_experiment_s, blackout_experiments_count = get.all_possible_combinations(blackout_parameters, {})
             for blackout_experiment in blackout_experiment_s:
                 blackout_experiment_s[blackout_experiment].update(blackout_constants.copy())
 
@@ -174,7 +174,7 @@ class get:
 
     def all_possible_combinations(sensitivity_array_dict, name_entry_dict):
         # create all possible combinations of sensitive parameters
-        generate_sensitvitiy_experiments.update(name_entry_dict)
+        sensitivity_array_dict.update(name_entry_dict.copy())
         keys, values = zip(*sensitivity_array_dict.items())
         all_experiments = [dict(zip(keys, v)) for v in itertools.product(*values)]
 

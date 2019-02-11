@@ -30,8 +30,7 @@ class economic_evaluation():
         # Expenditures for shortage
         economic_evaluation.expenditures_shortage(oemof_results, experiment)
 
-
-        if case_dict['pcc_consumption_fixed_capacity'] != None or case_dict['pcc_feedin_fixed_capacity'] != None:
+        if case_dict['pcc_consumption_fixed_capacity'] != None:
             #---------Expenditures from electricity consumption from main grid ----------#
             economic_evaluation.expenditures_main_grid_consumption(oemof_results, experiment)
 
