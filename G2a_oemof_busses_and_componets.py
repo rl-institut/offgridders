@@ -163,13 +163,13 @@ class generate():
             dict_of_generators.update({number: genset})
         return dict_of_generators
 
-    def genset_fix_minload(micro_grid_system, bus_fuel, bus_electricity_mg, experiment, capacity_fuel_gen, number_of_generators):
+    def genset_fix_minload(micro_grid_system, bus_fuel, bus_electricity_mg, experiment, capacity_fuel_gen, number_of_equal_generators):
         dict_of_generators = {}
-        for number in range(1, number_of_generators +1):
+        for number in range(1, number_of_equal_generators +1):
             genset = solph.Transformer(label="transformer_genset_"+ str(number),
                                                        inputs   ={bus_fuel: solph.Flow()},
                                                        outputs  ={bus_electricity_mg: solph.Flow(
-                                                           nominal_value    = capacity_fuel_gen/number_of_generators,
+                                                           nominal_value    = capacity_fuel_gen/number_of_equal_generators,
                                                            variable_costs   = experiment['genset_cost_var'],
                                                            min=experiment['genset_min_loading'],
                                                            max=experiment['genset_max_loading'],

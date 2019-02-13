@@ -12,9 +12,13 @@ from oemof.tools import logger
 import logging
 # Logging
 
-logger.define_logging(logfile='main_tool.log',
+logger.define_logging(logfile='./main_tool.log',
                       screen_level=logging.INFO,
                       file_level=logging.DEBUG)
+
+
+
+
 
 ###############################################################################
 # Get values from excel_template:                                             #

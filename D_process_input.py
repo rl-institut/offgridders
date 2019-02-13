@@ -109,6 +109,7 @@ class process_input_parameters():
             experiment_s[experiment].update({'time_end': experiment_s[experiment]['time_start']
                                                          + pd.DateOffset(days=experiment_s[experiment]['evaluated_days'])
                                                          - pd.DateOffset(hours=1)})
+            #experiment_s[experiment].update({'time_end': experiment_s[experiment]['time_start']+ pd.DateOffset(hours=2)})
             experiment_s[experiment].update({'date_time_index': pd.date_range(start=experiment_s[experiment]['time_start'],
                                                                               end=experiment_s[experiment]['time_end'],
                                                                               freq=experiment_s[experiment]['time_frequency'])})
@@ -124,18 +125,18 @@ class process_input_parameters():
                 index = experiment_s[experiment]['date_time_index']
                 if  experiment_s[experiment]['file_index'] != None:
                     if (experiment_s[experiment]['date_time_index'][0].year != experiment_s[experiment]['demand'].index[0].year):
-                        file_index = [item + pd.DateOffset(year=experiment_index[0].year) for item in demand.index]
+                        file_index = [item + pd.DateOffset(year=index[0].year) for item in demand.index]
                         # shift to fileindex of data sets to analysed year
                         demand = pd.Series( experiment_s[experiment]['demand'].values, index=experiment_s[experiment]['file_index'])
                         pv_generation_per_kWp = pd.Series( experiment_s[experiment]['pv_generation_per_kWp'].values, index=experiment_s[experiment]['file_index'])
                         wind_generation_per_kW = pd.Series( experiment_s[experiment]['wind_generation_per_kW'].values, index=experiment_s[experiment]['file_index'])
                         # from provided data use only analysed timeframe
-                        experiment_s[experiment].update(
-                            {'demand_profile': pd.Series(demand[index].values, index=index)})
-                        experiment_s[experiment].update(
-                            {'pv_generation_per_kWp': pd.Series(pv_generation_per_kWp[index].values, index=index)})
-                        experiment_s[experiment].update(
-                            {'wind_generation_per_kW': pd.Series(wind_generation_per_kW[index].values, index=index)})
+                        experiment_s[experiment].update({'demand_profile': demand[index]})
+                        experiment_s[experiment].update({'pv_generation_per_kWp': pv_generation_per_kWp[index]})
+                        experiment_s[experiment].update({'wind_generation_per_kW': wind_generation_per_kW[index]})
+                    else:
+                        # file index is date time index, no change necessary
+                        pass
 
                 elif experiment_s[experiment]['file_index'] == None:
                     # limit based on index
@@ -145,6 +146,23 @@ class process_input_parameters():
                         {'pv_generation_per_kWp': pd.Series(experiment_s[experiment]['pv_generation_per_kWp'][0:len(index)].values, index=index)})
                     experiment_s[experiment].update(
                         {'wind_generation_per_kW': pd.Series(experiment_s[experiment]['wind_generation_per_kW'][0:len(index)].values, index=index)})
+                else:
+                    logging.warning('Project site value "file_index" neither None not non-None.')
+
+                # Used for generation of lp file with only 3-timesteps = Useful to verify optimized equations
+                if experiment_s[experiment]['lp_file_for_only_3_timesteps'] == True:
+                    experiment_s[experiment].update({'time_start': experiment_s[experiment]['time_start'] + pd.DateOffset(hours=10)})
+                    experiment_s[experiment].update({'time_end': experiment_s[experiment]['time_start']+ pd.DateOffset(hours=2)})
+                    experiment_s[experiment].update(
+                        {'date_time_index': pd.date_range(start=experiment_s[experiment]['time_start'],
+                                                          end=experiment_s[experiment]['time_end'],
+                                                          freq=experiment_s[experiment]['time_frequency'])})
+
+                    index = experiment_s[experiment]['date_time_index']
+                    experiment_s[experiment].update({'demand_profile': experiment_s[experiment]['demand_profile'][index]})
+                    experiment_s[experiment].update({'pv_generation_per_kWp': experiment_s[experiment]['pv_generation_per_kWp'][index]})
+                    experiment_s[experiment].update({'wind_generation_per_kW': experiment_s[experiment]['wind_generation_per_kW'][index]})
+
 
                 experiment_s[experiment].update({
                     'total_demand': sum(experiment_s[experiment]['demand_profile']),

@@ -19,6 +19,7 @@ class csv_input():
         # as noise might be subject to sensitivity analysis
 
         # Necessary: All of these input timeseries in same unit (kWh)
+        print(project_site['title_demand'], project_site['title_pv'], project_site['title_wind'])
         project_site.update({'demand': data_set[project_site['title_demand']]})
         project_site.update({'pv_generation_per_kWp': data_set[project_site['title_pv']]})  # reading pv_generation values - adjust to panel area or kWp and if in Wh!
         project_site.update({'wind_generation_per_kW': data_set[project_site['title_wind']]})
