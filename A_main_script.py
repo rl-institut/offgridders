@@ -16,10 +16,6 @@ logger.define_logging(logfile='./main_tool.log',
                       screen_level=logging.INFO,
                       file_level=logging.DEBUG)
 
-
-
-
-
 ###############################################################################
 # Get values from excel_template:                                             #
 # * Experiments: Settings, project sites                                      #
