@@ -72,7 +72,7 @@ def stability_criterion(model, case_dict, experiment, storage, sink_demand, gens
         if case_dict['allow_shortage'] == True:
             shortage = model.flow[source_shortage,el_bus,t]
             #todo is this correct?
-            expr += - stability_limit * shortage
+            expr += + stability_limit * shortage
         ##---------Grid consumption t-------#
         # this should not be actual consumption but possible one  - like grid_availability[t]*pcc_consumption_cap
         if case_dict['pcc_consumption_fixed_capacity'] != None:
