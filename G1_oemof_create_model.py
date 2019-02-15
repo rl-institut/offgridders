@@ -16,14 +16,14 @@ class oemof_model:
         # create energy system
         micro_grid_system = solph.EnergySystem(timeindex=experiment['date_time_index'])
 
-        #------        fuel and electricity bus------#
-        bus_fuel = solph.Bus(label="bus_fuel")
+        #------  micro grid electricity bus------#
         bus_electricity_mg = solph.Bus(label="bus_electricity_mg")
-        micro_grid_system.add(bus_electricity_mg, bus_fuel)
 
         #------        fuel source------#
         # can be without limit if constraint is inluded
-
+        if case_dict['genset_fixed_capacity']!=None:
+            bus_fuel = solph.Bus(label="bus_fuel")
+            micro_grid_system.add(bus_electricity_mg, bus_fuel)
         if case_dict['genset_fixed_capacity'] == False:
             generate.fuel_oem(micro_grid_system, bus_fuel, experiment)
         elif isinstance(case_dict['genset_fixed_capacity'], float):

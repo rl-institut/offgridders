@@ -69,13 +69,13 @@ class generate_experiments():
         sensitivity_array_dict = get.dict_sensitivies_arrays(parameters_sensitivity, project_sites)
 
         project_site_dict = {'project_site_name': [key for key in project_sites.keys()]}
-        sensitivity_experiments, total_number_of_experiments = get.all_possible_combinations(sensitivity_array_dict, project_site_dict)
+        sensitivity_experiment_s, total_number_of_experiments = get.all_possible_combinations(sensitivity_array_dict, project_site_dict)
 
-        for experiment in sensitivity_experiments:
-            sensitivity_experiments[experiment].update(universal_parameters.copy())
-            sensitivity_experiments[experiment].update(project_sites[sensitivity_experiments[experiment]['project_site_name']].copy())
+        for experiment in sensitivity_experiment_s:
+            sensitivity_experiment_s[experiment].update(universal_parameters.copy())
+            sensitivity_experiment_s[experiment].update(project_sites[sensitivity_experiment_s[experiment]['project_site_name']].copy())
 
-        return sensitivity_experiments, number_of_project_sites, sensitivity_array_dict, total_number_of_experiments
+        return sensitivity_experiment_s, number_of_project_sites, sensitivity_array_dict, total_number_of_experiments
 
     def with_base_case(settings, parameters_constant_values, parameters_sensitivity, project_sites):
         universal_parameters, number_of_project_sites = get.universal_parameters(settings, parameters_constant_values, parameters_sensitivity,
@@ -84,9 +84,9 @@ class generate_experiments():
         # From now on, universal parameters poses the base scenario. some parameters might only be set with project sites!
         sensitivity_array_dict = get.dict_sensitivies_arrays(parameters_sensitivity, project_sites)
 
-        sensitivity_experiments, total_number_of_experiments = get.combinations_around_base(sensitivity_array_dict, universal_parameters, project_sites)
+        sensitivity_experiment_s, total_number_of_experiments = get.combinations_around_base(sensitivity_array_dict, universal_parameters, project_sites)
 
-        return sensitivity_experiments, number_of_project_sites, sensitivity_array_dict, total_number_of_experiments
+        return sensitivity_experiment_s, number_of_project_sites, sensitivity_array_dict, total_number_of_experiments
 
     def blackout(sensitivity_array_dict, parameters_constants, settings):
         blackout_parameters = sensitivity_array_dict.copy()
