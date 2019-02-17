@@ -60,7 +60,7 @@ class oemof_simulate:
         # load oemof results from previous or just finished simulation
         micro_grid_system = oemof_model.load_oemof_results(experiment['output_folder'], file_name)
 
-        output.save_network_graph(micro_grid_system, case_dict['case_name'])
+        #output.save_network_graph(micro_grid_system, case_dict['case_name'])
         ######################
         # Processing
         ######################
