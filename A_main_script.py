@@ -14,6 +14,7 @@ import logging
 
 logger.define_logging(logfile='./main_tool.log',
                       screen_level=logging.INFO,
+                      #screen_level=logging.DEBUG,
                       file_level=logging.DEBUG)
 
 ###############################################################################

@@ -11,19 +11,21 @@ class oemof_model:
         return
 
     def build(experiment, case_dict):
-        logging.debug('Initialize energy system dataframe')
+        logging.debug('Create oemof model by adding case-specific busses and components.')
 
         # create energy system
         micro_grid_system = solph.EnergySystem(timeindex=experiment['date_time_index'])
 
         #------  micro grid electricity bus------#
+        logging.debug('Added to oemof model: Electricity bus')
         bus_electricity_mg = solph.Bus(label="bus_electricity_mg")
-
+        micro_grid_system.add(bus_electricity_mg)
         #------        fuel source------#
         # can be without limit if constraint is inluded
         if case_dict['genset_fixed_capacity']!=None:
+            logging.debug('Added to oemof model: Fuel bus')
             bus_fuel = solph.Bus(label="bus_fuel")
-            micro_grid_system.add(bus_electricity_mg, bus_fuel)
+            micro_grid_system.add(bus_fuel)
         if case_dict['genset_fixed_capacity'] == False:
             generate.fuel_oem(micro_grid_system, bus_fuel, experiment)
         elif isinstance(case_dict['genset_fixed_capacity'], float):
@@ -106,28 +108,24 @@ class oemof_model:
                             + ' faulty at genset_fixed_capacity. Value can only be False, float or None')
 
         #------     main grid bus and subsequent sources if necessary------#
-        if case_dict['pcc_consumption_fixed_capacity'] != None or case_dict['pcc_feedin_fixed_capacity'] != None:
-            bus_electricity_ng = solph.Bus(label="bus_electricity_ng")
-            micro_grid_system.add(bus_electricity_ng)
-
         if case_dict['pcc_consumption_fixed_capacity'] != None:
             # source + sink for electricity from grid
-            generate.maingrid_consumption(micro_grid_system, bus_electricity_ng, experiment)
+            bus_electricity_ng_consumption = generate.maingrid_consumption(micro_grid_system, experiment)
 
         if case_dict['pcc_feedin_fixed_capacity'] != None:
             # sink + source for feed-in
-            generate.maingrid_feedin(micro_grid_system, bus_electricity_ng, experiment)
+            bus_electricity_ng_feedin = generate.maingrid_feedin(micro_grid_system, experiment)
 
         # ------        point of coupling (consumption) ------#
         if case_dict['pcc_consumption_fixed_capacity'] == None:
             pointofcoupling_consumption = None
         elif case_dict['pcc_consumption_fixed_capacity'] == False:
             pointofcoupling_consumption = generate.pointofcoupling_consumption_oem(micro_grid_system, bus_electricity_mg,
-                                                                                   bus_electricity_ng, experiment,
+                                                                                   bus_electricity_ng_consumption, experiment,
                                                                                    min_cap_pointofcoupling=case_dict['peak_demand'])
         elif isinstance(case_dict['pcc_consumption_fixed_capacity'], float):
             pointofcoupling_consumption = generate.pointofcoupling_consumption_fix(micro_grid_system, bus_electricity_mg,
-                                                                                   bus_electricity_ng, experiment,
+                                                                                   bus_electricity_ng_consumption, experiment,
                                                                                    cap_pointofcoupling=case_dict['pcc_consumption_fixed_capacity'])
         else:
             logging.warning('Case definition of ' + case_dict['case_name']
@@ -136,15 +134,16 @@ class oemof_model:
 
         #------point of coupling (feedin)------#
         if case_dict['pcc_feedin_fixed_capacity'] == None:
-            pointofcoupling_feedin = None
+            pass
+            #pointofcoupling_feedin = None
         elif case_dict['pcc_feedin_fixed_capacity'] == False:
             generate.pointofcoupling_feedin_oem(micro_grid_system, bus_electricity_mg,
-                                                                         bus_electricity_ng, experiment,
+                                                bus_electricity_ng_feedin, experiment,
                                                                          min_cap_pointofcoupling=case_dict['peak_demand'])
 
         elif isinstance(case_dict['pcc_feedin_fixed_capacity'], float):
             generate.pointofcoupling_feedin_fix(micro_grid_system, bus_electricity_mg,
-                                                                         bus_electricity_ng, experiment,
+                                                bus_electricity_ng_feedin, experiment,
                                                                          capacity_pointofcoupling=case_dict['pcc_feedin_fixed_capacity'])
         else:
             logging.warning('Case definition of ' + case_dict['case_name']
@@ -156,7 +155,7 @@ class oemof_model:
         else:
             source_shortage = None
 
-        logging.debug('Initialize the energy system to be optimized')
+        logging.debug('Create oemof model based on created components and busses.')
         model = solph.Model(micro_grid_system)
 
         if case_dict['stability_constraint'] == False:
@@ -197,8 +196,10 @@ class oemof_model:
         model.solve(solver          =   experiment['solver'],
                     solve_kwargs    =   {'tee': experiment['solver_verbose']}, # if tee_switch is true solver messages will be displayed
                     cmdline_options =   {experiment['cmdline_option']:    str(experiment['cmdline_option_value'])})   #ratioGap allowedGap mipgap
+        logging.debug('Problem solved')
 
         if experiment['save_lp_file'] == True:
+            logging.debug('Saving lp-file to folder.')
             model.write(experiment['output_folder'] + '/lp_files/model_' + file_name + '.lp',
                         io_options={'symbolic_solver_labels': True})
 

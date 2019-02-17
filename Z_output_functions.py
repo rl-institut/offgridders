@@ -15,6 +15,7 @@ import networkx as nx
 
 class output_results:
     def overall_results_title(settings, number_of_project_sites, sensitivity_array_dict):
+        logging.debug('Generated header for results.csv')
         title_overall_results = pd.DataFrame(columns=[
             'case',
             'filename'])
@@ -98,6 +99,7 @@ class output_results:
 
 class output:
     def check_output_directory(experiments):
+        logging.debug('Checking for folders and files')
         """ Checking for output folder, creating it if nonexistant and deleting files if needed """
         import os
         for experiment in experiments:
@@ -142,6 +144,7 @@ class output:
         return
 
     def save_mg_flows(experiment, case_dict, e_flows_df, filename):
+        logging.debug('Saving flows MG.')
         flows_connected_to_electricity_mg_bus = [
             'Demand shortage',
             'Demand supplied',
@@ -188,6 +191,7 @@ class output:
         return
 
     def save_storage(experiment, case_dict, e_flows_df, filename):
+        logging.debug('Saving flows storage.')
         if case_dict['storage_fixed_capacity'] != None:
 
             flows_connected_to_electricity_mg_bus = [
@@ -272,10 +276,12 @@ class output:
 
 
     def save_network_graph(energysystem, case_name):
+        logging.debug('Generate networkx diagram')
         energysystem_graph = graph.create_nx_graph(energysystem)
-        graph_file_name = 'case_name_graph'
-        nx.readwrite.write_gpickle(G=energysystem_graph, path=graph_file_name)
-        energysystem_graph = nx.readwrite.read_gpickle(graph_file_name)
+        graph_file_name = case_name+'_graph'
+        graph_path = './simulation_results/'+graph_file_name
+        nx.readwrite.write_gpickle(G=energysystem_graph, path=graph_path)
+        energysystem_graph = nx.readwrite.read_gpickle(graph_path)
         matplotlib.rcParams['figure.figsize'] = [20.0, 15.0]
 
         output.draw_graph(energysystem_graph, case_name, node_size=5500,

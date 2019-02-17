@@ -111,12 +111,9 @@ class oemof_simulate:
         # Evaluate simulated systems regarding costs
         economic_evaluation.project_annuities(case_dict, oemof_results, experiment)
 
-        #
         duration = timeit.default_timer() - start
-
         oemof_results.update({'evaluation_time': round(duration, 5)})
 
-        # Command window results
         # Infos on simulation
         logging.info('Simulation of case "' + case_dict['case_name'] + '" resulted in : \n'
                      + '    ' + '  ' + '    ' + '    ' + '    '
@@ -132,10 +129,12 @@ class oemof_simulate:
                      + '    ' + '  ' + '    ' + '    ' + '    ' + str(
             round(oemof_results['capacity_storage_kWh'], 3)) + ' kWh battery, '
                      + str(round(oemof_results['capacity_pv_kWp'], 3)) + ' kWp PV, '
+                    + str(round(oemof_results['capacity_wind_kW'], 3)) + ' kW wind, '
                      + str(round(oemof_results['capacity_genset_kW'], 3)) + ' kW genset '
                      + 'at a renewable share of ' + str(round(oemof_results['res_share'] * 100, 2)) + ' percent'
                      + ' with a reliability of ' + str(
             round(oemof_results['supply_reliability_kWh'] * 100, 2)) + ' percent')
         logging.debug('    Simulation of case ' + case_dict['case_name'] + ' complete.')
+        logging.debug('\n')
 
         return oemof_results
