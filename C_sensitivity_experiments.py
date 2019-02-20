@@ -55,6 +55,8 @@ class generate_sensitvitiy_experiments:
         message += ' a total of ' + str(total_number_of_experiments) + ' sensitivity_experiment_s will be performed for each case.'
 
         logging.info(message)
+
+        settings.update({'total_number_of_experiments': total_number_of_experiments})
         return sensitivitiy_experiments_s, blackout_experiment_s, title_overall_results
 
 class generate_experiments():
