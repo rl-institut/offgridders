@@ -18,7 +18,7 @@ import oemof.outputlib as outputlib
 
 # For speeding up lp_files and bus/component definition in oemof as well as processing
 from G1_oemof_create_model import oemof_model
-import G2b_constraints_custom as constraints
+from G2b_constraints_custom import stability_criterion, renewable_criterion
 from G3_oemof_evaluate import timeseries
 from G3a_economic_evaluation import economic_evaluation
 from G3b_plausability_tests import plausability_tests
@@ -98,8 +98,14 @@ class oemof_simulate:
         plausability_tests.run(oemof_results, e_flows_df)
 
         # Run test on oemof constraints
-        constraints.stability_test(case_dict, oemof_results, experiment, e_flows_df)
-        constraints.renewable_share_test(case_dict, oemof_results, experiment)
+        if case_dict['stability_constraint']==False:
+            pass
+        elif case_dict['stability_constraint'] == 'share_backup':
+            stability_criterion.backup_test(case_dict, oemof_results, experiment, e_flows_df)
+        elif case_dict['stability_constraint'] == 'share_usage':
+            stability_criterion.usage_test(case_dict, oemof_results, experiment, e_flows_df)
+
+        renewable_criterion.share_test(case_dict, oemof_results, experiment)
 
         # Generate output (csv, png) for energy/storage flows
         output.save_mg_flows(experiment, case_dict, e_flows_df, experiment['filename'])

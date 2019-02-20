@@ -51,7 +51,7 @@ class generate():
         logging.debug('Added to oemof model: source shortage')
         source_shortage = solph.Source(label="source_shortage",
                                        outputs={bus_electricity_mg: solph.Flow(
-                                           variable_costs   = experiment['costs_var_unsupplied_load'],
+                                           variable_costs   = experiment['shortage_penalty_costs'],
                                            nominal_value    = case_dict['max_shortage'] * case_dict['total_demand'],
                                            summed_max       = 1)})
         micro_grid_system.add(source_shortage)
