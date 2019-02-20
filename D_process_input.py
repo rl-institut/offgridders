@@ -151,7 +151,7 @@ class process_input_parameters():
 
                 # Used for generation of lp file with only 3-timesteps = Useful to verify optimized equations
                 if experiment_s[experiment]['lp_file_for_only_3_timesteps'] == True:
-                    experiment_s[experiment].update({'time_start': experiment_s[experiment]['time_start'] + pd.DateOffset(hours=10)})
+                    experiment_s[experiment].update({'time_start': experiment_s[experiment]['time_start'] + pd.DateOffset(hours=12)})
                     experiment_s[experiment].update({'time_end': experiment_s[experiment]['time_start']+ pd.DateOffset(hours=2)})
                     experiment_s[experiment].update(
                         {'date_time_index': pd.date_range(start=experiment_s[experiment]['time_start'],

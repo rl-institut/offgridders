@@ -12,7 +12,8 @@ from oemof.tools import logger
 import logging
 # Logging
 
-logger.define_logging(logfile='./main_tool.log',
+logger.define_logging(logpath='./simulation_results/',
+                      logfile='micro_grid_design_logfile.log',
                       screen_level=logging.INFO,
                       #screen_level=logging.DEBUG,
                       file_level=logging.DEBUG)

@@ -145,7 +145,7 @@ class economic_evaluation():
         logging.debug('Economic evaluation. Calculating shortage and expenditures.')
         # Necessary in oemof_results: consumption_main_grid_annual
         oemof_results.update({'expenditures_shortage_annual':
-                 oemof_results['total_demand_shortage_annual_kWh'] * experiment['costs_var_unsupplied_load']})
+                 oemof_results['total_demand_shortage_annual_kWh'] * experiment['shortage_penalty_costs']})
 
         oemof_results.update({'expenditures_shortage_total':
                 oemof_results['expenditures_shortage_annual'] * experiment['annuity_factor']})

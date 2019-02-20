@@ -2,7 +2,7 @@ import logging
 import oemof.solph as solph
 import oemof.outputlib as outputlib
 from G2a_oemof_busses_and_componets import generate
-import G2b_constraints_custom as constraints
+from G2b_constraints_custom import stability_criterion, renewable_criterion
 
 class oemof_model:
 
@@ -160,9 +160,19 @@ class oemof_model:
 
         if case_dict['stability_constraint'] == False:
             pass
-        elif isinstance(case_dict['stability_constraint'], float):
-            logging.debug('Adding stability constraint.')
-            constraints.stability_criterion(model, case_dict,
+        elif case_dict['stability_constraint']=='share_backup':
+            logging.debug('Adding stability constraint (stability inducing backup).')
+            stability_criterion.backup(model, case_dict,
+                                            experiment = experiment,
+                                            storage = generic_storage,
+                                            sink_demand = sink_demand,
+                                            genset = genset,
+                                            pcc_consumption = pointofcoupling_consumption,
+                                            source_shortage=source_shortage,
+                                            el_bus = bus_electricity_mg)
+        elif case_dict['stability_constraint']=='share_usage':
+            logging.debug('Adding stability constraint (stability though stable generation).')
+            stability_criterion.usage(model, case_dict,
                                             experiment = experiment,
                                             storage = generic_storage,
                                             sink_demand = sink_demand,
@@ -178,7 +188,7 @@ class oemof_model:
             pass
         elif isinstance(case_dict['renewable_share_constraint'], float):
             logging.info('Adding renewable share constraint.')
-            constraints.renewable_share_criterion(model,
+            renewable_criterion.share_test(model,
                                                   experiment = experiment,
                                                   genset = genset,
                                                   pcc_consumption = pointofcoupling_consumption,
