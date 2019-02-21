@@ -167,24 +167,41 @@ class output:
                     new_column = pd.DataFrame(e_flows_df[entry].values, columns=[entry], index=e_flows_df[entry].index)
                 mg_flows = mg_flows.join(new_column)
 
-        if experiment['save_to_csv_flows_storage'] == True:
+        if experiment['save_to_csv_flows_electricity_mg'] == True:
             mg_flows.to_csv(experiment['output_folder'] + '/electricity_mg/' + case_dict['case_name'] + filename + '_electricity_mg.csv')
 
         if experiment['save_to_png_flows_electricity_mg'] == True:
             if 'Storage SOC' in mg_flows.columns:
                 mg_flows.drop(['Storage SOC'], axis=1)
-            fig = mg_flows.plot(title = 'MG Operation of case ' + case_dict['case_name'] + ' in ' + experiment['project_site_name'])
-            fig.set(xlabel='Time', ylabel='Electricity flow in kWh')
-            fig.legend(loc='upper right')
-            plt.savefig(experiment['output_folder'] + '/electricity_mg/' + case_dict['case_name'] + filename + '_electricity_mg.png')
+
+            fig, axes = plt.subplots(nrows=2, figsize=(16 / 2.54, 10 / 2.54))
+
+            mg_flows.plot(title = 'MG Operation of case ' + case_dict['case_name'] + ' in ' + experiment['project_site_name'], ax=axes[0])
+            axes[0].set(xlabel='Time', ylabel='Electricity flow in kWh')
+            axes[0].legend(loc='center left', bbox_to_anchor=(1, 0.5), frameon=False)
+
+            if 'Storage SOC' in e_flows_df.columns:
+                e_flows_df['Storage SOC'].plot(ax=axes[1])
+                axes[1].set(xlabel='Time', ylabel='Storage SOC')
+
+            plt.savefig(experiment['output_folder'] + '/electricity_mg/' + case_dict['case_name'] + filename + '_electricity_mg.png', bbox_inches="tight")
             plt.close()
             plt.clf()
             plt.cla()
-            if (len(mg_flows['Demand']) >= 7 * 24):
-                fig = mg_flows[0:7 * 24].plot(title = 'MG Operation of case ' + case_dict['case_name'] + ' in ' + experiment['project_site_name'])
-                fig.set(xlabel='Time', ylabel='Electricity flow in kWh')
-                fig.legend(loc='upper right')
-                plt.savefig(experiment['output_folder'] + '/electricity_mg/' + case_dict['case_name'] + filename + '_electricity_mg_7days.png')
+
+            if (len(mg_flows['Demand']) >= 5 * 24):
+                fig, axes = plt.subplots(nrows=2, figsize=(18 / 2.54, 13 / 2.54))
+
+                mg_flows[0:5 * 24].plot(title = 'MG Operation of case ' + case_dict['case_name'] + ' in ' + experiment['project_site_name'], ax=axes[0])
+                axes[0].set(xlabel='Time', ylabel='Electricity flow in kWh')
+                axes[0].legend(loc='center left', bbox_to_anchor=(1, 0.5), frameon=False)
+
+
+                if 'Storage SOC' in e_flows_df.columns:
+                    e_flows_df['Storage SOC'][0:5 * 24].plot(ax=axes[1])
+                    axes[1].set(xlabel='Time', ylabel='Storage SOC')
+
+                plt.savefig(experiment['output_folder'] + '/electricity_mg/' + case_dict['case_name'] + filename + '_electricity_mg_7days.png', bbox_inches="tight")
                 plt.close()
                 plt.clf()
                 plt.cla()
@@ -221,8 +238,8 @@ class output:
                 plt.close()
                 plt.clf()
                 plt.cla()
-                if (len(storage_flows['Stored capacity']) >= 7*24):
-                    fig = storage_flows[0:7*24].plot(title='Storage flows of case ' + case_dict['case_name'] + ' in ' + experiment['project_site_name'])
+                if (len(storage_flows['Stored capacity']) >= 5*24):
+                    fig = storage_flows[0:5*24].plot(title='Storage flows of case ' + case_dict['case_name'] + ' in ' + experiment['project_site_name'])
                     fig.set(xlabel='Time', ylabel='Electricity flow/stored in kWh')
                     fig.legend(loc='center left', bbox_to_anchor=(1, 0.5), frameon=False)
                     plt.savefig(experiment['output_folder'] + '/storage/' + case_dict['case_name'] + filename + '_storage_7days.png', bbox_inches="tight")
@@ -230,50 +247,6 @@ class output:
                     plt.clf()
                     plt.cla()
         return
-
-    def save_double_diagram(experiment, case_dict, e_flows_df, filename):
-        flows_connected_to_electricity_mg_bus = [
-            'Demand shortage',
-            'Demand supplied',
-            'PV generation',
-            'Wind generation',
-            'Excess electricity',
-            'Consumption from main grid (MG side)',
-            'Feed into main grid (MG side)',
-            'Storage discharge',
-            'Storage charge',
-            'Genset generation',
-            'Excess generation']
-        mg_flows = pd.DataFrame(e_flows_df['Demand'].values, columns=['Demand'], index=e_flows_df['Demand'].index)
-        for entry in flows_connected_to_electricity_mg_bus:
-            if entry in e_flows_df.columns:
-                if entry in ['Storage discharge', 'Demand shortage', 'Feed into main grid (MG side)']:
-                    new_column = pd.DataFrame(-e_flows_df[entry].values, columns=[entry], index=e_flows_df[entry].index) # Display those values as negative in graphs/files
-                else:
-                    new_column = pd.DataFrame(e_flows_df[entry].values, columns=[entry], index=e_flows_df[entry].index)
-                mg_flows = mg_flows.join(new_column)
-
-        if experiment['save_to_csv_flows_storage'] == True:
-            mg_flows.to_csv(experiment['output_folder'] + '/electricity_mg/' + case_dict['case_name'] + filename + '_electricity_mg.csv')
-
-        if experiment['save_to_png_flows_electricity_mg'] == True:
-            fig = mg_flows.plot(title = 'MG Operation of case ' + case_dict['case_name'] + ' in ' + experiment['project_site_name'])
-            fig.set(xlabel='Time', ylabel='Electricity flow in kWh')
-            fig.legend(loc='center left', bbox_to_anchor=(1, 0.5), frameon=False)
-            plt.savefig(experiment['output_folder'] + '/electricity_mg/' + case_dict['case_name'] + filename + '_electricity_mg.png', bbox_inches="tight")
-            plt.close()
-            plt.clf()
-            plt.cla()
-            if (len(mg_flows['Demand']) >= 7 * 24):
-                fig = mg_flows[0:7 * 24].plot(title = 'MG Operation of case ' + case_dict['case_name'] + ' in ' + experiment['project_site_name'])
-                fig.set(xlabel='Time', ylabel='Electricity flow in kWh')
-                fig.legend(loc='center left', bbox_to_anchor=(1, 0.5), frameon=False)
-                plt.savefig(experiment['output_folder'] + '/electricity_mg/' + case_dict['case_name'] + filename + '_electricity_mg_7days.png', bbox_inches="tight")
-                plt.close()
-                plt.clf()
-                plt.cla()
-        return
-
 
     def save_network_graph(energysystem, case_name):
         logging.debug('Generate networkx diagram')

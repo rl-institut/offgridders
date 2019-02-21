@@ -127,3 +127,6 @@ for experiment in sensitivity_experiment_s:
 # display all results
 logging.info('\n Simulation complete. Resulting parameters saved in "results.csv". \n Overview over results:')
 pp.pprint(overall_results)
+
+import shutil
+shutil.copytree('./inputs', './simulation_results/inputs')

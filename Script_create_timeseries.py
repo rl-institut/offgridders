@@ -9,13 +9,15 @@ logging.basicConfig(filename='./simulation_results/script_logfile.log',level=log
 # Read project file      #
 ##########################
 logging.info('Reading from excel sheet')
-file = '/home/local/RL-INSTITUT/martha.hoffmann/Downloads/Mastersheet.xlsx'
+#file = '/home/local/RL-INSTITUT/martha.hoffmann/Downloads/Mastersheet.xlsx'
+file = '/mnt/Storage/Documents/Studium/RLI/Masterthesis/ASEP_Test/project_data/Mastersheet.xlsx'
 sheet = 'Data'
 column = 2
 data = pd.read_excel(file,
                      sheet_name=sheet,
                      index_col=column).transpose()
 
+# add all index numbers of micro grid locations to be analysed to this list
 list = [ 126, 53, 17, 105, 121, 107, 108, 34, 32, 20 ]
 
 names = pd.Series([data[list[i]]['Grid Name'] for i in range(0,10)],
@@ -83,9 +85,20 @@ s.headers = {'Authorization': 'Token ' + token}
 
 url_solar = api_base + 'data/pv'
 
+# these dates have to be set as UTC, NOT LOCAL TIME.
+# Otherwise wrong output (sun during night). Can be worked aroung with 'format': 'csv' and
+# https://community.renewables.ninja/t/python-api-example-returning-error/218/7
+# but not performed here
+# HERE: -8 h in philippines
+
+# implement this with ...
+# time_zone_offset = 8
 args_general = {
-    'date_from': '2014-01-01',
-    'date_to': '2014-12-31'}
+    'date_from': '2014-12-31',
+    'date_to': '2015-12-31'}
+
+# this could be made easier by loading csv, splitting by \n, splitting by , writing to csv and loading again with header set to column 2, th eone with local time.
+datetimerange = pd.date_range(start='2014-12-31 16:00',  end='2015-12-31 15:00', freq='H')
 
 args_pv = {
     'dataset': 'merra2',
@@ -134,8 +147,8 @@ for location in list:
 
     ########### Generate csv file ###########
     location_data_frame = pd.DataFrame({'Demand': demands[location].values,
-                                       'SolarGen': solar_generation['output'].values,
-                                        'Wind': wind_generation['output'].values}, index=demands.index)
+                                       'SolarGen': solar_generation['output'][datetimerange].values,
+                                        'Wind': wind_generation['output'][datetimerange].values}, index=demands.index)
 
     location_data_frame.to_csv('./inputs/timeseries/' + str(location) + '_' + names[location] + '.csv', index=False, sep=';')
 

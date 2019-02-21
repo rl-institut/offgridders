@@ -178,6 +178,10 @@ class timeseries:
         #calculate SOC of battery:
         if oemof_results['capacity_storage_kWh']>0:
             e_flows_df = utilities.join_e_flows_df(stored_capacity/oemof_results['capacity_storage_kWh'], 'Storage SOC', e_flows_df)
+        else:
+            #  todo working?
+            e_flows_df = utilities.join_e_flows_df(pd.Series([0 for t in e_flows_df.index], index=e_flows_df.index),
+                                                   'Storage SOC', e_flows_df)
 
         return e_flows_df
 
