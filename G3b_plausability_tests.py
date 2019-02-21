@@ -43,6 +43,7 @@ class plausability_tests:
 
 
     def charge_discharge (oemof_results, e_flows_df):
+        logging.debug('Plausibility test: Charge/Discharge')
         if ('Storage discharge' in e_flows_df.columns and 'Storage charge' in e_flows_df.columns):
             boolean = True
 
@@ -57,7 +58,7 @@ class plausability_tests:
         return
 
     def demand_supply_shortage (oemof_results, e_flows_df):
-
+        logging.debug('Plausibility test: Demand/Supply/Shortage')
         if (('Demand supplied' in e_flows_df.columns)
                 and ('Demand' in e_flows_df.columns)
                 and ('Demand shortage' in e_flows_df.columns)):
@@ -79,6 +80,7 @@ class plausability_tests:
 
 
     def feedin_consumption(oemof_results, e_flows_df):
+        logging.debug('Plausibility test: Feedin/Consumption')
         if (('Consumption from main grid' in e_flows_df.columns)
                 and ('Feed into main grid' in e_flows_df.columns)):
 
@@ -98,7 +100,7 @@ class plausability_tests:
         return
 
     def gridavailability_feedin(oemof_results, e_flows_df):
-
+        logging.debug('Plausibility test: Grid availability/Feedin')
         if (('Consumption from main grid' in e_flows_df.columns)
                 and ('Feed into main grid' in e_flows_df.columns)):
 
@@ -118,6 +120,7 @@ class plausability_tests:
         return
 
     def gridavailability_consumption(oemof_results, e_flows_df):
+        logging.debug('Plausibility test: Grid availability consumption')
         if (('Consumption from main grid' in e_flows_df.columns)
                 and ('Grid availability' in e_flows_df.columns)):
 
@@ -137,6 +140,7 @@ class plausability_tests:
         return
 
     def excess_shortage(oemof_results, e_flows_df):
+        logging.debug('Plausibility test: Excess/shortage')
         if (('Excess electricity' in e_flows_df.columns)
                 and ('Demand shortage' in e_flows_df.columns)):
 
@@ -157,6 +161,7 @@ class plausability_tests:
 
 
     def excess_feedin(oemof_results, e_flows_df):
+        logging.debug('Plausibility test: Excess/Feedin')
         if (('Excess electricity' in e_flows_df.columns)
                 and ('Grid availability' in e_flows_df.columns)
                 and ('Feed into main grid' in e_flows_df.columns)):
@@ -175,6 +180,6 @@ class plausability_tests:
             if boolean == False:
                 logging.warning("PLAUSABILITY TEST FAILED: Excess while feedin to national grid not maximal (PCC capacity)!")
                 oemof_results.update(
-                    {'comments': oemof_results['comments'] + 'Feedin to national grid during blackout. '})
+                    {'comments': oemof_results['comments'] + 'Excess while feedin not maximal.'})
 
         return

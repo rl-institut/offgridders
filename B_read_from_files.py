@@ -126,7 +126,7 @@ class excel_template():
 
     def get_case_definitions(file, sheet_project_sites):
         # defines dictionary connected to project sites
-        case_definitions = excel_template.get_data(file, sheet_project_sites, 16, None, None)
+        case_definitions = excel_template.get_data(file, sheet_project_sites, 15, None, None)
         case_definitions = case_definitions.to_dict(orient='dict')
         # Translate strings 'True' and 'False' from excel sheet to True and False
         for case in case_definitions:
@@ -135,4 +135,6 @@ class excel_template():
                 case_definitions[case][key] = excel_template.identify_true_false(case_definitions[case][key])
             if case_definitions[case]['max_shortage'] != 'default':
                 case_definitions[case].update({'max_shortage': float(case_definitions[case]['max_shortage'])})
+
+            case_definitions[case].update({'number_of_equal_generators': int(case_definitions[case]['number_of_equal_generators'])})
         return case_definitions

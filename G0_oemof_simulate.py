@@ -18,9 +18,9 @@ import oemof.outputlib as outputlib
 
 # For speeding up lp_files and bus/component definition in oemof as well as processing
 from G1_oemof_create_model import oemof_model
-import G2b_constraints_custom as constraints
+from G2b_constraints_custom import stability_criterion, renewable_criterion
 from G3_oemof_evaluate import timeseries
-from G3aeconomic_evaluation import economic_evaluation
+from G3a_economic_evaluation import economic_evaluation
 from G3b_plausability_tests import plausability_tests
 from Z_output_functions import output
 
@@ -60,6 +60,7 @@ class oemof_simulate:
         # load oemof results from previous or just finished simulation
         micro_grid_system = oemof_model.load_oemof_results(experiment['output_folder'], file_name)
 
+        #output.save_network_graph(micro_grid_system, case_dict['case_name'])
         ######################
         # Processing
         ######################
@@ -97,8 +98,14 @@ class oemof_simulate:
         plausability_tests.run(oemof_results, e_flows_df)
 
         # Run test on oemof constraints
-        constraints.stability_test(case_dict, oemof_results, experiment, e_flows_df)
-        constraints.renewable_share_test(case_dict, oemof_results, experiment)
+        if case_dict['stability_constraint']==False:
+            pass
+        elif case_dict['stability_constraint'] == 'share_backup':
+            stability_criterion.backup_test(case_dict, oemof_results, experiment, e_flows_df)
+        elif case_dict['stability_constraint'] == 'share_usage':
+            stability_criterion.usage_test(case_dict, oemof_results, experiment, e_flows_df)
+
+        renewable_criterion.share_test(case_dict, oemof_results, experiment)
 
         # Generate output (csv, png) for energy/storage flows
         output.save_mg_flows(experiment, case_dict, e_flows_df, experiment['filename'])
@@ -110,12 +117,9 @@ class oemof_simulate:
         # Evaluate simulated systems regarding costs
         economic_evaluation.project_annuities(case_dict, oemof_results, experiment)
 
-        #
         duration = timeit.default_timer() - start
-
         oemof_results.update({'evaluation_time': round(duration, 5)})
 
-        # Command window results
         # Infos on simulation
         logging.info('Simulation of case "' + case_dict['case_name'] + '" resulted in : \n'
                      + '    ' + '  ' + '    ' + '    ' + '    '
@@ -131,10 +135,12 @@ class oemof_simulate:
                      + '    ' + '  ' + '    ' + '    ' + '    ' + str(
             round(oemof_results['capacity_storage_kWh'], 3)) + ' kWh battery, '
                      + str(round(oemof_results['capacity_pv_kWp'], 3)) + ' kWp PV, '
+                    + str(round(oemof_results['capacity_wind_kW'], 3)) + ' kW wind, '
                      + str(round(oemof_results['capacity_genset_kW'], 3)) + ' kW genset '
                      + 'at a renewable share of ' + str(round(oemof_results['res_share'] * 100, 2)) + ' percent'
                      + ' with a reliability of ' + str(
             round(oemof_results['supply_reliability_kWh'] * 100, 2)) + ' percent')
         logging.debug('    Simulation of case ' + case_dict['case_name'] + ' complete.')
+        logging.debug('\n')
 
         return oemof_results

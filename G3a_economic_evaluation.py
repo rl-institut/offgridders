@@ -47,6 +47,7 @@ class economic_evaluation():
     def annuities_365(case_dict, oemof_results, experiment):
         evaluated_days = case_dict['evaluated_days']
 
+        logging.debug('Economic evaluation. Calculating investment costs over analysed timeframe.')
         interval_annuity={
             'annuity_pv': experiment['pv_cost_annuity'] * oemof_results['capacity_pv_kWp'],
             'annuity_wind': experiment['wind_cost_annuity'] * oemof_results['capacity_wind_kW'],
@@ -64,6 +65,7 @@ class economic_evaluation():
         else:
             interval_annuity.update({'annuity_grid_extension': 0})
 
+        logging.debug('Economic evaluation. Calculating O&M costs over analysed timeframe.')
         om_var_interval={
             'om_var_pv': oemof_results['total_pv_generation_kWh']*experiment['pv_cost_var'],
             'om_var_wind': oemof_results['total_wind_generation_kWh'] * experiment['wind_cost_var'],
@@ -72,6 +74,7 @@ class economic_evaluation():
             'om_var_pcoupling': oemof_results['total_pcoupling_throughput_kWh']*experiment['pcoupling_cost_var']
         }
 
+        logging.debug('Economic evaluation. Scaling investment costs and O&M to year.')
         oemof_results.update({
             'annuity_pv':
                 (interval_annuity['annuity_pv'] + om_var_interval['om_var_pv'])* 365 / evaluated_days,
@@ -102,6 +105,7 @@ class economic_evaluation():
         return
 
     def costs(oemof_results, experiment):
+        logging.debug('Economic evaluation. Calculating present costs.')
         oemof_results.update({
             'costs_pv': oemof_results['annuity_pv'] * experiment['annuity_factor'],
             'costs_wind': oemof_results['annuity_wind'] * experiment['annuity_factor'],
@@ -112,11 +116,10 @@ class economic_evaluation():
             'costs_distribution_grid': oemof_results['annuity_distribution_grid'] * experiment['annuity_factor'],
             'costs_grid_extension': oemof_results['annuity_grid_extension'] * experiment['annuity_factor']
         })
-        # if pcc utility owned, than costs are not included in lcoe here! (at least not from perspective of mg project designer
         return
 
     def expenditures_fuel(oemof_results, experiment):
-        # Necessary in oemof_results: consumption_main_grid_annual
+        logging.debug('Economic evaluation. Calculating fuel consumption and expenditures.')
         oemof_results.update({'expenditures_fuel_annual':
                 oemof_results['consumption_fuel_annual_l'] * experiment['price_fuel'] / experiment['combustion_value_fuel']})
 
@@ -127,7 +130,7 @@ class economic_evaluation():
         return
 
     def expenditures_main_grid_consumption(oemof_results, experiment):
-        # here the decisiion of pcc utility owned -> influences where revenues are generated
+        logging.debug('Economic evaluation. Calculating main grid consumption and expenditures.')
         # Necessary in oemof_results: consumption_main_grid_annual
         oemof_results.update({'expenditures_main_grid_consumption_annual':
                 oemof_results['consumption_main_grid_mg_side_annual_kWh'] * experiment['maingrid_electricity_price']})
@@ -139,9 +142,10 @@ class economic_evaluation():
         return
 
     def expenditures_shortage(oemof_results, experiment):
+        logging.debug('Economic evaluation. Calculating shortage and expenditures.')
         # Necessary in oemof_results: consumption_main_grid_annual
         oemof_results.update({'expenditures_shortage_annual':
-                - oemof_results['total_demand_shortage_annual_kWh'] * experiment['costs_var_unsupplied_load']})
+                 oemof_results['total_demand_shortage_annual_kWh'] * experiment['shortage_penalty_costs']})
 
         oemof_results.update({'expenditures_shortage_total':
                 oemof_results['expenditures_shortage_annual'] * experiment['annuity_factor']})
@@ -150,7 +154,7 @@ class economic_evaluation():
         return
 
     def revenue_main_grid_feedin(oemof_results, experiment):
-        # Necessary in oemof_results: feedin_main_grid_annual
+        logging.debug('Economic evaluation. Calculating feeding and revenues.')
         oemof_results.update({'revenue_main_grid_feedin_annual':
                 - oemof_results['feedin_main_grid_mg_side_annual_kWh'] * experiment['maingrid_feedin_tariff']})
 

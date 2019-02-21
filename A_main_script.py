@@ -12,8 +12,10 @@ from oemof.tools import logger
 import logging
 # Logging
 
-logger.define_logging(logfile='main_tool.log',
+logger.define_logging(logpath='./simulation_results/',
+                      logfile='micro_grid_design_logfile.log',
                       screen_level=logging.INFO,
+                      #screen_level=logging.DEBUG,
                       file_level=logging.DEBUG)
 
 ###############################################################################
@@ -102,7 +104,7 @@ for experiment in sensitivity_experiment_s:
         logging.info(
             'Starting simulation of case ' + specific_case + ', '
             + 'project site ' + sensitivity_experiment_s[experiment]['project_site_name'] + ', '
-            + 'experiment no. ' + str(experiment_count) + '...')
+            + 'experiment no. ' + str(experiment_count) + '/'+ str(settings['total_number_of_experiments']) + '...')
 
         # Run simulation, evaluate results
         oemof_results = oemof_simulate.run(sensitivity_experiment_s[experiment], experiment_case_dict)
@@ -125,3 +127,6 @@ for experiment in sensitivity_experiment_s:
 # display all results
 logging.info('\n Simulation complete. Resulting parameters saved in "results.csv". \n Overview over results:')
 pp.pprint(overall_results)
+
+import shutil
+shutil.copytree('./inputs', './simulation_results/inputs')

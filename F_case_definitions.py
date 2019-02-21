@@ -83,7 +83,7 @@ class cases:
         ###########################################
         if specific_case['allow_shortage']== 'default':
             experiment_case_dict.update({'allow_shortage': experiment['allow_shortage']})
-            experiment_case_dict.update({'max_shortage': experiment['max_share_unsupplied_load']})
+            experiment_case_dict.update({'max_shortage': experiment['shortage_max_allowed']})
 
         elif specific_case['allow_shortage']==False:
             experiment_case_dict.update({'allow_shortage': False})
@@ -91,7 +91,7 @@ class cases:
 
         elif specific_case['allow_shortage']==True and specific_case['max_shortage']== 'default':
             experiment_case_dict.update({'allow_shortage': True})
-            experiment_case_dict.update({'max_shortage': experiment['max_share_unsupplied_load']})
+            experiment_case_dict.update({'max_shortage': experiment['shortage_max_allowed']})
 
         elif specific_case['allow_shortage']==True:
             if (isinstance(specific_case['max_shortage'], float) or isinstance(specific_case['max_shortage'], int)):
@@ -105,20 +105,11 @@ class cases:
         # Include stability constraint            #
         ###########################################
 
-        if specific_case['stability_constraint'] == 'default':
-            if experiment['include_stability_constraint']==False:
-                experiment_case_dict.update({'stability_constraint': False})
-            else:
-                experiment_case_dict.update({'stability_constraint': experiment['stability_limit']})
-
-        elif specific_case['stability_constraint'] == False:
-            experiment_case_dict.update({'stability_constraint': False})
-
-        elif specific_case['stability_constraint'] == True:
-            experiment_case_dict.update({'stability_constraint': experiment['stability_limit']})
+        if specific_case['stability_constraint']==False or specific_case['stability_constraint']=='share_backup' or specific_case['stability_constraint']=='share_usage':
+            experiment_case_dict.update({'stability_constraint': specific_case['stability_constraint']})
         else:
             logging.warning(
-                warning_string + ' value "stability_constraint" (True/False/default) not defined properly')
+                warning_string + ' value "stability_constraint" (False/share_backup/share_usage) not defined properly')
 
         ###########################################
         # Include renewable constraint            #
@@ -138,6 +129,10 @@ class cases:
         else:
             logging.warning(
                 warning_string + ' value "renewable_share_constraint" (True/False/default) not defined properly')
+
+        experiment_case_dict['number_of_equal_generators'] = specific_case['number_of_equal_generators']
+
+        #pp.pprint(experiment_case_dict)
         return experiment_case_dict
 
 class utilities:
