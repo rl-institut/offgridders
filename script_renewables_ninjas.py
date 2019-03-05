@@ -7,33 +7,27 @@ import logging
 
 class renewables_ninjas():
 
-    def get_all(locations):
+    def get_all(location_s):
 
         logging.info('Get data from renewable ninjas:')
 
-        # these dates have to be set as UTC, NOT LOCAL TIME.
-        # Otherwise wrong output (sun during night). Can be worked aroung with 'format': 'csv' and
-        # https://community.renewables.ninja/t/python-api-example-returning-error/218/7
-        # but not performed here
-        # HERE: -8 h in philippines
-
-        # implement this with ...
-        # time_zone_offset = 8
         args_general = {
             'date_from': '2014-12-31',
             'date_to': '2015-12-31'}
 
-        # this could be made easier by loading csv, splitting by \n, splitting by , writing to csv and loading again with header set to column 2, th eone with local time.
-        datetimerange = pd.date_range(start='2014-12-31 16:00', end='2015-12-31 15:00', freq='H')
+        args_wind, url_wind, args_pv, url_solar, s = renewables_ninjas.init_url(args_general)
 
-        args_wind, url_wind, args_pv, url_solar = renewables_ninjas.init_url(args_general)
+        for location in location_s:
 
-        for location in list:
-            print(names[location])
-            logging.info('    Requesting for location: ' + str(location) + '/' + names[location])
+            start = pd.Timestamp(args_general['date_from']) + pd.DateOffset(days=1) - pd.DateOffset(hours=location_s[location]['utc_offset'])
+            end = pd.Timestamp(args_general['date_to']) + pd.DateOffset(days=1) - pd.DateOffset(hours=location_s[location]['utc_offset']+1)
+            datetimerange = pd.date_range(start=start, end=end, freq='H')
+            print(len(datetimerange))
+
+            logging.info('    Requesting for location: ' + str(location))
             args_location = {
-                'lat': lon_lat[location]['lat'],
-                'lon': lon_lat[location]['lon']}
+                'lat': location_s[location]['lat'],
+                'lon': location_s[location]['lon']}
             ########### PV ##############
             args_pv.update(args_location.copy())
             r = s.get(url_solar, params=args_pv)
@@ -49,12 +43,20 @@ class renewables_ninjas():
             wind_generation = pd.read_json(r.text, orient='index')
 
             ########### Generate csv file ###########
-            location_data_frame = pd.DataFrame({'Demand': demands[location].values,
-                                                'SolarGen': solar_generation['output'][datetimerange].values,
-                                                'Wind': wind_generation['output'][datetimerange].values},
-                                               index=demands.index)
+            dict = {
+                'SolarGen': solar_generation['output'][datetimerange].values,
+                'Wind': wind_generation['output'][datetimerange].values}
 
-            location_data_frame.to_csv('./inputs/timeseries/' + str(location) + '_' + names[location] + '.csv',
+            if location_s[location]['demand_file']!=None:
+                demands = 0
+                dict.update({'Demand': demands[location].values})
+
+            location_data_frame = pd.DataFrame(dict,
+                                               index=pd.date_range(start='2014-12-31 16:00',
+                                                                   end='2015-12-31 15:00',
+                                                                   freq='H'))
+
+            location_data_frame.to_csv('./inputs/timeseries/' + str(location) + '.csv',
                                        index=False, sep=';')
 
             # Necessary wait 20 s for new server request (not to overload the server)
@@ -96,7 +98,7 @@ class renewables_ninjas():
             'raw': False
         }
         args_wind.update(args_general.copy())
-        return args_wind, url_wind, args_pv, url_solar
+        return args_wind, url_wind, args_pv, url_solar, s
 
     def get_wind():
         return
@@ -105,4 +107,6 @@ class renewables_ninjas():
         return
 
 
-locations = {'consumer1': {'lon': 87.75,  'lat': 26.45}}
+location_s = {'consumer_tier2': {'lon': 87.75,  'lat': 26.45, 'demand_file': None, 'utc_offset': 5}}
+
+renewables_ninjas.get_all(location_s)
