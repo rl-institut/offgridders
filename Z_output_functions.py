@@ -154,58 +154,106 @@ class output:
             'Consumption from main grid (MG side)',
             'Feed into main grid (MG side)',
             'Storage discharge',
-            'Storage SOC'
+            'Storage SOC',
             'Storage charge',
             'Genset generation',
+            'Grid availability',
             'Excess generation']
         mg_flows = pd.DataFrame(e_flows_df['Demand'].values, columns=['Demand'], index=e_flows_df['Demand'].index)
         for entry in flows_connected_to_electricity_mg_bus:
             if entry in e_flows_df.columns:
                 if entry in ['Storage discharge', 'Demand shortage', 'Feed into main grid (MG side)']:
-                    new_column = pd.DataFrame(-e_flows_df[entry].values, columns=[entry], index=e_flows_df[entry].index) # Display those values as negative in graphs/files
+                    # Display those values as negative in graphs/files
+                    if entry == 'Feed into main grid (MG side)':
+                        new_column = pd.DataFrame(-e_flows_df[entry].values,
+                                                  columns=['Feed into main grid'],
+                                                  index=e_flows_df[entry].index)
+                    else:
+                        new_column = pd.DataFrame(-e_flows_df[entry].values, columns=[entry], index=e_flows_df[entry].index) # Display those values as negative in graphs/files
+                elif entry == 'Consumption from main grid (MG side)':
+                    new_column = pd.DataFrame(e_flows_df[entry].values,
+                                              columns=['Consumption from main grid'],
+                                              index=e_flows_df[entry].index)
                 else:
                     new_column = pd.DataFrame(e_flows_df[entry].values, columns=[entry], index=e_flows_df[entry].index)
+
                 mg_flows = mg_flows.join(new_column)
 
         if experiment['save_to_csv_flows_electricity_mg'] == True:
             mg_flows.to_csv(experiment['output_folder'] + '/electricity_mg/' + case_dict['case_name'] + filename + '_electricity_mg.csv')
 
         if experiment['save_to_png_flows_electricity_mg'] == True:
+            number_of_subplots = 0
+
             if 'Storage SOC' in mg_flows.columns:
-                mg_flows.drop(['Storage SOC'], axis=1)
+                mg_flows = mg_flows.drop(['Storage SOC'], axis=1)
+                if case_dict['storage_fixed_capacity'] != None:
+                    number_of_subplots += 1
+            if 'Grid availability' in mg_flows.columns:
+                mg_flows = mg_flows.drop(['Grid availability'], axis=1)
+                if (case_dict['pcc_consumption_fixed_capacity'] != None) or (case_dict['pcc_feedin_fixed_capacity'] != None):
+                    number_of_subplots += 1
 
-            fig, axes = plt.subplots(nrows=2, figsize=(16 / 2.54, 10 / 2.54))
+            for timeframe in ['year', 'days']:
+                if timeframe == 'year':
+                    output.plot_flows(case_dict, experiment, mg_flows, e_flows_df, number_of_subplots)
+                    plt.savefig(experiment['output_folder'] + '/electricity_mg/' + case_dict[
+                        'case_name'] + filename + '_electricity_mg.png', bbox_inches="tight")
 
-            mg_flows.plot(title = 'MG Operation of case ' + case_dict['case_name'] + ' in ' + experiment['project_site_name'], ax=axes[0])
-            axes[0].set(xlabel='Time', ylabel='Electricity flow in kWh')
-            axes[0].legend(loc='center left', bbox_to_anchor=(1, 0.5), frameon=False)
+                elif timeframe == 'days' and (len(mg_flows['Demand']) >= 5 * 24):
+                    output.plot_flows(case_dict, experiment, mg_flows[0:5 * 24], e_flows_df[0:5 * 24], number_of_subplots)
+                    plt.savefig(experiment['output_folder'] + '/electricity_mg/' + case_dict[
+                        'case_name'] + filename + '_electricity_mg_5days.png', bbox_inches="tight")
 
-            if 'Storage SOC' in e_flows_df.columns:
-                e_flows_df['Storage SOC'].plot(ax=axes[1])
-                axes[1].set(xlabel='Time', ylabel='Storage SOC')
-
-            plt.savefig(experiment['output_folder'] + '/electricity_mg/' + case_dict['case_name'] + filename + '_electricity_mg.png', bbox_inches="tight")
-            plt.close()
-            plt.clf()
-            plt.cla()
-
-            if (len(mg_flows['Demand']) >= 5 * 24):
-                fig, axes = plt.subplots(nrows=2, figsize=(18 / 2.54, 13 / 2.54))
-
-                mg_flows[0:5 * 24].plot(title = 'MG Operation of case ' + case_dict['case_name'] + ' in ' + experiment['project_site_name'], ax=axes[0])
-                axes[0].set(xlabel='Time', ylabel='Electricity flow in kWh')
-                axes[0].legend(loc='center left', bbox_to_anchor=(1, 0.5), frameon=False)
-
-
-                if 'Storage SOC' in e_flows_df.columns:
-                    e_flows_df['Storage SOC'][0:5 * 24].plot(ax=axes[1])
-                    axes[1].set(xlabel='Time', ylabel='Storage SOC')
-
-                plt.savefig(experiment['output_folder'] + '/electricity_mg/' + case_dict['case_name'] + filename + '_electricity_mg_7days.png', bbox_inches="tight")
                 plt.close()
                 plt.clf()
                 plt.cla()
+
         return
+
+    def plot_flows(case_dict, experiment, mg_flows, e_flows_df, number_of_subplots):
+        if number_of_subplots < 1:
+            fig, axes = plt.subplots(nrows=1, figsize=(16 / 2.54, 10 / 2.54 / 2))
+        else:
+            fig, axes = plt.subplots(nrows=2, figsize=(16 / 2.54, 10 / 2.54))
+
+        mg_flows.plot(title='MG Operation of case ' + case_dict['case_name'] + ' in ' + experiment['project_site_name'],
+                      ax=axes[0])
+        axes[0].set(xlabel='Time', ylabel='Electricity flow in kWh')
+        axes[0].legend(loc='center left', bbox_to_anchor=(1, 0.5), frameon=False)
+
+        if number_of_subplots >= 1:
+            ylabel = ''
+
+            if ((case_dict['pcc_consumption_fixed_capacity'] != None) or (case_dict['pcc_feedin_fixed_capacity'] != None)) \
+                    and ('Grid availability' in e_flows_df.columns):
+                e_flows_df['Grid availability'].plot(ax=axes[1], color = 'tab:red')
+                ylabel += 'Grid availability'
+
+            if number_of_subplots > 1:
+                ylabel += ',\n '
+
+            if (case_dict['storage_fixed_capacity'] != None) \
+                    and ('Storage SOC' in e_flows_df.columns):
+                e_flows_df['Storage SOC'].plot(ax=axes[1], color = 'tab:blue')
+                ylabel += 'Storage SOC'
+
+            axes[1].set(xlabel='Time', ylabel=ylabel)
+            if number_of_subplots > 1:
+                axes[1].legend(loc='center left', bbox_to_anchor=(1, 0.5), frameon=False)
+
+        return
+        '''
+        if 'Grid availability' in mg_flows.columns:
+            if only_one_subplot == True:
+                e_flows_df['Grid availability'].plot(ax=axes[1])
+                axes[1].set(xlabel='Time', ylabel='Grid availability')
+            else:
+                ax1_sub = axes[1].twinx()
+                e_flows_df['Grid availability'].plot(ax=ax1_sub)
+                ax1_sub.set(ylabel='Grid availability')
+        '''
+
 
     def save_storage(experiment, case_dict, e_flows_df, filename):
         logging.debug('Saving flows storage.')

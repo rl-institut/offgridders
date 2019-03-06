@@ -163,7 +163,7 @@ class central_grid:
             blackout_event_durations[item] = round(blackout_event_durations[item] / timestep) * timestep
 
         accumulated_blackout_duration = float(sum(blackout_event_durations))
-        logging.info("Accumulated blackout duration (rounded): " + str(round(accumulated_blackout_duration, 3)))
+        logging.info("Accumulated blackout duration (rounded to timestep): " + str(round(accumulated_blackout_duration, 3)))
 
         return blackout_event_durations, accumulated_blackout_duration
 

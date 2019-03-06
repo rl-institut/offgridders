@@ -134,6 +134,13 @@ class process_input_parameters():
                         experiment_s[experiment].update({'demand_profile': demand[index]})
                         experiment_s[experiment].update({'pv_generation_per_kWp': pv_generation_per_kWp[index]})
                         experiment_s[experiment].update({'wind_generation_per_kW': wind_generation_per_kW[index]})
+
+                        if 'grid_availability' in experiment_s[experiment].keys():
+                            grid_availability = pd.Series(
+                                experiment_s[experiment]['grid_availability'].values,
+                                index=experiment_s[experiment]['file_index'])
+                            experiment_s[experiment].update({'grid_availability': grid_availability[index]})
+
                     else:
                         # file index is date time index, no change necessary
                         pass
@@ -146,6 +153,12 @@ class process_input_parameters():
                         {'pv_generation_per_kWp': pd.Series(experiment_s[experiment]['pv_generation_per_kWp'][0:len(index)].values, index=index)})
                     experiment_s[experiment].update(
                         {'wind_generation_per_kW': pd.Series(experiment_s[experiment]['wind_generation_per_kW'][0:len(index)].values, index=index)})
+
+                    if 'grid_availability' in experiment_s[experiment].keys():
+                        experiment_s[experiment].update(
+                            {'grid_availability': pd.Series(
+                                experiment_s[experiment]['grid_availability'][0:len(index)].values, index=index)})
+
                 else:
                     logging.warning('Project site value "file_index" neither None not non-None.')
 
@@ -162,7 +175,9 @@ class process_input_parameters():
                     experiment_s[experiment].update({'demand_profile': experiment_s[experiment]['demand_profile'][index]})
                     experiment_s[experiment].update({'pv_generation_per_kWp': experiment_s[experiment]['pv_generation_per_kWp'][index]})
                     experiment_s[experiment].update({'wind_generation_per_kW': experiment_s[experiment]['wind_generation_per_kW'][index]})
-
+                    if 'grid_availability' in experiment_s[experiment].keys():
+                        experiment_s[experiment].update(
+                            {'grid_availability': experiment_s[experiment]['grid_availability'][index]})
 
                 experiment_s[experiment].update({
                     'total_demand': sum(experiment_s[experiment]['demand_profile']),

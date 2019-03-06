@@ -57,7 +57,7 @@ class excel_template():
         # extend by timeseries
         for project_site in project_site_s:
             csv_input.from_file(project_site_s[project_site])
-            if project_site['title_grid_availability'] == 'None':
+            if project_site_s[project_site]['title_grid_availability'] == 'None':
                 necessity_for_blackout_timeseries_generation=True
 
         settings.update({'necessity_for_blackout_timeseries_generation': necessity_for_blackout_timeseries_generation})

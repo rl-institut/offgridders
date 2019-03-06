@@ -85,13 +85,12 @@ for experiment in sensitivity_experiment_s:
     experiment_count = experiment_count + 1
     capacities_oem = {}
 
-
     if 'grid_availability' in sensitivity_experiment_s[experiment].keys():
-        logging.warning('grid availability included in file')
+        logging.debug('Using grid availability as included in timeseries file of project location.')
         pass # grid availability timeseries from file already included in data
     else:
         # extend experiment with blackout timeseries according to blackout parameters
-        logging.warning('grid availability added from randomized generated timeseries')
+        logging.debug('Using grid availability timeseries that was randomly generated.')
         blackout_experiment_name = get_names.blackout_experiment_name(sensitivity_experiment_s[experiment])
         sensitivity_experiment_s[experiment].update({'grid_availability': sensitivity_grid_availability[blackout_experiment_name]})
 
