@@ -9,7 +9,7 @@ class csv_input():
         # Reads timeseries from files connected to project sites #
         ##########################################################
 
-        data_set = pd.read_csv(project_site['timeseries_file'], sep=';')
+        data_set = pd.read_csv(project_site['timeseries_file']) # excluded attribute sep: ';'
         if project_site['title_time']=='None':
             file_index = None
         else:
@@ -22,6 +22,11 @@ class csv_input():
         project_site.update({'demand': data_set[project_site['title_demand']]})
         project_site.update({'pv_generation_per_kWp': data_set[project_site['title_pv']]})  # reading pv_generation values - adjust to panel area or kWp and if in Wh!
         project_site.update({'wind_generation_per_kW': data_set[project_site['title_wind']]})
+
+
+        if project_site['title_grid_availability'] != 'None':
+            project_site.update({'grid_availability': data_set[project_site['title_grid_availability']]})
+
         project_site.update({'file_index': file_index})
 
         return
@@ -47,10 +52,15 @@ class excel_template():
         parameters_sensitivity = excel_template.get_parameters_sensitivity(file, sheet_input_sensitivity)
 
         project_site_s = excel_template.get_project_sites(file, sheet_project_sites)
+
+        necessity_for_blackout_timeseries_generation=False
         # extend by timeseries
         for project_site in project_site_s:
             csv_input.from_file(project_site_s[project_site])
+            if project_site['title_grid_availability'] == 'None':
+                necessity_for_blackout_timeseries_generation=True
 
+        settings.update({'necessity_for_blackout_timeseries_generation': necessity_for_blackout_timeseries_generation})
         case_definitions = excel_template.get_case_definitions(file, sheet_case_definitions)
         return settings, parameters_constant_values, parameters_sensitivity, project_site_s, case_definitions
 

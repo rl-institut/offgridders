@@ -67,7 +67,8 @@ noise.apply(sensitivity_experiment_s)
 
 # Calculation of grid_availability with randomized blackouts
 from E_blackouts_central_grid import central_grid
-sensitivity_grid_availability, blackout_results = central_grid.get_blackouts(settings, blackout_experiment_s)
+if settings['necessity_for_blackout_timeseries_generation']==True:
+    sensitivity_grid_availability, blackout_results = central_grid.get_blackouts(settings, blackout_experiment_s)
 
 #---------------------------- Base case OEM ----------------------------------#
 # Based on demand, pv generation and subjected to sensitivity analysis SOEM   #
@@ -84,9 +85,15 @@ for experiment in sensitivity_experiment_s:
     experiment_count = experiment_count + 1
     capacities_oem = {}
 
-    # extend experiment with blackout timeseries according to blackout parameters
-    blackout_experiment_name = get_names.blackout_experiment_name(sensitivity_experiment_s[experiment])
-    sensitivity_experiment_s[experiment].update({'grid_availability': sensitivity_grid_availability[blackout_experiment_name]})
+
+    if 'grid_availability' in sensitivity_experiment_s[experiment].keys():
+        logging.warning('grid availability included in file')
+        pass # grid availability timeseries from file already included in data
+    else:
+        # extend experiment with blackout timeseries according to blackout parameters
+        logging.warning('grid availability added from randomized generated timeseries')
+        blackout_experiment_name = get_names.blackout_experiment_name(sensitivity_experiment_s[experiment])
+        sensitivity_experiment_s[experiment].update({'grid_availability': sensitivity_grid_availability[blackout_experiment_name]})
 
     ###############################################################################
     # Simulations of all cases                                                    #
@@ -114,7 +121,12 @@ for experiment in sensitivity_experiment_s:
             capacities_oem.update({experiment_case_dict['case_name']: helpers.define_base_capacities(oemof_results)})
 
         # Extend oemof_results by blackout characteristics
-        oemof_results   = central_grid.extend_oemof_results(oemof_results, blackout_results[blackout_experiment_name])
+        if 'grid_availability' in sensitivity_experiment_s[experiment].keys():
+            blackout_result = central_grid.oemof_extension_for_blackouts(sensitivity_experiment_s[experiment]['grid_availability'])
+            oemof_results   = central_grid.extend_oemof_results(oemof_results, blackout_result)
+        else: # one might check for settings['necessity_for_blackout_timeseries_generation']==True here, but I think its unnecessary
+            oemof_results   = central_grid.extend_oemof_results(oemof_results, blackout_results[blackout_experiment_name])
+
         # Extend overall results dataframe with simulation results
         overall_results = helpers.store_result_matrix(overall_results, sensitivity_experiment_s[experiment], oemof_results)
         # Writing DataFrame with all results to csv file

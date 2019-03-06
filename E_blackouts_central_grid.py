@@ -22,29 +22,10 @@ class central_grid:
 
             else:
                 # calculate result vector
-                blackout_results = {}
+                blackout_result_s = {}
                 for experiment in blackout_experiments:
-                    grid_availability = sensitivity_grid_availability[experiment['experiment_name']]
-                    # calculating blackout results
-                    total_grid_availability = sum(grid_availability)
-                    total_grid_blackout_duration = len(grid_availability.index) - total_grid_availability
-                    grid_reliability = 1 - total_grid_blackout_duration / len(grid_availability.index)
-                    # Counting blackouts for blackout results
-                    number_of_blackouts = 0
-                    for step in range(0, len(sensitivity_grid_availability.index)):
-                        if grid_availability.iat[step] == 0:
-                            if number_of_blackouts == 0:
-                                number_of_blackouts = number_of_blackouts + 1
-                            elif number_of_blackouts != 0 \
-                                    and grid_availability.iat[int(step - 1)] != 0:
-                                number_of_blackouts = number_of_blackouts + 1
-
-                    blackout_results.update({experiment['experiment_name']:
-                                                 {'grid_reliability': grid_reliability,
-                                                  'grid_total_blackout_duration': total_grid_blackout_duration,
-                                                  'grid_number_of_blackouts': number_of_blackouts
-                                                  }})
-
+                    blackout_result = central_grid.oemof_extension_for_blackouts(sensitivity_grid_availability[experiment['experiment_name']])
+                    blackout_result_s.update({experiment['experiment_name']: blackout_result.copy()})
                     data_complete = True
                     logging.info("Previous blackouts restored (column: " + experiment['experiment_name'] + ")")
 
@@ -54,11 +35,34 @@ class central_grid:
         # if data not saved, generate blackouts
         if data_complete == False:
             from E_blackouts_central_grid import central_grid
-            sensitivity_grid_availability, blackout_results = central_grid.availability(settings, blackout_experiments)
+            sensitivity_grid_availability, blackout_result_s = central_grid.availability(settings, blackout_experiments)
             sensitivity_grid_availability.index.name = 'timestep'
             sensitivity_grid_availability.to_csv(settings['output_folder'] + '/grid_availability.csv')
 
-        return sensitivity_grid_availability, blackout_results
+        return sensitivity_grid_availability, blackout_result_s
+
+    def oemof_extension_for_blackouts(grid_availability):
+        # calculating blackout results
+        total_grid_availability = sum(grid_availability)
+        total_grid_blackout_duration = len(grid_availability.index) - total_grid_availability
+        grid_reliability = 1 - total_grid_blackout_duration / len(grid_availability.index)
+        # Counting blackouts for blackout results
+        number_of_blackouts = 0
+        for step in range(0, len(grid_availability.index)):
+            if grid_availability.iat[step] == 0:
+                if number_of_blackouts == 0:
+                    number_of_blackouts = number_of_blackouts + 1
+                elif number_of_blackouts != 0 \
+                        and grid_availability.iat[int(step - 1)] != 0:
+                    number_of_blackouts = number_of_blackouts + 1
+
+        blackout_result={'grid_reliability': grid_reliability,
+                         'grid_total_blackout_duration': total_grid_blackout_duration,
+                         'grid_number_of_blackouts': number_of_blackouts
+                         }
+
+        return blackout_result
+
 
     def availability(settings, blackout_experiments):
 

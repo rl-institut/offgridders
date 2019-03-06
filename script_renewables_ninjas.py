@@ -100,13 +100,6 @@ class renewables_ninjas():
         args_wind.update(args_general.copy())
         return args_wind, url_wind, args_pv, url_solar, s
 
-    def get_wind():
-        return
-
-    def get_solar():
-        return
-
-
 location_s = {'consumer_tier2': {'lon': 87.75,  'lat': 26.45, 'demand_file': None, 'utc_offset': 5}}
 
 renewables_ninjas.get_all(location_s)
