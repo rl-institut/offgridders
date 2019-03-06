@@ -214,20 +214,21 @@ class output:
     def plot_flows(case_dict, experiment, mg_flows, e_flows_df, number_of_subplots):
         if number_of_subplots < 1:
             fig, axes = plt.subplots(nrows=1, figsize=(16 / 2.54, 10 / 2.54 / 2))
+            axes_mg = axes
         else:
             fig, axes = plt.subplots(nrows=2, figsize=(16 / 2.54, 10 / 2.54))
+            axes_mg = axes[0]
 
         mg_flows.plot(title='MG Operation of case ' + case_dict['case_name'] + ' in ' + experiment['project_site_name'],
-                      ax=axes[0])
-        axes[0].set(xlabel='Time', ylabel='Electricity flow in kWh')
-        axes[0].legend(loc='center left', bbox_to_anchor=(1, 0.5), frameon=False)
+                      ax=axes_mg, drawstyle='steps-mid')
+        axes_mg.set(xlabel='Time', ylabel='Electricity flow in kWh')
+        axes_mg.legend(loc='center left', bbox_to_anchor=(1, 0.5), frameon=False)
 
         if number_of_subplots >= 1:
             ylabel = ''
-
             if ((case_dict['pcc_consumption_fixed_capacity'] != None) or (case_dict['pcc_feedin_fixed_capacity'] != None)) \
                     and ('Grid availability' in e_flows_df.columns):
-                e_flows_df['Grid availability'].plot(ax=axes[1], color = 'tab:red')
+                e_flows_df['Grid availability'].plot(ax=axes[1], color = 'tab:red', drawstyle='steps-mid')
                 ylabel += 'Grid availability'
 
             if number_of_subplots > 1:
@@ -235,7 +236,7 @@ class output:
 
             if (case_dict['storage_fixed_capacity'] != None) \
                     and ('Storage SOC' in e_flows_df.columns):
-                e_flows_df['Storage SOC'].plot(ax=axes[1], color = 'tab:blue')
+                e_flows_df['Storage SOC'].plot(ax=axes[1], color = 'tab:blue', drawstyle='steps-mid')
                 ylabel += 'Storage SOC'
 
             axes[1].set(xlabel='Time', ylabel=ylabel)
@@ -243,17 +244,6 @@ class output:
                 axes[1].legend(loc='center left', bbox_to_anchor=(1, 0.5), frameon=False)
 
         return
-        '''
-        if 'Grid availability' in mg_flows.columns:
-            if only_one_subplot == True:
-                e_flows_df['Grid availability'].plot(ax=axes[1])
-                axes[1].set(xlabel='Time', ylabel='Grid availability')
-            else:
-                ax1_sub = axes[1].twinx()
-                e_flows_df['Grid availability'].plot(ax=ax1_sub)
-                ax1_sub.set(ylabel='Grid availability')
-        '''
-
 
     def save_storage(experiment, case_dict, e_flows_df, filename):
         logging.debug('Saving flows storage.')
