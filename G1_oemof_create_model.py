@@ -161,7 +161,7 @@ class oemof_model:
         if case_dict['stability_constraint'] == False:
             pass
         elif case_dict['stability_constraint']=='share_backup':
-            logging.debug('Adding stability constraint (stability inducing backup).')
+            logging.debug('Adding stability constraint (stability through backup).')
             stability_criterion.backup(model, case_dict,
                                             experiment = experiment,
                                             storage = generic_storage,
@@ -171,8 +171,18 @@ class oemof_model:
                                             source_shortage=source_shortage,
                                             el_bus = bus_electricity_mg)
         elif case_dict['stability_constraint']=='share_usage':
-            logging.debug('Adding stability constraint (stability though stable generation).')
+            logging.debug('Adding stability constraint (stability though actual generation).')
             stability_criterion.usage(model, case_dict,
+                                            experiment = experiment,
+                                            storage = generic_storage,
+                                            sink_demand = sink_demand,
+                                            genset = genset,
+                                            pcc_consumption = pointofcoupling_consumption,
+                                            source_shortage=source_shortage,
+                                            el_bus = bus_electricity_mg)
+        elif case_dict['stability_constraint']=='share_hybrid':
+            logging.debug('Adding stability constraint (stability though actual generation of diesel generators and backup through batteries).')
+            stability_criterion.genset_usage_battery_backup(model, case_dict,
                                             experiment = experiment,
                                             storage = generic_storage,
                                             sink_demand = sink_demand,

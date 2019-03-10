@@ -122,8 +122,9 @@ class stability_criterion():
 
             boolean_test = [
                 genset_capacity
-                + (stored_electricity[t] - oemof_results['capacity_storage_kWh'] *  experiment['storage_capacity_min']) *  experiment['storage_Crate_discharge']
-                + pcc_capacity[t] \
+                + (stored_electricity[t] - oemof_results['capacity_storage_kWh'] *  experiment['storage_capacity_min'])
+                *  experiment['storage_Crate_discharge']
+                + pcc_capacity[t]
                 >= experiment['stability_limit'] * (demand_profile[t] - shortage[t])
                 for t in range(0, len(demand_profile.index))
                 ]
@@ -132,21 +133,114 @@ class stability_criterion():
                 logging.debug("Stability criterion is fullfilled.")
             else:
                 ratio = pd.Series([
-                    (genset_capacity + (stored_electricity[t] - oemof_results['capacity_storage_kWh'] * experiment['storage_capacity_min']) *
-                    experiment['storage_Crate_discharge'] + pcc_capacity[t] - experiment['stability_limit'] * (demand_profile[t] - shortage[t]))
+                    (genset_capacity
+                     + (stored_electricity[t] - oemof_results['capacity_storage_kWh'] * experiment['storage_capacity_min'])
+                     * experiment['storage_Crate_discharge']
+                     + pcc_capacity[t]
+                     - experiment['stability_limit'] * (demand_profile[t] - shortage[t]))
                     / (experiment['peak_demand'])
                     for t in range(0, len(demand_profile.index))], index=demand_profile.index)
                 ratio_below_zero=ratio.clip_upper(0)
-
-                if abs(ratio_below_zero.values.min()) < 10**(-6):
-                    logging.warning("Stability criterion is strictly not fullfilled, but deviation is less then e6.")
-                else:
-                    logging.warning("ATTENTION: Stability criterion NOT fullfilled!")
-                    logging.warning('Number of timesteps not meeting criteria: ' + str(sum(boolean_test)))
-                    logging.warning('Deviation from stability criterion: '+ str(ratio_below_zero.values.mean()) + '(mean) / '+ str(ratio_below_zero.values.min()) + '(max).')
-                    oemof_results.update({'comments': oemof_results['comments'] + 'Stability criterion not fullfilled (max deviation '+ str(round(100*ratio_below_zero.values.min(), 4)) + '%). '})
+                stability_criterion.test_warning(ratio_below_zero, oemof_results)
         else:
             pass
+
+    def genset_usage_battery_backup(model, case_dict, experiment, storage, sink_demand, genset, pcc_consumption, source_shortage,
+               el_bus):
+
+        stability_limit = experiment['stability_limit']
+
+        def stability_rule(model, t):
+            expr = 0
+            ## ------- Get demand at t ------- #
+            demand = model.flows[el_bus, sink_demand].actual_value[t] * model.flows[el_bus, sink_demand].nominal_value
+
+            expr += - stability_limit * demand
+
+            ## ------- Get shortage at t------- #
+            if case_dict['allow_shortage'] == True:
+                shortage = model.flow[source_shortage, el_bus, t]
+                expr += + stability_limit * shortage
+
+            ## ------- Generation Diesel ------- #
+            if case_dict['genset_fixed_capacity'] != None:
+                for number in range(1, case_dict['number_of_equal_generators'] + 1):
+                    expr += model.flow[genset[number], el_bus, t]
+
+            ##---------Grid consumption t-------#
+            if case_dict['pcc_consumption_fixed_capacity'] != None:
+               expr += model.flow[pcc_consumption, el_bus, t]
+
+            ## ------- Get stored capacity storage at t------- #
+            if case_dict['storage_fixed_capacity'] != None:
+                stored_electricity = 0
+                if case_dict['storage_fixed_capacity'] == False:  # Storage subject to OEM
+                    stored_electricity += model.GenericInvestmentStorageBlock.capacity[storage, t]  - experiment['storage_capacity_min'] * model.GenericInvestmentStorageBlock.invest[storage]
+                elif isinstance(case_dict['storage_fixed_capacity'], float): # Fixed storage subject to dispatch
+                    stored_electricity += model.GenericStorageBlock.capacity[storage, t] - experiment['storage_capacity_min'] * storage.nominal_capacity
+                else:
+                    print ("Error: 'storage_fixed_capacity' can only be None, False or float.")
+                expr += stored_electricity * experiment['storage_Crate_discharge']
+            return (expr >= 0)
+
+        model.stability_constraint = po.Constraint(model.TIMESTEPS, rule=stability_rule)
+
+        return model
+
+    def genset_usage_battery_backup_test(case_dict, oemof_results, experiment, e_flows_df):
+        '''
+            Testing simulation results for adherance to above defined stability criterion
+        '''
+        if case_dict['stability_constraint'] != False:
+            demand_profile = e_flows_df['Demand']
+
+            if case_dict['allow_shortage'] == True:
+                shortage = e_flows_df['Demand shortage']
+            else:
+                shortage = pd.Series([0 for t in demand_profile.index], index=demand_profile.index)
+
+            if ('Stored capacity' in e_flows_df.columns):
+                stored_electricity = e_flows_df['Stored capacity']
+            else:
+                stored_electricity = pd.Series([0 for t in demand_profile.index], index=demand_profile.index)
+
+            if ('Consumption from main grid (MG side)' in e_flows_df.columns):
+                pcc_feedin = e_flows_df['Consumption from main grid (MG side)']
+            else:
+                pcc_feedin = pd.Series([0 for t in demand_profile.index], index=demand_profile.index)
+
+            if ('Genset generation' in e_flows_df.columns):
+                genset_generation = e_flows_df['Genset generation']
+            else:
+                genset_generation = pd.Series([0 for t in demand_profile.index], index=demand_profile.index)
+
+            boolean_test = [
+                genset_generation[t]
+                + (stored_electricity[t] - oemof_results['capacity_storage_kWh'] * experiment['storage_capacity_min'])
+                     * experiment['storage_Crate_discharge']
+                + pcc_feedin[t]
+                >= experiment['stability_limit'] * (demand_profile[t] - shortage[t])
+                for t in range(0, len(demand_profile.index))
+            ]
+
+            if all(boolean_test) == True:
+                logging.debug("Stability criterion is fullfilled.")
+            else:
+                ratio = pd.Series([
+                    (genset_generation[t]
+                     + (stored_electricity[t] - oemof_results['capacity_storage_kWh'] * experiment['storage_capacity_min'])
+                     * experiment['storage_Crate_discharge']
+                     + pcc_feedin[t] - experiment['stability_limit'] * (
+                                 demand_profile[t] - shortage[t]))
+                    / (experiment['peak_demand'])
+                    for t in range(0, len(demand_profile.index))], index=demand_profile.index)
+                ratio_below_zero = ratio.clip_upper(0)
+                stability_criterion.test_warning(ratio_below_zero, oemof_results)
+
+        else:
+            pass
+
+        return
 
     def usage(model, case_dict, experiment, storage, sink_demand, genset, pcc_consumption, source_shortage,
                el_bus):
@@ -174,7 +268,7 @@ class stability_criterion():
             if case_dict['pcc_consumption_fixed_capacity'] != None:
                expr += model.flow[pcc_consumption, el_bus, t]
 
-            ## ------- Get stored capacity storage at t------- #
+            ## ------- Get discharge storage at t------- #
             if case_dict['storage_fixed_capacity'] != None:
                 expr += model.flow[storage, el_bus, t]
             return (expr >= 0)
@@ -225,22 +319,25 @@ class stability_criterion():
                     / (experiment['peak_demand'])
                     for t in range(0, len(demand_profile.index))], index=demand_profile.index)
                 ratio_below_zero = ratio.clip_upper(0)
-
-                if abs(ratio_below_zero.values.min()) < 10 ** (-6):
-                    logging.warning(
-                        "Stability criterion is strictly not fullfilled, but deviation is less then e6.")
-                else:
-                    logging.warning("ATTENTION: Stability criterion NOT fullfilled!")
-                    logging.warning('Number of timesteps not meeting criteria: ' + str(sum(boolean_test)))
-                    logging.warning('Deviation from stability criterion: ' + str(
-                        ratio_below_zero.values.mean()) + '(mean) / ' + str(
-                        ratio_below_zero.values.min()) + '(max).')
-                    oemof_results.update({'comments': oemof_results[
-                                                          'comments'] + 'Stability criterion not fullfilled (max deviation ' + str(
-                        round(100 * ratio_below_zero.values.min(), 4)) + '%). '})
+                stability_criterion.test_warning(ratio_below_zero, oemof_results)
         else:
             pass
 
+        return
+
+    def test_warning(ratio_below_zero, oemof_results):
+        if abs(ratio_below_zero.values.min()) < 10 ** (-6):
+            logging.warning(
+                "Stability criterion is strictly not fullfilled, but deviation is less then e6.")
+        else:
+            logging.warning("ATTENTION: Stability criterion NOT fullfilled!")
+            logging.warning('Number of timesteps not meeting criteria: ' + str(sum(boolean_test)))
+            logging.warning('Deviation from stability criterion: ' + str(
+                ratio_below_zero.values.mean()) + '(mean) / ' + str(
+                ratio_below_zero.values.min()) + '(max).')
+            oemof_results.update({'comments': oemof_results[
+                                                  'comments'] + 'Stability criterion not fullfilled (max deviation ' + str(
+                round(100 * ratio_below_zero.values.min(), 4)) + '%). '})
         return
 
 class renewable_criterion():
