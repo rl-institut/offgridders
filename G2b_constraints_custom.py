@@ -145,7 +145,7 @@ class stability_criterion():
         else:
             pass
 
-    def genset_usage_battery_backup(model, case_dict, experiment, storage, sink_demand, genset, pcc_consumption, source_shortage,
+    def hybrid(model, case_dict, experiment, storage, sink_demand, genset, pcc_consumption, source_shortage,
                el_bus):
 
         stability_limit = experiment['stability_limit']
@@ -187,7 +187,7 @@ class stability_criterion():
 
         return model
 
-    def genset_usage_battery_backup_test(case_dict, oemof_results, experiment, e_flows_df):
+    def hybrid_test(case_dict, oemof_results, experiment, e_flows_df):
         '''
             Testing simulation results for adherance to above defined stability criterion
         '''

@@ -105,7 +105,7 @@ class cases:
         # Include stability constraint            #
         ###########################################
 
-        if specific_case['stability_constraint']==False or specific_case['stability_constraint']=='share_backup' or specific_case['stability_constraint']=='share_usage':
+        if specific_case['stability_constraint']==False or specific_case['stability_constraint']=='share_backup' or specific_case['stability_constraint']=='share_usage' or specific_case['stability_constraint']=='share_hybrid':
             experiment_case_dict.update({'stability_constraint': specific_case['stability_constraint']})
         else:
             logging.warning(

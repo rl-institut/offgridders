@@ -9,7 +9,7 @@ class csv_input():
         # Reads timeseries from files connected to project sites #
         ##########################################################
 
-        data_set = pd.read_csv(project_site['timeseries_file']) # excluded attribute sep: ';'
+        data_set = pd.read_csv(project_site['timeseries_file'], sep=project_site['seperator']) # excluded attribute sep: ';'
         if project_site['title_time']=='None':
             file_index = None
         else:

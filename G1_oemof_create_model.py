@@ -182,14 +182,14 @@ class oemof_model:
                                             el_bus = bus_electricity_mg)
         elif case_dict['stability_constraint']=='share_hybrid':
             logging.debug('Adding stability constraint (stability though actual generation of diesel generators and backup through batteries).')
-            stability_criterion.genset_usage_battery_backup(model, case_dict,
-                                            experiment = experiment,
-                                            storage = generic_storage,
-                                            sink_demand = sink_demand,
-                                            genset = genset,
-                                            pcc_consumption = pointofcoupling_consumption,
-                                            source_shortage=source_shortage,
-                                            el_bus = bus_electricity_mg)
+            stability_criterion.hybrid(model, case_dict,
+                                       experiment = experiment,
+                                       storage = generic_storage,
+                                       sink_demand = sink_demand,
+                                       genset = genset,
+                                       pcc_consumption = pointofcoupling_consumption,
+                                       source_shortage=source_shortage,
+                                       el_bus = bus_electricity_mg)
         else:
             logging.warning('Case definition of ' + case_dict['case_name']
                             + ' faulty at stability_constraint. Value can only be False, float or None')

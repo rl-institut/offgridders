@@ -1,16 +1,17 @@
 import pandas as pd
 import pprint as pp
 
-data = pd.read_csv('./simulation_results/results.csv')
+data = pd.read_csv('./simulation_results/results.csv', index_col=0)
 print(data.columns)
 
-list_of_cases   =   ['solarhybrid_backup', 'solarhybrid_usage_no_min_load', 'solarhybrid_usage', 'diesel']
+list_of_cases   =   ['mg_hybrid_no_min', 'mg_hybrid', 'solar_battery_mg', 'diesel_mg']
 list_of_locations   =   ['107_Balut Is.', '34_Araceli', '108_Lebak-Kalamansig', '17_Polo', '32_Taytay', '53_Nabuctot', '126_Pangutaran', '20_Mamburao', '105_Cinco-Rama', '121_Tandubanak.csv']
 ########### Evaluation Time #############
 times_s = {'solarhybrid_backup': 0,
          'solarhybrid_usage_no_min_load': 0,
          'solarhybrid_usage': 0,
          'diesel': 0}
+print(data['case'])
 for line in data.index:
     #if data['shortage_max_share'][line]==0:
     times_s.update({data['case'][line]: times_s[data['case'][line]] + data['evaluation_time'][line]})

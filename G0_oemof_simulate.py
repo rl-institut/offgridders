@@ -105,7 +105,7 @@ class oemof_simulate:
         elif case_dict['stability_constraint'] == 'share_usage':
             stability_criterion.usage_test(case_dict, oemof_results, experiment, e_flows_df)
         elif case_dict['stability_constraint'] == 'share_hybrid':
-            stability_criterion.genset_usage_battery_backup_test(case_dict, oemof_results, experiment, e_flows_df)
+            stability_criterion.hybrid_test(case_dict, oemof_results, experiment, e_flows_df)
 
         renewable_criterion.share_test(case_dict, oemof_results, experiment)
 
