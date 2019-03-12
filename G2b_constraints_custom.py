@@ -141,7 +141,7 @@ class stability_criterion():
                     / (experiment['peak_demand'])
                     for t in range(0, len(demand_profile.index))], index=demand_profile.index)
                 ratio_below_zero=ratio.clip_upper(0)
-                stability_criterion.test_warning(ratio_below_zero, oemof_results)
+                stability_criterion.test_warning(ratio_below_zero, oemof_results, boolean_test)
         else:
             pass
 
@@ -235,7 +235,7 @@ class stability_criterion():
                     / (experiment['peak_demand'])
                     for t in range(0, len(demand_profile.index))], index=demand_profile.index)
                 ratio_below_zero = ratio.clip_upper(0)
-                stability_criterion.test_warning(ratio_below_zero, oemof_results)
+                stability_criterion.test_warning(ratio_below_zero, oemof_results, boolean_test)
 
         else:
             pass
@@ -319,13 +319,13 @@ class stability_criterion():
                     / (experiment['peak_demand'])
                     for t in range(0, len(demand_profile.index))], index=demand_profile.index)
                 ratio_below_zero = ratio.clip_upper(0)
-                stability_criterion.test_warning(ratio_below_zero, oemof_results)
+                stability_criterion.test_warning(ratio_below_zero, oemof_results, boolean_test)
         else:
             pass
 
         return
 
-    def test_warning(ratio_below_zero, oemof_results):
+    def test_warning(ratio_below_zero, oemof_results, boolean_test):
         if abs(ratio_below_zero.values.min()) < 10 ** (-6):
             logging.warning(
                 "Stability criterion is strictly not fullfilled, but deviation is less then e6.")

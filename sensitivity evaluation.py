@@ -71,7 +71,6 @@ for line in data.index:
 
 res['peak/mean demand']=[peak_mean[key] for key in peak_mean.keys()]
 res.to_csv('./simulation_results/res.csv')
-res.plot(x='peak/mean demand')
 res = pd.DataFrame(res.values, columns=res.columns, index=[peak_mean[key] for key in peak_mean.keys()])
 
 plt.show()
