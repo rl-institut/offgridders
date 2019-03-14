@@ -185,6 +185,14 @@ class process_input_parameters():
                     'peak_pv_generation_per_kWp': max(experiment_s[experiment]['pv_generation_per_kWp']),
                     'peak_wind_generation_per_kW': max(experiment_s[experiment]['wind_generation_per_kW'])})
 
+                if experiment_s[experiment]['total_demand']==0:
+                    logging.warning('No demand in evaluated timesteps at project site ' + experiment_s[experiment]['project_site_name'] + ' - simulation will crash.')
+                if experiment_s[experiment]['peak_pv_generation_per_kWp']==0:
+                    logging.info('No pv generation in evaluated timesteps at project site ' + experiment_s[experiment]['project_site_name'] + '.')
+                if experiment_s[experiment]['peak_wind_generation_per_kW']==0:
+                    logging.info('No wind generation in evaluated timesteps at project site ' + experiment_s[experiment]['project_site_name'] + '.')
+
+        print('\n')
         return max_date_time_index, max_evaluated_days
 
 class noise:

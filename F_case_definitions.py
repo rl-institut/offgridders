@@ -72,9 +72,9 @@ class cases:
             # Correction factor for oversizing generator and pcc by factor (and include inefficiency of transformer)
             if case_dict_entry == 'peak_demand':
                 if component_name == 'capacity_genset_kW':
-                    case_dict_capacity = case_dict_capacity * 1.2
+                    case_dict_capacity = case_dict_capacity * experiment['genset_oversize_factor']
                 elif component_name == 'capacity_pcc_consumption_kW' or component_name == 'capacity_pcc_feedin_kW':
-                    case_dict_capacity = round(case_dict_capacity / experiment['pcoupling_efficiency'] * 1.05, 3)
+                    case_dict_capacity = round(case_dict_capacity / experiment['pcoupling_efficiency'] * experiment['pcc_oversize_factor'], 3)
 
             utilities.define_capacity(experiment_case_dict, case_dict_capacity, list_build_oemof_names[item])
 
@@ -132,7 +132,6 @@ class cases:
 
         experiment_case_dict['number_of_equal_generators'] = specific_case['number_of_equal_generators']
 
-        pp.pprint(experiment_case_dict)
         return experiment_case_dict
 
 class utilities:
@@ -159,7 +158,7 @@ class utilities:
 
         if case_dict_capacity == 'oem':
             experiment_case_dict.update({oemof_name: False})
-        elif case_dict_capacity==None:
+        elif case_dict_capacity==None or case_dict_capacity==0:
             experiment_case_dict.update({oemof_name: None})
         elif isinstance(case_dict_capacity, float) or isinstance(case_dict_capacity, int):
             experiment_case_dict.update({oemof_name: case_dict_capacity})
