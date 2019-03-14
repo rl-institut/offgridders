@@ -51,8 +51,8 @@ class generate_sensitvitiy_experiments:
         title_overall_results = output_results.overall_results_title(settings, number_of_project_sites, sensitivity_array_dict)
 
         message = 'For ' + str(number_of_project_sites) + ' project sites'
-        message += ' with ' + str(int(total_number_of_experiments/number_of_project_sites)) + ' scenarios each'
-        message += ' a total of ' + str(total_number_of_experiments) + ' sensitivity_experiment_s will be performed for each case.'
+        message += ' with ' + str(int(total_number_of_experiments/number_of_project_sites)) + ' scenarios each,'
+        message += ' ' + str(total_number_of_experiments) + ' sensitivity_experiment_s will be performed for each case.'
 
         logging.info(message)
 
@@ -276,7 +276,7 @@ class get_names():
             if isinstance(experiment[keys], str):
                 filename = filename + '_' + keys + '_' + experiment[keys]
             else:
-                filename = filename + '_' + keys + '_' + str(round(experiment[keys], 2))
+                filename = filename + '_' + keys + '_' + str(round(experiment[keys], 3))
         # is no sensitivity analysis performed, do not add filename
         if filename == '_s':
             filename = ''
@@ -285,12 +285,12 @@ class get_names():
 
     # Generate names for blackout sensitivity_experiment_s, used in sensitivity.blackoutexperiments and in maintool
     def blackout_experiment_name(blackout_experiment):
-        blackout_experiment_name = 'blackout_dur' + '_' + str(round(blackout_experiment['blackout_duration'], 2)) + "_" \
+        blackout_experiment_name = 'blackout_dur' + '_' + str(round(blackout_experiment['blackout_duration'], 3)) + "_" \
                                    + 'dur_dev' + '_' + str(
-            round(blackout_experiment['blackout_duration_std_deviation'], 2)) + "_" \
-                                   + 'freq' + '_' + str(round(blackout_experiment['blackout_frequency'], 2)) + "_" \
+            round(blackout_experiment['blackout_duration_std_deviation'], 3)) + "_" \
+                                   + 'freq' + '_' + str(round(blackout_experiment['blackout_frequency'], 3)) + "_" \
                                    + 'freq_dev' + '_' + str(
-            round(blackout_experiment['blackout_frequency_std_deviation'], 2))
+            round(blackout_experiment['blackout_frequency_std_deviation'], 3))
         return blackout_experiment_name
 
 

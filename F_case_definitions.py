@@ -132,7 +132,7 @@ class cases:
 
         experiment_case_dict['number_of_equal_generators'] = specific_case['number_of_equal_generators']
 
-        #pp.pprint(experiment_case_dict)
+        pp.pprint(experiment_case_dict)
         return experiment_case_dict
 
 class utilities:

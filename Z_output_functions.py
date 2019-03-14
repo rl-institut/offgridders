@@ -1,7 +1,6 @@
 '''
 Collect all functions regarding outputs in this file
 '''
-
 import pandas as pd
 import pprint as pp
 import matplotlib
@@ -102,6 +101,7 @@ class output:
         logging.debug('Checking for folders and files')
         """ Checking for output folder, creating it if nonexistant and deleting files if needed """
         import os
+        import shutil
         for experiment in experiments:
             output_folder = experiments[experiment]['output_folder']
             # First check for or create all necessary sub-folders
@@ -115,6 +115,10 @@ class output:
                 os.mkdir(output_folder + '/storage')
             if os.path.isdir(output_folder + '/electricity_mg') != True:
                 os.mkdir(output_folder + '/electricity_mg')
+            # delete folder inputs
+            if os.path.isdir(output_folder + '/inputs') == True:
+                shutil.rmtree(output_folder + '/inputs')
+                shutil.copytree('./inputs', './' + output_folder + '/inputs')
 
             # If oemof results are not to be used, ALL files will be deleted from subfolders
             # This includes lp files, oemof files, csv and png results
@@ -285,7 +289,7 @@ class output:
                     plt.clf()
                     plt.cla()
         return
-
+    '''
     def save_network_graph(energysystem, case_name):
         logging.debug('Generate networkx diagram')
         energysystem_graph = graph.create_nx_graph(energysystem)
@@ -379,160 +383,7 @@ class output:
         # show output
         if plot is True:
             plt.show()
+        
+        return
 
-class sarah:
-    import pandas as pd
-    import matplotlib.pyplot as plt
-
-    def shape_legend(node, reverse=False, **kwargs):
-        handels = kwargs['handles']
-        labels = kwargs['labels']
-        axes = kwargs['ax']
-        parameter = {}
-
-        new_labels = []
-        for label in labels:
-            label = label.replace('(', '')
-            label = label.replace('), flow)', '')
-            label = label.replace(node, '')
-            label = label.replace(',', '')
-            label = label.replace(' ', '')
-            new_labels.append(label)
-        labels = new_labels
-
-        parameter['bbox_to_anchor'] = kwargs.get('bbox_to_anchor', (1, 0.5))
-        parameter['loc'] = kwargs.get('loc', 'center left')
-        parameter['ncol'] = kwargs.get('ncol', 1)
-        plotshare = kwargs.get('plotshare', 0.9)
-
-        if reverse:
-            handels = handels.reverse()
-            labels = labels.reverse()
-
-        box = axes.get_position()
-        axes.set_position([box.x0, box.y0, box.width * plotshare, box.height])
-
-        parameter['handles'] = handels
-        parameter['labels'] = labels
-        axes.legend(**parameter)
-        return axes
-
-    def plotfcn(filepath):
-
-        fig, ax = plt.subplots(2, 1, sharex=True, figsize=(16 / 2.54, 10 / 2.54))
-        plt.rc('legend', **{'fontsize': 10})
-        plt.rcParams.update({'font.size': 10})
-        # plt.rc('text', usetex=True)
-        # plt.rcParams.update({'text.usetex':True})
-
-        params = {'font.size': 11,
-                  'font.family': 'serif',
-                  'font.serif': 'cmr10'}
-        plt.rcParams.update(params)
-        fig.subplots_adjust(left=0.1, bottom=0.12, right=0.86, top=0.93,
-                            wspace=0.03, hspace=0.2)
-
-        # read in plotdata as pd.DataFrame
-
-        df = pd.read_csv(filepath)
-
-        # set index to pd.DatetimeIndex from colum['timestamp']
-
-        df.set_index(pd.DatetimeIndex(df['timestamp'], freq='H'), drop=True, inplace=True)
-
-        # slice df to sequence that should be plotted
-
-        df_slice = df.iloc[4334:4430]
-
-        col = list(df_slice)
-
-        # subplot 1
-        order = [1, 2, 3, 5, 7, 10, 13, 15]
-
-        neworder = [col[x] for x in order]
-
-        df_no = df_slice[neworder]
-
-        df_no = df_no.rename(columns={"(('electricity', 'demand'), 'flow')": 'load',
-                                      "(('PV', 'electricity_dc'), 'flow')": 'PV',
-                                      "(('electricity_dc', 'storage'), 'flow')": 'BSS_{in}',
-                                      "(('storage', 'electricity_dc'), 'flow')": 'BSS_{out}',
-                                      "(('pp_oil_1', 'electricity'), 'flow')": 'DG1',
-                                      "(('pp_oil_2', 'electricity'), 'flow')": 'DG2',
-                                      "(('pp_oil_3', 'electricity'), 'flow')": 'DG3',
-                                      "(('electricity', 'excess'), 'flow')": 'excess'})
-
-        cdict1 = {
-            'load': '#ce27d1',
-            'PV': '#ffde32',
-            'BSS_{in}': '#42c77a',
-            'DG2': '#636f6b',
-            'DG1': '#435cb2',
-            'DG3': '#20b4b6',
-            'BSS_{out}': '#42c77a',
-            'excess': '#5b5bae'
-        }
-
-        in_flow = ['PV', 'BSS_{out}', 'DG1', 'DG2', 'DG3']
-        out_flow = ['load', 'BSS_{in}', 'excess']
-        df_in = df_no.loc[:, in_flow]
-        myplot = oev.io_plot(df_in=df_no.loc[:, in_flow], df_out=df_no.loc[:, out_flow],
-                             inorder=['PV', 'BSS_{out}', 'DG1', 'DG2', 'DG3'], outorder=['load', 'BSS_{in}', 'excess'],
-                             cdict=cdict1, ax=ax[0], line_kwa={'linewidth': 1})
-        # ax[0] = shape_legend('electricity', **myplot)
-        # oev.set_datetime_ticks(ax[0], df.index[4344:4440], tick_distance=24,
-        # date_format='%d-%m %H ', offset=10)
-        myplot['ax'].set_ylabel('Power / kW')
-        myplot['ax'].set_xlabel('')
-        # myplot['ax'].set_xticklabels('')
-
-        myplot['ax'].get_xaxis().set_visible(False)
-        # myplot['ax'].set_xlim(0, x_length)
-        # myplot['ax'].set_title("Electric power output")
-        myplot['ax'].legend_.remove()
-
-        # subplot 2
-        df_soc = df_slice.loc[:, "(('storage', 'None'), 'capacity')"]
-        df_soc.rename(columns={"(('storage', 'None'), 'capacity')": 'SOC_{BSS}'})
-        df_soc = df_soc / df_soc.max()
-
-        df_soc.reset_index(drop=True, inplace=True)
-
-        ax1 = df_soc.plot(kind='line', linewidth=1, color='r', ax=ax[1], legend=True, drawstyle='steps-mid')
-        oev.set_datetime_ticks(ax1, df.index[4344:4440], tick_distance=24,
-                               date_format='%d-%m %H ', offset=10)
-        ax1.set_ylabel('State of Charge $SOC$ ')
-        ax1.set_xlabel('Datetime / DD-MM hh')
-        ax1.set_ylim(0.5, 1.005, 0.1)
-        ax1.grid(True, linestyle='--')
-        # myplot['ax'].get_xaxis().set_visible(False)
-        # myplot['ax'].set_xlim(0, x_length)
-        ax1.legend_.remove()
-
-        parameters = {}
-
-        handles, labels = ax1.get_legend_handles_labels()
-
-        parameters['handles'] = myplot['handles']
-        parameters['handles'] += handles
-
-        parameters['labels'] = myplot['labels']
-        parameters['labels'] += ['SOC_{BSS}']
-
-        box = ax[0].get_position()
-        ax[0].set_position([box.x0, box.y0, box.width * 0.9, box.height])
-
-        box1 = ax[1].get_position()
-        ax[1].set_position([box1.x0, box1.y0, box1.width * 0.9, box1.height])
-
-        fig.legend(parameters['handles'], parameters['labels'], 'center right', bbox_to_anchor=(1, 0.5))
-
-        plt.show()
-
-        # ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
-
-        # Put a legend to the right of the current axis
-        # ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-
-    if __name__ == '__main__':
-        plotfcn('data/diesel_pv_batt_sim_P1_B1_2_8760.csv')
+'''

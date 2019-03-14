@@ -48,6 +48,8 @@ output.check_output_directory(sensitivity_experiment_s)
 from D_process_input import process_input_parameters as process_input
 case_list = process_input.list_of_cases(case_definitions)
 
+logging.info('With these cases, a total of '+ str(settings['total_number_of_experiments'] * len(case_list)) + ' simulations will be performed. \n')
+
 #----------------- Extend sensitivity_experiment_s----------------------------#
 # with demand, pv_generation_per_kWp, wind_generation_per_kW                  #
 #-----------------------------------------------------------------------------#
@@ -138,6 +140,3 @@ for experiment in sensitivity_experiment_s:
 # display all results
 logging.info('\n Simulation complete. Resulting parameters saved in "results.csv". \n Overview over results:')
 pp.pprint(overall_results)
-
-import shutil
-shutil.copytree('./inputs', './simulation_results/inputs')
