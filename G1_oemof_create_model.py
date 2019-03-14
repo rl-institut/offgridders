@@ -228,11 +228,10 @@ class oemof_model:
         micro_grid_system.results['meta'] = outputlib.processing.meta_results(model)
         return micro_grid_system
 
-    def store_results(micro_grid_system, file_name, output_folder, setting_save_oemofresults):
+    def store_results(micro_grid_system, file_name, output_folder):
         # store energy system with results
-        if setting_save_oemofresults == True:
-            micro_grid_system.dump(dpath=output_folder+'/oemof', filename = file_name + ".oemof" )
-            logging.debug('Stored results in ' + output_folder+'/oemof' + '/' + file_name + ".oemof")
+        micro_grid_system.dump(dpath=output_folder+'/oemof', filename = file_name + ".oemof" )
+        logging.debug('Stored results in ' + output_folder+'/oemof' + '/' + file_name + ".oemof")
         return micro_grid_system
 
     def load_oemof_results(output_folder, file_name):
