@@ -105,7 +105,7 @@ class excel_template():
 
     def get_parameters_constant(file, sheet_input_constant):
         # defines dictionary connected to parameters
-        parameters_constant = excel_template.get_data(file, sheet_input_constant, 1, "A", "C")
+        parameters_constant = excel_template.get_data(file, sheet_input_constant, 6, "A", "C")
         parameters_constant = parameters_constant.to_dict(orient='dict')
         parameters_constant_units = parameters_constant['Unit']
         parameters_constant_values = parameters_constant['Value']
@@ -113,13 +113,13 @@ class excel_template():
 
     def get_parameters_sensitivity(file, sheet_input_sensitivity):
         # defines dictionary connected to senstivity analysis
-        parameters_sensitivity = excel_template.get_data(file, sheet_input_sensitivity, 1, "A", "D")
+        parameters_sensitivity = excel_template.get_data(file, sheet_input_sensitivity, 10, "A", "D")
         parameters_sensitivity = parameters_sensitivity.to_dict(orient='index')
         return parameters_sensitivity
 
     def get_project_sites(file, sheet_project_sites):
         # defines dictionary connected to project sites
-        project_sites = excel_template.get_data(file, sheet_project_sites, 2, None, None)
+        project_sites = excel_template.get_data(file, sheet_project_sites, 14, None, None)
         project_sites = project_sites.to_dict(orient='index')
 
         # Print all evaluated locations in terminal
