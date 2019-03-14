@@ -150,6 +150,7 @@ class output:
     def save_mg_flows(experiment, case_dict, e_flows_df, filename):
         logging.debug('Saving flows MG.')
         flows_connected_to_electricity_mg_bus = [
+            'Demand'
             'Demand shortage',
             'Demand supplied',
             'PV generation',
@@ -178,6 +179,9 @@ class output:
                     new_column = pd.DataFrame(e_flows_df[entry].values,
                                               columns=['Consumption from main grid'],
                                               index=e_flows_df[entry].index)
+                elif (entry == 'Demand supplied' or entry == 'Demand shortage') and (e_flows_df['Demand'].values==e_flows_df['Demand supplied'].values):
+                    pass
+
                 else:
                     new_column = pd.DataFrame(e_flows_df[entry].values, columns=[entry], index=e_flows_df[entry].index)
 
@@ -223,8 +227,26 @@ class output:
             fig, axes = plt.subplots(nrows=2, figsize=(16 / 2.54, 10 / 2.54))
             axes_mg = axes[0]
 
+        color_dict = {
+            'Demand': '#ccccff', # pidgeon blue
+            'Demand supplied': '#0033cc', # blue
+            'PV generation': '#ffcc00', # orange
+            'Wind generation': '#33ccff', # light blue
+            'Genset generation': '#000000', # black
+            'Consumption from main grid': '#990099', # violet
+            'Storage charge': '#33ff00', # light green
+            'Excess generation': '#996600', # brown
+            'Feed into main grid': '#ff33cc', # pink
+            'Storage discharge': '#33ff00', # dark green
+            'Demand shortage': '#ff3300',  # bright red
+            'Storage SOC': '#66cc33', # grass green
+            'Grid availability': '#cc0000' # red
+        }
+
         mg_flows.plot(title='MG Operation of case ' + case_dict['case_name'] + ' in ' + experiment['project_site_name'],
-                      ax=axes_mg, drawstyle='steps-mid')
+                      color=[color_dict.get(x, '#333333') for x in mg_flows.columns],
+                      ax=axes_mg,
+                      drawstyle='steps-mid')
         axes_mg.set(xlabel='Time', ylabel='Electricity flow in kWh')
         axes_mg.legend(loc='center left', bbox_to_anchor=(1, 0.5), frameon=False)
 
@@ -232,7 +254,9 @@ class output:
             ylabel = ''
             if ((case_dict['pcc_consumption_fixed_capacity'] != None) or (case_dict['pcc_feedin_fixed_capacity'] != None)) \
                     and ('Grid availability' in e_flows_df.columns):
-                e_flows_df['Grid availability'].plot(ax=axes[1], color = 'tab:red', drawstyle='steps-mid')
+                e_flows_df['Grid availability'].plot(ax=axes[1],
+                                                     color=[color_dict.get(x, '#333333') for x in mg_flows.columns],
+                                                     drawstyle='steps-mid')
                 ylabel += 'Grid availability'
 
             if number_of_subplots > 1:
@@ -240,7 +264,9 @@ class output:
 
             if (case_dict['storage_fixed_capacity'] != None) \
                     and ('Storage SOC' in e_flows_df.columns):
-                e_flows_df['Storage SOC'].plot(ax=axes[1], color = 'tab:blue', drawstyle='steps-mid')
+                e_flows_df['Storage SOC'].plot(ax=axes[1],
+                                               color=[color_dict.get(x, '#333333') for x in mg_flows.columns],
+                                               drawstyle='steps-mid')
                 ylabel += 'Storage SOC'
 
             axes[1].set(xlabel='Time', ylabel=ylabel)
