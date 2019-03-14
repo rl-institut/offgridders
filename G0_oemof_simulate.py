@@ -54,7 +54,7 @@ class oemof_simulate:
             # perform simulation
             micro_grid_system        = oemof_model.simulate(experiment, micro_grid_system, model, file_name)
             # store simulation results to .oemof
-            oemof_model.store_results(micro_grid_system, file_name, experiment['output_folder'], experiment['save_oemofresults'])
+            oemof_model.store_results(micro_grid_system, file_name, experiment['output_folder'])
 
         # it actually is not really necessary to restore just simulated results... but for consistency and to make sure that calling results is easy, this is used nevertheless
         # load oemof results from previous or just finished simulation
@@ -144,5 +144,8 @@ class oemof_simulate:
             round(oemof_results['supply_reliability_kWh'] * 100, 2)) + ' percent')
         logging.debug('    Simulation of case ' + case_dict['case_name'] + ' complete.')
         logging.debug('\n')
+
+        if experiment['save_oemofresults'] == False:
+            os.remove(experiment['output_folder']+'/oemof/'+file_name + ".oemof")
 
         return oemof_results
