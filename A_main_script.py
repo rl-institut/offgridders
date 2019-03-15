@@ -12,7 +12,7 @@ from oemof.tools import logger
 import logging
 # Logging
 
-logger.define_logging(logpath='./simulation_results/',
+logger.define_logging(logpath='./',
                       logfile='micro_grid_design_logfile.log',
                       screen_level=logging.INFO,
                       #screen_level=logging.DEBUG,
@@ -32,6 +32,10 @@ from B_read_from_files import excel_template
 settings, parameters_constant_values, parameters_sensitivity, project_site_s, case_definitions = \
     excel_template.settings()
 
+#-------- Check for, create or empty results directory -----------------------#
+from Z_output_functions import output
+output.check_output_directory(settings)
+
 #---- Define all sensitivity_experiment_s, define result parameters ----------#
 from C_sensitivity_experiments import generate_sensitvitiy_experiments, get_names
 sensitivity_experiment_s, blackout_experiment_s, overall_results = \
@@ -40,10 +44,6 @@ sensitivity_experiment_s, blackout_experiment_s, overall_results = \
 ###############################################################################
 # Process and initialize                                                      #
 ###############################################################################
-#-------- Check for, create or empty results directory -----------------------#
-from Z_output_functions import output
-output.check_output_directory(sensitivity_experiment_s)
-
 #-------- Generate list of cases analysed in simulation ----------------------#
 from D_process_input import process_input_parameters as process_input
 case_list = process_input.list_of_cases(case_definitions)
@@ -140,3 +140,6 @@ for experiment in sensitivity_experiment_s:
 # display all results
 logging.info('\n Simulation complete. Resulting parameters saved in "results.csv". \n Overview over results:')
 pp.pprint(overall_results)
+
+import shutil
+shutil.move('./micro_grid_design_logfile.log', settings['output_folder']+'/micro_grid_design_logfile.log')

@@ -6,12 +6,15 @@ dictonary, including filenames.
 
 import pandas as pd
 import logging
+import os
 
 import itertools
 import numpy as np
 import pprint as pp
 from D_process_input import process_input_parameters as process_input
 from Z_output_functions import output_results
+
+from copy import deepcopy
 
 class generate_sensitvitiy_experiments:
     def get(settings, parameters_constant_values, parameters_sensitivity, project_sites):
@@ -39,13 +42,27 @@ class generate_sensitvitiy_experiments:
         #######################################################
         # Get blackout_experiment_s for sensitvitiy           #
         #######################################################
-        # Creating duict of possible blackout scenarios (combinations of durations  frequencies
+        # Creating dict of possible blackout scenarios (combinations of durations  frequencies
         blackout_experiment_s, blackout_experiments_count \
             = generate_experiments.blackout(sensitivity_array_dict, parameters_constant_values, settings)
 
-        # save all Experiments with all used input data to csv (not really necessary)
-        experiments_dataframe = pd.DataFrame.from_dict(sensitivitiy_experiments_s, orient='index')
-        experiments_dataframe.to_csv(settings['output_folder']+'/Input_data_of_all_cases.csv')
+        # save all Experiments with all used input data to csv
+        csv_dict = deepcopy(sensitivitiy_experiments_s)
+        # delete timeseries to make file readable
+        timeseries_names=['demand', 'pv_generation_per_kWp', 'wind_generation_per_kW', 'grid_availability']
+        for entry in csv_dict:
+            for series in timeseries_names:
+                if series in csv_dict[entry].keys():
+                    del csv_dict[entry][series]
+
+        experiments_dataframe = pd.DataFrame.from_dict(csv_dict, orient='index')
+        experiments_dataframe.to_csv(settings['output_folder']+'/simulation_experiments.csv')
+
+        for item in experiments_dataframe.columns:
+            if (item not in parameters_sensitivity.keys()) and (item not in ['project_site_name']):
+                experiments_dataframe = experiments_dataframe.drop(columns=item)
+
+        experiments_dataframe.to_csv(settings['output_folder'] + '/sensitivity_experiments.csv')
 
         # Generate a overall title of the oemof-results DataFrame
         title_overall_results = output_results.overall_results_title(settings, number_of_project_sites, sensitivity_array_dict)
@@ -74,8 +91,8 @@ class generate_experiments():
         sensitivity_experiment_s, total_number_of_experiments = get.all_possible_combinations(sensitivity_array_dict, project_site_dict)
 
         for experiment in sensitivity_experiment_s:
-            sensitivity_experiment_s[experiment].update(universal_parameters.copy())
-            sensitivity_experiment_s[experiment].update(project_sites[sensitivity_experiment_s[experiment]['project_site_name']].copy())
+            sensitivity_experiment_s[experiment].update(deepcopy(universal_parameters))
+            sensitivity_experiment_s[experiment].update(deepcopy(project_sites[sensitivity_experiment_s[experiment]['project_site_name']]))
 
         return sensitivity_experiment_s, number_of_project_sites, sensitivity_array_dict, total_number_of_experiments
 
@@ -91,12 +108,12 @@ class generate_experiments():
         return sensitivity_experiment_s, number_of_project_sites, sensitivity_array_dict, total_number_of_experiments
 
     def blackout(sensitivity_array_dict, parameters_constants, settings):
-        blackout_parameters = sensitivity_array_dict.copy()
+        blackout_parameters = deepcopy(sensitivity_array_dict)
         for parameter in sensitivity_array_dict:
             if parameter != 'blackout_duration' and parameter != 'blackout_frequency' and parameter != 'blackout_duration_std_deviation' and parameter != 'blackout_frequency_std_deviation':
                 del blackout_parameters[parameter]
 
-        blackout_constants = parameters_constants.copy()
+        blackout_constants = deepcopy(parameters_constants)
         for parameter in parameters_constants:
             if parameter != 'blackout_duration' and parameter != 'blackout_frequency' and parameter != 'blackout_duration_std_deviation' and parameter != 'blackout_frequency_std_deviation':
                 del blackout_constants[parameter]
@@ -104,7 +121,7 @@ class generate_experiments():
         if settings['sensitivity_all_combinations'] == True:
             blackout_experiment_s, blackout_experiments_count = get.all_possible_combinations(blackout_parameters, {})
             for blackout_experiment in blackout_experiment_s:
-                blackout_experiment_s[blackout_experiment].update(blackout_constants.copy())
+                blackout_experiment_s[blackout_experiment].update(deepcopy(blackout_constants))
 
         elif settings['sensitivity_all_combinations'] == False:
             blackout_experiment_s = {}
@@ -121,17 +138,17 @@ class generate_experiments():
                     if sensitivity_array_dict[key][interval_entry] != key_value:
                         # All parameters like base case except for sensitivity parameter
                         blackout_experiments_count += 1
-                        blackout_experiment_s.update({blackout_experiments_count: blackout_constants.copy()})
+                        blackout_experiment_s.update({blackout_experiments_count: deepcopy(blackout_constants)})
                         blackout_experiment_s[blackout_experiments_count].update({key: sensitivity_array_dict[key][interval_entry]})
                     elif sensitivity_array_dict[key][interval_entry] == key_value and defined_base == False:
                         # Defining scenario only with base case values for universal parameter / specific to project site (once!)
                         blackout_experiments_count += 1
-                        blackout_experiment_s.update({blackout_experiments_count: blackout_constants.copy()})
+                        blackout_experiment_s.update({blackout_experiments_count: deepcopy(blackout_constants)})
                         blackout_experiment_s[blackout_experiments_count].update({key: key_value})
                         defined_base == True
             if len(blackout_experiment_s)==0:
                 blackout_experiments_count += 1
-                blackout_experiment_s.update({blackout_experiments_count: blackout_constants.copy()})
+                blackout_experiment_s.update({blackout_experiments_count: deepcopy(blackout_constants)})
 
         else:
             logging.warning('Setting "sensitivity_all_combinations" not valid! Has to be TRUE or FALSE.')
@@ -152,8 +169,8 @@ class get:
         remove_doubles.project_sites_sensitivity(parameters_sensitivity, project_site_s)
 
         # create base case
-        universal_parameters = settings.copy()
-        universal_parameters.update(parameters_constant_values.copy())
+        universal_parameters = deepcopy(settings)
+        universal_parameters.update(deepcopy(parameters_constant_values))
 
         number_of_project_sites = 0
         for key in project_site_s:
@@ -176,7 +193,7 @@ class get:
 
     def all_possible_combinations(sensitivity_array_dict, name_entry_dict):
         # create all possible combinations of sensitive parameters
-        sensitivity_array_dict.update(name_entry_dict.copy())
+        sensitivity_array_dict.update(deepcopy(name_entry_dict))
         keys, values = zip(*sensitivity_array_dict.items())
         all_experiments = [dict(zip(keys, v)) for v in itertools.product(*values)]
 
@@ -184,7 +201,7 @@ class get:
         sensitivity_experiment_s = {}
         for experiment in all_experiments:
             number_of_experiment += 1
-            sensitivity_experiment_s.update({number_of_experiment: experiment.copy()})
+            sensitivity_experiment_s.update({number_of_experiment: deepcopy(experiment)})
 
         total_number_of_experiments = number_of_experiment
         return sensitivity_experiment_s, total_number_of_experiments
@@ -198,9 +215,9 @@ class get:
             # if no sensitivity analysis performed (other than multiple locations)
             if len(sensitivity_array_dict.keys()) == 0:
                 experiment_number += 1
-                sensitivity_experiment_s.update({experiment_number: universal_parameters.copy()})
+                sensitivity_experiment_s.update({experiment_number: deepcopy(universal_parameters)})
                 sensitivity_experiment_s[experiment_number].update({'project_site_name': project_site})
-                sensitivity_experiment_s[experiment_number].update(project_site_s[project_site].copy())
+                sensitivity_experiment_s[experiment_number].update(deepcopy(project_site_s[project_site]))
             # generate cases with sensitivity parameters
             else:
                 defined_base = False
@@ -220,20 +237,20 @@ class get:
                         if sensitivity_array_dict[key][interval_entry] != key_value:
                             # All parameters like base case except for sensitivity parameter
                             experiment_number += 1
-                            sensitivity_experiment_s.update({experiment_number: universal_parameters.copy()})
+                            sensitivity_experiment_s.update({experiment_number: deepcopy(universal_parameters)})
                             sensitivity_experiment_s[experiment_number].update({key: sensitivity_array_dict[key][interval_entry]})
                             sensitivity_experiment_s[experiment_number].update({'project_site_name': project_site})
-                            sensitivity_experiment_s[experiment_number].update(project_site_s[project_site].copy())
+                            sensitivity_experiment_s[experiment_number].update(deepcopy(project_site_s[project_site]))
                             # scaling demand according to scaling factor - used for tests regarding tool application
                             sensitivity_experiment_s[experiment_number].update({'demand': sensitivity_experiment_s[experiment_number]['demand'] * sensitivity_experiment_s[experiment_number]['demand_scaling_factor']})
 
                         elif sensitivity_array_dict[key][interval_entry] == key_value and defined_base == False:
                             # Defining scenario only with base case values for universal parameter / specific to project site (once!)
                             experiment_number += 1
-                            sensitivity_experiment_s.update({experiment_number: universal_parameters.copy()})
+                            sensitivity_experiment_s.update({experiment_number: deepcopy(universal_parameters)})
                             sensitivity_experiment_s[experiment_number].update({key: key_value})
                             sensitivity_experiment_s[experiment_number].update({'project_site_name': project_site})
-                            sensitivity_experiment_s[experiment_number].update(project_site_s[project_site].copy())
+                            sensitivity_experiment_s[experiment_number].update(deepcopy(project_site_s[project_site]))
                             # scaling demand according to scaling factor - used for tests regarding tool application
                             sensitivity_experiment_s[experiment_number].update({'demand': sensitivity_experiment_s[experiment_number]['demand'] * sensitivity_experiment_s[experiment_number]['demand_scaling_factor']})
                             defined_base == True
@@ -250,8 +267,8 @@ class get:
                 # fill dictionary with all constant values defining the different simulations of the sensitivity analysis
                 # ! do not use a key two times or in sensitivity_bounds as well, as it will be overwritten by new information
             number_of_experiments += 1
-            experiment_s.update({number_of_experiments: sensitivity_experiment_s[experiment].copy()})
-            experiment_s[number_of_experiments].update(project_sites[experiment_s[experiment]['project_site_name']].copy())
+            experiment_s.update({number_of_experiments: deepcopy(sensitivity_experiment_s[experiment])})
+            experiment_s[number_of_experiments].update(deepcopy(project_sites[experiment_s[experiment]['project_site_name']]))
 
         return experiment_s, number_of_experiments
 
@@ -298,7 +315,7 @@ class remove_doubles():
     def constants_project_sites(parameters_constant_values, project_sites):
         # remove all entries that are doubled in parameters_constant_values, settings & project_site_s from parameters_constant_values
         str = 'Attributes "'
-        keys = parameters_constant_values.copy().keys()
+        keys = deepcopy(parameters_constant_values).keys()
         for key in keys:
             if key in project_sites:
                 del parameters_constant_values[key]
@@ -312,7 +329,7 @@ class remove_doubles():
     def project_sites_sensitivity(parameters_sensitivity, project_sites):
         # remove all entries that are doubled in sensitivity_bounds, project_site_s
         str = 'Attributes "'
-        keys = parameters_sensitivity.copy().keys()
+        keys = deepcopy(parameters_sensitivity).keys()
         for key in keys:
             if key in project_sites:
                 # ?? this preferrs project site definition over sensitivity definition
@@ -328,7 +345,7 @@ class remove_doubles():
     def constants_senstivity(parameters_constant_values, parameters_sensitivity):
         # remove all entries that are doubled in parameters_constant_values, settings & parameters_sensitivity
         str = 'Attributes "'
-        keys = parameters_constant_values.copy().keys()
+        keys = deepcopy(parameters_constant_values).keys()
         for key in keys:
             if key in parameters_sensitivity:
                 del parameters_constant_values[key]

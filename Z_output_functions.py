@@ -16,8 +16,18 @@ class output_results:
     def overall_results_title(settings, number_of_project_sites, sensitivity_array_dict):
         logging.debug('Generated header for results.csv')
         title_overall_results = pd.DataFrame(columns=[
-            'case',
-            'filename'])
+            'case'])
+
+        if number_of_project_sites > 1:
+            title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=['project_site_name'])], axis=1)
+
+        title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[
+            'lcoe',
+            'annuity',
+            'npv',
+            'supply_reliability_kWh',
+            'res_share',
+            'autonomy_factor'])], axis=1, sort=False)
 
         if settings['results_demand_characteristics'] == True:
             title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[
@@ -77,19 +87,11 @@ class output_results:
                 'revenue_main_grid_feedin_total'])], axis=1, sort=False)
 
         title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[
-            'res_share',
-            'autonomy_factor',
-            'supply_reliability_kWh',
-            'annuity',
-            'npv',
-            'lcoe',
             'objective_value',
             'simulation_time',
             'evaluation_time',
+            'filename',
             'comments'])], axis=1, sort=False)
-
-        if number_of_project_sites > 1:
-            title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=['project_site_name'])], axis=1)
 
         for keys in sensitivity_array_dict:
             title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[keys])], axis=1)
@@ -97,39 +99,42 @@ class output_results:
         return title_overall_results
 
 class output:
-    def check_output_directory(experiments):
+    def check_output_directory(settings):
+
         logging.debug('Checking for folders and files')
         """ Checking for output folder, creating it if nonexistant and deleting files if needed """
         import os
         import shutil
-        for experiment in experiments:
-            output_folder = experiments[experiment]['output_folder']
-            # First check for or create all necessary sub-folders
-            if os.path.isdir(output_folder) != True:
-                os.mkdir(output_folder)
-            if os.path.isdir(output_folder + '/oemof') != True:
-                os.mkdir(output_folder + '/oemof')
-            if os.path.isdir(output_folder + '/lp_files') != True:
-                os.mkdir(output_folder + '/lp_files')
-            if os.path.isdir(output_folder + '/storage') != True:
-                os.mkdir(output_folder + '/storage')
-            if os.path.isdir(output_folder + '/electricity_mg') != True:
-                os.mkdir(output_folder + '/electricity_mg')
 
-            # replace folder inputs with new inputs
-            if os.path.isdir(output_folder + '/inputs') == True:
-                # delete folder inputs
-                shutil.rmtree(output_folder + '/inputs', ignore_errors=True)
-                shutil.copytree('./inputs', './' + output_folder + '/inputs')
+        output_folder = settings['output_folder']
+        folder_list = ['/lp_files', '/storage', '/electricity_mg', '/inputs', '/oemof']
 
-            # If oemof results are not to be used, ALL files will be deleted from subfolders
-            # This includes lp files, oemof files, csv and png results
-            # multiple times due to multiple experiments - possible t save each experimentin seperate folder?!
-            if  experiments[experiment]['restore_oemof_if_existant'] == False:
-                for root, dirs, files in os.walk(output_folder):
-                    for f in files:
-                        os.remove(root + '/' + f)
-                logging.debug('Deleted all files in folder ' + experiments[experiment]['output_folder'])
+        if os.path.isdir(output_folder) == True:
+            # Empty folders with previous result, except oemof results if simulation restart
+            for folder in folder_list:
+                if os.path.isdir(output_folder+folder):
+                    if folder == '/oemof' and settings['restore_oemof_if_existant'] == False:
+                        shutil.rmtree(output_folder + folder, ignore_errors=True)
+                    else:
+                        shutil.rmtree(output_folder + folder, ignore_errors=True)
+            # remove other results in output folder (log, csv)
+            for root, dirs, files in os.walk(output_folder):
+                for file in files:
+                    os.remove(root + '/' + file)
+        else:
+            os.mkdir(output_folder)
+
+        os.mkdir(output_folder + '/oemof')
+        shutil.copytree('./inputs', output_folder + '/inputs')
+
+        if (settings['save_lp_file']==True or settings['lp_file_for_only_3_timesteps']==True):
+            os.mkdir(output_folder + '/lp_files')
+
+        if (settings['save_to_csv_flows_storage']==True or settings['save_to_png_flows_storage']==True):
+            os.mkdir(output_folder + '/storage')
+
+        if (settings['save_to_csv_flows_electricity_mg']==True or settings['save_to_png_flows_electricity_mg']==True):
+            os.mkdir(output_folder + '/electricity_mg')
         return
 
     def print_oemof_meta_main_invest(experiment, meta, electricity_bus, case_name):
