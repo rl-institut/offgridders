@@ -72,7 +72,7 @@ class oemof_simulate:
             'filename': 'results_' + case_dict['case_name'] + experiment['filename'],
             'objective_value': meta['objective'],
             'simulation_time': meta['solver']['Time'],
-            'comments': ''
+            'comments': experiment['comments']
         }
 
         # get all from node electricity bus

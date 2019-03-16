@@ -31,6 +31,7 @@ class generate_sensitvitiy_experiments:
 
         else:
             logging.warning('Setting "sensitivity_all_combinations" not valid! Has to be TRUE or FALSE.')
+
         for experiment in sensitivitiy_experiments_s:
             #  Add economic values to sensitivity sensitivity_experiment_s
             process_input.economic_values(sensitivitiy_experiments_s[experiment])
@@ -74,36 +75,43 @@ class generate_sensitvitiy_experiments:
         logging.info(message)
 
         settings.update({'total_number_of_experiments': total_number_of_experiments})
+
         return sensitivitiy_experiments_s, blackout_experiment_s, title_overall_results
 
 class generate_experiments():
-    def all_possible(settings, parameters_constant_values, parameters_sensitivity, project_sites):
-
+    def all_possible(settings, parameters_constant_values, parameters_sensitivity, project_site_s):
+        # Deletes constants from parameters_constant_values depending on values defined in sensitivity
         remove_doubles.constants_senstivity(parameters_constant_values, parameters_sensitivity)
+        # Deletes constants from parameters_constant_values depending on values defined in project sites
+        remove_doubles.constants_project_sites(parameters_constant_values, project_site_s)
+        # Deletes project site parameter that is also included in sensitivity analysis
+        remove_doubles.project_sites_sensitivity(parameters_sensitivity, project_site_s)
 
         # From now on, universal parameters poses the base scenario. some parameters might only be set with project sites!
         universal_parameters, number_of_project_sites = get.universal_parameters(settings, parameters_constant_values, parameters_sensitivity,
-                                                        project_sites)
+                                                                                 project_site_s)
 
-        sensitivity_array_dict = get.dict_sensitivies_arrays(parameters_sensitivity, project_sites)
+        sensitivity_array_dict = get.dict_sensitivies_arrays(parameters_sensitivity, project_site_s)
 
-        project_site_dict = {'project_site_name': [key for key in project_sites.keys()]}
+        project_site_dict = {'project_site_name': [key for key in project_site_s.keys()]}
         sensitivity_experiment_s, total_number_of_experiments = get.all_possible_combinations(sensitivity_array_dict, project_site_dict)
 
         for experiment in sensitivity_experiment_s:
             sensitivity_experiment_s[experiment].update(deepcopy(universal_parameters))
-            sensitivity_experiment_s[experiment].update(deepcopy(project_sites[sensitivity_experiment_s[experiment]['project_site_name']]))
+            sensitivity_experiment_s[experiment].update(deepcopy(project_site_s[sensitivity_experiment_s[experiment]['project_site_name']]))
 
         return sensitivity_experiment_s, number_of_project_sites, sensitivity_array_dict, total_number_of_experiments
 
-    def with_base_case(settings, parameters_constant_values, parameters_sensitivity, project_sites):
+    def with_base_case(settings, parameters_constant_values, parameters_sensitivity, project_site_s):
+        remove_doubles.constants_project_sites(parameters_constant_values, project_site_s)
+
         universal_parameters, number_of_project_sites = get.universal_parameters(settings, parameters_constant_values, parameters_sensitivity,
-                                                        project_sites)
+                                                                                 project_site_s)
 
         # From now on, universal parameters poses the base scenario. some parameters might only be set with project sites!
-        sensitivity_array_dict = get.dict_sensitivies_arrays(parameters_sensitivity, project_sites)
+        sensitivity_array_dict = get.dict_sensitivies_arrays(parameters_sensitivity, project_site_s)
 
-        sensitivity_experiment_s, total_number_of_experiments = get.combinations_around_base(sensitivity_array_dict, universal_parameters, project_sites)
+        sensitivity_experiment_s, total_number_of_experiments = get.combinations_around_base(sensitivity_array_dict, universal_parameters, project_site_s)
 
         return sensitivity_experiment_s, number_of_project_sites, sensitivity_array_dict, total_number_of_experiments
 
@@ -165,9 +173,6 @@ class generate_experiments():
 
 class get:
     def universal_parameters(settings, parameters_constant_values, parameters_sensitivity, project_site_s):
-        remove_doubles.constants_project_sites(parameters_constant_values, project_site_s)
-        remove_doubles.project_sites_sensitivity(parameters_sensitivity, project_site_s)
-
         # create base case
         universal_parameters = deepcopy(settings)
         universal_parameters.update(deepcopy(parameters_constant_values))
@@ -193,8 +198,14 @@ class get:
 
     def all_possible_combinations(sensitivity_array_dict, name_entry_dict):
         # create all possible combinations of sensitive parameters
-        sensitivity_array_dict.update(deepcopy(name_entry_dict))
-        keys, values = zip(*sensitivity_array_dict.items())
+        all_parameters = {}
+        for key in sensitivity_array_dict:
+            all_parameters.update({key: [value for value in sensitivity_array_dict[key]]})
+
+        all_parameters.update(deepcopy(name_entry_dict))
+        # create all possible combinations of sensitive parameters
+        keys = [key for key in all_parameters.keys()]
+        values = [all_parameters[key] for key in all_parameters.keys()]
         all_experiments = [dict(zip(keys, v)) for v in itertools.product(*values)]
 
         number_of_experiment = 0
@@ -202,8 +213,10 @@ class get:
         for experiment in all_experiments:
             number_of_experiment += 1
             sensitivity_experiment_s.update({number_of_experiment: deepcopy(experiment)})
+            sensitivity_experiment_s[number_of_experiment].update({'comments': ''})
 
         total_number_of_experiments = number_of_experiment
+
         return sensitivity_experiment_s, total_number_of_experiments
 
     def combinations_around_base(sensitivity_array_dict, universal_parameters, project_site_s):
@@ -238,11 +251,13 @@ class get:
                             # All parameters like base case except for sensitivity parameter
                             experiment_number += 1
                             sensitivity_experiment_s.update({experiment_number: deepcopy(universal_parameters)})
-                            sensitivity_experiment_s[experiment_number].update({key: sensitivity_array_dict[key][interval_entry]})
                             sensitivity_experiment_s[experiment_number].update({'project_site_name': project_site})
                             sensitivity_experiment_s[experiment_number].update(deepcopy(project_site_s[project_site]))
+                            # overwrite base case value by sensitivity value (only in case specific parameter is changed)
+                            sensitivity_experiment_s[experiment_number].update({key: sensitivity_array_dict[key][interval_entry]})
                             # scaling demand according to scaling factor - used for tests regarding tool application
                             sensitivity_experiment_s[experiment_number].update({'demand': sensitivity_experiment_s[experiment_number]['demand'] * sensitivity_experiment_s[experiment_number]['demand_scaling_factor']})
+                            sensitivity_experiment_s[experiment_number].update({'comments': ''})
 
                         elif sensitivity_array_dict[key][interval_entry] == key_value and defined_base == False:
                             # Defining scenario only with base case values for universal parameter / specific to project site (once!)
@@ -253,9 +268,8 @@ class get:
                             sensitivity_experiment_s[experiment_number].update(deepcopy(project_site_s[project_site]))
                             # scaling demand according to scaling factor - used for tests regarding tool application
                             sensitivity_experiment_s[experiment_number].update({'demand': sensitivity_experiment_s[experiment_number]['demand'] * sensitivity_experiment_s[experiment_number]['demand_scaling_factor']})
-                            defined_base == True
-
-
+                            defined_base = True
+                            sensitivity_experiment_s[experiment_number].update({'comments': 'Base case, '})
 
         total_number_of_experiments = experiment_number
         return sensitivity_experiment_s, total_number_of_experiments
@@ -317,9 +331,13 @@ class remove_doubles():
         str = 'Attributes "'
         keys = deepcopy(parameters_constant_values).keys()
         for key in keys:
-            if key in project_sites:
-                del parameters_constant_values[key]
-                str += key + ", "
+            count = 0
+            for location in project_sites.keys():
+                if key in project_sites[location].keys():
+                    if count == 0:
+                        del parameters_constant_values[key]
+                        str += key + ", "
+                    count += 1
         if str != 'Attributes "':
             str = str[
                   :-2] + '" defined in constant and project site parameters. Only project site value will be used for sensitivity_experiment_s.'
@@ -327,19 +345,23 @@ class remove_doubles():
         return
 
     def project_sites_sensitivity(parameters_sensitivity, project_sites):
-        # remove all entries that are doubled in sensitivity_bounds, project_site_s
+        # remove all entries that are doubled in sensitivity_bounds/project_site_s from project site
         str = 'Attributes "'
         keys = deepcopy(parameters_sensitivity).keys()
         for key in keys:
-            if key in project_sites:
-                # ?? this preferrs project site definition over sensitivity definition
-                # ?? base case definition not based on individual project sites if sensitivity performed, instead based on constant values. meaning, eventhough for villA fuel=2 and villB fuel=3, in const fuel = 1, each has base case with const fuel = 1
-                del parameters_sensitivity[key]
-                str += key + ", "
+            count = 0
+            for location in project_sites.keys():
+                if key in project_sites[location].keys():
+                    del project_sites[location][key]
+                    if count == 0:
+                        str += key + ", "
+                    count += 1
+
         if str != 'Attributes "':
             str = str[
                   :-2] + '" defined in project site and sensitvity parameters. Only sensitivity parameters will be used for sensitivity_experiment_s.'
             logging.warning(str)
+
         return
 
     def constants_senstivity(parameters_constant_values, parameters_sensitivity):
