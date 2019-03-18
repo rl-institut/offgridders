@@ -120,7 +120,10 @@ class output:
             # remove other results in output folder (log, csv)
             for root, dirs, files in os.walk(output_folder):
                 for file in files:
-                    os.remove(root + '/' + file)
+                    if file == 'grid_availability.csv' and settings['restore_blackouts_if_existant'] == False:
+                        pass
+                    else:
+                        os.remove(root + '/' + file)
         else:
             os.mkdir(output_folder)
 
