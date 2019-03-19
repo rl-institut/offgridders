@@ -18,6 +18,8 @@ logger.define_logging(logpath='./',
                       #screen_level=logging.DEBUG,
                       file_level=logging.DEBUG)
 
+logging.info('\n \n MICRO GRID TOOL 1.0 \n Version: 19.03.2019 \n Coded by: Martha M. Hoffmann \n Reiner Lemoine Institute (Berlin) \n \n ')
+
 ###############################################################################
 # Get values from excel_template:                                             #
 # * Experiments: Settings, project sites                                      #
