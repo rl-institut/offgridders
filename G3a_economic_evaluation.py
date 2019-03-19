@@ -53,9 +53,13 @@ class economic_evaluation():
             'annuity_wind': experiment['wind_cost_annuity'] * oemof_results['capacity_wind_kW'],
             'annuity_storage': experiment['storage_cost_annuity'] * oemof_results['capacity_storage_kWh'],
             'annuity_genset': experiment['genset_cost_annuity'] * oemof_results['capacity_genset_kW'],
-            'annuity_pcoupling': experiment['pcoupling_cost_annuity'] * oemof_results['capacity_pcoupling_kW'] ,
             'annuity_project': experiment['project_cost_annuity'],
             'annuity_distribution_grid': experiment['distribution_grid_cost_annuity']}
+
+        if case_dict['pcc_consumption_fixed_capacity'] != None and case_dict['pcc_feedin_fixed_capacity'] != None:
+            interval_annuity.update({'annuity_pcoupling': 2*experiment['pcoupling_cost_annuity'] * oemof_results['capacity_pcoupling_kW']})
+        else:
+            interval_annuity.update({'annuity_pcoupling': experiment['pcoupling_cost_annuity'] * oemof_results['capacity_pcoupling_kW']})
 
         # Main grid extension
         if case_dict['pcc_consumption_fixed_capacity'] != None or case_dict['pcc_feedin_fixed_capacity'] != None:
