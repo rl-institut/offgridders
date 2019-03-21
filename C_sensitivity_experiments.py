@@ -38,8 +38,8 @@ class generate_sensitvitiy_experiments:
             # Give a file name to the sensitivity_experiment_s
             get_names.experiment_name(sensitivitiy_experiments_s[experiment], sensitivity_array_dict,
                                 number_of_project_sites)
-            if sensitivitiy_experiments_s[experiment]['storage_initial_soc']=='None':
-                sensitivitiy_experiments_s[experiment].update({'storage_initial_soc': None})
+            if sensitivitiy_experiments_s[experiment]['storage_soc_initial']=='None':
+                sensitivitiy_experiments_s[experiment].update({'storage_soc_initial': None})
         #######################################################
         # Get blackout_experiment_s for sensitvitiy           #
         #######################################################
@@ -123,7 +123,7 @@ class generate_experiments():
 
         blackout_constants = deepcopy(parameters_constants)
         for parameter in parameters_constants:
-            if parameter != 'blackout_duration' and parameter != 'blackout_frequency' and parameter != 'blackout_duration_std_deviation' and parameter != 'blackout_frequency_std_deviation':
+            if parameter != 'blackout_duration' and parameter != 'blackout_frequency' and parameter != 'blackout_duration_std_deviation' and parameter != 'blackout_frequency_std_deviation' and parameter not in sensitivity_array_dict:
                 del blackout_constants[parameter]
 
         if settings['sensitivity_all_combinations'] == True:
@@ -135,6 +135,7 @@ class generate_experiments():
             blackout_experiment_s = {}
             blackout_experiments_count = 0
             defined_base = False
+            
             for key in blackout_parameters:
                 for interval_entry in range(0, len(sensitivity_array_dict[key])):
                     if key in blackout_constants:
@@ -154,6 +155,7 @@ class generate_experiments():
                         blackout_experiment_s.update({blackout_experiments_count: deepcopy(blackout_constants)})
                         blackout_experiment_s[blackout_experiments_count].update({key: key_value})
                         defined_base == True
+
             if len(blackout_experiment_s)==0:
                 blackout_experiments_count += 1
                 blackout_experiment_s.update({blackout_experiments_count: deepcopy(blackout_constants)})
@@ -166,8 +168,18 @@ class generate_experiments():
             blackout_experiment_name = get_names.blackout_experiment_name(blackout_experiment_s[blackout_experiment])
             blackout_experiment_s[blackout_experiment].update({'experiment_name': blackout_experiment_name})
 
+        # delete all doubled entries -> could also be applied to experiments!
+        experiment_copy = deepcopy(blackout_experiment_s)
+
+        for i in experiment_copy:
+            for e in experiment_copy:
+
+                if i != e and experiment_copy[i]['experiment_name'] == experiment_copy[e]['experiment_name']:
+                    if i in blackout_experiment_s and e in blackout_experiment_s:
+                        del blackout_experiment_s[e]
+
         logging.info(
-            str(len(blackout_experiment_s)) + ' combinations of blackout duration and frequency will be analysed.')
+            'With '+ str(len(blackout_experiment_s)) + ' experiments, a randomized blackouts timeseries for all combinations of blackout duration and frequency will generated.')
 
         return blackout_experiment_s, blackout_experiments_count
 
@@ -307,7 +319,7 @@ class get_names():
             if isinstance(experiment[keys], str):
                 filename = filename + '_' + keys + '_' + experiment[keys]
             else:
-                filename = filename + '_' + keys + '_' + str(round(experiment[keys], 3))
+                filename = filename + '_' + keys + '_' + str(round(float(experiment[keys]), 3))
         # is no sensitivity analysis performed, do not add filename
         if filename == '_s':
             filename = ''
@@ -316,12 +328,12 @@ class get_names():
 
     # Generate names for blackout sensitivity_experiment_s, used in sensitivity.blackoutexperiments and in maintool
     def blackout_experiment_name(blackout_experiment):
-        blackout_experiment_name = 'blackout_dur' + '_' + str(round(blackout_experiment['blackout_duration'], 3)) + "_" \
+        blackout_experiment_name = 'blackout_dur' + '_' + str(round(float(blackout_experiment['blackout_duration']), 3)) + "_" \
                                    + 'dur_dev' + '_' + str(
-            round(blackout_experiment['blackout_duration_std_deviation'], 3)) + "_" \
-                                   + 'freq' + '_' + str(round(blackout_experiment['blackout_frequency'], 3)) + "_" \
+            round(float(blackout_experiment['blackout_duration_std_deviation']), 3)) + "_" \
+                                   + 'freq' + '_' + str(round(float(blackout_experiment['blackout_frequency']), 3)) + "_" \
                                    + 'freq_dev' + '_' + str(
-            round(blackout_experiment['blackout_frequency_std_deviation'], 3))
+            round(float(blackout_experiment['blackout_frequency_std_deviation']), 3))
         return blackout_experiment_name
 
 

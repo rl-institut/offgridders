@@ -74,7 +74,7 @@ class cases:
                 if component_name == 'capacity_genset_kW':
                     case_dict_capacity = case_dict_capacity * experiment['genset_oversize_factor']
                 elif component_name == 'capacity_pcc_consumption_kW' or component_name == 'capacity_pcc_feedin_kW':
-                    case_dict_capacity = round(case_dict_capacity / experiment['pcoupling_efficiency'] * experiment['pcc_oversize_factor'], 3)
+                    case_dict_capacity = round(case_dict_capacity / experiment['pcoupling_efficiency'] * experiment['pcoupling_oversize_factor'], 3)
 
             utilities.define_capacity(experiment_case_dict, case_dict_capacity, list_build_oemof_names[item])
 

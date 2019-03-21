@@ -89,7 +89,7 @@ class stability_criterion():
                     stored_electricity += model.GenericStorageBlock.capacity[storage, t] - experiment['storage_capacity_min'] * storage.nominal_capacity
                 else:
                     print ("Error: 'storage_fixed_capacity' can only be None, False or float.")
-                expr += stored_electricity * experiment['storage_Crate_discharge']
+                expr += stored_electricity * experiment['storage_Crate_discharge'] * experiment['storage_efficiency_discharge']
             return (expr >= 0)
 
         model.stability_constraint = po.Constraint(model.TIMESTEPS, rule=stability_rule)
@@ -123,7 +123,7 @@ class stability_criterion():
             boolean_test = [
                 genset_capacity
                 + (stored_electricity[t] - oemof_results['capacity_storage_kWh'] *  experiment['storage_capacity_min'])
-                *  experiment['storage_Crate_discharge']
+                *  experiment['storage_Crate_discharge'] * experiment['storage_efficiency_discharge']
                 + pcc_capacity[t]
                 >= experiment['stability_limit'] * (demand_profile[t] - shortage[t])
                 for t in range(0, len(demand_profile.index))
@@ -135,7 +135,7 @@ class stability_criterion():
                 ratio = pd.Series([
                     (genset_capacity
                      + (stored_electricity[t] - oemof_results['capacity_storage_kWh'] * experiment['storage_capacity_min'])
-                     * experiment['storage_Crate_discharge']
+                     * experiment['storage_Crate_discharge'] * experiment['storage_efficiency_discharge']
                      + pcc_capacity[t]
                      - experiment['stability_limit'] * (demand_profile[t] - shortage[t]))
                     / (experiment['peak_demand'])
@@ -175,12 +175,12 @@ class stability_criterion():
             if case_dict['storage_fixed_capacity'] != None:
                 stored_electricity = 0
                 if case_dict['storage_fixed_capacity'] == False:  # Storage subject to OEM
-                    stored_electricity += model.GenericInvestmentStorageBlock.capacity[storage, t]  - experiment['storage_capacity_min'] * model.GenericInvestmentStorageBlock.invest[storage]
+                    stored_electricity += model.GenericInvestmentStorageBlock.capacity[storage, t]  - experiment['storage_soc_min'] * model.GenericInvestmentStorageBlock.invest[storage]
                 elif isinstance(case_dict['storage_fixed_capacity'], float): # Fixed storage subject to dispatch
-                    stored_electricity += model.GenericStorageBlock.capacity[storage, t] - experiment['storage_capacity_min'] * storage.nominal_capacity
+                    stored_electricity += model.GenericStorageBlock.capacity[storage, t] - experiment['storage_soc_min'] * storage.nominal_capacity
                 else:
                     print ("Error: 'storage_fixed_capacity' can only be None, False or float.")
-                expr += stored_electricity * experiment['storage_Crate_discharge']
+                expr += stored_electricity * experiment['storage_Crate_discharge'] * experiment['storage_efficiency_discharge']
             return (expr >= 0)
 
         model.stability_constraint = po.Constraint(model.TIMESTEPS, rule=stability_rule)
@@ -216,8 +216,8 @@ class stability_criterion():
 
             boolean_test = [
                 genset_generation[t]
-                + (stored_electricity[t] - oemof_results['capacity_storage_kWh'] * experiment['storage_capacity_min'])
-                     * experiment['storage_Crate_discharge']
+                + (stored_electricity[t] - oemof_results['capacity_storage_kWh'] * experiment['storage_soc_min'])
+                     * experiment['storage_Crate_discharge'] * experiment['storage_efficiency_discharge']
                 + pcc_feedin[t]
                 >= experiment['stability_limit'] * (demand_profile[t] - shortage[t])
                 for t in range(0, len(demand_profile.index))
@@ -228,8 +228,8 @@ class stability_criterion():
             else:
                 ratio = pd.Series([
                     (genset_generation[t]
-                     + (stored_electricity[t] - oemof_results['capacity_storage_kWh'] * experiment['storage_capacity_min'])
-                     * experiment['storage_Crate_discharge']
+                     + (stored_electricity[t] - oemof_results['capacity_storage_kWh'] * experiment['storage_soc_min'])
+                     * experiment['storage_Crate_discharge'] * experiment['storage_efficiency_discharge']
                      + pcc_feedin[t] - experiment['stability_limit'] * (
                                  demand_profile[t] - shortage[t]))
                     / (experiment['peak_demand'])

@@ -112,23 +112,37 @@ class output:
         if os.path.isdir(output_folder) == True:
             # Empty folders with previous result, except oemof results if simulation restart
             for folder in folder_list:
-                if os.path.isdir(output_folder+folder):
-                    if folder == '/oemof' and settings['restore_oemof_if_existant'] == False:
-                        shutil.rmtree(output_folder + folder, ignore_errors=True)
+                # Delete all folders. Special case: oemof folder
+                if folder== '/oemof' and os.path.isdir(output_folder+folder) == True:
+                    # dont delete oemof folder if necessary for restoring results
+                    if settings['restore_oemof_if_existant'] == True:
+                        pass
+                    # delete oemof folder if no restoring necessary
                     else:
-                        shutil.rmtree(output_folder + folder, ignore_errors=True)
+                        path_removed = os.path.abspath(output_folder + folder)
+                        shutil.rmtree(path_removed, ignore_errors=True)
+                        os.mkdir(output_folder + '/oemof')
+
+                elif os.path.isdir(output_folder+folder):
+                        path_removed = os.path.abspath(output_folder + folder)
+                        shutil.rmtree(path_removed, ignore_errors=True)
+
+
             # remove other results in output folder (log, csv)
             for root, dirs, files in os.walk(output_folder):
                 for file in files:
                     if file == 'grid_availability.csv' and settings['restore_blackouts_if_existant'] == False:
-                        pass
-                    else:
                         os.remove(root + '/' + file)
+                    else:
+                        pass
         else:
             os.mkdir(output_folder)
 
-        os.mkdir(output_folder + '/oemof')
-        shutil.copytree('./inputs', output_folder + '/inputs')
+        os.mkdir(output_folder + '/inputs')
+
+        path_from = os.path.abspath('./inputs/input_template_excel.xlsx')
+        path_to = os.path.abspath(output_folder + '/inputs/input_template_excel.xlsx')
+        shutil.copy(path_from, path_to)
 
         if (settings['save_lp_file']==True or settings['lp_file_for_only_3_timesteps']==True):
             os.mkdir(output_folder + '/lp_files')

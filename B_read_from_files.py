@@ -1,5 +1,7 @@
 import pandas as pd
 import logging
+import os
+import shutil
 # requires xlrd
 
 class csv_input():
@@ -48,6 +50,11 @@ class excel_template():
         sheet_case_definitions = 'case_definitions'
 
         settings = excel_template.get_settings(file, sheet_settings)
+
+        # -------- Check for, create or empty results directory -----------------------#
+        from Z_output_functions import output
+        output.check_output_directory(settings)
+
         parameters_constant_units, parameters_constant_values = excel_template.get_parameters_constant(file, sheet_input_constant)
         parameters_sensitivity = excel_template.get_parameters_sensitivity(file, sheet_input_sensitivity)
 
@@ -56,6 +63,11 @@ class excel_template():
         necessity_for_blackout_timeseries_generation=False
         # extend by timeseries
         for project_site in project_site_s:
+            # copy input timeseries to new location
+            path_from = os.path.abspath(project_site_s[project_site]['timeseries_file'])
+            path_to = os.path.abspath(settings['output_folder'] + '/inputs/'+ project_site + '.csv')
+            shutil.copy(path_from, path_to)
+
             csv_input.from_file(project_site_s[project_site])
             if project_site_s[project_site]['title_grid_availability'] == 'None':
                 necessity_for_blackout_timeseries_generation=True
