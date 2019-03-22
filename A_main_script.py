@@ -138,6 +138,8 @@ for experiment in sensitivity_experiment_s:
 logging.info('\n Simulation complete. Resulting parameters saved in "results.csv". \n Overview over results:')
 pp.pprint(overall_results)
 
+logging.shutdown()
+
 import shutil, os
 path_from = os.path.abspath('./micro_grid_design_logfile.log')
 path_to = os.path.abspath(settings['output_folder']+'/micro_grid_design_logfile.log')
