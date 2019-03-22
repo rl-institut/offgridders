@@ -136,7 +136,7 @@ for experiment in sensitivity_experiment_s:
 
 # display all results
 logging.info('\n Simulation complete. Resulting parameters saved in "results.csv". \n Overview over results:')
-pp.pprint(overall_results)
+pp.pprint(overall_results[['case', 'lcoe', 'supply_reliability_kWh', 'res_share', 'capacity_pv_kWp','capacity_wind_kW', 'capacity_storage_kWh', 'capacity_genset_kW', 'capacity_pcoupling_kW']])
 
 logging.shutdown()
 
