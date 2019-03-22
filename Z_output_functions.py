@@ -21,6 +21,9 @@ class output_results:
         if number_of_project_sites > 1:
             title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=['project_site_name'])], axis=1)
 
+        for keys in sensitivity_array_dict:
+            title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[keys])], axis=1)
+
         title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[
             'lcoe',
             'annuity',
@@ -92,9 +95,6 @@ class output_results:
             'evaluation_time',
             'filename',
             'comments'])], axis=1, sort=False)
-
-        for keys in sensitivity_array_dict:
-            title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[keys])], axis=1)
 
         return title_overall_results
 

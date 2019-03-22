@@ -32,6 +32,14 @@ class generate_sensitvitiy_experiments:
         else:
             logging.warning('Setting "sensitivity_all_combinations" not valid! Has to be TRUE or FALSE.')
 
+        names_sensitivities = [key for key in sensitivity_array_dict.keys()]
+
+        message = 'Parameters of sensitivity analysis: '
+        for entry in names_sensitivities:
+            message += entry + ', '
+
+        logging.info(message[:-2])
+
         for experiment in sensitivitiy_experiments_s:
             #  Add economic values to sensitivity sensitivity_experiment_s
             process_input.economic_values(sensitivitiy_experiments_s[experiment])
@@ -76,7 +84,8 @@ class generate_sensitvitiy_experiments:
 
         settings.update({'total_number_of_experiments': total_number_of_experiments})
 
-        return sensitivitiy_experiments_s, blackout_experiment_s, title_overall_results
+
+        return sensitivitiy_experiments_s, blackout_experiment_s, title_overall_results, names_sensitivities
 
 class generate_experiments():
     def all_possible(settings, parameters_constant_values, parameters_sensitivity, project_site_s):
@@ -178,8 +187,7 @@ class generate_experiments():
                     if i in blackout_experiment_s and e in blackout_experiment_s:
                         del blackout_experiment_s[e]
 
-        logging.info(
-            'With '+ str(len(blackout_experiment_s)) + ' experiments, a randomized blackouts timeseries for all combinations of blackout duration and frequency will generated.')
+        logging.info('Randomized blackout timeseries for all combinations of blackout duration and frequency ('+ str(len(blackout_experiment_s)) +' experiments) will be generated.')
 
         return blackout_experiment_s, blackout_experiments_count
 

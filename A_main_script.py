@@ -35,7 +35,7 @@ settings, parameters_constant_values, parameters_sensitivity, project_site_s, ca
 
 #---- Define all sensitivity_experiment_s, define result parameters ----------#
 from C_sensitivity_experiments import generate_sensitvitiy_experiments, get_names
-sensitivity_experiment_s, blackout_experiment_s, overall_results = \
+sensitivity_experiment_s, blackout_experiment_s, overall_results, names_sensitivities = \
     generate_sensitvitiy_experiments.get(settings, parameters_constant_values, parameters_sensitivity, project_site_s)
 
 ###############################################################################
@@ -135,8 +135,11 @@ for experiment in sensitivity_experiment_s:
         pp.pprint(sensitivity_experiment_s[experiment])
 
 # display all results
+output_names = ['case']
+output_names.extend(names_sensitivities)
+output_names.extend(['lcoe', 'res_share'])
 logging.info('\n Simulation complete. Resulting parameters saved in "results.csv". \n Overview over results:')
-pp.pprint(overall_results[['case', 'lcoe', 'supply_reliability_kWh', 'res_share', 'capacity_pv_kWp','capacity_wind_kW', 'capacity_storage_kWh', 'capacity_genset_kW', 'capacity_pcoupling_kW']])
+pp.pprint(overall_results[output_names])
 
 logging.shutdown()
 
