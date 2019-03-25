@@ -26,12 +26,7 @@ class oemof_model:
             logging.debug('Added to oemof model: Fuel bus')
             bus_fuel = solph.Bus(label="bus_fuel")
             micro_grid_system.add(bus_fuel)
-        if case_dict['genset_fixed_capacity'] == False:
-            generate.fuel_oem(micro_grid_system, bus_fuel, experiment)
-        elif isinstance(case_dict['genset_fixed_capacity'], float):
-            generate.fuel_fix(micro_grid_system, bus_fuel, experiment)
-        else:
-            pass
+            generate.fuel(micro_grid_system, bus_fuel, experiment)
 
         #------        demand sink ------#
         sink_demand = generate.demand(micro_grid_system, bus_electricity_mg, experiment['demand_profile'])

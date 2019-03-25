@@ -439,7 +439,7 @@ class battery_charge():
         Testing simulation results for adherance to above defined stability criterion
         '''
         if case_dict['renewable_share_constraint']==True:
-            boolean_test = (oemof_results['res_share'] >= experiment['min_renewable_share'])
+            boolean_test = ()
             if boolean_test == False:
                 deviation = (experiment['min_renewable_share'] - oemof_results['res_share']) /experiment['min_renewable_share']
                 if abs(deviation) < 10 ** (-6):

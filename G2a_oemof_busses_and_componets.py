@@ -24,22 +24,8 @@ except ImportError:
 
 class generate():
     ######## Sources ########
-    def fuel_oem(micro_grid_system, bus_fuel, experiment):
-        logging.debug('Added to oemof model: source fuel oem')
-        # Does include intended minimal renewable factor as total max for fuel consumption -> just do decrease horizon
-        # of possible solutions
-        # i would delete this criterion here, if i add an additional constraint
-        source_fuel = solph.Source(label="source_fuel",
-                                   outputs={bus_fuel: solph.Flow(
-                                       variable_costs   = experiment['price_fuel'] / experiment['combustion_value_fuel'],
-                                       nominal_value    = (1-experiment['min_renewable_share']) * experiment['total_demand'] / experiment['genset_efficiency'],
-                                       summed_max       = 1
-                                   )})
-        micro_grid_system.add(source_fuel)
-        return
-
-    def fuel_fix(micro_grid_system, bus_fuel, experiment):
-        logging.debug('Added to oemof model: source fuel fix')
+    def fuel(micro_grid_system, bus_fuel, experiment):
+        logging.debug('Added to oemof model: source fuel')
         # Does NOT include a boundary for intendet minimal renewable factor (as in dispatch, operation costs in focus)
         source_fuel = solph.Source(label="source_fuel",
                                    outputs={bus_fuel: solph.Flow(
