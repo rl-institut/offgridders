@@ -150,7 +150,7 @@ for location in list:
                                        'SolarGen': solar_generation['output'][datetimerange].values,
                                         'Wind': wind_generation['output'][datetimerange].values}, index=demands.index)
 
-    location_data_frame.to_csv('./inputs/timeseries/' + str(location) + '_' + names[location] + '.csv', index=False, sep=';')
+    location_data_frame.to_csv('../inputs/timeseries/' + str(location) + '_' + names[location] + '.csv', index=False, sep=';')
 
     # Necessary wait 20 s for new server request (not to overload the server)
     time.sleep(20)

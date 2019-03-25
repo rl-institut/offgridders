@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import pprint as pp
 
-data = pd.read_csv('./simulation_results/results.csv', index_col=0)
+data = pd.read_csv('../simulation_results/results.csv', index_col=0)
 
 list_of_cases   =   ['mg_hybrid_no_min', 'mg_hybrid', 'solar_battery_mg', 'diesel_mg']
 list_of_locations   =   ['107_Balut Is.', '34_Araceli', '108_Lebak-Kalamansig', '17_Polo', '32_Taytay', '53_Nabuctot', '126_Pangutaran', '20_Mamburao', '105_Cinco-Rama', '121_Tandubanak.csv']
@@ -59,7 +59,7 @@ for line in data.index:
        lcoe[data['case'][line]][data['project_site_name'][line]]=data['lcoe'][line]
 
 lcoe['peak/mean demand']=[peak_mean[key] for key in peak_mean.keys()]
-lcoe.to_csv('./simulation_results/lcoe.csv')
+lcoe.to_csv('../simulation_results/lcoe.csv')
 lcoe = pd.DataFrame(lcoe.values, columns=lcoe.columns, index=[peak_mean[key] for key in peak_mean.keys()])
 lcoe.plot()
 plt.show()
@@ -70,7 +70,7 @@ for line in data.index:
        res[data['case'][line]][data['project_site_name'][line]]=data['res_share'][line]
 
 res['peak/mean demand']=[peak_mean[key] for key in peak_mean.keys()]
-res.to_csv('./simulation_results/res.csv')
+res.to_csv('../simulation_results/res.csv')
 res = pd.DataFrame(res.values, columns=res.columns, index=[peak_mean[key] for key in peak_mean.keys()])
 
 plt.show()

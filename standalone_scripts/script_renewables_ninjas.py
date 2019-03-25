@@ -56,7 +56,7 @@ class renewables_ninjas():
                                                                    end='2015-12-31 15:00',
                                                                    freq='H'))
 
-            location_data_frame.to_csv('./inputs/timeseries/' + str(location) + '.csv',
+            location_data_frame.to_csv('../inputs/timeseries/' + str(location) + '.csv',
                                        index=False, sep=';')
 
             # Necessary wait 20 s for new server request (not to overload the server)
