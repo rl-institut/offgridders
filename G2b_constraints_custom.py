@@ -257,7 +257,7 @@ class stability_criterion():
             ## ------- Get shortage at t------- #
             if case_dict['allow_shortage'] == True:
                 shortage = model.flow[source_shortage, el_bus, t]
-                expr += + stability_limit * shortage
+                expr += stability_limit * shortage
 
             ## ------- Generation Diesel ------- #
             if case_dict['genset_fixed_capacity'] != None:
@@ -341,7 +341,7 @@ class stability_criterion():
         return
 
 class renewable_criterion():
-    def share(model, experiment, genset, pcc_consumption, solar_plant, wind_plant, el_bus): #wind_plant
+    def share(model, case_dict, experiment, genset, pcc_consumption, solar_plant, wind_plant, el_bus): #wind_plant
         '''
         Resulting in an energy system adhering to a minimal renewable factor
 
@@ -375,89 +375,26 @@ class renewable_criterion():
             total_generation = 0
 
             if genset is not None:
-                genset_generation_kWh = sum(model.flow[genset, el_bus, t] for t in model.TIMESTEPS)
-                print(genset_generation_kWh)
-                total_generation += genset_generation_kWh
-                fossil_generation += genset_generation_kWh
+                for number in range(1, case_dict['number_of_equal_generators'] + 1):
+                    genset_generation_kWh = sum(model.flow[genset[number], el_bus, :])
+                    total_generation += genset_generation_kWh
+                    fossil_generation += genset_generation_kWh
 
             if pcc_consumption is not None:
-                pcc_consumption_kWh = sum(model.flow[pcc_consumption, el_bus, t] for t in model.TIMESTEPS)
-                print(pcc_consumption_kWh)
+                pcc_consumption_kWh = sum(model.flow[pcc_consumption, el_bus, :])
                 total_generation += pcc_consumption
                 fossil_generation += pcc_consumption_kWh * (1 - experiment['maingrid_renewable_share'])
 
             if solar_plant is not None:
-                solar_plant_generation = sum(model.flow[solar_plant, el_bus, t] for t in model.TIMESTEPS)
-                print(solar_plant_generation)
+                solar_plant_generation = sum(model.flow[solar_plant, el_bus, :])
                 total_generation += solar_plant_generation
 
             if wind_plant is not None:
-                wind_plant_generation = sum(model.flow[wind_plant, el_bus, t] for t in model.TIMESTEPS)
-                print(wind_plant_generation)
+                wind_plant_generation = sum(model.flow[wind_plant, el_bus, :])
                 total_generation += wind_plant_generation
 
             expr = (fossil_generation - (1-experiment['min_renewable_share'])*total_generation)
-            print(expr)
             return expr <= 0
-
-        model.renewable_share_constraint = po.Constraint(rule=renewable_share_rule)
-
-        return model
-
-    def share_new(model, experiment, genset, pcc_consumption, solar_plant, wind_plant, el_bus): #wind_plant
-        '''
-        Resulting in an energy system adhering to a minimal renewable factor
-
-          .. math::
-                minimal renewable factor <= 1 - (fossil fuelled generation + main grid consumption * (1-main grid renewable factor)) / total_demand
-
-        Parameters
-        - - - - - - - -
-        model: oemof.solph.model
-            Model to which constraint is added. Has to contain:
-            - Transformer (genset)
-            - optional: pcc
-
-        experiment: dict with entries...
-            - 'min_res_share': Share of demand that can be met by fossil fuelled generation (genset, from main grid) to meet minimal renewable share
-            - optional: 'main_grid_renewable_share': Share of main grid electricity that is generated renewably
-
-        genset: currently single object of class oemof.solph.network.Transformer
-            To get available capacity genset
-            Can either be an investment object or have a nominal capacity
-
-        pcc_consumption: currently single object of class oemof.solph.network.Transformer
-            Connecting main grid bus to electricity bus of micro grid (consumption)
-
-        el_bus: object of class oemof.solph.network.Bus
-            For accessing flow-parameters
-        '''
-
-        def renewable_share_rule(model):
-            fossil_generation = 0
-            total_generation = 0
-
-            if genset is not None:
-                genset_generation_kWh = sum(model.flow[genset, el_bus, t] for t in model.TIMESTEPS)
-                total_generation += genset_generation_kWh
-                fossil_generation += genset_generation_kWh
-
-            if pcc_consumption is not None:
-                pcc_consumption_kWh = sum(model.flow[pcc_consumption, el_bus, t] for t in model.TIMESTEPS)
-                total_generation += pcc_consumption
-                fossil_generation += pcc_consumption_kWh * (1 - experiment['maingrid_renewable_share'])
-
-            if solar_plant is not None:
-                solar_plant_generation = sum(model.flow[solar_plant, el_bus, t] for t in model.TIMESTEPS)
-                total_generation += solar_plant_generation
-
-            if wind_plant is not None:
-                wind_plant_generation = sum(model.flow[wind_plant, el_bus, t] for t in model.TIMESTEPS)
-                total_generation += wind_plant_generation
-
-            expr = (fossil_generation - (1-experiment['min_renewable_share'])*total_generation)
-            print(expr)
-            return (expr <= 0)
 
         model.renewable_share_constraint = po.Constraint(rule=renewable_share_rule)
 
@@ -469,11 +406,48 @@ class renewable_criterion():
         '''
         if case_dict['renewable_share_constraint']==True:
             boolean_test = (oemof_results['res_share'] >= experiment['min_renewable_share'])
-
             if boolean_test == False:
-                logging.warning("ATTENTION: Minimal renewable share criterion NOT fullfilled!")
-                logging.warning('Number of timesteps not meeting criteria: ' + str(sum(boolean_test)))
-                oemof_results.update({'comments': oemof_results['comments'] + 'Renewable share criterion not fullfilled. '})
+                deviation = (experiment['min_renewable_share'] - oemof_results['res_share']) /experiment['min_renewable_share']
+                if abs(deviation) < 10 ** (-6):
+                    logging.warning(
+                        "Minimal renewable share criterion strictly not fullfilled, but deviation is less then e6.")
+                else:
+                    logging.warning("ATTENTION: Minimal renewable share criterion NOT fullfilled!")
+                    oemof_results.update({'comments': oemof_results['comments'] + 'Renewable share criterion not fullfilled. '})
+            else:
+                logging.debug("Minimal renewable share is fullfilled.")
+        else:
+            pass
+
+        return
+
+class battery_charge():
+    def only_from_renewables_criterion(model, case_dict, experiment):
+
+        def renewable_charge_rule(model):
+            expr = 0
+
+            expr = ()
+            return expr <= 0
+
+        model.renewable_share_constraint = po.Constraint(rule=renewable_charge_rule)
+
+        return model
+
+    def share_test(case_dict, oemof_results, experiment):
+        '''
+        Testing simulation results for adherance to above defined stability criterion
+        '''
+        if case_dict['renewable_share_constraint']==True:
+            boolean_test = (oemof_results['res_share'] >= experiment['min_renewable_share'])
+            if boolean_test == False:
+                deviation = (experiment['min_renewable_share'] - oemof_results['res_share']) /experiment['min_renewable_share']
+                if abs(deviation) < 10 ** (-6):
+                    logging.warning(
+                        "Minimal renewable share criterion strictly not fullfilled, but deviation is less then e6.")
+                else:
+                    logging.warning("ATTENTION: Minimal renewable share criterion NOT fullfilled!")
+                    oemof_results.update({'comments': oemof_results['comments'] + 'Renewable share criterion not fullfilled. '})
             else:
                 logging.debug("Minimal renewable share is fullfilled.")
         else:

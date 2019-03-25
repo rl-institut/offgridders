@@ -193,22 +193,22 @@ class oemof_model:
         else:
             logging.warning('Case definition of ' + case_dict['case_name']
                             + ' faulty at stability_constraint. Value can only be False, float or None')
-        '''
+
         if case_dict['renewable_share_constraint']==False:
             pass
-        elif isinstance(case_dict['renewable_share_constraint'], float):
+        elif case_dict['renewable_share_constraint'] == True:
             logging.info('Adding renewable share constraint.')
-            renewable_criterion.share_test(model,
-                                                  experiment = experiment,
-                                                  genset = genset,
-                                                  pcc_consumption = pointofcoupling_consumption,
-                                                  solar_plant=solar_plant,
-                                                  wind_plant = wind_plant,
-                                                  el_bus=bus_electricity_mg)
+            renewable_criterion.share(model, case_dict, experiment,
+                                      genset = genset,
+                                      pcc_consumption = pointofcoupling_consumption,
+                                      solar_plant=solar_plant,
+                                      wind_plant = wind_plant,
+                                      el_bus=bus_electricity_mg)
         else:
             logging.warning('Case definition of ' + case_dict['case_name']
                             + ' faulty at stability_constraint. Value can only be False, float or None')
-        '''
+
+
         return micro_grid_system, model
 
     def simulate(experiment, micro_grid_system, model, file_name):

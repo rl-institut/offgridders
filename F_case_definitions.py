@@ -119,13 +119,13 @@ class cases:
             if experiment['min_renewable_share']==0:
                 experiment_case_dict.update({'renewable_share_constraint': False})
             else:
-                experiment_case_dict.update({'renewable_share_constraint': experiment['min_renewable_share']})
+                experiment_case_dict.update({'renewable_share_constraint': True})
 
         elif specific_case['renewable_constraint'] == False:
             experiment_case_dict.update({'renewable_share_constraint': False})
 
         elif specific_case['renewable_constraint'] == True:
-            experiment_case_dict.update({'renewable_share_constraint': experiment['min_renewable_share']})
+            experiment_case_dict.update({'renewable_share_constraint': True})
         else:
             logging.warning(
                 warning_string + ' value "renewable_share_constraint" (True/False/default) not defined properly')
