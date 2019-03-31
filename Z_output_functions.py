@@ -124,8 +124,8 @@ class output:
                         os.mkdir(output_folder + '/oemof')
 
                 elif os.path.isdir(output_folder+folder):
-                        path_removed = os.path.abspath(output_folder + folder)
-                        shutil.rmtree(path_removed, ignore_errors=True)
+                    path_removed = os.path.abspath(output_folder + folder)
+                    shutil.rmtree(path_removed, ignore_errors=True)
 
 
             # remove other results in output folder (log, csv)
