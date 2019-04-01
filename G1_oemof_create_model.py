@@ -107,6 +107,7 @@ class oemof_model:
             logging.warning('Case definition of ' + case_dict['case_name']
                             + ' faulty at genset_fixed_capacity. Value can only be False, float or None')
 
+
         #------     main grid bus and subsequent sources if necessary------#
         if case_dict['pcc_consumption_fixed_capacity'] != None:
             # source + sink for electricity from grid

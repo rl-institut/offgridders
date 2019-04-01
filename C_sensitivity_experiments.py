@@ -46,6 +46,10 @@ class generate_sensitvitiy_experiments:
             # Give a file name to the sensitivity_experiment_s
             get_names.experiment_name(sensitivitiy_experiments_s[experiment], sensitivity_array_dict,
                                 number_of_project_sites)
+            
+            if 'comments' not in sensitivitiy_experiments_s[experiment]:
+                sensitivitiy_experiments_s[experiment].update({'comments': ''})
+
             if sensitivitiy_experiments_s[experiment]['storage_soc_initial']=='None':
                 sensitivitiy_experiments_s[experiment].update({'storage_soc_initial': None})
         #######################################################
@@ -233,7 +237,6 @@ class get:
         for experiment in all_experiments:
             number_of_experiment += 1
             sensitivity_experiment_s.update({number_of_experiment: deepcopy(experiment)})
-            sensitivity_experiment_s[number_of_experiment].update({'comments': ''})
 
         total_number_of_experiments = number_of_experiment
 
@@ -277,7 +280,6 @@ class get:
                             sensitivity_experiment_s[experiment_number].update({key: sensitivity_array_dict[key][interval_entry]})
                             # scaling demand according to scaling factor - used for tests regarding tool application
                             sensitivity_experiment_s[experiment_number].update({'demand': sensitivity_experiment_s[experiment_number]['demand'] * sensitivity_experiment_s[experiment_number]['demand_scaling_factor']})
-                            sensitivity_experiment_s[experiment_number].update({'comments': ''})
 
                         elif sensitivity_array_dict[key][interval_entry] == key_value and defined_base == False:
                             # Defining scenario only with base case values for universal parameter / specific to project site (once!)
