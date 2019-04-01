@@ -46,7 +46,7 @@ class generate_sensitvitiy_experiments:
             # Give a file name to the sensitivity_experiment_s
             get_names.experiment_name(sensitivitiy_experiments_s[experiment], sensitivity_array_dict,
                                 number_of_project_sites)
-            
+
             if 'comments' not in sensitivitiy_experiments_s[experiment]:
                 sensitivitiy_experiments_s[experiment].update({'comments': ''})
 
