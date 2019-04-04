@@ -32,10 +32,19 @@ class process_input_parameters():
 
     def economic_values(experiment):
         """Pre-processing of input data (calculation of economic values)"""
-        experiment.update({'annuity_factor': economics.annuity_factor(experiment['project_life'], experiment['wacc'])})
-        experiment.update({'crf': economics.crf(experiment['project_life'], experiment['wacc'])})
+        experiment.update({'annuity_factor': economics.annuity_factor(experiment['project_lifetime'], experiment['wacc'])})
+        experiment.update({'crf': economics.crf(experiment['project_lifetime'], experiment['wacc'])})
 
-        component_list = ['pv', 'wind', 'genset', 'storage', 'pcoupling', 'maingrid_extension', 'distribution_grid', 'rectifier_ac_dc', 'inverter_dc_ac']
+        component_list = ['pv',
+                          'wind',
+                          'genset',
+                          'storage',
+                          'pcoupling',
+                          'maingrid_extension',
+                          'distribution_grid',
+                          'rectifier_ac_dc',
+                          'inverter_dc_ac',
+                          'project']
 
         for item in component_list:
             # --------------------------------------------------#
@@ -43,7 +52,7 @@ class process_input_parameters():
             # --------------------------------------------------#
             experiment.update({item + '_cost_capex':
                 economics.capex_from_investment(experiment[item + '_cost_investment'], experiment[item + '_lifetime'],
-                                                experiment['project_life'], experiment['wacc'], experiment['tax'])})
+                                                experiment['project_lifetime'], experiment['wacc'], experiment['tax'])})
 
             #--------------------------------------------------#
             # Annuities of components including opex AND capex #

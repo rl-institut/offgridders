@@ -145,7 +145,6 @@ class generate():
                                                            bus_electricity_dc: experiment['rectifier_ac_dc_efficiency']}
                                                        )
         micro_grid_system.add(rectifier)
-        dict_of_generators.update({number: rectifier})
         return rectifier
 
     def rectifier_oem(micro_grid_system, bus_electricity_ac, bus_electricity_dc, experiment):
@@ -158,12 +157,11 @@ class generate():
                                                            outputs={bus_electricity_dc: solph.Flow()},
                                                            conversion_factors={bus_electricity_dc: experiment['rectifier_ac_dc_efficiency']})
         micro_grid_system.add(rectifier)
-        dict_of_generators.update({number: rectifier})
         return rectifier
 
     def inverter_dc_ac_fix(micro_grid_system, bus_electricity_ac, bus_electricity_dc, experiment, capacity_inverter_dc_ac):
         logging.debug('Added to oemof model: inverter_dc_ac fix')
-        inverter_ac_dc = solph.Transformer(label="transformer_inverter_dc_ac",
+        inverter_dc_ac = solph.Transformer(label="transformer_inverter_dc_ac",
                                       inputs={bus_electricity_dc: solph.Flow(
                                           nominal_value=capacity_inverter_dc_ac,
                                           variable_costs=experiment['inverter_dc_ac_cost_var'])},
@@ -172,7 +170,6 @@ class generate():
                                           bus_electricity_ac: experiment['inverter_dc_ac_efficiency']}
                                       )
         micro_grid_system.add(inverter_dc_ac)
-        dict_of_generators.update({number: inverter_dc_ac})
         return inverter_dc_ac
 
     def inverter_dc_ac_oem(micro_grid_system, bus_electricity_ac, bus_electricity_dc, experiment):
@@ -185,7 +182,6 @@ class generate():
                                       outputs={bus_electricity_ac: solph.Flow()},
                                       conversion_factors={bus_electricity_ac: experiment['inverter_dc_ac_efficiency']})
         micro_grid_system.add(inverter_dc_ac)
-        dict_of_generators.update({number: inverter_dc_ac})
         return inverter_dc_ac
 
     def genset_fix(micro_grid_system, bus_fuel, bus_electricity_ac, experiment, capacity_fuel_gen, number_of_equal_generators):

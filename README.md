@@ -6,7 +6,13 @@
 
 # MicroGridDesignTool_V1.1
 * Fixed termination due to undefined 'comments', occurring when simulation without sensitivity analysis is performed
-* Added renewable share constraint (testing needed)
+* New constraint: Renewable share (testing needed)
+* Added DC bus including rectifier/inverter (testing needed -> Flows, calculated values)
+* Enabled demand AC + demand DC (testing needed -> Flows, calculated values)
+* PV charge only through battery can be enabled by not inluding a rectifier (testing needed -> Flows, calculated values)
+* New Constraint: Linearized forced charge when national grid available
+* New Constraint: Discharge of battery only when maingrid experiences blackout
+* New Constraint: Inverter from DC to AC bus only active when blackout occurs
 
 # MicroGridDesignTool_V1.0
 * Simulation of off- or on-grid energy system (not only MG)
@@ -16,11 +22,9 @@
 
 # Open issues
 * Timestep lengh 15 Min
-* DC bus including rectifier/inverter
-* DC demand, ac demand
-* Redefine all connectors
-* Constraint rectifier
-* Constraint inverter
-* Constraint PV charge
-* Constraint forced battery charge (linearized)
 * Look into swarm grid definition - execute simulation with python A_main_script.py file.xlsx
+* Inlcude network diagram thingy
+* Demand shortage per timestep!
+* check res/stability constraint on whether or not previous things are fullfilled -> shouldnt this be not working now? 
+or is it only limiting shortage on AC bus, but not DC bus?
+* integrate shortage per timestep criterion

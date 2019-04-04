@@ -2,7 +2,7 @@ import logging
 import oemof.solph as solph
 import oemof.outputlib as outputlib
 from G2a_oemof_busses_and_componets import generate
-from G2b_constraints_custom import stability_criterion, renewable_criterion
+from G2b_constraints_custom import stability_criterion, renewable_criterion, battery_management, ac_dc_bus, shortage_constraints
 
 class oemof_model:
 
@@ -104,7 +104,7 @@ class oemof_model:
                                                                                    cap_pointofcoupling=case_dict['pcc_consumption_fixed_capacity'])
         else:
             logging.warning('Case definition of ' + case_dict['case_name']
-                            + ' faulty at genset_fixed_capacity. Value can only be False, float or None')
+                            + ' faulty at pcc_consumption_fixed_capacity. Value can only be False, float or None')
 
 
         #------------point of coupling (feedin)------------#
@@ -122,7 +122,7 @@ class oemof_model:
                                                                          capacity_pointofcoupling=case_dict['pcc_feedin_fixed_capacity'])
         else:
             logging.warning('Case definition of ' + case_dict['case_name']
-                            + ' faulty at genset_fixed_capacity. Value can only be False, float or None')
+                            + ' faulty at pcc_feedin_fixed_capacity. Value can only be False, float or None')
 
         ###################################
         ## DC side of the energy system   #
@@ -157,17 +157,46 @@ class oemof_model:
 
         #------------storage------------#
         if case_dict['storage_fixed_capacity'] == None:
-            generic_storage = None
+            storage = None
         elif case_dict['storage_fixed_capacity'] == False:
-            generic_storage = generate.storage_oem(micro_grid_system, bus_electricity_dc, experiment)
+            storage = generate.storage_oem(micro_grid_system, bus_electricity_dc, experiment)
 
         elif isinstance(case_dict['storage_fixed_capacity'], float):
-            generic_storage = generate.storage_fix(micro_grid_system, bus_electricity_dc, experiment,
+            storage = generate.storage_fix(micro_grid_system, bus_electricity_dc, experiment,
                                            capacity_storage=case_dict['storage_fixed_capacity']) # changed order
 
         else:
             logging.warning('Case definition of ' + case_dict['case_name']
                             + ' faulty at genset_fixed_capacity. Value can only be False, float or None')
+
+
+        #------------Rectifier AC DC------------#
+        if case_dict['rectifier_ac_dc_fixed_capacity'] == None:
+            rectifier = None
+
+        elif case_dict['rectifier_ac_dc_fixed_capacity'] == False:
+            rectifier = generate.rectifier_oem(micro_grid_system, bus_electricity_ac, bus_electricity_dc, experiment)
+
+        elif isinstance(case_dict['rectifier_ac_dc_fixed_capacity'], float):
+            rectifier = generate.rectifier_fix(micro_grid_system, bus_electricity_ac, bus_electricity_dc, experiment, case_dict['rectifier_ac_dc_fixed_capacity'])
+
+        else:
+            logging.warning('Case definition of ' + case_dict['case_name']
+                            + ' faulty at rectifier_ac_dc_capacity_. Value can only be False, float or None')
+
+        #------------Inverter DC AC------------#
+        if case_dict['inverter_dc_ac_fixed_capacity'] == None:
+            inverter = None
+
+        elif case_dict['inverter_dc_ac_fixed_capacity'] == False:
+            inverter = generate.inverter_dc_ac_oem(micro_grid_system, bus_electricity_ac, bus_electricity_dc, experiment)
+
+        elif isinstance(case_dict['inverter_dc_ac_fixed_capacity'], float):
+            inverter = generate.inverter_dc_ac_fix(micro_grid_system, bus_electricity_ac, bus_electricity_dc, experiment, case_dict['inverter_dc_ac_fixed_capacity'])
+
+        else:
+            logging.warning('Case definition of ' + case_dict['case_name']
+                            + ' faulty at inverter_dc_ac_capacity. Value can only be False, float or None')
 
         ###################################
         ## Global sinks / sources         #
@@ -193,7 +222,7 @@ class oemof_model:
             logging.debug('Adding stability constraint (stability through backup).')
             stability_criterion.backup(model, case_dict,
                                             experiment = experiment,
-                                            storage = generic_storage,
+                                            storage = storage,
                                             sink_demand = sink_demand_ac,
                                             genset = genset,
                                             pcc_consumption = pointofcoupling_consumption,
@@ -203,7 +232,7 @@ class oemof_model:
             logging.debug('Adding stability constraint (stability though actual generation).')
             stability_criterion.usage(model, case_dict,
                                             experiment = experiment,
-                                            storage = generic_storage,
+                                            storage = storage,
                                             sink_demand = sink_demand_ac,
                                             genset = genset,
                                             pcc_consumption = pointofcoupling_consumption,
@@ -213,7 +242,7 @@ class oemof_model:
             logging.debug('Adding stability constraint (stability though actual generation of diesel generators and backup through batteries).')
             stability_criterion.hybrid(model, case_dict,
                                        experiment = experiment,
-                                       storage = generic_storage,
+                                       storage = storage,
                                        sink_demand = sink_demand_ac,
                                        genset = genset,
                                        pcc_consumption = pointofcoupling_consumption,
@@ -236,9 +265,46 @@ class oemof_model:
                                       el_bus=bus_electricity_ac)
         else:
             logging.warning('Case definition of ' + case_dict['case_name']
-                            + ' faulty at stability_constraint. Value can only be False, float or None')
+                            + ' faulty at renewable_share_constraint. Value can only be True or False')
+
+        # ------------Force charge from maingrid------------#
+        if case_dict['force_charge_from_maingrid']==False:
+            pass
+        elif case_dict['force_charge_from_maingrid']==True:
+            battery_management.forced_charge(model, case_dict, bus_electricity_dc, storage, experiment)
+        else:
+            logging.warning('Case definition of ' + case_dict['case_name']
+                            + ' faulty at force_charge_from_maingrid. Value can only be True or False')
 
 
+        # ------------Allow discharge only at maingrid blackout------------#
+        if case_dict['discharge_only_when_blackout']==False:
+            pass
+        elif case_dict['discharge_only_when_blackout']==True:
+            battery_management.discharge_only_at_blackout(model, case_dict, bus_electricity_dc, storage, experiment)
+        else:
+            logging.warning('Case definition of ' + case_dict['case_name']
+                            + ' faulty at discharge_only_when_blackout. Value can only be True or False')
+
+        # ------------Allow inverter use only at maingrid blackout------------#
+        if case_dict['enable_inverter_at_backout']==False:
+            pass
+        elif case_dict['enable_inverter_at_backout']==True:
+            ac_dc_bus.inverter_only_at_blackout(model, case_dict, bus_electricity_dc, inverter, experiment)
+        else:
+            logging.warning('Case definition of ' + case_dict['case_name']
+                            + ' faulty at enable_inverter_at_backout. Value can only be True or False')
+
+        '''
+        # ------------Allow inverter use only at maingrid blackout------------#
+        if case_dict['allow_shortage'] == True:
+            if bus_electricity_ac != None:
+                shortage_constraints.timestep(model, case_dict, experiment, sink_demand_ac, 
+                                              source_shortage, bus_electricity_ac)
+            if bus_electricity_dc != None:
+                shortage_constraints.timestep(model, case_dict, experiment, sink_demand_dc, 
+                                              source_shortage, bus_electricity_dc)
+        '''
         return micro_grid_system, model
 
     def simulate(experiment, micro_grid_system, model, file_name):

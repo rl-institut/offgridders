@@ -48,13 +48,19 @@ class economic_evaluation():
         evaluated_days = case_dict['evaluated_days']
 
         logging.debug('Economic evaluation. Calculating investment costs over analysed timeframe.')
+
         interval_annuity={
             'annuity_pv': experiment['pv_cost_annuity'] * oemof_results['capacity_pv_kWp'],
             'annuity_wind': experiment['wind_cost_annuity'] * oemof_results['capacity_wind_kW'],
             'annuity_storage': experiment['storage_cost_annuity'] * oemof_results['capacity_storage_kWh'],
             'annuity_genset': experiment['genset_cost_annuity'] * oemof_results['capacity_genset_kW'],
-            'annuity_project': experiment['project_cost_annuity'],
-            'annuity_distribution_grid': experiment['distribution_grid_cost_annuity']}
+            'annuity_rectifier_ac_dc': experiment['rectifier_ac_dc_cost_annuity'] * oemof_results['capacity_rectifier_ac_dc_kW'],
+            'annuity_inverter_dc_ac': experiment['inverter_dc_ac_cost_annuity'] * oemof_results['capacity_inverter_dc_ac_kW']}
+
+        list_fix = ['project',
+                    'distribution_grid']
+        for item in list_fix:
+            interval_annuity.update({'annuity_'+item: experiment[item+'_cost_annuity']})
 
         if case_dict['pcc_consumption_fixed_capacity'] != None and case_dict['pcc_feedin_fixed_capacity'] != None:
             interval_annuity.update({'annuity_pcoupling': 2*experiment['pcoupling_cost_annuity'] * oemof_results['capacity_pcoupling_kW']})
@@ -64,62 +70,69 @@ class economic_evaluation():
         # Main grid extension
         if case_dict['pcc_consumption_fixed_capacity'] != None or case_dict['pcc_feedin_fixed_capacity'] != None:
             interval_annuity.update({
-                'annuity_grid_extension':
+                'annuity_maingrid_extension':
                     experiment['maingrid_extension_cost_annuity'] * experiment['maingrid_distance']})
         else:
-            interval_annuity.update({'annuity_grid_extension': 0})
+            interval_annuity.update({'annuity_maingrid_extension': 0})
 
         logging.debug('Economic evaluation. Calculating O&M costs over analysed timeframe.')
-        om_var_interval={
-            'om_var_pv': oemof_results['total_pv_generation_kWh']*experiment['pv_cost_var'],
-            'om_var_wind': oemof_results['total_wind_generation_kWh'] * experiment['wind_cost_var'],
-            'om_var_storage': oemof_results['total_battery_throughput_kWh']*experiment['storage_cost_var'],
-            'om_var_genset': oemof_results['total_genset_generation_kWh']*experiment['genset_cost_var'],
-            'om_var_pcoupling': oemof_results['total_pcoupling_throughput_kWh']*experiment['pcoupling_cost_var']
-        }
+
+        om_var_interval = {}
+        for item in ['pv', 'wind', 'genset']:
+            om_var_interval.update({'om_var_' + item:
+                                        oemof_results['total_'+ item + '_generation_kWh']*experiment[item + '_cost_var']})
+
+        for item in ['pcoupling', 'storage', 'rectifier_ac_dc', 'inverter_dc_ac']:
+            om_var_interval.update({'om_var_' + item:
+                                        oemof_results['total_'+ item + '_throughput_kWh']*experiment[item + '_cost_var']})
 
         logging.debug('Economic evaluation. Scaling investment costs and O&M to year.')
-        oemof_results.update({
-            'annuity_pv':
-                (interval_annuity['annuity_pv'] + om_var_interval['om_var_pv'])* 365 / evaluated_days,
-            'annuity_wind':
-                (interval_annuity['annuity_wind'] + om_var_interval['om_var_wind'])* 365 / evaluated_days,
-            'annuity_storage':
-                (interval_annuity['annuity_storage'] + om_var_interval['om_var_storage'])* 365 / evaluated_days,
-            'annuity_genset':
-                (interval_annuity['annuity_genset'] + om_var_interval['om_var_genset'])* 365 / evaluated_days,
-            'annuity_pcoupling':
-                (interval_annuity['annuity_pcoupling'] + om_var_interval['om_var_pcoupling'])* 365 / evaluated_days,
-            'annuity_project':
-                (interval_annuity['annuity_project'])* 365 / evaluated_days,
-            'annuity_distribution_grid':
-                (interval_annuity['annuity_distribution_grid'])* 365 / evaluated_days,
-            'annuity_grid_extension':
-                (interval_annuity['annuity_grid_extension'])* 365 / evaluated_days})
 
-        oemof_results.update({'annuity': oemof_results['annuity_pv']
-                                         + oemof_results['annuity_wind']
-                                         + oemof_results['annuity_storage']
-                                         + oemof_results['annuity_genset']
-                                         + oemof_results['annuity_pcoupling']
-                                         + oemof_results['annuity_project']
-                                         + oemof_results['annuity_distribution_grid']
-                                         + oemof_results['annuity_grid_extension']})
+        component_list = ['pv',
+                          'wind',
+                          'genset',
+                          'storage',
+                          'pcoupling',
+                          'maingrid_extension',
+                          'distribution_grid',
+                          'rectifier_ac_dc',
+                          'inverter_dc_ac',
+                          'project']
+
+        for item in component_list:
+
+            if item in ['project', 'maingrid_extension', 'distribution_grid']:
+                oemof_results.update({
+                    'annuity_' + item: (interval_annuity['annuity_' + item]) * 365 / evaluated_days})
+            else:
+                oemof_results.update({
+                    'annuity_' + item: (interval_annuity['annuity_' + item]
+                                        + om_var_interval['om_var_' + item])* 365 / evaluated_days})
+
+        oemof_results.update({'annuity': 0})
+
+        for item in component_list:
+            oemof_results.update({'annuity': oemof_results['annuity'] + oemof_results['annuity_'+item]})
 
         return
 
     def costs(oemof_results, experiment):
         logging.debug('Economic evaluation. Calculating present costs.')
-        oemof_results.update({
-            'costs_pv': oemof_results['annuity_pv'] * experiment['annuity_factor'],
-            'costs_wind': oemof_results['annuity_wind'] * experiment['annuity_factor'],
-            'costs_storage': oemof_results['annuity_storage'] * experiment['annuity_factor'],
-            'costs_genset': oemof_results['annuity_genset'] * experiment['annuity_factor'],
-            'costs_pcoupling': oemof_results['annuity_pcoupling'] * experiment['annuity_factor'],
-            'costs_project': oemof_results['annuity_project'] * experiment['annuity_factor'],
-            'costs_distribution_grid': oemof_results['annuity_distribution_grid'] * experiment['annuity_factor'],
-            'costs_grid_extension': oemof_results['annuity_grid_extension'] * experiment['annuity_factor']
-        })
+
+        component_list = ['pv',
+                          'wind',
+                          'genset',
+                          'storage',
+                          'pcoupling',
+                          'maingrid_extension',
+                          'distribution_grid',
+                          'rectifier_ac_dc',
+                          'inverter_dc_ac',
+                          'project']
+
+        for item in component_list:
+            oemof_results.update({'costs_' + item: oemof_results['annuity_' + item] * experiment['annuity_factor']})
+
         return
 
     def expenditures_fuel(oemof_results, experiment):
