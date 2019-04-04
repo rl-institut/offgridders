@@ -23,3 +23,4 @@
 * Constraint inverter
 * Constraint PV charge
 * Constraint forced battery charge (linearized)
+* Look into swarm grid definition - execute simulation with python A_main_script.py file.xlsx

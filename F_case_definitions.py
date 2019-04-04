@@ -26,8 +26,10 @@ class cases:
         experiment_case_dict.update({
             'case_name': specific_case['case_name'],
             'filename': specific_case['case_name'] + experiment['filename'], #experiment['output_folder'] + "_" + specific_case['case_name'] + experiment['filename']
-            'total_demand': experiment['total_demand'],
-            'peak_demand': experiment['peak_demand'],
+            'total_demand_ac': experiment['total_demand_ac'],
+            'total_demand_dc': experiment['total_demand_dc'],
+            'peak_demand_ac': experiment['peak_demand_ac'],
+            'peak_demand_dc': experiment['peak_demand_ac'],
             'evaluated_days': experiment['evaluated_days'],
             'genset_with_minimal_loading': specific_case['genset_with_minimal_loading']})
 
