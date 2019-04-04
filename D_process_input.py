@@ -124,14 +124,22 @@ class process_input_parameters():
         for experiment in experiment_s:
                 index = experiment_s[experiment]['date_time_index']
                 if  experiment_s[experiment]['file_index'] != None:
-                    if (experiment_s[experiment]['date_time_index'][0].year != experiment_s[experiment]['demand'].index[0].year):
+                    if 'demand_ac' in experiment_s[experiment]:
+                        year_timeseries_in_file = experiment_s[experiment]['demand_ac'].index[0].year
+                    else:
+                        year_timeseries_in_file = experiment_s[experiment]['demand_dc'].index[0].year
+
+                    if (experiment_s[experiment]['date_time_index'][0].year != year_timeseries_in_file):
                         file_index = [item + pd.DateOffset(year=index[0].year) for item in demand.index]
                         # shift to fileindex of data sets to analysed year
-                        demand = pd.Series( experiment_s[experiment]['demand'].values, index=experiment_s[experiment]['file_index'])
+                        demand_ac = pd.Series( experiment_s[experiment]['demand_ac'].values, index=experiment_s[experiment]['file_index'])
+                        demand_dc = pd.Series(experiment_s[experiment]['demand_dc'].values,
+                                           index=experiment_s[experiment]['file_index'])
                         pv_generation_per_kWp = pd.Series( experiment_s[experiment]['pv_generation_per_kWp'].values, index=experiment_s[experiment]['file_index'])
                         wind_generation_per_kW = pd.Series( experiment_s[experiment]['wind_generation_per_kW'].values, index=experiment_s[experiment]['file_index'])
                         # from provided data use only analysed timeframe
-                        experiment_s[experiment].update({'demand_profile': demand[index]})
+                        experiment_s[experiment].update({'demand_profile_ac': demand_ac[index]})
+                        experiment_s[experiment].update({'demand_profile_dc': demand_dc[index]})
                         experiment_s[experiment].update({'pv_generation_per_kWp': pv_generation_per_kWp[index]})
                         experiment_s[experiment].update({'wind_generation_per_kW': wind_generation_per_kW[index]})
 
@@ -148,7 +156,9 @@ class process_input_parameters():
                 elif experiment_s[experiment]['file_index'] == None:
                     # limit based on index
                     experiment_s[experiment].update(
-                        {'demand_profile': pd.Series(experiment_s[experiment]['demand'][0:len(index)].values, index=index)})
+                        {'demand_profile_ac': pd.Series(experiment_s[experiment]['demand_ac'][0:len(index)].values, index=index)})
+                    experiment_s[experiment].update(
+                        {'demand_profile_dc': pd.Series(experiment_s[experiment]['demand_dc'][0:len(index)].values, index=index)})
                     experiment_s[experiment].update(
                         {'pv_generation_per_kWp': pd.Series(experiment_s[experiment]['pv_generation_per_kWp'][0:len(index)].values, index=index)})
                     experiment_s[experiment].update(
@@ -172,7 +182,9 @@ class process_input_parameters():
                                                           freq=experiment_s[experiment]['time_frequency'])})
 
                     index = experiment_s[experiment]['date_time_index']
-                    experiment_s[experiment].update({'demand_profile': experiment_s[experiment]['demand_profile'][index]})
+                    experiment_s[experiment].update({'demand_profile_ac': experiment_s[experiment]['demand_profile_ac'][index]})
+                    experiment_s[experiment].update(
+                        {'demand_profile_dc': experiment_s[experiment]['demand_profile_dc'][index]})
                     experiment_s[experiment].update({'pv_generation_per_kWp': experiment_s[experiment]['pv_generation_per_kWp'][index]})
                     experiment_s[experiment].update({'wind_generation_per_kW': experiment_s[experiment]['wind_generation_per_kW'][index]})
                     if 'grid_availability' in experiment_s[experiment].keys():
@@ -180,12 +192,14 @@ class process_input_parameters():
                             {'grid_availability': experiment_s[experiment]['grid_availability'][index]})
 
                 experiment_s[experiment].update({
-                    'total_demand': sum(experiment_s[experiment]['demand_profile']),
-                    'peak_demand': max(experiment_s[experiment]['demand_profile']),
+                    'total_demand_ac': sum(experiment_s[experiment]['demand_profile_ac']),
+                    'peak_demand_ac': max(experiment_s[experiment]['demand_profile_ac']),
+                    'total_demand_dc': sum(experiment_s[experiment]['demand_profile_dc']),
+                    'peak_demand_ac': max(experiment_s[experiment]['demand_profile_dc']),
                     'peak_pv_generation_per_kWp': max(experiment_s[experiment]['pv_generation_per_kWp']),
                     'peak_wind_generation_per_kW': max(experiment_s[experiment]['wind_generation_per_kW'])})
 
-                if experiment_s[experiment]['total_demand']==0:
+                if experiment_s[experiment]['total_demand_ac']==0 + experiment_s[experiment]['total_demand_dc']==0:
                     logging.warning('No demand in evaluated timesteps at project site ' + experiment_s[experiment]['project_site_name'] + ' - simulation will crash.')
                 if experiment_s[experiment]['peak_pv_generation_per_kWp']==0:
                     logging.info('No pv generation in evaluated timesteps at project site ' + experiment_s[experiment]['project_site_name'] + '.')
@@ -197,7 +211,8 @@ class process_input_parameters():
 class noise:
     def apply(experiment_s):
         for experiment in experiment_s:
-            noise.on_series(experiment_s[experiment], 'white_noise_demand', 'demand')
+            noise.on_series(experiment_s[experiment], 'white_noise_demand', 'demand_ac')
+            noise.on_series(experiment_s[experiment], 'white_noise_demand', 'demand_dc')
             noise.on_series(experiment_s[experiment], 'white_noise_pv', 'pv_generation_per_kWp')
             noise.on_series(experiment_s[experiment], 'white_noise_wind', 'wind_generation_per_kW')
         return

@@ -21,11 +21,26 @@ class csv_input():
         # as noise might be subject to sensitivity analysis
 
         # Necessary: All of these input timeseries in same unit (kWh)
-        project_site.update({'demand_ac': data_set[project_site['title_demand_ac']]})
-        project_site.update({'demand_dc': data_set[project_site['title_demand_dc']]})
-        project_site.update({'pv_generation_per_kWp': data_set[project_site['title_pv']]})  # reading pv_generation values - adjust to panel area or kWp and if in Wh!
-        project_site.update({'wind_generation_per_kW': data_set[project_site['title_wind']]})
+        # If-else clauses allow that some of the timeseries are not included in csv file.
+        if project_site['demand_ac'] != 'None':
+            project_site.update({'demand_ac': data_set[project_site['title_demand_ac']]})
+        else:
+            project_site.update({'demand_ac': 0})
 
+        if project_site['demand_dc'] != 'None':
+            project_site.update({'demand_dc': data_set[project_site['title_demand_dc']]})
+        else:
+            project_site.update({'demand_dc': 0})
+
+        if project_site['pv_generation_per_kWp'] != 'None':
+            project_site.update({'pv_generation_per_kWp': data_set[project_site['title_pv']]})  # reading pv_generation values - adjust to panel area or kWp and if in Wh!
+        else:
+            project_site.update({'pv_generation_per_kWp': 0})
+
+        if project_site['wind_generation_per_kW'] != 'None':
+            project_site.update({'wind_generation_per_kW': data_set[project_site['title_wind']]})
+        else:
+            project_site.update({'wind_generation_per_kW': 0})
 
         if project_site['title_grid_availability'] != 'None':
             project_site.update({'grid_availability': data_set[project_site['title_grid_availability']]})

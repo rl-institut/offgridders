@@ -62,7 +62,7 @@ class generate_sensitvitiy_experiments:
         # save all Experiments with all used input data to csv
         csv_dict = deepcopy(sensitivitiy_experiments_s)
         # delete timeseries to make file readable
-        timeseries_names=['demand', 'pv_generation_per_kWp', 'wind_generation_per_kW', 'grid_availability']
+        timeseries_names=['demand_ac', 'demand_dc', 'pv_generation_per_kWp', 'wind_generation_per_kW', 'grid_availability']
         for entry in csv_dict:
             for series in timeseries_names:
                 if series in csv_dict[entry].keys():
@@ -279,7 +279,11 @@ class get:
                             # overwrite base case value by sensitivity value (only in case specific parameter is changed)
                             sensitivity_experiment_s[experiment_number].update({key: sensitivity_array_dict[key][interval_entry]})
                             # scaling demand according to scaling factor - used for tests regarding tool application
-                            sensitivity_experiment_s[experiment_number].update({'demand': sensitivity_experiment_s[experiment_number]['demand'] * sensitivity_experiment_s[experiment_number]['demand_scaling_factor']})
+                            sensitivity_experiment_s[experiment_number].update({
+                                'demand_ac': sensitivity_experiment_s[experiment_number]['demand_ac'] * sensitivity_experiment_s[experiment_number]['demand_ac_scaling_factor']})
+                            sensitivity_experiment_s[experiment_number].update({
+                                'demand_dc': sensitivity_experiment_s[experiment_number]['demand_dc'] * sensitivity_experiment_s[experiment_number]['demand_dc_scaling_factor']})
+
 
                         elif sensitivity_array_dict[key][interval_entry] == key_value and defined_base == False:
                             # Defining scenario only with base case values for universal parameter / specific to project site (once!)
@@ -289,7 +293,12 @@ class get:
                             sensitivity_experiment_s[experiment_number].update({'project_site_name': project_site})
                             sensitivity_experiment_s[experiment_number].update(deepcopy(project_site_s[project_site]))
                             # scaling demand according to scaling factor - used for tests regarding tool application
-                            sensitivity_experiment_s[experiment_number].update({'demand': sensitivity_experiment_s[experiment_number]['demand'] * sensitivity_experiment_s[experiment_number]['demand_scaling_factor']})
+                            sensitivity_experiment_s[experiment_number].update({
+                                'demand_ac': sensitivity_experiment_s[experiment_number]['demand_ac'] *
+                                             sensitivity_experiment_s[experiment_number]['demand_ac_scaling_factor']})
+                            sensitivity_experiment_s[experiment_number].update({
+                                'demand_dc': sensitivity_experiment_s[experiment_number]['demand_dc'] *
+                                             sensitivity_experiment_s[experiment_number]['demand_dc_scaling_factor']})
                             defined_base = True
                             sensitivity_experiment_s[experiment_number].update({'comments': 'Base case, '})
 
