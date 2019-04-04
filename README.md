@@ -13,3 +13,13 @@
 * 1 hr timesteps, 1 to 365 days evaluation time
 * All input data via excel sheet
 * Easy case definition
+
+# Open issues
+* Timestep lengh 15 Min
+* DC bus including rectifier/inverter
+* DC demand, ac demand
+* Redefine all connectors
+* Constraint rectifier
+* Constraint inverter
+* Constraint PV charge
+* Constraint forced battery charge (linearized)
