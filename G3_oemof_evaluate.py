@@ -65,7 +65,7 @@ class timeseries:
         logging.debug('Evaluate flow: pv')
         # Get flow
         if case_dict['pv_fixed_capacity'] != None:
-            pv_gen = electricity_bus['sequences'][(('source_pv', 'bus_electricity_mg'), 'flow')]
+            pv_gen = electricity_bus['sequences'][(('source_pv', 'bus_electricity_dc'), 'flow')]
             utilities.annual_value('total_pv_generation_kWh', pv_gen, oemof_results, case_dict)
             e_flows_df = utilities.join_e_flows_df(pv_gen, 'PV generation', e_flows_df)
         else:
@@ -74,9 +74,9 @@ class timeseries:
         # Get capacity
         if case_dict['pv_fixed_capacity'] == False:
             if pv_generation_max > 1:
-                oemof_results.update({'capacity_pv_kWp': electricity_bus['scalars'][(('source_pv', 'bus_electricity_mg'), 'invest')]* pv_generation_max })
+                oemof_results.update({'capacity_pv_kWp': electricity_bus['scalars'][(('source_pv', 'bus_electricity_dc'), 'invest')]* pv_generation_max })
             elif pv_generation_max > 0 and pv_generation_max < 1:
-                oemof_results.update({'capacity_pv_kWp': electricity_bus['scalars'][(('source_pv', 'bus_electricity_mg'), 'invest')] / pv_generation_max })
+                oemof_results.update({'capacity_pv_kWp': electricity_bus['scalars'][(('source_pv', 'bus_electricity_dc'), 'invest')] / pv_generation_max })
             else:
                 logging.warning("Error, Strange PV behaviour (PV gen < 0)")
         elif isinstance(case_dict['pv_fixed_capacity'], float):
@@ -89,7 +89,7 @@ class timeseries:
         logging.debug('Evaluate flow: wind')
         # Get flow
         if case_dict['wind_fixed_capacity'] != None:
-            wind_gen = electricity_bus['sequences'][(('source_wind', 'bus_electricity_mg'), 'flow')]
+            wind_gen = electricity_bus['sequences'][(('source_wind', 'bus_electricity_ac'), 'flow')]
             utilities.annual_value('total_wind_generation_kWh', wind_gen, oemof_results, case_dict)
             e_flows_df = utilities.join_e_flows_df(wind_gen, 'Wind generation', e_flows_df)
         else:
@@ -98,9 +98,9 @@ class timeseries:
         # Get capacity
         if case_dict['wind_fixed_capacity'] == False:
             if wind_generation_max > 1:
-                oemof_results.update({'capacity_wind_kW': electricity_bus['scalars'][(('source_wind', 'bus_electricity_mg'), 'invest')]* wind_generation_max })
+                oemof_results.update({'capacity_wind_kW': electricity_bus['scalars'][(('source_wind', 'bus_electricity_ac'), 'invest')]* wind_generation_max })
             elif wind_generation_max > 0 and wind_generation_max < 1:
-                oemof_results.update({'capacity_wind_kW': electricity_bus['scalars'][(('source_wind', 'bus_electricity_mg'), 'invest')] / wind_generation_max })
+                oemof_results.update({'capacity_wind_kW': electricity_bus['scalars'][(('source_wind', 'bus_electricity_ac'), 'invest')] / wind_generation_max })
             else:
                 logging.warning("Error, Strange Wind behaviour (Wind gen < 0)")
         elif isinstance(case_dict['wind_fixed_capacity'], float):
@@ -113,11 +113,11 @@ class timeseries:
         logging.debug('Evaluate flow: genset')
         # Get flow
         if case_dict['genset_fixed_capacity'] != None:
-            genset = electricity_bus['sequences'][(('transformer_genset_1', 'bus_electricity_mg'), 'flow')]
+            genset = electricity_bus['sequences'][(('transformer_genset_1', 'bus_electricity_ac'), 'flow')]
             e_flows_df = utilities.join_e_flows_df(genset, 'Genset 1 generation', e_flows_df)
             total_genset = genset
             for number in range(2, case_dict['number_of_equal_generators']+1):
-                genset = electricity_bus['sequences'][(('transformer_genset_'+str(number), 'bus_electricity_mg'), 'flow')]
+                genset = electricity_bus['sequences'][(('transformer_genset_'+str(number), 'bus_electricity_ac'), 'flow')]
                 e_flows_df = utilities.join_e_flows_df(genset, 'Genset '+str(number)+ ' generation', e_flows_df)
                 total_genset += genset
             utilities.annual_value('total_genset_generation_kWh', total_genset, oemof_results, case_dict)
@@ -130,7 +130,7 @@ class timeseries:
             # Optimized generator capacity (sum)
             genset_capacity = 0
             for number in range(1, case_dict['number_of_equal_generators'] + 1):
-                genset_capacity += electricity_bus['scalars'][(('transformer_genset_'+str(number), 'bus_electricity_mg'), 'invest')]
+                genset_capacity += electricity_bus['scalars'][(('transformer_genset_'+str(number), 'bus_electricity_ac'), 'invest')]
             oemof_results.update({'capacity_genset_kW': genset_capacity})
         elif isinstance(case_dict['genset_fixed_capacity'], float):
             oemof_results.update({'capacity_genset_kW': case_dict['genset_fixed_capacity']})
@@ -153,8 +153,8 @@ class timeseries:
         # Get flow
         if case_dict['storage_fixed_capacity'] != None:
             storage = outputlib.views.node(results, 'generic_storage')
-            storage_discharge = storage['sequences'][(('generic_storage', 'bus_electricity_mg'), 'flow')]
-            storage_charge = storage['sequences'][(('bus_electricity_mg', 'generic_storage'), 'flow')]
+            storage_discharge = storage['sequences'][(('generic_storage', 'bus_electricity_dc'), 'flow')]
+            storage_charge = storage['sequences'][(('bus_electricity_dc', 'generic_storage'), 'flow')]
             stored_capacity = storage['sequences'][(('generic_storage', 'None'), 'capacity')]
             utilities.annual_value('total_battery_throughput_kWh', storage_charge, oemof_results, case_dict)
             e_flows_df = utilities.join_e_flows_df(storage_charge, 'Storage charge', e_flows_df)
@@ -166,8 +166,8 @@ class timeseries:
         # Get capacity
         if case_dict['storage_fixed_capacity'] == False:
             # Optimized storage capacity
-            electricity_bus = outputlib.views.node(results, 'bus_electricity_mg')
-            capacity_battery = electricity_bus['scalars'][(('bus_electricity_mg', 'generic_storage'), 'invest')]/experiment['storage_Crate_charge']
+            electricity_bus = outputlib.views.node(results, 'bus_electricity_dc')
+            capacity_battery = electricity_bus['scalars'][(('bus_electricity_dc', 'generic_storage'), 'invest')]/experiment['storage_Crate_charge']
             # possibly using generic_storage['scalars'][((generic_storage, None), invest)]
             oemof_results.update({'capacity_storage_kWh': capacity_battery})
         elif isinstance(case_dict['storage_fixed_capacity'], float):
@@ -187,7 +187,7 @@ class timeseries:
 
     def get_national_grid(case_dict, oemof_results, results, e_flows_df, grid_availability):
         logging.debug('Evaluate flow: main grid')
-        micro_grid_bus = outputlib.views.node(results, 'bus_electricity_mg')
+        micro_grid_bus = outputlib.views.node(results, 'bus_electricity_ac')
         # define grid availability
         if case_dict['pcc_consumption_fixed_capacity'] != None or case_dict['pcc_feedin_fixed_capacity'] != None:
             e_flows_df = utilities.join_e_flows_df(grid_availability, 'Grid availability', e_flows_df)
@@ -196,7 +196,7 @@ class timeseries:
             e_flows_df = utilities.join_e_flows_df(grid_availability_symbolic, 'Grid availability', e_flows_df)
 
         if case_dict['pcc_consumption_fixed_capacity'] != None:
-            consumption_mg_side = micro_grid_bus['sequences'][(('transformer_pcc_consumption', 'bus_electricity_mg'), 'flow')]
+            consumption_mg_side = micro_grid_bus['sequences'][(('transformer_pcc_consumption', 'bus_electricity_ac'), 'flow')]
             e_flows_df = utilities.join_e_flows_df(consumption_mg_side, 'Consumption from main grid (MG side)', e_flows_df)
             utilities.annual_value('consumption_main_grid_mg_side_annual_kWh', consumption_mg_side, oemof_results, case_dict)
 
@@ -215,7 +215,7 @@ class timeseries:
                                   /oemof_results['total_demand_supplied_annual_kWh']})
 
         if case_dict['pcc_feedin_fixed_capacity'] != None:
-            feedin_mg_side = micro_grid_bus['sequences'][(('bus_electricity_mg', 'transformer_pcc_feedin'), 'flow')]
+            feedin_mg_side = micro_grid_bus['sequences'][(('bus_electricity_ac', 'transformer_pcc_feedin'), 'flow')]
             e_flows_df = utilities.join_e_flows_df(feedin_mg_side, 'Feed into main grid (MG side)', e_flows_df)
             utilities.annual_value('feedin_main_grid_mg_side_annual_kWh', feedin_mg_side, oemof_results, case_dict)
 

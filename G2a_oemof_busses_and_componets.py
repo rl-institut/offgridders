@@ -139,10 +139,10 @@ class generate():
         rectifier = solph.Transformer(label="transformer_rectifier",
                                                        inputs={bus_electricity_ac: solph.Flow(
                                                            nominal_value=capacity_rectifier,
-                                                           variable_costs=experiment['rectifier_cost_var'])},
+                                                           variable_costs=experiment['rectifier_ac_dc_cost_var'])},
                                                        outputs={bus_electricity_dc: solph.Flow()},
                                                        conversion_factors={
-                                                           bus_electricity_dc: experiment['rectifier_efficiency']}
+                                                           bus_electricity_dc: experiment['rectifier_ac_dc_efficiency']}
                                                        )
         micro_grid_system.add(rectifier)
         dict_of_generators.update({number: rectifier})
@@ -153,40 +153,40 @@ class generate():
         rectifier = solph.Transformer(label="transformer_rectifier",
                                                            inputs={bus_electricity_ac: solph.Flow(
                                                                investment=solph.Investment(
-                                                                   ep_costs=experiment['rectifier_cost_annuity']),
-                                                               variable_costs=experiment['rectifier_cost_var'])},
+                                                                   ep_costs=experiment['rectifier_ac_dc_cost_annuity']),
+                                                               variable_costs=experiment['rectifier_ac_dc_cost_var'])},
                                                            outputs={bus_electricity_dc: solph.Flow()},
-                                                           conversion_factors={bus_electricity_dc: experiment['rectifier_efficiency']})
+                                                           conversion_factors={bus_electricity_dc: experiment['rectifier_ac_dc_efficiency']})
         micro_grid_system.add(rectifier)
         dict_of_generators.update({number: rectifier})
         return rectifier
 
-    def inverter_ac_dc_fix(micro_grid_system, bus_electricity_ac, bus_electricity_dc, experiment, capacity_rectifier):
-        logging.debug('Added to oemof model: inverter_ac_dc fix')
-        inverter_ac_dc = solph.Transformer(label="transformer_inverter_ac_dc",
+    def inverter_dc_ac_fix(micro_grid_system, bus_electricity_ac, bus_electricity_dc, experiment, capacity_inverter_dc_ac):
+        logging.debug('Added to oemof model: inverter_dc_ac fix')
+        inverter_ac_dc = solph.Transformer(label="transformer_inverter_dc_ac",
                                       inputs={bus_electricity_dc: solph.Flow(
-                                          nominal_value=capacity_rectifier,
-                                          variable_costs=experiment['inverter_ac_dc_cost_var'])},
+                                          nominal_value=capacity_inverter_dc_ac,
+                                          variable_costs=experiment['inverter_dc_ac_cost_var'])},
                                       outputs={bus_electricity_ac: solph.Flow()},
                                       conversion_factors={
-                                          bus_electricity_ac: experiment['inverter_ac_dc_efficiency']}
+                                          bus_electricity_ac: experiment['inverter_dc_ac_efficiency']}
                                       )
-        micro_grid_system.add(inverter_ac_dc)
-        dict_of_generators.update({number: inverter_ac_dc})
-        return rectifier
+        micro_grid_system.add(inverter_dc_ac)
+        dict_of_generators.update({number: inverter_dc_ac})
+        return inverter_dc_ac
 
-    def inverter_ac_dc_oem(micro_grid_system, bus_electricity_ac, bus_electricity_dc, experiment):
-        logging.debug('Added to oemof model: inverter_ac_dc oem')
-        inverter_ac_dc = solph.Transformer(label="transformer_inverter_ac_dc",
+    def inverter_dc_ac_oem(micro_grid_system, bus_electricity_ac, bus_electricity_dc, experiment):
+        logging.debug('Added to oemof model: inverter_dc_ac oem')
+        inverter_dc_ac = solph.Transformer(label="transformer_inverter_dc_ac",
                                       inputs={bus_electricity_dc: solph.Flow(
                                           investment=solph.Investment(
-                                              ep_costs=experiment['inverter_ac_dc_cost_annuity']),
-                                          variable_costs=experiment['inverter_ac_dc_cost_var'])},
+                                              ep_costs=experiment['inverter_dc_ac_cost_annuity']),
+                                          variable_costs=experiment['inverter_dc_ac_cost_var'])},
                                       outputs={bus_electricity_ac: solph.Flow()},
-                                      conversion_factors={bus_electricity_ac: experiment['inverter_ac_dc_efficiency']})
-        micro_grid_system.add(inverter_ac_dc)
-        dict_of_generators.update({number: inverter_ac_dc})
-        return inverter_ac_dc
+                                      conversion_factors={bus_electricity_ac: experiment['inverter_dc_ac_efficiency']})
+        micro_grid_system.add(inverter_dc_ac)
+        dict_of_generators.update({number: inverter_dc_ac})
+        return inverter_dc_ac
 
     def genset_fix(micro_grid_system, bus_fuel, bus_electricity_ac, experiment, capacity_fuel_gen, number_of_equal_generators):
         logging.debug('Added to oemof model: genset fix no minload')
@@ -372,7 +372,7 @@ class generate():
         micro_grid_system.add(sink_demand_ac)
         return sink_demand_ac
 
-    def demand_dc(micro_grid_system, bus_electricity_ac, demand_profile):
+    def demand_dc(micro_grid_system, bus_electricity_dc, demand_profile):
         logging.debug('Added to oemof model: demand DC')
         # create and add demand sink to micro_grid_system - fixed
         sink_demand_dc = solph.Sink(label="sink_demand_dc",

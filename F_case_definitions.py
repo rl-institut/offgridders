@@ -28,8 +28,9 @@ class cases:
             'filename': specific_case['case_name'] + experiment['filename'], #experiment['output_folder'] + "_" + specific_case['case_name'] + experiment['filename']
             'total_demand_ac': experiment['total_demand_ac'],
             'total_demand_dc': experiment['total_demand_dc'],
-            'peak_demand_ac': experiment['peak_demand_ac'],
-            'peak_demand_dc': experiment['peak_demand_ac'],
+            'peak_demand':  experiment['abs_peak_demand_ac_side'],
+            #'peak_demand_ac': experiment['peak_demand_ac'],
+            #'peak_demand_dc': experiment['peak_demand_ac'],
             'evaluated_days': experiment['evaluated_days'],
             'genset_with_minimal_loading': specific_case['genset_with_minimal_loading']})
 

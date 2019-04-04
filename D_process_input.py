@@ -35,68 +35,29 @@ class process_input_parameters():
         experiment.update({'annuity_factor': economics.annuity_factor(experiment['project_life'], experiment['wacc'])})
         experiment.update({'crf': economics.crf(experiment['project_life'], experiment['wacc'])})
 
-        # Capex DO NOT include OPEX costs per year. But they are included in the annuity!
-        experiment.update({
-            'pv_cost_capex':
-                economics.capex_from_investment(experiment['pv_cost_investment'], experiment['pv_lifetime'],
-                experiment['project_life'], experiment['wacc'], experiment['tax']),
-            'wind_cost_capex':
-                economics.capex_from_investment(experiment['wind_cost_investment'], experiment['wind_lifetime'],
-                                                experiment['project_life'], experiment['wacc'], experiment['tax']),
-            'genset_cost_capex':
-                economics.capex_from_investment(experiment['genset_cost_investment'], experiment['genset_lifetime'],
-                experiment['project_life'], experiment['wacc'], experiment['tax']),
-            'storage_cost_capex':
-                economics.capex_from_investment( experiment['storage_cost_investment'], experiment['storage_lifetime'],
-                experiment['project_life'], experiment['wacc'], experiment['tax']),
-            'pcoupling_cost_capex':
-                economics.capex_from_investment(experiment['pcoupling_cost_investment'], experiment['pcoupling_lifetime'],
-                experiment['project_life'], experiment['wacc'], experiment['tax']),
-            'maingrid_extension_cost_capex':
-                economics.capex_from_investment(experiment['maingrid_extension_cost_investment'],
-                                                experiment['maingrid_extension_lifetime'],
-                                                experiment['project_life'], experiment['wacc'], experiment['tax']),
-            'distribution_grid_cost_capex':
-                economics.capex_from_investment(experiment['distribution_grid_cost_investment'],
-                                                experiment['distribution_grid_lifetime'],
-                                                experiment['project_life'], experiment['wacc'], experiment['tax'])
-            })
+        component_list = ['pv', 'wind', 'genset', 'storage', 'pcoupling', 'maingrid_extension', 'distribution_grid', 'rectifier_ac_dc', 'inverter_dc_ac']
 
-        # Annuities of components including opex AND capex
-        experiment.update({
-            'pv_cost_annuity':
-                economics.annuity(experiment['pv_cost_capex'], experiment['crf'])+experiment['pv_cost_opex'],
-            'wind_cost_annuity':
-                economics.annuity(experiment['wind_cost_capex'], experiment['crf'])+experiment['wind_cost_opex'],
-            'genset_cost_annuity':
-                economics.annuity(experiment['genset_cost_capex'], experiment['crf'])+experiment['genset_cost_opex'],
-            'storage_cost_annuity':
-                economics.annuity(experiment['storage_cost_capex'], experiment['crf'])+experiment['storage_cost_opex'],
-            'pcoupling_cost_annuity':
-                economics.annuity(experiment['pcoupling_cost_capex'], experiment['crf'])+experiment['pcoupling_cost_opex'],
-            'project_cost_annuity':
-                economics.annuity(experiment['project_cost_fix'], experiment['crf'])+experiment['project_cost_opex'],
-            'maingrid_extension_cost_annuity':
-                economics.annuity(experiment['maingrid_extension_cost_capex'], experiment['crf']) + experiment['maingrid_extension_cost_opex'],
-            'distribution_grid_cost_annuity':
-                economics.annuity(experiment['distribution_grid_cost_capex'], experiment['crf']) + experiment['distribution_grid_cost_opex'],
-            })
+        for item in component_list:
+            # --------------------------------------------------#
+            # CAPEX without opex/a                              #
+            # --------------------------------------------------#
+            experiment.update({item + '_cost_capex':
+                economics.capex_from_investment(experiment[item + '_cost_investment'], experiment[item + '_lifetime'],
+                                                experiment['project_life'], experiment['wacc'], experiment['tax'])})
 
-        '''
-        Updating all annuities above to annuities "for the timeframe", so that optimization is based on more adequate 
-        costs. Includes project_cost_annuity, distribution_grid_cost_annuity, maingrid_extension_cost_annuity for 
-        consistency eventhough these are not used in optimization.
-        '''
-        experiment.update({
-            'pv_cost_annuity': experiment['pv_cost_annuity'] / 365*experiment['evaluated_days'],
-            'wind_cost_annuity': experiment['wind_cost_annuity'] / 365*experiment['evaluated_days'],
-            'genset_cost_annuity': experiment['genset_cost_annuity'] / 365*experiment['evaluated_days'],
-            'storage_cost_annuity': experiment['storage_cost_annuity'] / 365*experiment['evaluated_days'],
-            'pcoupling_cost_annuity': experiment['pcoupling_cost_annuity'] / 365*experiment['evaluated_days'],
-            'project_cost_annuity': experiment['project_cost_annuity'] / 365 * experiment['evaluated_days'],
-            'distribution_grid_cost_annuity': experiment['distribution_grid_cost_annuity'] / 365 * experiment['evaluated_days'],
-            'maingrid_extension_cost_annuity': experiment['maingrid_extension_cost_annuity'] / 365 * experiment['evaluated_days']
-        })
+            #--------------------------------------------------#
+            # Annuities of components including opex AND capex #
+            #--------------------------------------------------#
+            experiment.update({
+                item + '_cost_annuity': economics.annuity(experiment[item + '_cost_capex'], experiment['crf']) + experiment[item + '_cost_opex']})
+
+            # --------------------------------------------------#
+            # Scaling annuity to timeframe                      #
+            # --------------------------------------------------#
+            # Updating all annuities above to annuities "for the timeframe", so that optimization is based on more adequate
+            # costs. Includes project_cost_annuity, distribution_grid_cost_annuity, maingrid_extension_cost_annuity for
+            # consistency eventhough these are not used in optimization.
+            experiment.update({item + '_cost_annuity': experiment[item + '_cost_annuity'] / 365*experiment['evaluated_days']})
 
         return experiment
 
@@ -122,89 +83,120 @@ class process_input_parameters():
         max_evaluated_days = experiment_s[longest]['evaluated_days']
 
         for experiment in experiment_s:
-                index = experiment_s[experiment]['date_time_index']
-                if  experiment_s[experiment]['file_index'] != None:
-                    if 'demand_ac' in experiment_s[experiment]:
-                        year_timeseries_in_file = experiment_s[experiment]['demand_ac'].index[0].year
-                    else:
-                        year_timeseries_in_file = experiment_s[experiment]['demand_dc'].index[0].year
+            index = experiment_s[experiment]['date_time_index']
+            if  experiment_s[experiment]['file_index'] != None:
+                if 'demand_ac' in experiment_s[experiment]:
+                    year_timeseries_in_file = experiment_s[experiment]['demand_ac'].index[0].year
+                else:
+                    year_timeseries_in_file = experiment_s[experiment]['demand_dc'].index[0].year
 
-                    if (experiment_s[experiment]['date_time_index'][0].year != year_timeseries_in_file):
-                        file_index = [item + pd.DateOffset(year=index[0].year) for item in demand.index]
-                        # shift to fileindex of data sets to analysed year
-                        demand_ac = pd.Series( experiment_s[experiment]['demand_ac'].values, index=experiment_s[experiment]['file_index'])
-                        demand_dc = pd.Series(experiment_s[experiment]['demand_dc'].values,
-                                           index=experiment_s[experiment]['file_index'])
-                        pv_generation_per_kWp = pd.Series( experiment_s[experiment]['pv_generation_per_kWp'].values, index=experiment_s[experiment]['file_index'])
-                        wind_generation_per_kW = pd.Series( experiment_s[experiment]['wind_generation_per_kW'].values, index=experiment_s[experiment]['file_index'])
-                        # from provided data use only analysed timeframe
-                        experiment_s[experiment].update({'demand_profile_ac': demand_ac[index]})
-                        experiment_s[experiment].update({'demand_profile_dc': demand_dc[index]})
-                        experiment_s[experiment].update({'pv_generation_per_kWp': pv_generation_per_kWp[index]})
-                        experiment_s[experiment].update({'wind_generation_per_kW': wind_generation_per_kW[index]})
-
-                        if 'grid_availability' in experiment_s[experiment].keys():
-                            grid_availability = pd.Series(
-                                experiment_s[experiment]['grid_availability'].values,
-                                index=experiment_s[experiment]['file_index'])
-                            experiment_s[experiment].update({'grid_availability': grid_availability[index]})
-
-                    else:
-                        # file index is date time index, no change necessary
-                        pass
-
-                elif experiment_s[experiment]['file_index'] == None:
-                    # limit based on index
-                    experiment_s[experiment].update(
-                        {'demand_profile_ac': pd.Series(experiment_s[experiment]['demand_ac'][0:len(index)].values, index=index)})
-                    experiment_s[experiment].update(
-                        {'demand_profile_dc': pd.Series(experiment_s[experiment]['demand_dc'][0:len(index)].values, index=index)})
-                    experiment_s[experiment].update(
-                        {'pv_generation_per_kWp': pd.Series(experiment_s[experiment]['pv_generation_per_kWp'][0:len(index)].values, index=index)})
-                    experiment_s[experiment].update(
-                        {'wind_generation_per_kW': pd.Series(experiment_s[experiment]['wind_generation_per_kW'][0:len(index)].values, index=index)})
+                if (experiment_s[experiment]['date_time_index'][0].year != year_timeseries_in_file):
+                    file_index = [item + pd.DateOffset(year=index[0].year) for item in demand.index]
+                    # shift to fileindex of data sets to analysed year
+                    demand_ac = pd.Series( experiment_s[experiment]['demand_ac'].values, index=experiment_s[experiment]['file_index'])
+                    demand_dc = pd.Series(experiment_s[experiment]['demand_dc'].values,
+                                       index=experiment_s[experiment]['file_index'])
+                    pv_generation_per_kWp = pd.Series( experiment_s[experiment]['pv_generation_per_kWp'].values, index=experiment_s[experiment]['file_index'])
+                    wind_generation_per_kW = pd.Series( experiment_s[experiment]['wind_generation_per_kW'].values, index=experiment_s[experiment]['file_index'])
+                    # from provided data use only analysed timeframe
+                    experiment_s[experiment].update({'demand_profile_ac': demand_ac[index]})
+                    experiment_s[experiment].update({'demand_profile_dc': demand_dc[index]})
+                    experiment_s[experiment].update({'pv_generation_per_kWp': pv_generation_per_kWp[index]})
+                    experiment_s[experiment].update({'wind_generation_per_kW': wind_generation_per_kW[index]})
 
                     if 'grid_availability' in experiment_s[experiment].keys():
-                        experiment_s[experiment].update(
-                            {'grid_availability': pd.Series(
-                                experiment_s[experiment]['grid_availability'][0:len(index)].values, index=index)})
+                        grid_availability = pd.Series(
+                            experiment_s[experiment]['grid_availability'].values,
+                            index=experiment_s[experiment]['file_index'])
+                        experiment_s[experiment].update({'grid_availability': grid_availability[index]})
 
                 else:
-                    logging.warning('Project site value "file_index" neither None not non-None.')
+                    # file index is date time index, no change necessary
+                    pass
 
-                # Used for generation of lp file with only 3-timesteps = Useful to verify optimized equations
-                if experiment_s[experiment]['lp_file_for_only_3_timesteps'] == True:
-                    experiment_s[experiment].update({'time_start': experiment_s[experiment]['time_start'] + pd.DateOffset(hours=15)})
-                    experiment_s[experiment].update({'time_end': experiment_s[experiment]['time_start']+ pd.DateOffset(hours=2)})
+            elif experiment_s[experiment]['file_index'] == None:
+                # limit based on index
+                experiment_s[experiment].update(
+                    {'demand_profile_ac': pd.Series(experiment_s[experiment]['demand_ac'][0:len(index)].values, index=index)})
+                experiment_s[experiment].update(
+                    {'demand_profile_dc': pd.Series(experiment_s[experiment]['demand_dc'][0:len(index)].values, index=index)})
+                experiment_s[experiment].update(
+                    {'pv_generation_per_kWp': pd.Series(experiment_s[experiment]['pv_generation_per_kWp'][0:len(index)].values, index=index)})
+                experiment_s[experiment].update(
+                    {'wind_generation_per_kW': pd.Series(experiment_s[experiment]['wind_generation_per_kW'][0:len(index)].values, index=index)})
+
+                if 'grid_availability' in experiment_s[experiment].keys():
                     experiment_s[experiment].update(
-                        {'date_time_index': pd.date_range(start=experiment_s[experiment]['time_start'],
-                                                          end=experiment_s[experiment]['time_end'],
-                                                          freq=experiment_s[experiment]['time_frequency'])})
+                        {'grid_availability': pd.Series(
+                            experiment_s[experiment]['grid_availability'][0:len(index)].values, index=index)})
 
-                    index = experiment_s[experiment]['date_time_index']
-                    experiment_s[experiment].update({'demand_profile_ac': experiment_s[experiment]['demand_profile_ac'][index]})
+            else:
+                logging.warning('Project site value "file_index" neither None not non-None.')
+
+            # Used for generation of lp file with only 3-timesteps = Useful to verify optimized equations
+            if experiment_s[experiment]['lp_file_for_only_3_timesteps'] == True:
+                experiment_s[experiment].update({'time_start': experiment_s[experiment]['time_start'] + pd.DateOffset(hours=15)})
+                experiment_s[experiment].update({'time_end': experiment_s[experiment]['time_start']+ pd.DateOffset(hours=2)})
+                experiment_s[experiment].update(
+                    {'date_time_index': pd.date_range(start=experiment_s[experiment]['time_start'],
+                                                      end=experiment_s[experiment]['time_end'],
+                                                      freq=experiment_s[experiment]['time_frequency'])})
+
+                index = experiment_s[experiment]['date_time_index']
+                experiment_s[experiment].update({'demand_profile_ac': experiment_s[experiment]['demand_profile_ac'][index]})
+                experiment_s[experiment].update(
+                    {'demand_profile_dc': experiment_s[experiment]['demand_profile_dc'][index]})
+                experiment_s[experiment].update({'pv_generation_per_kWp': experiment_s[experiment]['pv_generation_per_kWp'][index]})
+                experiment_s[experiment].update({'wind_generation_per_kW': experiment_s[experiment]['wind_generation_per_kW'][index]})
+                if 'grid_availability' in experiment_s[experiment].keys():
                     experiment_s[experiment].update(
-                        {'demand_profile_dc': experiment_s[experiment]['demand_profile_dc'][index]})
-                    experiment_s[experiment].update({'pv_generation_per_kWp': experiment_s[experiment]['pv_generation_per_kWp'][index]})
-                    experiment_s[experiment].update({'wind_generation_per_kW': experiment_s[experiment]['wind_generation_per_kW'][index]})
-                    if 'grid_availability' in experiment_s[experiment].keys():
-                        experiment_s[experiment].update(
-                            {'grid_availability': experiment_s[experiment]['grid_availability'][index]})
+                        {'grid_availability': experiment_s[experiment]['grid_availability'][index]})
 
+            experiment_s[experiment].update({'accumulated_profile_ac_side':
+                                                 experiment_s[experiment]['demand_profile_ac'] +
+                                                 experiment_s[experiment]['demand_profile_dc']/experiment_s[experiment]['rectifier_ac_dc_efficiency']})
+
+            experiment_s[experiment].update({'accumulated_profile_dc_side':
+                                                 experiment_s[experiment]['demand_profile_ac']/experiment_s[experiment]['inverter_dc_ac_efficiency'] +
+                                                 experiment_s[experiment]['demand_profile_dc']})
+            experiment_s[experiment].update({
+                'total_demand_ac': sum(experiment_s[experiment]['demand_profile_ac']),
+                'peak_demand_ac': max(experiment_s[experiment]['demand_profile_ac']),
+
+                'total_demand_dc': sum(experiment_s[experiment]['demand_profile_dc']),
+                'peak_demand_dc': max(experiment_s[experiment]['demand_profile_dc']),
+
+                'peak_pv_generation_per_kWp': max(experiment_s[experiment]['pv_generation_per_kWp']),
+                'peak_wind_generation_per_kW': max(experiment_s[experiment]['wind_generation_per_kW'])})
+
+            experiment_s[experiment].update({
+                'mean_demand_ac': experiment_s[experiment]['total_demand_ac']/ len(experiment_s[experiment]['date_time_index']),
+                'mean_demand_dc': experiment_s[experiment]['total_demand_dc']/ len(experiment_s[experiment]['date_time_index'])})
+
+            if experiment_s[experiment]['mean_demand_ac']>0:
                 experiment_s[experiment].update({
-                    'total_demand_ac': sum(experiment_s[experiment]['demand_profile_ac']),
-                    'peak_demand_ac': max(experiment_s[experiment]['demand_profile_ac']),
-                    'total_demand_dc': sum(experiment_s[experiment]['demand_profile_dc']),
-                    'peak_demand_ac': max(experiment_s[experiment]['demand_profile_dc']),
-                    'peak_pv_generation_per_kWp': max(experiment_s[experiment]['pv_generation_per_kWp']),
-                    'peak_wind_generation_per_kW': max(experiment_s[experiment]['wind_generation_per_kW'])})
+                    'peak/mean_demand_ratio_ac': experiment_s[experiment]['peak_demand_ac']/experiment_s[experiment]['mean_demand_ac']})
+            else:
+                experiment_s[experiment].update({'peak/mean_demand_ratio_ac': 0})
 
-                if experiment_s[experiment]['total_demand_ac']==0 + experiment_s[experiment]['total_demand_dc']==0:
-                    logging.warning('No demand in evaluated timesteps at project site ' + experiment_s[experiment]['project_site_name'] + ' - simulation will crash.')
-                if experiment_s[experiment]['peak_pv_generation_per_kWp']==0:
-                    logging.info('No pv generation in evaluated timesteps at project site ' + experiment_s[experiment]['project_site_name'] + '.')
-                if experiment_s[experiment]['peak_wind_generation_per_kW']==0:
-                    logging.info('No wind generation in evaluated timesteps at project site ' + experiment_s[experiment]['project_site_name'] + '.')
+            if experiment_s[experiment]['mean_demand_dc'] > 0:
+                experiment_s[experiment].update({
+                    'peak/mean_demand_ratio_dc': experiment_s[experiment]['peak_demand_dc']/experiment_s[experiment]['mean_demand_dc']})
+            else:
+                experiment_s[experiment].update({'peak/mean_demand_ratio_dc': 0})
+
+            # Used for estimation of capacities using "peak demand"
+            experiment_s[experiment].update(
+                {'abs_peak_demand_ac_side': max(experiment_s[experiment]['accumulated_profile_ac_side'])})
+
+            # Warnings
+            if experiment_s[experiment]['total_demand_ac']==0 + experiment_s[experiment]['total_demand_dc']==0:
+                logging.warning('No demand in evaluated timesteps at project site ' + experiment_s[experiment]['project_site_name'] + ' - simulation will crash.')
+            if experiment_s[experiment]['peak_pv_generation_per_kWp']==0:
+                logging.info('No pv generation in evaluated timesteps at project site ' + experiment_s[experiment]['project_site_name'] + '.')
+            if experiment_s[experiment]['peak_wind_generation_per_kW']==0:
+                logging.info('No wind generation in evaluated timesteps at project site ' + experiment_s[experiment]['project_site_name'] + '.')
+
 
         return max_date_time_index, max_evaluated_days
 

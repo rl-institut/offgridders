@@ -76,20 +76,28 @@ class oemof_simulate:
         }
 
         # get all from node electricity bus
-        electricity_bus = outputlib.views.node(results, 'bus_electricity_mg')
-        e_flows_df = timeseries.get_demand(case_dict, oemof_results, electricity_bus)
-        e_flows_df = timeseries.get_shortage(case_dict, oemof_results, electricity_bus, e_flows_df)
+        electricity_bus_ac = outputlib.views.node(results, 'bus_electricity_ac')
+        electricity_bus_dc = outputlib.views.node(results, 'bus_electricity_ac')
+        e_flows_df = timeseries.get_demand(case_dict, oemof_results, electricity_bus_ac)
+        #e_flows_df = timeseries.get_demand(case_dict, oemof_results, electricity_bus_dc)
+        e_flows_df = timeseries.get_shortage(case_dict, oemof_results, electricity_bus_ac, e_flows_df)
         oemof_results.update({'supply_reliability_kWh':
                                   oemof_results['total_demand_supplied_annual_kWh'] / oemof_results[
                                       'total_demand_annual_kWh']})
 
-        e_flows_df = timeseries.get_excess(case_dict, oemof_results, electricity_bus, e_flows_df)
-        e_flows_df = timeseries.get_pv(case_dict, oemof_results, electricity_bus, e_flows_df, experiment['peak_pv_generation_per_kWp'])
-        e_flows_df = timeseries.get_wind(case_dict, oemof_results, electricity_bus, e_flows_df, experiment['peak_wind_generation_per_kW'])
-        e_flows_df = timeseries.get_genset(case_dict, oemof_results, electricity_bus, e_flows_df)
-        e_flows_df = timeseries.get_storage(case_dict, oemof_results, experiment, results, e_flows_df)
+        e_flows_df = timeseries.get_excess(case_dict, oemof_results, electricity_bus_ac, e_flows_df)
+
         timeseries.get_fuel(case_dict, oemof_results, results)
-        e_flows_df = timeseries.get_national_grid(case_dict, oemof_results, results, e_flows_df, experiment['grid_availability'])
+        e_flows_df = timeseries.get_genset(case_dict, oemof_results, electricity_bus_ac, e_flows_df)
+
+        e_flows_df = timeseries.get_national_grid(case_dict, oemof_results, results, e_flows_df,
+                                                  experiment['grid_availability'])
+
+        e_flows_df = timeseries.get_pv(case_dict, oemof_results, electricity_bus_dc, e_flows_df,
+                                       experiment['peak_pv_generation_per_kWp'])
+        e_flows_df = timeseries.get_wind(case_dict, oemof_results, electricity_bus_ac, e_flows_df,
+                                         experiment['peak_wind_generation_per_kW'])
+        e_flows_df = timeseries.get_storage(case_dict, oemof_results, experiment, results, e_flows_df)
 
         # determine renewable share of system - not of demand, but of total generation + consumption.
         timeseries.get_res_share(case_dict, oemof_results, experiment)

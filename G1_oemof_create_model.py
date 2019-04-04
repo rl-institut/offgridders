@@ -33,7 +33,7 @@ class oemof_model:
             bus_electricity_ac = None
 
         # ------------demand sink ac------------#
-        sink_demand_ac = generate.demand_ac(micro_grid_system, bus_electricity_ac, experiment['demand_profile'])
+        sink_demand_ac = generate.demand_ac(micro_grid_system, bus_electricity_ac, experiment['demand_profile_ac'])
 
         #------------fuel source------------#
         if case_dict['genset_fixed_capacity']!=None:

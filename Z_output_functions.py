@@ -38,6 +38,16 @@ class output_results:
                 'demand_peak_kW',
                 'total_demand_supplied_annual_kWh',
                 'total_demand_shortage_annual_kWh'])], axis=1, sort=False)
+            '''
+            'total_demand_ac'
+            'peak_demand_ac'
+            'total_demand_dc'
+            'peak_demand_dc'
+            'mean_demand_ac'
+            'mean_demand_dc'
+            'peak/mean_demand_ratio_ac'
+            'peak/mean_demand_ratio_dc'
+            '''
 
         if settings['results_blackout_characteristics'] == True:
             title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[
@@ -341,7 +351,7 @@ class output:
                     plt.clf()
                     plt.cla()
         return
-    '''
+
     def save_network_graph(energysystem, case_name):
         logging.debug('Generate networkx diagram')
         energysystem_graph = graph.create_nx_graph(energysystem)
@@ -438,4 +448,3 @@ class output:
         
         return
 
-'''
