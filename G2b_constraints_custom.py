@@ -512,7 +512,6 @@ class battery_management():
 
             # force discharge to zero when grid available
             expr -= stored_electricity * grid_inavailability[t]
-            print(expr)
             return (expr <= 0)
 
         model.discharge_only_at_blackout_constraint = po.Constraint(model.TIMESTEPS, rule=discharge_rule_upper)
@@ -524,7 +523,7 @@ class battery_management():
         Testing simulation results for adherance to above defined criterion
         '''
 
-        if case_dict['discharge_only_when_blackout']==True:
+        if case_dict['discharge_only_when_blackout']==True and case_dict['storage_fixed_capacity'] != None:
             boolean_test = [e_flows_df['Storage Discharge DC'][t]
                              <= (1-e_flows_df['Grid availability'][t]) * e_flows_df['Stored capacity'][t]
                              for t in range(0, len(e_flows_df.index))]
@@ -576,7 +575,7 @@ class ac_dc_bus:
         Testing simulation results for adherance to above defined criterion
         '''
 
-        if case_dict['enable_inverter_at_backout']==True:
+        if case_dict['enable_inverter_at_backout']==True and case_dict['inverter_dc_ac_fixed_capacity'] != None:
             boolean_test = [e_flows_df['Inverter input'][t]
                              <= (1-e_flows_df['Grid availability'][t]) * oemof_results['capacity_inverter_dc_ac_kW']
                              for t in range(0, len(e_flows_df.index))]

@@ -139,6 +139,7 @@ class oemof_model:
             bus_electricity_dc = None
 
         #------------demand sink dc------------#
+        print(experiment['demand_profile_dc'])
         sink_demand_dc = generate.demand_dc(micro_grid_system, bus_electricity_dc, experiment['demand_profile_dc'])
 
         #------------PV------------#

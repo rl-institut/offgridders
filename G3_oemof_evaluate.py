@@ -135,13 +135,13 @@ class timeseries:
             if case_dict['evaluation_perspective'] == 'AC_bus':
                 e_flows_df = utilities.join_e_flows_df(pv_gen / experiment['rectifier_ac_dc_efficiency'],
                                                        'PV generation AC', e_flows_df)
+
+            if case_dict['evaluation_perspective'] == 'AC_bus':
+                e_flows_df = utilities.join_e_flows_df(e_flows_df['PV generation AC'], 'PV generation', e_flows_df)
+            else:
+                e_flows_df = utilities.join_e_flows_df(e_flows_df['PV generation DC'], 'PV generation', e_flows_df)
         else:
             oemof_results.update({'total_pv_generation_kWh': 0})
-
-        if case_dict['evaluation_perspective'] == 'AC_bus':
-            e_flows_df = utilities.join_e_flows_df(e_flows_df['PV generation AC'], 'PV generation', e_flows_df)
-        else:
-            e_flows_df = utilities.join_e_flows_df(e_flows_df['PV generation DC'], 'PV generation', e_flows_df)
 
         # Get capacity
         if case_dict['pv_fixed_capacity'] == False:
@@ -209,6 +209,7 @@ class timeseries:
         elif case_dict['inverter_dc_ac_fixed_capacity'] == None:
             oemof_results.update({'capacity_inverter_dc_ac_kW': 0})
         return e_flows_df
+
     def get_wind(case_dict, oemof_results, electricity_bus_ac, e_flows_df, wind_generation_max):
         logging.debug('Evaluate flow: wind')
         # Get flow
