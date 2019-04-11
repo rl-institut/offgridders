@@ -389,7 +389,6 @@ class generate():
         return sink_demand_ac
 
     def demand_dc(micro_grid_system, bus_electricity_dc, demand_profile):
-        print(micro_grid_system, bus_electricity_dc, demand_profile)
         logging.debug('Added to oemof model: demand DC')
         # create and add demand sink to micro_grid_system - fixed
         sink_demand_dc = solph.Sink(label="sink_demand_dc",

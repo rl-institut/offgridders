@@ -21,16 +21,9 @@ class oemof_model:
         ###################################
 
         #------------AC electricity bus------------#
-        if case_dict['genset_fixed_capacity'] != None \
-                or case_dict['wind_fixed_capacity'] != None \
-                or case_dict['pcc_consumption_fixed_capacity'] != None \
-                or case_dict['pcc_feedin_fixed_capacity'] != None:
-
-            logging.debug('Added to oemof model: Electricity bus of energy system, AC')
-            bus_electricity_ac = solph.Bus(label="bus_electricity_ac")
-            micro_grid_system.add(bus_electricity_ac)
-        else:
-            bus_electricity_ac = None
+        logging.debug('Added to oemof model: Electricity bus of energy system, AC')
+        bus_electricity_ac = solph.Bus(label="bus_electricity_ac")
+        micro_grid_system.add(bus_electricity_ac)
 
         # ------------demand sink ac------------#
         sink_demand_ac = generate.demand_ac(micro_grid_system, bus_electricity_ac, experiment['demand_profile_ac'])
@@ -129,17 +122,11 @@ class oemof_model:
         ###################################
 
         #------------DC electricity bus------------#
-        if case_dict['pv_fixed_capacity']!=None \
-                or case_dict['storage_fixed_capacity'] != None:
-
-            logging.debug('Added to oemof model: Electricity bus of energy system, DC')
-            bus_electricity_dc = solph.Bus(label="bus_electricity_dc")
-            micro_grid_system.add(bus_electricity_dc)
-        else:
-            bus_electricity_dc = None
+        logging.debug('Added to oemof model: Electricity bus of energy system, DC')
+        bus_electricity_dc = solph.Bus(label="bus_electricity_dc")
+        micro_grid_system.add(bus_electricity_dc)
 
         #------------demand sink dc------------#
-        print(experiment['demand_profile_dc'])
         sink_demand_dc = generate.demand_dc(micro_grid_system, bus_electricity_dc, experiment['demand_profile_dc'])
 
         #------------PV------------#

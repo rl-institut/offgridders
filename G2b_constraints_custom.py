@@ -524,14 +524,14 @@ class battery_management():
         '''
 
         if case_dict['discharge_only_when_blackout']==True and case_dict['storage_fixed_capacity'] != None:
-            boolean_test = [e_flows_df['Storage Discharge DC'][t]
+            boolean_test = [e_flows_df['Storage discharge DC'][t]
                              <= (1-e_flows_df['Grid availability'][t]) * e_flows_df['Stored capacity'][t]
                              for t in range(0, len(e_flows_df.index))]
 
             if all(boolean_test) == True:
                 logging.debug("Battery only discharged when grid unavailable.")
             else:
-                ratio = pd.Series([(e_flows_df['Storage Discharge DC'][t] - (1-e_flows_df['Grid availability'][t]) * e_flows_df['Stored capacity'][t])
+                ratio = pd.Series([(e_flows_df['Storage discharge DC'][t] - (1-e_flows_df['Grid availability'][t]) * e_flows_df['Stored capacity'][t])
                                    for t in range(0, len(e_flows_df.index))], index=e_flows_df.index)
 
                 if max(ratio) < 10 ** (-6):

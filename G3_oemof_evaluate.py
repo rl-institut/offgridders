@@ -290,9 +290,15 @@ class timeseries:
             if case_dict['evaluation_perspective'] == 'AC_bus':
                 e_flows_df = utilities.join_e_flows_df(storage_charge / experiment['rectifier_ac_dc_efficiency'], 'Storage charge AC', e_flows_df)
                 e_flows_df = utilities.join_e_flows_df(storage_discharge / experiment['inverter_dc_ac_efficiency'], 'Storage discharge AC', e_flows_df)
+                e_flows_df = utilities.join_e_flows_df(e_flows_df['Storage charge AC'], 'Storage charge', e_flows_df)
+                e_flows_df = utilities.join_e_flows_df(e_flows_df['Storage discharge AC'], 'Storage discharge', e_flows_df)
+            else:
+                e_flows_df = utilities.join_e_flows_df(e_flows_df['Storage charge DC'], 'Storage charge', e_flows_df)
+                e_flows_df = utilities.join_e_flows_df(e_flows_df['Storage discharge DC'], 'Storage discharge', e_flows_df)
+
 
         else:
-            oemof_results.update({'total_battery_throughput_kWh': 0})
+            oemof_results.update({'total_storage_throughput_kWh': 0})
 
         # Get capacity
         if case_dict['storage_fixed_capacity'] == False:
@@ -313,13 +319,6 @@ class timeseries:
             #  todo working?
             e_flows_df = utilities.join_e_flows_df(pd.Series([0 for t in e_flows_df.index], index=e_flows_df.index),
                                                    'Storage SOC', e_flows_df)
-
-        if case_dict['evaluation_perspective'] == 'AC_bus':
-            e_flows_df = utilities.join_e_flows_df(e_flows_df['Storage charge AC'], 'Storage charge', e_flows_df)
-            e_flows_df = utilities.join_e_flows_df(e_flows_df['Storage discharge AC'], 'Storage discharge', e_flows_df)
-        else:
-            e_flows_df = utilities.join_e_flows_df(e_flows_df['Storage charge DC'], 'Storage charge', e_flows_df)
-            e_flows_df = utilities.join_e_flows_df(e_flows_df['Storage discharge DC'], 'Storage discharge', e_flows_df)
 
         return e_flows_df
 
