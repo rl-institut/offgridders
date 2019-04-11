@@ -397,7 +397,8 @@ class battery_management():
                 CAP_storage += storage.nominal_capacity
 
         charge_constant = experiment['storage_Crate_charge'] * CAP_storage \
-                          * (1+experiment['storage_soc_min']/(experiment['storage_soc_min']-experiment['storage_soc_max']))
+                          - (experiment['storage_Crate_charge'] * CAP_storage * experiment['storage_soc_min']
+                             /(experiment['storage_soc_max']-experiment['storage_soc_min']))
 
         def linear_charge(model, t):
             ## ------- Get storaged electricity at t------- #
@@ -409,7 +410,7 @@ class battery_management():
                     stored_electricity += model.GenericStorageBlock.capacity[storage, t]
 
             # Linearization
-            expr = (charge_constant + (CAP_storage - stored_electricity)/(experiment['storage_soc_min']-experiment['storage_soc_max']))
+            expr = (charge_constant + (stored_electricity * experiment['storage_Crate_charge'])/(experiment['storage_soc_max']-experiment['storage_soc_min']))
 
             # Only apply linearization if no blackout occurs
             expr = expr * experiment['grid_availability'][t]
@@ -417,7 +418,7 @@ class battery_management():
             # Actual charge
             if case_dict['storage_fixed_capacity'] != None:
                 expr += - model.flow[el_bus, storage, t]
-
+            print(expr <= 0)
             return (expr <= 0)
 
         model.forced_charge_linear = po.Constraint(model.TIMESTEPS, rule=linear_charge)
@@ -430,9 +431,9 @@ class battery_management():
         '''
         if case_dict['force_charge_from_maingrid']==True:
             boolean_test = [(experiment['storage_Crate_charge'] * oemof_results['capacity_storage_kWh'] \
-                          * (1+experiment['storage_soc_min']/(experiment['storage_soc_min']-experiment['storage_soc_max']))
+                          * (1+experiment['storage_soc_min']/(experiment['storage_soc_max']-experiment['storage_soc_min']))
                              + (oemof_results['capacity_storage_kWh'] - e_flows_df['Stored capacity'][t])
-                             / (experiment['storage_soc_min']-experiment['storage_soc_max']))
+                             / (experiment['storage_soc_max']-experiment['storage_soc_min']))
                             *e_flows_df['Grid availability'][t]
                             <= e_flows_df['Storage charge DC'][t] for t in range(0, len(e_flows_df.index))]
 
@@ -441,9 +442,9 @@ class battery_management():
             else:
 
                 deviation = pd.Series([(experiment['storage_Crate_charge'] * oemof_results['capacity_storage_kWh'] \
-                          * (1+experiment['storage_soc_min']/(experiment['storage_soc_min']-experiment['storage_soc_max']))
+                          * (1+experiment['storage_soc_min']/(experiment['storage_soc_max']-experiment['storage_soc_min']))
                              + (oemof_results['capacity_storage_kWh'] - e_flows_df['Stored capacity'][t])
-                             / (experiment['storage_soc_min']-experiment['storage_soc_max']))*e_flows_df['Grid availability'][t]
+                             / (experiment['storage_soc_max']-experiment['storage_soc_min']))*e_flows_df['Grid availability'][t]
                                        - e_flows_df['Storage charge DC'][t] for t in range(0, len(e_flows_df.index))], index=e_flows_df.index)
 
                 if max(deviation) < 10 ** (-6):

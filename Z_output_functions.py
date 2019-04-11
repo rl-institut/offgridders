@@ -287,7 +287,6 @@ class output:
                     output.plot_flows(case_dict, experiment, mg_flows[24:5 * 24], e_flows_df[24:5 * 24], number_of_subplots)
                     plt.savefig(experiment['output_folder'] + '/electricity_mg/' + case_dict[
                         'case_name'] + filename + '_electricity_mg_4days.png', bbox_inches="tight")
-
                 plt.close()
                 plt.clf()
                 plt.cla()

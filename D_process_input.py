@@ -206,7 +206,6 @@ class process_input_parameters():
             if experiment_s[experiment]['peak_wind_generation_per_kW']==0:
                 logging.info('No wind generation in evaluated timesteps at project site ' + experiment_s[experiment]['project_site_name'] + '.')
 
-
         return max_date_time_index, max_evaluated_days
 
 class noise:

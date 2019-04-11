@@ -91,7 +91,6 @@ class timeseries:
                     shortage += shortage_dc
 
             demand_supplied = e_flows_df['Demand'] - shortage
-
             utilities.annual_value('total_demand_supplied_annual_kWh', demand_supplied, oemof_results, case_dict)
             utilities.annual_value('total_demand_shortage_annual_kWh', shortage, oemof_results,case_dict)
             e_flows_df = utilities.join_e_flows_df(shortage, 'Demand shortage', e_flows_df)
