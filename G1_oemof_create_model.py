@@ -21,6 +21,11 @@ class oemof_model:
         ###################################
 
         #------------AC electricity bus------------#
+        #if case_dict['genset_fixed_capacity'] != None \
+        #        or case_dict['wind_fixed_capacity'] != None \
+        #        or case_dict['pcc_consumption_fixed_capacity'] != None \
+        #        or case_dict['pcc_feedin_fixed_capacity'] != None:
+
         logging.debug('Added to oemof model: Electricity bus of energy system, AC')
         bus_electricity_ac = solph.Bus(label="bus_electricity_ac")
         micro_grid_system.add(bus_electricity_ac)
@@ -202,12 +207,11 @@ class oemof_model:
         logging.debug('Create oemof model based on created components and busses.')
         model = solph.Model(micro_grid_system)
 
-
         #------------Stability constraint------------#
         if case_dict['stability_constraint'] == False:
             pass
         elif case_dict['stability_constraint']=='share_backup':
-            logging.debug('Adding stability constraint (stability through backup).')
+            logging.info('Added constraint: Stability through backup.')
             stability_criterion.backup(model, case_dict,
                                             experiment = experiment,
                                             storage = storage,
@@ -217,7 +221,7 @@ class oemof_model:
                                             source_shortage=source_shortage,
                                             el_bus = bus_electricity_ac)
         elif case_dict['stability_constraint']=='share_usage':
-            logging.debug('Adding stability constraint (stability though actual generation).')
+            logging.info('Added constraint: Stability though actual generation.')
             stability_criterion.usage(model, case_dict,
                                             experiment = experiment,
                                             storage = storage,
@@ -227,7 +231,7 @@ class oemof_model:
                                             source_shortage=source_shortage,
                                             el_bus = bus_electricity_ac)
         elif case_dict['stability_constraint']=='share_hybrid':
-            logging.debug('Adding stability constraint (stability though actual generation of diesel generators and backup through batteries).')
+            logging.info('Added constraint: Stability though actual generation of diesel generators and backup through batteries.')
             stability_criterion.hybrid(model, case_dict,
                                        experiment = experiment,
                                        storage = storage,
@@ -244,7 +248,7 @@ class oemof_model:
         if case_dict['renewable_share_constraint']==False:
             pass
         elif case_dict['renewable_share_constraint'] == True:
-            logging.info('Adding renewable share constraint.')
+            logging.info('Adding constraint: Renewable share.')
             renewable_criterion.share(model, case_dict, experiment,
                                       genset = genset,
                                       pcc_consumption = pointofcoupling_consumption,
@@ -259,6 +263,7 @@ class oemof_model:
         if case_dict['force_charge_from_maingrid']==False:
             pass
         elif case_dict['force_charge_from_maingrid']==True:
+            logging.info('Added constraint: Forcing charge from main grid.')
             battery_management.forced_charge(model, case_dict, bus_electricity_dc, storage, experiment)
         else:
             logging.warning('Case definition of ' + case_dict['case_name']
@@ -269,7 +274,9 @@ class oemof_model:
         if case_dict['discharge_only_when_blackout']==False:
             pass
         elif case_dict['discharge_only_when_blackout']==True:
+            logging.info('Added constraint: Allowing discharge only at blackout times.')
             battery_management.discharge_only_at_blackout(model, case_dict, bus_electricity_dc, storage, experiment)
+            #battery_management.discharge_only_at_blackout_alternative(model, case_dict, bus_electricity_dc, storage, experiment)
         else:
             logging.warning('Case definition of ' + case_dict['case_name']
                             + ' faulty at discharge_only_when_blackout. Value can only be True or False')
@@ -278,13 +285,14 @@ class oemof_model:
         if case_dict['enable_inverter_at_backout']==False:
             pass
         elif case_dict['enable_inverter_at_backout']==True:
+            logging.info('Added constraint: Allowing inverter use only at blackout times.')
             ac_dc_bus.inverter_only_at_blackout(model, case_dict, bus_electricity_dc, inverter, experiment)
         else:
             logging.warning('Case definition of ' + case_dict['case_name']
                             + ' faulty at enable_inverter_at_backout. Value can only be True or False')
 
         '''
-        # ------------Allow inverter use only at maingrid blackout------------#
+        # ------------Allow shortage only for certain percentage of demand in a timestep------------#
         if case_dict['allow_shortage'] == True:
             if bus_electricity_ac != None:
                 shortage_constraints.timestep(model, case_dict, experiment, sink_demand_ac, 
@@ -296,7 +304,7 @@ class oemof_model:
         return micro_grid_system, model
 
     def simulate(experiment, micro_grid_system, model, file_name):
-        logging.debug('Solve the optimization problem')
+        logging.info('Simulating...')
         model.solve(solver          =   experiment['solver'],
                     solve_kwargs    =   {'tee': experiment['solver_verbose']}, # if tee_switch is true solver messages will be displayed
                     cmdline_options =   {experiment['cmdline_option']:    str(experiment['cmdline_option_value'])})   #ratioGap allowedGap mipgap

@@ -2,50 +2,12 @@
 For defining custom constraints of the micro grid solutions
 '''
 import pyomo.environ as po
-import pprint as pp
 import logging
 import pandas as pd
 
 class stability_criterion():
 
     def backup(model, case_dict, experiment, storage, sink_demand, genset, pcc_consumption, source_shortage, el_bus):
-        '''
-        Set a minimal limit for operating reserve of diesel generator + storage to aid PV generation in case of volatilities
-        = Ensure stability of MG system
-
-          .. math:: for t in lp_files.TIMESTEPS:
-                stability_limit * demand (t) <= CAP_genset + stored_electricity (t) *invest_relation_output_capacity
-
-        Parameters
-        - - - - - - - -
-
-        model: oemof.solph.model
-            Model to which constraint is added. Has to contain:
-            - Sink for demand flow
-            - Transformer (genset)
-            - Storage (with invest_relation_output_capacity)
-
-        case_dict: dictionary, includes
-            'stability_constraint': float
-                    Share of demand that potentially has to be covered by genset/storage flows for stable operation
-            'storage_fixed_capacity': False, float, None
-            'genset_fixed_capacity': False, float, None
-
-        storage: currently single object of class oemof.solph.components.GenericStorage
-            To get stored capacity at t
-            Has to include attibute invest_relation_output_capacity
-            Can either be an investment object or have a nominal capacity
-
-        sink_demand: currently single object of class oemof.solph.components.Sink
-            To get demand at t
-
-        genset: currently single object of class oemof.solph.network.Transformer
-            To get available capacity genset
-            Can either be an investment object or have a nominal capacity
-
-        el_bus: object of class oemof.solph.network.Bus
-            For accessing flow-parameters
-        '''
         stability_limit = experiment['stability_limit']
         ## ------- Get CAP genset ------- #
         CAP_genset = 0
@@ -88,7 +50,7 @@ class stability_criterion():
                 elif isinstance(case_dict['storage_fixed_capacity'], float): # Fixed storage subject to dispatch
                     stored_electricity += model.GenericStorageBlock.capacity[storage, t] - experiment['storage_capacity_min'] * storage.nominal_capacity
                 else:
-                    print ("Error: 'storage_fixed_capacity' can only be None, False or float.")
+                    logging.warning("Error: 'storage_fixed_capacity' can only be None, False or float.")
                 expr += stored_electricity * experiment['storage_Crate_discharge'] \
                         * experiment['storage_efficiency_discharge'] \
                         * experiment['inverter_dc_ac_efficiency']
@@ -156,7 +118,6 @@ class stability_criterion():
             expr = 0
             ## ------- Get demand at t ------- #
             demand = model.flows[el_bus, sink_demand].actual_value[t] * model.flows[el_bus, sink_demand].nominal_value
-
             expr += - stability_limit * demand
 
             ## ------- Get shortage at t------- #
@@ -181,7 +142,7 @@ class stability_criterion():
                 elif isinstance(case_dict['storage_fixed_capacity'], float): # Fixed storage subject to dispatch
                     stored_electricity += model.GenericStorageBlock.capacity[storage, t] - experiment['storage_soc_min'] * storage.nominal_capacity
                 else:
-                    print ("Error: 'storage_fixed_capacity' can only be None, False or float.")
+                    logging.warning("Error: 'storage_fixed_capacity' can only be None, False or float.")
                 expr += stored_electricity * experiment['storage_Crate_discharge'] \
                         * experiment['storage_efficiency_discharge'] \
                         * experiment['inverter_dc_ac_efficiency']
@@ -456,6 +417,7 @@ class battery_management():
             # Actual charge
             if case_dict['storage_fixed_capacity'] != None:
                 expr += - model.flow[el_bus, storage, t]
+
             return (expr <= 0)
 
         model.forced_charge_linear = po.Constraint(model.TIMESTEPS, rule=linear_charge)
@@ -494,7 +456,6 @@ class battery_management():
         return
 
     def discharge_only_at_blackout(model, case_dict, el_bus, storage, experiment):
-
         grid_inavailability = 1-experiment['grid_availability']
         def discharge_rule_upper(model, t):
             # Battery discharge flow
@@ -511,7 +472,7 @@ class battery_management():
                     stored_electricity += model.GenericStorageBlock.capacity[storage, t]
 
             # force discharge to zero when grid available
-            expr -= stored_electricity * grid_inavailability[t]
+            expr += - stored_electricity * grid_inavailability[t]
             return (expr <= 0)
 
         model.discharge_only_at_blackout_constraint = po.Constraint(model.TIMESTEPS, rule=discharge_rule_upper)
@@ -546,7 +507,6 @@ class battery_management():
 class ac_dc_bus:
 
     def inverter_only_at_blackout(model, case_dict, el_bus, inverter, experiment):
-
         grid_inavailability = 1-experiment['grid_availability']
 
         ## ------- Get CAP inverter ------- #
@@ -563,10 +523,10 @@ class ac_dc_bus:
             if case_dict['inverter_dc_ac_fixed_capacity'] != None:
                 expr += model.flow[el_bus, inverter, t]
             # force discharge to zero when grid available
-            expr -= CAP_inverter * grid_inavailability[t]
+            expr += - CAP_inverter * grid_inavailability[t]
             return (expr <= 0)
 
-        model.discharge_only_at_blackout_constraint = po.Constraint(model.TIMESTEPS, rule=inverter_rule_upper)
+        model.inverter_only_at_blackout = po.Constraint(model.TIMESTEPS, rule=inverter_rule_upper)
 
         return model
 
@@ -607,7 +567,7 @@ class shortage_constraints:
             expr += experiment['shortage_max_timestep'] * demand
             ## ------- Get shortage at t------- #
             if case_dict['allow_shortage'] == True:
-                expr -= model.flow[source_shortage,el_bus,t]
+                expr += - model.flow[source_shortage,el_bus,t]
 
             return (expr >= 0)
 

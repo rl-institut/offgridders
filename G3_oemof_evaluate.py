@@ -35,27 +35,27 @@ class timeseries:
 
         e_flows_df = pd.DataFrame([0 for i in experiment['date_time_index']], columns=['Demand'], index=experiment['date_time_index'])
 
-        if case_dict['genset_fixed_capacity'] != None \
-                or case_dict['wind_fixed_capacity'] != None \
-                or case_dict['pcc_consumption_fixed_capacity'] != None \
-                or case_dict['pcc_feedin_fixed_capacity'] != None:
+        #if case_dict['genset_fixed_capacity'] != None \
+        #        or case_dict['wind_fixed_capacity'] != None \
+        #        or case_dict['pcc_consumption_fixed_capacity'] != None \
+        #        or case_dict['pcc_feedin_fixed_capacity'] != None:
 
-            demand_ac = electricity_bus_ac['sequences'][(('bus_electricity_ac', 'sink_demand_ac'), 'flow')]
-            e_flows_df = utilities.join_e_flows_df(demand_ac, 'Demand AC', e_flows_df)
-            if case_dict['evaluation_perspective'] == 'AC_bus':
-                e_flows_df['Demand'] += demand_ac
-            else:
-                e_flows_df['Demand'] += demand_ac / experiment['inverter_dc_ac_efficiency']
+        demand_ac = electricity_bus_ac['sequences'][(('bus_electricity_ac', 'sink_demand_ac'), 'flow')]
+        e_flows_df = utilities.join_e_flows_df(demand_ac, 'Demand AC', e_flows_df)
+        if case_dict['evaluation_perspective'] == 'AC_bus':
+            e_flows_df['Demand'] += demand_ac
+        else:
+            e_flows_df['Demand'] += demand_ac / experiment['inverter_dc_ac_efficiency']
 
-        if case_dict['pv_fixed_capacity'] != None \
-                or case_dict['storage_fixed_capacity'] != None:
+        #if case_dict['pv_fixed_capacity'] != None \
+        #        or case_dict['storage_fixed_capacity'] != None:
 
-            demand_dc = electricity_bus_dc['sequences'][(('bus_electricity_dc', 'sink_demand_dc'), 'flow')]
-            e_flows_df = utilities.join_e_flows_df(demand_dc, 'Demand DC', e_flows_df)
-            if case_dict['evaluation_perspective'] == 'AC_bus':
-                e_flows_df['Demand'] += demand_dc / experiment['rectifier_ac_dc_efficiency']
-            else:
-                e_flows_df['Demand'] += demand_dc
+        demand_dc = electricity_bus_dc['sequences'][(('bus_electricity_dc', 'sink_demand_dc'), 'flow')]
+        e_flows_df = utilities.join_e_flows_df(demand_dc, 'Demand DC', e_flows_df)
+        if case_dict['evaluation_perspective'] == 'AC_bus':
+            e_flows_df['Demand'] += demand_dc / experiment['rectifier_ac_dc_efficiency']
+        else:
+            e_flows_df['Demand'] += demand_dc
 
         utilities.annual_value('total_demand_annual_kWh', e_flows_df['Demand'], oemof_results, case_dict)
         oemof_results.update({'demand_peak_kW': max(e_flows_df['Demand'])})
@@ -291,12 +291,12 @@ class timeseries:
                 e_flows_df = utilities.join_e_flows_df(storage_charge / experiment['rectifier_ac_dc_efficiency'], 'Storage charge AC', e_flows_df)
                 e_flows_df = utilities.join_e_flows_df(storage_discharge / experiment['inverter_dc_ac_efficiency'], 'Storage discharge AC', e_flows_df)
                 e_flows_df = utilities.join_e_flows_df(e_flows_df['Storage charge AC'], 'Storage charge', e_flows_df)
-                e_flows_df = utilities.join_e_flows_df(e_flows_df['Storage discharge AC'], 'Storage discharge', e_flows_df)
+                e_flows_df = utilities.join_e_flows_df(e_flows_df['Storage discharge AC'], 'Storage discharge',
+                                                       e_flows_df)
             else:
                 e_flows_df = utilities.join_e_flows_df(e_flows_df['Storage charge DC'], 'Storage charge', e_flows_df)
-                e_flows_df = utilities.join_e_flows_df(e_flows_df['Storage discharge DC'], 'Storage discharge', e_flows_df)
-
-
+                e_flows_df = utilities.join_e_flows_df(e_flows_df['Storage discharge DC'], 'Storage discharge',
+                                                       e_flows_df)
         else:
             oemof_results.update({'total_storage_throughput_kWh': 0})
 

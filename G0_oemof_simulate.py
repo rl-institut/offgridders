@@ -76,20 +76,21 @@ class oemof_simulate:
         }
 
         # get all from node electricity bus
-        if case_dict['genset_fixed_capacity'] != None \
-                or case_dict['wind_fixed_capacity'] != None \
-                or case_dict['pcc_consumption_fixed_capacity'] != None \
-                or case_dict['pcc_feedin_fixed_capacity'] != None:
+        #if case_dict['genset_fixed_capacity'] != None \
+        #        or case_dict['wind_fixed_capacity'] != None \
+        #        or case_dict['pcc_consumption_fixed_capacity'] != None \
+        #        or case_dict['pcc_feedin_fixed_capacity'] != None:
 
-            electricity_bus_ac = outputlib.views.node(results, 'bus_electricity_ac')
-        else:
-            None
+        electricity_bus_ac = outputlib.views.node(results, 'bus_electricity_ac')
+        #else:
+        #    None
 
-        if case_dict['pv_fixed_capacity'] != None \
-                or case_dict['storage_fixed_capacity'] != None:
-            electricity_bus_dc = outputlib.views.node(results, 'bus_electricity_dc')
-        else:
-            electricity_bus_dc = None
+        #if case_dict['pv_fixed_capacity'] != None \
+        #        or case_dict['storage_fixed_capacity'] != None:
+
+        electricity_bus_dc = outputlib.views.node(results, 'bus_electricity_dc')
+        #else:
+        #    electricity_bus_dc = None
 
         e_flows_df = timeseries.get_demand(case_dict, oemof_results, electricity_bus_ac, electricity_bus_dc, experiment)
         e_flows_df = timeseries.get_shortage(case_dict, oemof_results, electricity_bus_ac, electricity_bus_dc, experiment, e_flows_df)
