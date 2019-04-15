@@ -396,9 +396,11 @@ class battery_management():
             elif isinstance(case_dict['storage_fixed_capacity'], float):
                 CAP_storage += storage.nominal_capacity
 
-        charge_constant = experiment['storage_Crate_charge'] * CAP_storage \
-                          - (experiment['storage_Crate_charge'] * CAP_storage * experiment['storage_soc_min']
-                             /(experiment['storage_soc_max']-experiment['storage_soc_min']))
+        m = - experiment['storage_Crate_charge']/ (experiment['storage_soc_max']-experiment['storage_soc_min'])
+
+        n = experiment['storage_Crate_charge'] * CAP_storage \
+            * (1 + experiment['storage_soc_min']/(experiment['storage_soc_max']-experiment['storage_soc_min']))
+
 
         def linear_charge(model, t):
             ## ------- Get storaged electricity at t------- #
@@ -410,7 +412,7 @@ class battery_management():
                     stored_electricity += model.GenericStorageBlock.capacity[storage, t]
 
             # Linearization
-            expr = (charge_constant + (stored_electricity * experiment['storage_Crate_charge'])/(experiment['storage_soc_max']-experiment['storage_soc_min']))
+            expr = m * stored_electricity + n
 
             # Only apply linearization if no blackout occurs
             expr = expr * experiment['grid_availability'][t]
@@ -418,7 +420,6 @@ class battery_management():
             # Actual charge
             if case_dict['storage_fixed_capacity'] != None:
                 expr += - model.flow[el_bus, storage, t]
-            print(expr <= 0)
             return (expr <= 0)
 
         model.forced_charge_linear = po.Constraint(model.TIMESTEPS, rule=linear_charge)
@@ -559,7 +560,7 @@ class ac_dc_bus:
 class shortage_constraints:
 
     # todo shortage constraint / stbaility constraint only relates to AC bus
-    def timestep(model, case_dict, experiment, sink_demand, source_shortage, el_bus):
+    def timestep(model, case_dict, experiment, el_bus, sink_demand, source_shortage):
 
         def stability_per_timestep_rule(model, t):
             expr = 0
