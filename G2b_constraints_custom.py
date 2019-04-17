@@ -401,23 +401,23 @@ class battery_management():
         n = experiment['storage_Crate_charge'] * CAP_storage \
             * (1 + experiment['storage_soc_min']/(experiment['storage_soc_max']-experiment['storage_soc_min']))
 
-
         def linear_charge(model, t):
             ## ------- Get storaged electricity at t------- #
             stored_electricity = 0
+            expr = 0
             if case_dict['storage_fixed_capacity'] != None:
                 if case_dict['storage_fixed_capacity'] == False:  # Storage subject to OEM
                     stored_electricity += model.GenericInvestmentStorageBlock.capacity[storage, t]
                 elif isinstance(case_dict['storage_fixed_capacity'], float):  # Fixed storage subject to dispatch
                     stored_electricity += model.GenericStorageBlock.capacity[storage, t]
 
-            # Linearization
-            expr = m * stored_electricity + n * 0.99999
+                # Linearization
+                expr = m * stored_electricity + n * 0.999
 
-            # Only apply linearization if no blackout occurs
-            expr = expr * experiment['grid_availability'][t]
-            # Actual charge
-            if case_dict['storage_fixed_capacity'] != None:
+                # Only apply linearization if no blackout occurs
+                expr = expr * experiment['grid_availability'][t]
+
+                # Actual charge
                 expr += - model.flow[el_bus, storage, t]
             return (expr <= 0)
 
@@ -484,7 +484,6 @@ class battery_management():
         '''
         Testing simulation results for adherance to above defined criterion
         '''
-
         if case_dict['discharge_only_when_blackout']==True and case_dict['storage_fixed_capacity'] != None:
             boolean_test = [e_flows_df['Storage discharge DC'][t]
                              <= (1-e_flows_df['Grid availability'][t]) * e_flows_df['Stored capacity'][t]

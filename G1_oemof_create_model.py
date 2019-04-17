@@ -276,7 +276,6 @@ class oemof_model:
         elif case_dict['discharge_only_when_blackout']==True:
             logging.info('Added constraint: Allowing discharge only at blackout times.')
             battery_management.discharge_only_at_blackout(model, case_dict, bus_electricity_dc, storage, experiment)
-            #battery_management.discharge_only_at_blackout_alternative(model, case_dict, bus_electricity_dc, storage, experiment)
         else:
             logging.warning('Case definition of ' + case_dict['case_name']
                             + ' faulty at discharge_only_when_blackout. Value can only be True or False')

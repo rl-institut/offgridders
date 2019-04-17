@@ -327,7 +327,8 @@ class generate():
         micro_grid_system.add(generic_storage)
         return generic_storage
 
-    def storage_fix(micro_grid_system, bus_electricity_dc, experiment, capacity_storage):
+    # todo: try or not try?!
+    def storage_fix_secondary(micro_grid_system, bus_electricity_dc, experiment, capacity_storage):
         logging.debug('Added to oemof model: storage fix')
         generic_storage = solph.components.GenericStorage(
             label                       = 'generic_storage',
