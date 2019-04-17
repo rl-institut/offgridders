@@ -412,11 +412,10 @@ class battery_management():
                     stored_electricity += model.GenericStorageBlock.capacity[storage, t]
 
             # Linearization
-            expr = m * stored_electricity + n
+            expr = m * stored_electricity + n * 0.99999
 
             # Only apply linearization if no blackout occurs
             expr = expr * experiment['grid_availability'][t]
-
             # Actual charge
             if case_dict['storage_fixed_capacity'] != None:
                 expr += - model.flow[el_bus, storage, t]

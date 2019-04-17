@@ -81,7 +81,6 @@ experiment_count = 0
 
 for experiment in sensitivity_experiment_s:
 
-    experiment_count = experiment_count + 1
     capacities_oem = {}
 
     if 'grid_availability' in sensitivity_experiment_s[experiment].keys():
@@ -106,6 +105,7 @@ for experiment in sensitivity_experiment_s:
         # Creating, simulating and storing micro grid energy systems with oemof       #
         # According to parameters set beforehand                                      #
         ###############################################################################
+        experiment_count = experiment_count + 1
         logging.info(
             'Starting simulation of case ' + specific_case + ', '
             + 'project site ' + sensitivity_experiment_s[experiment]['project_site_name'] + ', '
