@@ -412,7 +412,7 @@ class battery_management():
                     stored_electricity += model.GenericStorageBlock.capacity[storage, t]
 
                 # Linearization
-                expr = m * stored_electricity + n * 0.999
+                expr = m * stored_electricity + n #* 0.999
 
                 # Only apply linearization if no blackout occurs
                 expr = expr * experiment['grid_availability'][t]
@@ -458,22 +458,24 @@ class battery_management():
 
     def discharge_only_at_blackout(model, case_dict, el_bus, storage, experiment):
         grid_inavailability = 1-experiment['grid_availability']
-        def discharge_rule_upper(model, t):
-            # Battery discharge flow
-            expr = 0
-            if case_dict['storage_fixed_capacity'] != None:
-                expr += model.flow[storage, el_bus, t]
 
-            ## ------- Get storaged electricity at t------- #
+        def discharge_rule_upper(model, t):
+            expr = 0
             stored_electricity = 0
+
             if case_dict['storage_fixed_capacity'] != None:
+                # Battery discharge flow
+                expr += model.flow[storage, el_bus, t]
+                # Get stored electricity at t
                 if case_dict['storage_fixed_capacity'] == False:  # Storage subject to OEM
                     stored_electricity += model.GenericInvestmentStorageBlock.capacity[storage, t]
                 elif isinstance(case_dict['storage_fixed_capacity'], float):  # Fixed storage subject to dispatch
                     stored_electricity += model.GenericStorageBlock.capacity[storage, t]
 
-            # force discharge to zero when grid available
-            expr += - stored_electricity * grid_inavailability[t]
+                # force discharge to zero when grid available
+                expr += - stored_electricity * grid_inavailability[t]
+
+
             return (expr <= 0)
 
         model.discharge_only_at_blackout_constraint = po.Constraint(model.TIMESTEPS, rule=discharge_rule_upper)
@@ -535,7 +537,7 @@ class ac_dc_bus:
         Testing simulation results for adherance to above defined criterion
         '''
 
-        if case_dict['enable_inverter_at_backout']==True and case_dict['inverter_dc_ac_fixed_capacity'] != None:
+        if case_dict['enable_inverter_only_at_backout']==True and case_dict['inverter_dc_ac_fixed_capacity'] != None:
             boolean_test = [e_flows_df['Inverter input'][t]
                              <= (1-e_flows_df['Grid availability'][t]) * oemof_results['capacity_inverter_dc_ac_kW']
                              for t in range(0, len(e_flows_df.index))]

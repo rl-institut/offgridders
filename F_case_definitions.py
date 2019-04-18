@@ -141,7 +141,7 @@ class cases:
         experiment_case_dict['evaluation_perspective'] = specific_case['evaluation_perspective']
         experiment_case_dict['force_charge_from_maingrid'] = specific_case['force_charge_from_maingrid']
         experiment_case_dict['discharge_only_when_blackout'] = specific_case['discharge_only_when_blackout']
-        experiment_case_dict['enable_inverter_at_backout'] = specific_case['enable_inverter_at_backout']
+        experiment_case_dict['enable_inverter_only_at_backout'] = specific_case['enable_inverter_only_at_backout']
         return experiment_case_dict
 
 class utilities:

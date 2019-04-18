@@ -281,9 +281,9 @@ class oemof_model:
                             + ' faulty at discharge_only_when_blackout. Value can only be True or False')
 
         # ------------Allow inverter use only at maingrid blackout------------#
-        if case_dict['enable_inverter_at_backout']==False:
+        if case_dict['enable_inverter_only_at_backout']==False:
             pass
-        elif case_dict['enable_inverter_at_backout']==True:
+        elif case_dict['enable_inverter_only_at_backout']==True:
             logging.info('Added constraint: Allowing inverter use only at blackout times.')
             ac_dc_bus.inverter_only_at_blackout(model, case_dict, bus_electricity_dc, inverter, experiment)
         else:

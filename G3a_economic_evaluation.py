@@ -167,7 +167,11 @@ class economic_evaluation():
         oemof_results.update({'expenditures_shortage_total':
                 oemof_results['expenditures_shortage_annual'] * experiment['annuity_factor']})
 
-        oemof_results.update({'annuity': oemof_results['annuity'] + oemof_results['expenditures_shortage_annual']})
+        if experiment['include_shortage_penalty_costs_in_lcoe']==True:
+            oemof_results.update({'annuity': oemof_results['annuity'] + oemof_results['expenditures_shortage_annual']})
+        else:
+            oemof_results.update(
+                {'comments': oemof_results['comments'] + 'Shortage penalty costs used in OEM not included in LCOE. '})
         return
 
     def revenue_main_grid_feedin(oemof_results, experiment):
