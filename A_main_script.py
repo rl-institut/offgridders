@@ -6,7 +6,7 @@ For efficient iterations? https://docs.python.org/2/library/itertools.html
 
 
 import pprint as pp
-
+import os, sys
 from oemof.tools import logger
 import logging
 # Logging
@@ -25,13 +25,17 @@ logging.info('\n \n MICRO GRID TOOL 1.1 \n Version: 04.04.2019 \n Coded by: Mart
 # * List of simulated cases                                                   #
 ###############################################################################
 
+os.system('clear')
+input_excel_file = str(sys.argv[1])
+
 #-------- Get all settings ---------------------------------------------------#
 # General settings, general parameters, sensitivity parameters, project site  #
 # data including timeseries (no noise, not clipped to evaluated timeframe     #
 #-----------------------------------------------------------------------------#
+
 from B_read_from_files import excel_template
 settings, parameters_constant_values, parameters_sensitivity, project_site_s, case_definitions = \
-    excel_template.settings()
+    excel_template.settings(input_excel_file)
 
 #---- Define all sensitivity_experiment_s, define result parameters ----------#
 from C_sensitivity_experiments import generate_sensitvitiy_experiments, get_names
@@ -139,7 +143,7 @@ for experiment in sensitivity_experiment_s:
         logging.info('The experiment with following parameters has been analysed:')
         pp.pprint(sensitivity_experiment_s[experiment])
 
-    logging.info('\n')
+    print('\n')
 
 # display all results
 output_names = ['case']

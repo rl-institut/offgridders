@@ -6,13 +6,13 @@ import shutil
 
 class excel_template():
 
-    def settings():
+    def settings(input_excel_file):
         #######################################
         # Reads all input from excel template #
         #######################################
 
         # location of excel template
-        file = './inputs/input_template_excel.xlsx'
+        #file = './inputs/input_template_excel.xlsx'
         # Name of tabs
         sheet_settings = 'settings'
         sheet_input_constant = 'input_constant'
@@ -20,16 +20,16 @@ class excel_template():
         sheet_project_sites = 'project_sites'
         sheet_case_definitions = 'case_definitions'
 
-        settings = excel_template.get_settings(file, sheet_settings)
+        settings = excel_template.get_settings(input_excel_file, sheet_settings)
 
         # -------- Check for, create or empty results directory -----------------------#
         from Z_output_functions import output
-        output.check_output_directory(settings)
+        output.check_output_directory(settings, input_excel_file)
 
-        parameters_constant_units, parameters_constant_values = excel_template.get_parameters_constant(file, sheet_input_constant)
-        parameters_sensitivity = excel_template.get_parameters_sensitivity(file, sheet_input_sensitivity)
+        parameters_constant_units, parameters_constant_values = excel_template.get_parameters_constant(input_excel_file, sheet_input_constant)
+        parameters_sensitivity = excel_template.get_parameters_sensitivity(input_excel_file, sheet_input_sensitivity)
 
-        project_site_s = excel_template.get_project_sites(file, sheet_project_sites)
+        project_site_s = excel_template.get_project_sites(input_excel_file, sheet_project_sites)
 
         necessity_for_blackout_timeseries_generation=False
         # extend by timeseries
@@ -44,7 +44,7 @@ class excel_template():
                 necessity_for_blackout_timeseries_generation=True
 
         settings.update({'necessity_for_blackout_timeseries_generation': necessity_for_blackout_timeseries_generation})
-        case_definitions = excel_template.get_case_definitions(file, sheet_case_definitions)
+        case_definitions = excel_template.get_case_definitions(input_excel_file, sheet_case_definitions)
         return settings, parameters_constant_values, parameters_sensitivity, project_site_s, case_definitions
 
     def get_data(file, sheet, header_row, index_column, last_column):

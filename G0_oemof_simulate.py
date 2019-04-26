@@ -159,7 +159,7 @@ class oemof_simulate:
         # Infos on simulation
         logging.info('Simulation of case "' + case_dict['case_name'] + '" resulted in : \n'
                      + '    ' + '  ' + '    ' + '    ' + '    '
-                     + str(round(oemof_results['lcoe']*100, 1)) + ' EuroCt/kWh, '
+                     + str(round(oemof_results['lcoe'], 3)) + ' currency/kWh, '
                      + 'at a renewable share of '
                      + str(round(oemof_results['res_share'] * 100, 2)) + ' percent'
                      + ' with a reliability of '

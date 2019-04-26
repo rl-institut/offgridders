@@ -113,7 +113,7 @@ class output_results:
         return title_overall_results
 
 class output:
-    def check_output_directory(settings):
+    def check_output_directory(settings, input_excel_file):
 
         logging.debug('Checking for folders and files')
         """ Checking for output folder, creating it if nonexistant and deleting files if needed """
@@ -154,10 +154,11 @@ class output:
                         pass
         else:
             os.mkdir(output_folder)
+            os.mkdir(output_folder + '/oemof')
 
         os.mkdir(output_folder + '/inputs')
 
-        path_from = os.path.abspath('./inputs/input_template_excel.xlsx')
+        path_from = os.path.abspath(input_excel_file)
         path_to = os.path.abspath(output_folder + '/inputs/input_template_excel.xlsx')
         shutil.copy(path_from, path_to)
 
