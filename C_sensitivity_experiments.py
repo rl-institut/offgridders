@@ -22,11 +22,11 @@ class generate_sensitvitiy_experiments:
         # Get sensitivity_experiment_s for sensitivity analysis            #
         #######################################################
         if settings['sensitivity_all_combinations'] == True:
-            sensitivitiy_experiments_s, number_of_project_sites, sensitivity_array_dict, total_number_of_experiments = \
+            sensitivitiy_experiment_s, number_of_project_sites, sensitivity_array_dict, total_number_of_experiments = \
                 generate_experiments.all_possible(settings, parameters_constant_values, parameters_sensitivity, project_sites)
 
         elif settings['sensitivity_all_combinations'] == False:
-            sensitivitiy_experiments_s, number_of_project_sites, sensitivity_array_dict, total_number_of_experiments = \
+            sensitivitiy_experiment_s, number_of_project_sites, sensitivity_array_dict, total_number_of_experiments = \
                 generate_experiments.with_base_case(settings, parameters_constant_values, parameters_sensitivity, project_sites)
 
         else:
@@ -40,18 +40,26 @@ class generate_sensitvitiy_experiments:
 
         logging.info(message[:-2])
 
-        for experiment in sensitivitiy_experiments_s:
+        for experiment in sensitivitiy_experiment_s:
+            # scaling demand according to scaling factor - used for tests regarding tool application
+            sensitivitiy_experiment_s[experiment].update({
+                'demand_ac': sensitivitiy_experiment_s[experiment]['demand_ac'] *
+                             sensitivitiy_experiment_s[experiment]['demand_ac_scaling_factor']})
+            sensitivitiy_experiment_s[experiment].update({
+                'demand_dc': sensitivitiy_experiment_s[experiment]['demand_dc'] *
+                             sensitivitiy_experiment_s[experiment]['demand_dc_scaling_factor']})
+
             #  Add economic values to sensitivity sensitivity_experiment_s
-            process_input.economic_values(sensitivitiy_experiments_s[experiment])
+            process_input.economic_values(sensitivitiy_experiment_s[experiment])
             # Give a file name to the sensitivity_experiment_s
-            get_names.experiment_name(sensitivitiy_experiments_s[experiment], sensitivity_array_dict,
+            get_names.experiment_name(sensitivitiy_experiment_s[experiment], sensitivity_array_dict,
                                 number_of_project_sites)
 
-            if 'comments' not in sensitivitiy_experiments_s[experiment]:
-                sensitivitiy_experiments_s[experiment].update({'comments': ''})
+            if 'comments' not in sensitivitiy_experiment_s[experiment]:
+                sensitivitiy_experiment_s[experiment].update({'comments': ''})
 
-            if sensitivitiy_experiments_s[experiment]['storage_soc_initial']=='None':
-                sensitivitiy_experiments_s[experiment].update({'storage_soc_initial': None})
+            if sensitivitiy_experiment_s[experiment]['storage_soc_initial']=='None':
+                sensitivitiy_experiment_s[experiment].update({'storage_soc_initial': None})
         #######################################################
         # Get blackout_experiment_s for sensitvitiy           #
         #######################################################
@@ -60,7 +68,7 @@ class generate_sensitvitiy_experiments:
             = generate_experiments.blackout(sensitivity_array_dict, parameters_constant_values, settings)
 
         # save all Experiments with all used input data to csv
-        csv_dict = deepcopy(sensitivitiy_experiments_s)
+        csv_dict = deepcopy(sensitivitiy_experiment_s)
         # delete timeseries to make file readable
         timeseries_names=['demand_ac', 'demand_dc', 'pv_generation_per_kWp', 'wind_generation_per_kW', 'grid_availability']
         for entry in csv_dict:
@@ -89,7 +97,7 @@ class generate_sensitvitiy_experiments:
         settings.update({'total_number_of_experiments': total_number_of_experiments})
 
 
-        return sensitivitiy_experiments_s, blackout_experiment_s, title_overall_results, names_sensitivities
+        return sensitivitiy_experiment_s, blackout_experiment_s, title_overall_results, names_sensitivities
 
 class generate_experiments():
     def all_possible(settings, parameters_constant_values, parameters_sensitivity, project_site_s):
@@ -288,14 +296,6 @@ class get:
                             sensitivity_experiment_s[experiment_number].update(deepcopy(project_site_s[project_site]))
                             defined_base = True
                             sensitivity_experiment_s[experiment_number].update({'comments': 'Base case, '})
-
-            # scaling demand according to scaling factor - used for tests regarding tool application
-            sensitivity_experiment_s[experiment_number].update({
-                'demand_ac': sensitivity_experiment_s[experiment_number]['demand_ac'] *
-                             sensitivity_experiment_s[experiment_number]['demand_ac_scaling_factor']})
-            sensitivity_experiment_s[experiment_number].update({
-                'demand_dc': sensitivity_experiment_s[experiment_number]['demand_dc'] *
-                             sensitivity_experiment_s[experiment_number]['demand_dc_scaling_factor']})
 
         total_number_of_experiments = experiment_number
         return sensitivity_experiment_s, total_number_of_experiments

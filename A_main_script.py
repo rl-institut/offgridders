@@ -17,7 +17,10 @@ logger.define_logging(logpath='./',
                       #screen_level=logging.DEBUG,
                       file_level=logging.DEBUG)
 
-logging.info('\n \n MICRO GRID TOOL 1.1 \n Version: 04.04.2019 \n Coded by: Martha M. Hoffmann \n Reiner Lemoine Institute (Berlin) \n \n ')
+logging.info('\n \n MICRO GRID TOOL 2.0 '
+             '\n Version: 26.04.2019 (SDG Leicester) '
+             '\n Coded by: Martha M. Hoffmann '
+             '\n Reiner Lemoine Institute (Berlin) \n \n ')
 
 ###############################################################################
 # Get values from excel_template called in terminal                           #
@@ -82,6 +85,7 @@ from F_case_definitions import cases
 from G0_oemof_simulate import oemof_simulate
 
 experiment_count = 0
+total_number_of_simulations = settings['total_number_of_experiments'] * len(case_list)
 
 for experiment in sensitivity_experiment_s:
 
@@ -89,12 +93,13 @@ for experiment in sensitivity_experiment_s:
 
     if 'grid_availability' in sensitivity_experiment_s[experiment].keys():
         logging.debug('Using grid availability as included in timeseries file of project location.')
-        pass # grid availability timeseries from file already included in data
+        # grid availability timeseries from file already included in data
     else:
         # extend experiment with blackout timeseries according to blackout parameters
         logging.debug('Using grid availability timeseries that was randomly generated.')
         blackout_experiment_name = get_names.blackout_experiment_name(sensitivity_experiment_s[experiment])
-        sensitivity_experiment_s[experiment].update({'grid_availability': sensitivity_grid_availability[blackout_experiment_name]})
+        sensitivity_experiment_s[experiment].update({'grid_availability':
+                                                         sensitivity_grid_availability[blackout_experiment_name]})
 
     ###############################################################################
     # Simulations of all cases                                                    #
@@ -113,7 +118,7 @@ for experiment in sensitivity_experiment_s:
         logging.info(
             'Starting simulation of case ' + specific_case + ', '
             + 'project site ' + sensitivity_experiment_s[experiment]['project_site_name'] + ', '
-            + 'experiment no. ' + str(experiment_count) + '/'+ str(settings['total_number_of_experiments'] * len(case_list)) + '...')
+            + 'experiment no. ' + str(experiment_count) + '/'+ str(total_number_of_simulations) + '...')
 
         # Run simulation, evaluate results
         oemof_results = oemof_simulate.run(sensitivity_experiment_s[experiment], experiment_case_dict)
@@ -132,18 +137,18 @@ for experiment in sensitivity_experiment_s:
         # Extend overall results dataframe with simulation results
         overall_results = helpers.store_result_matrix(overall_results, sensitivity_experiment_s[experiment], oemof_results)
         # Writing DataFrame with all results to csv file
-        overall_results.to_csv(sensitivity_experiment_s[experiment]['output_folder'] + '/results.csv') # moved from below
+        overall_results.to_csv(sensitivity_experiment_s[experiment]['output_folder'] + '/' + sensitivity_experiment_s[experiment]['output_file'] + '.csv') # moved from below
 
-    logging.info('    Estimated simulation time left: '
-                 + str(round(sum(overall_results['evaluation_time'][:])
-                             * (settings['total_number_of_experiments']-experiment_count)/experiment_count/60,1))
-                 + ' minutes.')
+        # Estimating simulation time left - more precise for greater number of simulations
+        logging.info('    Estimated simulation time left: '
+                     + str(round(sum(overall_results['evaluation_time'][:])
+                                 * (total_number_of_simulations-experiment_count)/experiment_count/60,1))
+                     + ' minutes.')
+        print('\n')
 
     if settings['display_experiment'] == True:
         logging.info('The experiment with following parameters has been analysed:')
         pp.pprint(sensitivity_experiment_s[experiment])
-
-    print('\n')
 
 # display all results
 output_names = ['case']
