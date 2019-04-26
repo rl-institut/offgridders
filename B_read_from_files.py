@@ -35,11 +35,11 @@ class excel_template():
         # extend by timeseries
         for project_site in project_site_s:
             # copy input timeseries to new location
-            path_from = os.path.abspath(project_site_s[project_site]['timeseries_file'])
-            path_to = os.path.abspath(settings['output_folder'] + '/inputs/'+ project_site + '.csv')
+            path_from = os.path.abspath(settings['input_folder_timeseries'] + '/' + project_site_s[project_site]['timeseries_file'])
+            path_to = os.path.abspath(settings['output_folder'] + '/inputs/'+ project_site_s[project_site]['timeseries_file'])
             shutil.copy(path_from, path_to)
 
-            csv_input.from_file(project_site_s[project_site])
+            csv_input.from_file(project_site_s[project_site], path_from)
             if project_site_s[project_site]['title_grid_availability'] == 'None':
                 necessity_for_blackout_timeseries_generation=True
 
@@ -134,12 +134,12 @@ class excel_template():
 
 class csv_input():
 
-    def from_file(project_site):
+    def from_file(project_site, path_from):
         ##########################################################
         # Reads timeseries from files connected to project sites #
         ##########################################################
 
-        data_set = pd.read_csv(project_site['timeseries_file'], sep=project_site['seperator']) # excluded attribute sep: ';'
+        data_set = pd.read_csv(path_from, sep=project_site['seperator']) # excluded attribute sep: ';'
         if project_site['title_time']=='None':
             file_index = None
         else:

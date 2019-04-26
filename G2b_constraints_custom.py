@@ -412,7 +412,7 @@ class battery_management():
                     stored_electricity += model.GenericStorageBlock.capacity[storage, t]
 
                 # Linearization
-                expr = m * stored_electricity + n * 0.99
+                expr = m * stored_electricity + n #* 0.99
 
                 # Only apply linearization if no blackout occurs
                 expr = expr * experiment['grid_availability'][t]

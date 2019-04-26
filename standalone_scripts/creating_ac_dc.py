@@ -1,7 +1,7 @@
 import pandas as pd
 
-list_of_files = {'T2': ['T2_ac_year', 'T2_dc_year'],
-                 'T4': ['T4_ac_year', 'T4_dc_year']}
+list_of_files = {'T2': ['T2_ac_year_final', 'T2_dc_year_final'],
+                 'T4': ['T4_ac_year_final', 'T4_dc_year_final']}
 
 
 for file in list_of_files:

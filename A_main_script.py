@@ -130,9 +130,16 @@ for experiment in sensitivity_experiment_s:
         # Writing DataFrame with all results to csv file
         overall_results.to_csv(sensitivity_experiment_s[experiment]['output_folder'] + '/results.csv') # moved from below
 
+    logging.info('    Estimated simulation time left: '
+                 + str(round(sum(overall_results['evaluation_time'][:])
+                             * (settings['total_number_of_experiments']-experiment_count)/experiment_count/60,1))
+                 + ' minutes.')
+
     if settings['display_experiment'] == True:
         logging.info('The experiment with following parameters has been analysed:')
         pp.pprint(sensitivity_experiment_s[experiment])
+
+    logging.info('\n')
 
 # display all results
 output_names = ['case']
