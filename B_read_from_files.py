@@ -11,8 +11,6 @@ class excel_template():
         # Reads all input from excel template #
         #######################################
 
-        # location of excel template
-        #file = './inputs/input_template_excel.xlsx'
         # Name of tabs
         sheet_settings = 'settings'
         sheet_input_constant = 'input_constant'

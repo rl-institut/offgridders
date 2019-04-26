@@ -20,13 +20,13 @@ logger.define_logging(logpath='./',
 logging.info('\n \n MICRO GRID TOOL 1.1 \n Version: 04.04.2019 \n Coded by: Martha M. Hoffmann \n Reiner Lemoine Institute (Berlin) \n \n ')
 
 ###############################################################################
-# Get values from excel_template:                                             #
-# * Experiments: Settings, project sites                                      #
-# * List of simulated cases                                                   #
+# Get values from excel_template called in terminal                           #
+# python3 A_main_script.py PATH/file.xlsx
 ###############################################################################
 
 os.system('clear')
 input_excel_file = str(sys.argv[1])
+#input_excel_file = './inputs/input_template_excel.xlsx'
 
 #-------- Get all settings ---------------------------------------------------#
 # General settings, general parameters, sensitivity parameters, project site  #
