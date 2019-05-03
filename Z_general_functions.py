@@ -31,9 +31,10 @@ class helpers:
             'capacity_wind_kW': oemof_results['capacity_wind_kW'],
             'capacity_storage_kWh': oemof_results['capacity_storage_kWh'],
             'capacity_genset_kW': oemof_results['capacity_genset_kW'],
-            'capacity_pcoupling_kW': oemof_results['capacity_pcoupling_kW']}
+            'capacity_pcoupling_kW': oemof_results['capacity_pcoupling_kW'],
+            'capacity_rectifier_ac_dc_kW': oemof_results['capacity_rectifier_ac_dc_kW'],
+            'capacity_inverter_dc_ac_kW': oemof_results['capacity_inverter_dc_ac_kW']}
         return capacities_base
-
 
     def store_result_matrix(overall_results, experiment, oemof_results):
         """

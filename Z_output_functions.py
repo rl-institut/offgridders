@@ -38,6 +38,16 @@ class output_results:
                 'demand_peak_kW',
                 'total_demand_supplied_annual_kWh',
                 'total_demand_shortage_annual_kWh'])], axis=1, sort=False)
+            '''
+            'total_demand_ac'
+            'peak_demand_ac'
+            'total_demand_dc'
+            'peak_demand_dc'
+            'mean_demand_ac'
+            'mean_demand_dc'
+            'peak/mean_demand_ratio_ac'
+            'peak/mean_demand_ratio_dc'
+            '''
 
         if settings['results_blackout_characteristics'] == True:
             title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[
@@ -58,13 +68,15 @@ class output_results:
         if settings['results_annuities'] == True:
             title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[
                 'annuity_pv',
-                'annuity_wind',
                 'annuity_storage',
+                'annuity_rectifier_ac_dc',
+                'annuity_inverter_dc_ac',
+                'annuity_wind',
                 'annuity_genset',
                 'annuity_pcoupling',
                 'annuity_distribution_grid',
                 'annuity_project',
-                'annuity_grid_extension'])], axis=1, sort=False)
+                'annuity_maingrid_extension'])], axis=1, sort=False)
 
         title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[
             'expenditures_fuel_annual',
@@ -77,13 +89,15 @@ class output_results:
         if settings['results_costs'] == True:
             title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[
                 'costs_pv',
-                'costs_wind',
                 'costs_storage',
+                'costs_rectifier_ac_dc',
+                'costs_inverter_dc_ac',
+                'costs_wind',
                 'costs_genset',
                 'costs_pcoupling',
                 'costs_distribution_grid',
                 'costs_project',
-                'costs_grid_extension',
+                'costs_maingrid_extension',
                 'expenditures_fuel_total',
                 'expenditures_main_grid_consumption_total',
                 'expenditures_shortage_total',
@@ -99,7 +113,7 @@ class output_results:
         return title_overall_results
 
 class output:
-    def check_output_directory(settings):
+    def check_output_directory(settings, input_excel_file):
 
         logging.debug('Checking for folders and files')
         """ Checking for output folder, creating it if nonexistant and deleting files if needed """
@@ -123,6 +137,9 @@ class output:
                         shutil.rmtree(path_removed, ignore_errors=True)
                         os.mkdir(output_folder + '/oemof')
 
+                elif folder== '/oemof' and os.path.isdir(output_folder+folder) == False:
+                    os.mkdir(output_folder + '/oemof')
+
                 elif os.path.isdir(output_folder+folder):
                     path_removed = os.path.abspath(output_folder + folder)
                     shutil.rmtree(path_removed, ignore_errors=True)
@@ -137,10 +154,11 @@ class output:
                         pass
         else:
             os.mkdir(output_folder)
+            os.mkdir(output_folder + '/oemof')
 
         os.mkdir(output_folder + '/inputs')
 
-        path_from = os.path.abspath('./inputs/input_template_excel.xlsx')
+        path_from = os.path.abspath(input_excel_file)
         path_to = os.path.abspath(output_folder + '/inputs/input_template_excel.xlsx')
         shutil.copy(path_from, path_to)
 
@@ -174,20 +192,49 @@ class output:
     def save_mg_flows(experiment, case_dict, e_flows_df, filename):
         logging.debug('Saving flows MG.')
         flows_connected_to_electricity_mg_bus = [
-            'Demand'
+            'Demand AC',
+            'Demand DC',
             'Demand shortage',
+            'Demand shortage AC',
+            'Demand shortage DC',
             'Demand supplied',
             'PV generation',
+            'PV generation AC',
+            'PV generation DC',
             'Wind generation',
-            'Excess electricity',
+            'Excess generation',
             'Consumption from main grid (MG side)',
             'Feed into main grid (MG side)',
             'Storage discharge',
+            'Storage discharge AC',
+            'Storage discharge DC',
             'Storage SOC',
             'Storage charge',
+            'Storage charge AC',
+            'Storage charge DC',
             'Genset generation',
-            'Grid availability',
-            'Excess generation']
+            'Grid availability']
+
+        negative_list = ['Demand shortage',
+                         'Demand shortage AC',
+                         'Demand shortage DC',
+                         'Storage discharge',
+                         'Storage discharge AC',
+                         'Storage discharge DC',
+                         'Feed into main grid (MG side)']
+
+        droplist = [
+            'Demand AC',
+            'Demand DC',
+            'Demand shortage AC',
+            'Demand shortage DC',
+            'PV generation AC',
+            'PV generation DC',
+            'Storage discharge AC',
+            'Storage discharge DC',
+            'Storage charge AC',
+            'Storage charge DC']
+
         mg_flows = pd.DataFrame(e_flows_df['Demand'].values, columns=['Demand'], index=e_flows_df['Demand'].index)
         for entry in flows_connected_to_electricity_mg_bus:
             if entry in e_flows_df.columns:
@@ -195,7 +242,7 @@ class output:
                 if not((entry == 'Demand supplied' or entry == 'Demand shortage')
                        and (sum(e_flows_df['Demand'].values)==sum(e_flows_df['Demand supplied'].values))):
 
-                    if entry in ['Storage discharge', 'Demand shortage', 'Feed into main grid (MG side)']:
+                    if entry in negative_list:
                         # Display those values as negative in graphs/files
                         if entry == 'Feed into main grid (MG side)':
                             new_column = pd.DataFrame(-e_flows_df[entry].values,
@@ -218,6 +265,10 @@ class output:
         if experiment['save_to_png_flows_electricity_mg'] == True:
             number_of_subplots = 0
 
+            for item in droplist:
+                if item in mg_flows.columns:
+                    mg_flows = mg_flows.drop([item], axis=1)
+
             if 'Storage SOC' in mg_flows.columns:
                 mg_flows = mg_flows.drop(['Storage SOC'], axis=1)
                 if case_dict['storage_fixed_capacity'] != None:
@@ -237,7 +288,6 @@ class output:
                     output.plot_flows(case_dict, experiment, mg_flows[24:5 * 24], e_flows_df[24:5 * 24], number_of_subplots)
                     plt.savefig(experiment['output_folder'] + '/electricity_mg/' + case_dict[
                         'case_name'] + filename + '_electricity_mg_4days.png', bbox_inches="tight")
-
                 plt.close()
                 plt.clf()
                 plt.cla()
@@ -341,7 +391,7 @@ class output:
                     plt.clf()
                     plt.cla()
         return
-    '''
+
     def save_network_graph(energysystem, case_name):
         logging.debug('Generate networkx diagram')
         energysystem_graph = graph.create_nx_graph(energysystem)
@@ -438,4 +488,3 @@ class output:
         
         return
 
-'''

@@ -26,8 +26,9 @@ class cases:
         experiment_case_dict.update({
             'case_name': specific_case['case_name'],
             'filename': specific_case['case_name'] + experiment['filename'], #experiment['output_folder'] + "_" + specific_case['case_name'] + experiment['filename']
-            'total_demand': experiment['total_demand'],
-            'peak_demand': experiment['peak_demand'],
+            'total_demand_ac': experiment['total_demand_ac'],
+            'total_demand_dc': experiment['total_demand_dc'],
+            'peak_demand':  experiment['abs_peak_demand_ac_side'],
             'evaluated_days': experiment['evaluated_days'],
             'genset_with_minimal_loading': specific_case['genset_with_minimal_loading']})
 
@@ -43,21 +44,27 @@ class cases:
              'capacity_pv_kWp',
              'capacity_pcc_consumption_kW',
              'capacity_pcc_feedin_kW',
-             'capacity_wind_kW']
+             'capacity_wind_kW',
+             'capacity_rectifier_ac_dc_kW',
+             'capacity_inverter_dc_ac_kW']
         list_of_batch_names = \
             ['storage_batch',
              'genset_batch',
              'pv_batch',
              'pcoupling_batch', # check entry
              'pcoupling_batch', # check entry
-             'wind_batch'] # create entry
+             'wind_batch',
+             'rectifier_ac_dc_batch',
+             'inverter_dc_ac_batch'] # create entry
         list_build_oemof_names = \
             ['storage_fixed_capacity',
              'genset_fixed_capacity',
              'pv_fixed_capacity',
              'pcc_consumption_fixed_capacity',
              'pcc_feedin_fixed_capacity',
-             'wind_fixed_capacity']
+             'wind_fixed_capacity',
+             'rectifier_ac_dc_fixed_capacity',
+             'inverter_dc_ac_fixed_capacity']
 
         if len(list_base_capacities) != len(list_build_oemof_names):
             logging.warning('Lists for defining experiment cases not of same lenght.')
@@ -131,7 +138,10 @@ class cases:
                 warning_string + ' value "renewable_share_constraint" (True/False/default) not defined properly')
 
         experiment_case_dict['number_of_equal_generators'] = specific_case['number_of_equal_generators']
-
+        experiment_case_dict['evaluation_perspective'] = specific_case['evaluation_perspective']
+        experiment_case_dict['force_charge_from_maingrid'] = specific_case['force_charge_from_maingrid']
+        experiment_case_dict['discharge_only_when_blackout'] = specific_case['discharge_only_when_blackout']
+        experiment_case_dict['enable_inverter_only_at_backout'] = specific_case['enable_inverter_only_at_backout']
         return experiment_case_dict
 
 class utilities:

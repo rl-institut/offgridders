@@ -4,44 +4,13 @@ import os
 import shutil
 # requires xlrd
 
-class csv_input():
-
-    def from_file(project_site):
-        ##########################################################
-        # Reads timeseries from files connected to project sites #
-        ##########################################################
-
-        data_set = pd.read_csv(project_site['timeseries_file'], sep=project_site['seperator']) # excluded attribute sep: ';'
-        if project_site['title_time']=='None':
-            file_index = None
-        else:
-            file_index = pd.DatetimeIndex(data_set[project_site['title_time']].values)
-
-        # Attached data to each project site analysed. Does NOT apply noise here,
-        # as noise might be subject to sensitivity analysis
-
-        # Necessary: All of these input timeseries in same unit (kWh)
-        project_site.update({'demand': data_set[project_site['title_demand']]})
-        project_site.update({'pv_generation_per_kWp': data_set[project_site['title_pv']]})  # reading pv_generation values - adjust to panel area or kWp and if in Wh!
-        project_site.update({'wind_generation_per_kW': data_set[project_site['title_wind']]})
-
-
-        if project_site['title_grid_availability'] != 'None':
-            project_site.update({'grid_availability': data_set[project_site['title_grid_availability']]})
-
-        project_site.update({'file_index': file_index})
-
-        return
-
 class excel_template():
 
-    def settings():
+    def settings(input_excel_file):
         #######################################
         # Reads all input from excel template #
         #######################################
 
-        # location of excel template
-        file = './inputs/input_template_excel.xlsx'
         # Name of tabs
         sheet_settings = 'settings'
         sheet_input_constant = 'input_constant'
@@ -49,31 +18,31 @@ class excel_template():
         sheet_project_sites = 'project_sites'
         sheet_case_definitions = 'case_definitions'
 
-        settings = excel_template.get_settings(file, sheet_settings)
+        settings = excel_template.get_settings(input_excel_file, sheet_settings)
 
         # -------- Check for, create or empty results directory -----------------------#
         from Z_output_functions import output
-        output.check_output_directory(settings)
+        output.check_output_directory(settings, input_excel_file)
 
-        parameters_constant_units, parameters_constant_values = excel_template.get_parameters_constant(file, sheet_input_constant)
-        parameters_sensitivity = excel_template.get_parameters_sensitivity(file, sheet_input_sensitivity)
+        parameters_constant_units, parameters_constant_values = excel_template.get_parameters_constant(input_excel_file, sheet_input_constant)
+        parameters_sensitivity = excel_template.get_parameters_sensitivity(input_excel_file, sheet_input_sensitivity)
 
-        project_site_s = excel_template.get_project_sites(file, sheet_project_sites)
+        project_site_s = excel_template.get_project_sites(input_excel_file, sheet_project_sites)
 
         necessity_for_blackout_timeseries_generation=False
         # extend by timeseries
         for project_site in project_site_s:
             # copy input timeseries to new location
-            path_from = os.path.abspath(project_site_s[project_site]['timeseries_file'])
-            path_to = os.path.abspath(settings['output_folder'] + '/inputs/'+ project_site + '.csv')
+            path_from = os.path.abspath(settings['input_folder_timeseries'] + '/' + project_site_s[project_site]['timeseries_file'])
+            path_to = os.path.abspath(settings['output_folder'] + '/inputs/'+ project_site_s[project_site]['timeseries_file'])
             shutil.copy(path_from, path_to)
 
-            csv_input.from_file(project_site_s[project_site])
+            csv_input.from_file(project_site_s[project_site], path_from)
             if project_site_s[project_site]['title_grid_availability'] == 'None':
                 necessity_for_blackout_timeseries_generation=True
 
         settings.update({'necessity_for_blackout_timeseries_generation': necessity_for_blackout_timeseries_generation})
-        case_definitions = excel_template.get_case_definitions(file, sheet_case_definitions)
+        case_definitions = excel_template.get_case_definitions(input_excel_file, sheet_case_definitions)
         return settings, parameters_constant_values, parameters_sensitivity, project_site_s, case_definitions
 
     def get_data(file, sheet, header_row, index_column, last_column):
@@ -160,3 +129,48 @@ class excel_template():
 
             case_definitions[case].update({'number_of_equal_generators': int(case_definitions[case]['number_of_equal_generators'])})
         return case_definitions
+
+class csv_input():
+
+    def from_file(project_site, path_from):
+        ##########################################################
+        # Reads timeseries from files connected to project sites #
+        ##########################################################
+
+        data_set = pd.read_csv(path_from, sep=project_site['seperator']) # excluded attribute sep: ';'
+        if project_site['title_time']=='None':
+            file_index = None
+        else:
+            file_index = pd.DatetimeIndex(data_set[project_site['title_time']].values)
+
+        # Attached data to each project site analysed. Does NOT apply noise here,
+        # as noise might be subject to sensitivity analysis
+
+        # Necessary: All of these input timeseries in same unit (kWh)
+        # If-else clauses allow that some of the timeseries are not included in csv file.
+        if project_site['title_demand_ac'] != 'None':
+            project_site.update({'demand_ac': data_set[project_site['title_demand_ac']]})
+        else:
+            project_site.update({'demand_ac': pd.Series([0 for i in range(0,8760)])})
+
+        if project_site['title_demand_dc'] != 'None':
+            project_site.update({'demand_dc': data_set[project_site['title_demand_dc']]})
+        else:
+            project_site.update({'demand_dc': pd.Series([0 for i in range(0,8760)])})
+
+        if project_site['title_pv'] != 'None':
+            project_site.update({'pv_generation_per_kWp': data_set[project_site['title_pv']]})  # reading pv_generation values - adjust to panel area or kWp and if in Wh!
+        else:
+            project_site.update({'pv_generation_per_kWp': pd.Series([0 for i in range(0,8760)])})
+
+        if project_site['title_wind'] != 'None':
+            project_site.update({'wind_generation_per_kW': data_set[project_site['title_wind']]})
+        else:
+            project_site.update({'wind_generation_per_kW': pd.Series([0 for i in range(0,8760)])})
+
+        if project_site['title_grid_availability'] != 'None':
+            project_site.update({'grid_availability': data_set[project_site['title_grid_availability']]})
+
+        project_site.update({'file_index': file_index})
+
+        return

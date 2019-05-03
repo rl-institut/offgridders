@@ -18,7 +18,7 @@ import oemof.outputlib as outputlib
 
 # For speeding up lp_files and bus/component definition in oemof as well as processing
 from G1_oemof_create_model import oemof_model
-from G2b_constraints_custom import stability_criterion, renewable_criterion
+from G2b_constraints_custom import stability_criterion, renewable_criterion, battery_management, ac_dc_bus
 from G3_oemof_evaluate import timeseries
 from G3a_economic_evaluation import economic_evaluation
 from G3b_plausability_tests import plausability_tests
@@ -76,20 +76,48 @@ class oemof_simulate:
         }
 
         # get all from node electricity bus
-        electricity_bus = outputlib.views.node(results, 'bus_electricity_mg')
-        e_flows_df = timeseries.get_demand(case_dict, oemof_results, electricity_bus)
-        e_flows_df = timeseries.get_shortage(case_dict, oemof_results, electricity_bus, e_flows_df)
+        #if case_dict['genset_fixed_capacity'] != None \
+        #        or case_dict['wind_fixed_capacity'] != None \
+        #        or case_dict['pcc_consumption_fixed_capacity'] != None \
+        #        or case_dict['pcc_feedin_fixed_capacity'] != None:
+
+        electricity_bus_ac = outputlib.views.node(results, 'bus_electricity_ac')
+        #else:
+        #    None
+
+        #if case_dict['pv_fixed_capacity'] != None \
+        #        or case_dict['storage_fixed_capacity'] != None:
+
+        electricity_bus_dc = outputlib.views.node(results, 'bus_electricity_dc')
+        #else:
+        #    electricity_bus_dc = None
+
+        e_flows_df = timeseries.get_demand(case_dict, oemof_results, electricity_bus_ac, electricity_bus_dc, experiment)
+        e_flows_df = timeseries.get_shortage(case_dict, oemof_results, electricity_bus_ac, electricity_bus_dc, experiment, e_flows_df)
+
         oemof_results.update({'supply_reliability_kWh':
                                   oemof_results['total_demand_supplied_annual_kWh'] / oemof_results[
                                       'total_demand_annual_kWh']})
 
-        e_flows_df = timeseries.get_excess(case_dict, oemof_results, electricity_bus, e_flows_df)
-        e_flows_df = timeseries.get_pv(case_dict, oemof_results, electricity_bus, e_flows_df, experiment['peak_pv_generation_per_kWp'])
-        e_flows_df = timeseries.get_wind(case_dict, oemof_results, electricity_bus, e_flows_df, experiment['peak_wind_generation_per_kW'])
-        e_flows_df = timeseries.get_genset(case_dict, oemof_results, electricity_bus, e_flows_df)
-        e_flows_df = timeseries.get_storage(case_dict, oemof_results, experiment, results, e_flows_df)
+        e_flows_df = timeseries.get_excess(case_dict, oemof_results, electricity_bus_ac, electricity_bus_dc, e_flows_df)
+
         timeseries.get_fuel(case_dict, oemof_results, results)
-        e_flows_df = timeseries.get_national_grid(case_dict, oemof_results, results, e_flows_df, experiment['grid_availability'])
+        e_flows_df = timeseries.get_genset(case_dict, oemof_results, electricity_bus_ac, e_flows_df)
+
+        e_flows_df = timeseries.get_national_grid(case_dict, oemof_results, results, e_flows_df,
+                                                  experiment['grid_availability'])
+
+        e_flows_df = timeseries.get_wind(case_dict, oemof_results, electricity_bus_ac, e_flows_df,
+                                         experiment['peak_wind_generation_per_kW'])
+
+        e_flows_df = timeseries.get_pv(case_dict, oemof_results, electricity_bus_dc, experiment, e_flows_df,
+                                       experiment['peak_pv_generation_per_kWp'])
+
+        e_flows_df = timeseries.get_storage(case_dict, oemof_results, experiment, results, e_flows_df)
+
+        e_flows_df = timeseries.get_rectifier(case_dict, oemof_results, electricity_bus_ac, electricity_bus_dc, e_flows_df)
+
+        e_flows_df = timeseries.get_inverter(case_dict, oemof_results, electricity_bus_ac, electricity_bus_dc, e_flows_df)
 
         # determine renewable share of system - not of demand, but of total generation + consumption.
         timeseries.get_res_share(case_dict, oemof_results, experiment)
@@ -108,13 +136,19 @@ class oemof_simulate:
             stability_criterion.hybrid_test(case_dict, oemof_results, experiment, e_flows_df)
 
         renewable_criterion.share_test(case_dict, oemof_results, experiment)
+        battery_management.forced_charge_test(case_dict, oemof_results, experiment, e_flows_df)
+        battery_management.discharge_only_at_blackout_test(case_dict, oemof_results, e_flows_df)
+        ac_dc_bus.inverter_only_at_blackout_test(case_dict, oemof_results, e_flows_df)
 
         # Generate output (csv, png) for energy/storage flows
         output.save_mg_flows(experiment, case_dict, e_flows_df, experiment['filename'])
         output.save_storage(experiment, case_dict, e_flows_df, experiment['filename'])
 
         # print meta/main results in command window
-        output.print_oemof_meta_main_invest(experiment, meta, electricity_bus, case_dict['case_name'])
+        if electricity_bus_ac != None:
+            output.print_oemof_meta_main_invest(experiment, meta, electricity_bus_ac, case_dict['case_name'])
+        if electricity_bus_dc != None:
+            output.print_oemof_meta_main_invest(experiment, meta, electricity_bus_dc, case_dict['case_name'])
 
         # Evaluate simulated systems regarding costs
         economic_evaluation.project_annuities(case_dict, oemof_results, experiment)
@@ -125,12 +159,12 @@ class oemof_simulate:
         # Infos on simulation
         logging.info('Simulation of case "' + case_dict['case_name'] + '" resulted in : \n'
                      + '    ' + '  ' + '    ' + '    ' + '    '
-                     + str(round(oemof_results['lcoe']*100, 1)) + ' EuroCt/kWh, '
+                     + str(round(oemof_results['lcoe'], 3)) + ' currency/kWh, '
                      + 'at a renewable share of '
                      + str(round(oemof_results['res_share'] * 100, 2)) + ' percent'
                      + ' with a reliability of '
                      + str(round(oemof_results['supply_reliability_kWh'] * 100, 2)) + ' percent')
-        logging.info('    Initial simulation time (s): ' + str(round(oemof_results['simulation_time'], 2)) + ' / Actual evaluation time (s): '  + str(round(duration, 2)) + '\n')
+        logging.info('    Initial simulation time (s): ' + str(round(oemof_results['simulation_time'], 2)) + ' / Actual evaluation time (s): '  + str(round(duration, 2)))
 
         # Debug messages
         logging.debug('    Exact OEM results of case "' + case_dict['case_name'] + '" : \n'
