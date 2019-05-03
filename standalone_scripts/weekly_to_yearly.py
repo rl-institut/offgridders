@@ -14,7 +14,6 @@ for file in list_of_files:
     data = pd.read_csv(name, sep=',').drop(['hour', 'GridAvailability', 'SolarGen'], axis=1)
     new_data = data
     for i in range(0,52):
-        print
         new_data = new_data.append(data)
 
     new_data = new_data[0:8760]
