@@ -46,7 +46,8 @@ class oemof_model:
         elif case_dict['genset_fixed_capacity'] == False:
             if case_dict['genset_with_minimal_loading']==True:
                 # not possible with oemof
-                genset = generate.genset_oem_minload(micro_grid_system, bus_fuel, bus_electricity_ac, experiment, case_dict['number_of_equal_generators'])
+                logging.warning('OEMOF LIMITATION: It is not possible to optimize generators with minimal loading with oemof.')
+                #genset = generate.genset_oem_minload(micro_grid_system, bus_fuel, bus_electricity_ac, experiment, case_dict['number_of_equal_generators'])
             else:
                 genset = generate.genset_oem(micro_grid_system, bus_fuel, bus_electricity_ac, experiment,
                                                              case_dict['number_of_equal_generators'])
@@ -156,7 +157,8 @@ class oemof_model:
 
         elif isinstance(case_dict['storage_fixed_capacity'], float):
             storage = generate.storage_fix(micro_grid_system, bus_electricity_dc, experiment,
-                                           capacity_storage=case_dict['storage_fixed_capacity']) # changed order
+                                           capacity_storage=case_dict['storage_fixed_capacity'],
+                                           power_storage=case_dict['storage_fixed_power']) # changed order
 
         else:
             logging.warning('Case definition of ' + case_dict['case_name']
@@ -213,23 +215,24 @@ class oemof_model:
         elif case_dict['stability_constraint']=='share_backup':
             logging.info('Added constraint: Stability through backup.')
             stability_criterion.backup(model, case_dict,
-                                            experiment = experiment,
-                                            storage = storage,
-                                            sink_demand = sink_demand_ac,
-                                            genset = genset,
-                                            pcc_consumption = pointofcoupling_consumption,
-                                            source_shortage=source_shortage,
-                                            el_bus = bus_electricity_ac)
+                                       experiment = experiment,
+                                       storage = storage,
+                                       sink_demand = sink_demand_ac,
+                                       genset = genset,
+                                       pcc_consumption = pointofcoupling_consumption,
+                                       source_shortage=source_shortage,
+                                       el_bus_ac = bus_electricity_ac,
+                                       el_bus_dc=bus_electricity_dc)
         elif case_dict['stability_constraint']=='share_usage':
             logging.info('Added constraint: Stability though actual generation.')
             stability_criterion.usage(model, case_dict,
-                                            experiment = experiment,
-                                            storage = storage,
-                                            sink_demand = sink_demand_ac,
-                                            genset = genset,
-                                            pcc_consumption = pointofcoupling_consumption,
-                                            source_shortage=source_shortage,
-                                            el_bus = bus_electricity_ac)
+                                      experiment = experiment,
+                                      storage = storage,
+                                      sink_demand = sink_demand_ac,
+                                      genset = genset,
+                                      pcc_consumption = pointofcoupling_consumption,
+                                      source_shortage=source_shortage,
+                                      el_bus = bus_electricity_ac)
         elif case_dict['stability_constraint']=='share_hybrid':
             logging.info('Added constraint: Stability though actual generation of diesel generators and backup through batteries.')
             stability_criterion.hybrid(model, case_dict,
@@ -239,7 +242,8 @@ class oemof_model:
                                        genset = genset,
                                        pcc_consumption = pointofcoupling_consumption,
                                        source_shortage=source_shortage,
-                                       el_bus = bus_electricity_ac)
+                                       el_bus_ac= bus_electricity_ac,
+                                       el_bus_dc=bus_electricity_dc)
         else:
             logging.warning('Case definition of ' + case_dict['case_name']
                             + ' faulty at stability_constraint. Value can only be False, float or None')

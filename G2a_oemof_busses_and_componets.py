@@ -134,7 +134,7 @@ class generate():
         return source_wind
 
 
-    def ifier_fix(micro_grid_system, bus_electricity_ac, bus_electricity_dc, experiment, capacity_rectifier):
+    def rectifier_fix(micro_grid_system, bus_electricity_ac, bus_electricity_dc, experiment, capacity_rectifier):
         logging.debug('Added to oemof model: rectifier fix')
         rectifier = solph.Transformer(label="transformer_rectifier",
                                                        inputs={bus_electricity_ac: solph.Flow(
@@ -306,17 +306,17 @@ class generate():
         micro_grid_system.add(pointofcoupling_consumption)
         return pointofcoupling_consumption
 
-    def storage_fix(micro_grid_system, bus_electricity_dc, experiment, capacity_storage):
+    def storage_fix(micro_grid_system, bus_electricity_dc, experiment, capacity_storage, power_storage):
         logging.debug('Added to oemof model: storage fix')
         generic_storage = solph.components.GenericStorage(
             label                       = 'generic_storage',
             nominal_capacity            = capacity_storage,
             inputs={bus_electricity_dc: solph.Flow(
-                nominal_value= capacity_storage*experiment['storage_Crate_charge'],
-                variable_costs=experiment['storage_cost_var']
+                nominal_value = capacity_storage*experiment['storage_Crate_charge'],
+                variable_costs =experiment['storage_cost_var']
                 )},  # maximum charge possible in one timestep
             outputs={bus_electricity_dc: solph.Flow(
-                nominal_value= capacity_storage*experiment['storage_Crate_discharge']
+                nominal_value = power_storage #capacity_storage*experiment['storage_Crate_discharge']
                 )},  # maximum discharge possible in one timestep
             capacity_loss               = experiment['storage_loss_timestep'],  # from timestep to timestep
             capacity_min                = experiment['storage_soc_min'],
@@ -326,7 +326,7 @@ class generate():
             outflow_conversion_factor   = experiment['storage_efficiency_discharge'])  # efficiency of discharge
         micro_grid_system.add(generic_storage)
         return generic_storage
-
+    '''
     # todo: try or not try?!
     def storage_fix_secondary(micro_grid_system, bus_electricity_dc, experiment, capacity_storage):
         logging.debug('Added to oemof model: storage fix')
@@ -349,7 +349,7 @@ class generate():
             outflow_conversion_factor   = experiment['storage_efficiency_discharge'])  # efficiency of discharge
         micro_grid_system.add(generic_storage)
         return generic_storage
-
+    '''
     def storage_oem(micro_grid_system, bus_electricity_dc, experiment):
         logging.debug('Added to oemof model: storage oem')
         generic_storage = solph.components.GenericStorage(

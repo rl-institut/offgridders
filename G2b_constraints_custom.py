@@ -7,34 +7,34 @@ import pandas as pd
 
 class stability_criterion():
 
-    def backup(model, case_dict, experiment, storage, sink_demand, genset, pcc_consumption, source_shortage, el_bus):
+    def backup(model, case_dict, experiment, storage, sink_demand, genset, pcc_consumption, source_shortage, el_bus_ac, el_bus_dc):
         stability_limit = experiment['stability_limit']
         ## ------- Get CAP genset ------- #
         CAP_genset = 0
         if case_dict['genset_fixed_capacity'] != None:
             if case_dict['genset_fixed_capacity']==False:
                 for number in range(1, case_dict['number_of_equal_generators']+ 1):
-                    CAP_genset += model.InvestmentFlow.invest[genset[number], el_bus]
+                    CAP_genset += model.InvestmentFlow.invest[genset[number], el_bus_ac]
             elif isinstance(case_dict['genset_fixed_capacity'], float):
                 for number in range(1, case_dict['number_of_equal_generators'] + 1):
-                    CAP_genset += model.flows[genset[number], el_bus].nominal_value
+                    CAP_genset += model.flows[genset[number], el_bus_ac].nominal_value
 
         ## ------- Get CAP PCC ------- #
         CAP_pcc = 0
         if case_dict['pcc_consumption_fixed_capacity'] != None:
             if case_dict['pcc_consumption_fixed_capacity'] == False:
-                CAP_pcc += model.InvestmentFlow.invest[pcc_consumption, el_bus]
+                CAP_pcc += model.InvestmentFlow.invest[pcc_consumption, el_bus_ac]
             elif isinstance(case_dict['pcc_consumption_fixed_capacity'], float):
-                CAP_pcc += case_dict['pcc_consumption_fixed_capacity'] # this didnt work - model.flows[pcc_consumption, el_bus].nominal_value
+                CAP_pcc += case_dict['pcc_consumption_fixed_capacity'] # this didnt work - model.flows[pcc_consumption, el_bus_ac].nominal_value
 
-        def stability_rule(model, t):
+        def stability_rule_capacity(model, t):
             expr = CAP_genset
             ## ------- Get demand at t ------- #
-            demand = model.flows[el_bus, sink_demand].actual_value[t] * model.flows[el_bus, sink_demand].nominal_value
+            demand = model.flows[el_bus_ac, sink_demand].actual_value[t] * model.flows[el_bus_ac, sink_demand].nominal_value
             expr += - stability_limit * demand
             ## ------- Get shortage at t------- #
             if case_dict['allow_shortage'] == True:
-                shortage = model.flow[source_shortage,el_bus,t]
+                shortage = model.flow[source_shortage,el_bus_ac,t]
                 #todo is this correct?
                 expr += + stability_limit * shortage
             ##---------Grid consumption t-------#
@@ -56,8 +56,36 @@ class stability_criterion():
                         * experiment['inverter_dc_ac_efficiency']
             return (expr >= 0)
 
-        model.stability_constraint = po.Constraint(model.TIMESTEPS, rule=stability_rule)
+        def stability_rule_power(model, t):
+            expr = CAP_genset
+            ## ------- Get demand at t ------- #
+            demand = model.flows[el_bus_ac, sink_demand].actual_value[t] * model.flows[el_bus_ac, sink_demand].nominal_value
+            expr += - stability_limit * demand
+            ## ------- Get shortage at t------- #
+            if case_dict['allow_shortage'] == True:
+                shortage = model.flow[source_shortage,el_bus_ac,t]
+                #todo is this correct?
+                expr += + stability_limit * shortage
+            ##---------Grid consumption t-------#
+            # this should not be actual consumption but possible one  - like grid_availability[t]*pcc_consumption_cap
+            if case_dict['pcc_consumption_fixed_capacity'] != None:
+                expr += CAP_pcc * experiment['grid_availability'][t]
 
+            ## ------- Get power of storage ------- #
+            if case_dict['storage_fixed_power'] != None:
+                storage_power = 0
+                if case_dict['storage_fixed_capacity'] == False:
+                    storage_power += model.InvestmentFlow.invest[storage, el_bus_dc]
+                elif isinstance(case_dict['storage_fixed_capacity'], float):
+                    storage_power += case_dict['storage_fixed_power']
+                else:
+                    logging.warning("Error: 'storage_fixed_power' can only be None, False or float.")
+
+                expr += storage_power * experiment['inverter_dc_ac_efficiency']
+            return (expr >= 0)
+
+        model.stability_constraint = po.Constraint(model.TIMESTEPS, rule=stability_rule_capacity)
+        model.stability_constraint_power = po.Constraint(model.TIMESTEPS, rule=stability_rule_power)
         return model
 
     def backup_test(case_dict, oemof_results, experiment, e_flows_df):
@@ -110,29 +138,29 @@ class stability_criterion():
             pass
 
     def hybrid(model, case_dict, experiment, storage, sink_demand, genset, pcc_consumption, source_shortage,
-               el_bus):
+               el_bus_ac, el_bus_dc):
 
         stability_limit = experiment['stability_limit']
 
-        def stability_rule(model, t):
+        def stability_rule_capacity(model, t):
             expr = 0
             ## ------- Get demand at t ------- #
-            demand = model.flows[el_bus, sink_demand].actual_value[t] * model.flows[el_bus, sink_demand].nominal_value
+            demand = model.flows[el_bus_ac, sink_demand].actual_value[t] * model.flows[el_bus_ac, sink_demand].nominal_value
             expr += - stability_limit * demand
 
             ## ------- Get shortage at t------- #
             if case_dict['allow_shortage'] == True:
-                shortage = model.flow[source_shortage, el_bus, t]
+                shortage = model.flow[source_shortage, el_bus_ac, t]
                 expr += + stability_limit * shortage
 
             ## ------- Generation Diesel ------- #
             if case_dict['genset_fixed_capacity'] != None:
                 for number in range(1, case_dict['number_of_equal_generators'] + 1):
-                    expr += model.flow[genset[number], el_bus, t]
+                    expr += model.flow[genset[number], el_bus_ac, t]
 
             ##---------Grid consumption t-------#
             if case_dict['pcc_consumption_fixed_capacity'] != None:
-               expr += model.flow[pcc_consumption, el_bus, t]
+               expr += model.flow[pcc_consumption, el_bus_ac, t]
 
             ## ------- Get stored capacity storage at t------- #
             if case_dict['storage_fixed_capacity'] != None:
@@ -148,13 +176,47 @@ class stability_criterion():
                         * experiment['inverter_dc_ac_efficiency']
             return (expr >= 0)
 
-        model.stability_constraint = po.Constraint(model.TIMESTEPS, rule=stability_rule)
+        def stability_rule_power(model, t):
+            expr = 0
+            ## ------- Get demand at t ------- #
+            demand = model.flows[el_bus_ac, sink_demand].actual_value[t] * model.flows[el_bus_ac, sink_demand].nominal_value
+            expr += - stability_limit * demand
 
+            ## ------- Get shortage at t------- #
+            if case_dict['allow_shortage'] == True:
+                shortage = model.flow[source_shortage, el_bus_ac, t]
+                expr += + stability_limit * shortage
+
+            ## ------- Generation Diesel ------- #
+            if case_dict['genset_fixed_capacity'] != None:
+                for number in range(1, case_dict['number_of_equal_generators'] + 1):
+                    expr += model.flow[genset[number], el_bus_ac, t]
+
+            ##---------Grid consumption t-------#
+            if case_dict['pcc_consumption_fixed_capacity'] != None:
+               expr += model.flow[pcc_consumption, el_bus_ac, t]
+
+            ## ------- Get power of storage ------- #
+            if case_dict['storage_fixed_power'] != None:
+                storage_power = 0
+                if case_dict['storage_fixed_capacity'] == False:
+                    storage_power += model.InvestmentFlow.invest[storage, el_bus_dc]
+                elif isinstance(case_dict['storage_fixed_capacity'], float):
+                    storage_power += case_dict['storage_fixed_power']
+                else:
+                    logging.warning("Error: 'storage_fixed_power' can only be None, False or float.")
+
+                expr += storage_power * experiment['inverter_dc_ac_efficiency']
+            return (expr >= 0)
+
+        model.stability_constraint_capacity = po.Constraint(model.TIMESTEPS, rule=stability_rule_capacity)
+        model.stability_constraint_power = po.Constraint(model.TIMESTEPS, rule=stability_rule_power)
         return model
 
     def hybrid_test(case_dict, oemof_results, experiment, e_flows_df):
         '''
             Testing simulation results for adherance to above defined stability criterion
+            #todo actually this does not test the stability_share_power criterion, which includes the storage power!
         '''
         if case_dict['stability_constraint'] != False:
             demand_profile = e_flows_df['Demand']

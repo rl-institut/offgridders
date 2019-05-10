@@ -302,12 +302,12 @@ class timeseries:
         # Get capacity
         if case_dict['storage_fixed_capacity'] == False:
             # Optimized storage capacity
+            storage = outputlib.views.node(results, 'generic_storage')
+            storage_capacity = storage['scalars'][(('generic_storage', 'None'), 'invest')]
+
             electricity_bus_dc = outputlib.views.node(results, 'bus_electricity_dc')
-            print(electricity_bus_dc['scalars'][(('generic_storage', 'None'), 'invest')])
-            print(electricity_bus_dc['scalars'][(('generic_storage', 'bus_electricity_dc'), 'invest')])
-            storage_capacity = electricity_bus_dc['scalars'][(('bus_electricity_dc', 'generic_storage'), 'invest')]/experiment['storage_Crate_charge']
             storage_power = electricity_bus_dc['scalars'][(('generic_storage','bus_electricity_dc'), 'invest')]
-            # possibly using generic_storage['scalars'][((generic_storage, None), invest)]
+
             oemof_results.update({'capacity_storage_kWh': storage_capacity,
                                   'power_storage_kW': storage_power})
 

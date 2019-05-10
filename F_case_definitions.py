@@ -73,7 +73,10 @@ class cases:
             logging.warning('Lists for defining experiment cases not of same lenght.')
 
         for item in range(0, len(list_base_capacities)):
-            case_dict_entry = specific_case[list_base_capacities[item]]
+            if list_base_capacities[item] == 'power_storage_kW': # it is not possible to set the optimization ect. of the storage power; the setting of storage will be used
+                case_dict_entry = specific_case['capacity_storage_kWh']
+            else:
+                case_dict_entry = specific_case[list_base_capacities[item]]
             component_name = list_base_capacities[item]
             #  next 3 lines not beautifully defined, could be one funtion in total
             case_dict_capacity = utilities.get_base_capacity(experiment_case_dict, case_dict_entry,
