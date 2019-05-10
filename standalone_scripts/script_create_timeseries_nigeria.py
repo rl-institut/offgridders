@@ -12,7 +12,8 @@ logger.define_logging(screen_level=logging.INFO)
 # Read project file      #
 ##########################
 logging.info('Reading from excel sheet')
-path = "/home/local/RL-INSTITUT/martha.hoffmann/Desktop/Nextcloud/Masterthesis/Nigeria_Data/Nigeria_EnergyData_Plateau.csv"
+#path = "/home/local/RL-INSTITUT/martha.hoffmann/Desktop/Nextcloud/Masterthesis/Nigeria_Data/Nigeria_EnergyData_Plateau.csv"
+path = "/mnt/Storage/Documents/Studium/RLI/Masterthesis/Nigeria_Data/Nigeria_EnergyData_Plateau.csv"
 data_set_ids = pd.read_csv(path, sep=';')
 
 locations = data_set_ids[['NESP_ID', 'Lat', 'Lon']]
@@ -76,7 +77,7 @@ for item in locations.index:
         token_number = 0
 
     if count == len(tokens)*25:
-        time.sleep(30*60)
+        time.sleep(0)
         count = 0
 
     if os.path.isfile('../inputs/timeseries/nesp_' + str(data_set_ids["NESP_ID"][item]) + '.csv'):
@@ -85,7 +86,7 @@ for item in locations.index:
     else:
         try:
             # Necessary wait for new server request (not to overload the server)
-            time.sleep(72)  # To reach 50/hr # Below 50 total profiles: 6/min = 10s sleep
+            time.sleep(60*60/(50))  # To reach 50/hr # Below 50 total profiles: 6/min = 10s sleep
             count += 1
 
             s = requests.session()
