@@ -40,6 +40,7 @@ class cases:
         # pv, storage, genset, wind, pcc consumption/feedin
         list_base_capacities = \
             ['capacity_storage_kWh',
+             'power_storage_kW',
              'capacity_genset_kW',
              'capacity_pv_kWp',
              'capacity_pcc_consumption_kW',
@@ -48,7 +49,8 @@ class cases:
              'capacity_rectifier_ac_dc_kW',
              'capacity_inverter_dc_ac_kW']
         list_of_batch_names = \
-            ['storage_batch',
+            ['storage_batch_capacity',
+             'storage_batch_power',
              'genset_batch',
              'pv_batch',
              'pcoupling_batch', # check entry
@@ -58,6 +60,7 @@ class cases:
              'inverter_dc_ac_batch'] # create entry
         list_build_oemof_names = \
             ['storage_fixed_capacity',
+             'storage_fixed_power',
              'genset_fixed_capacity',
              'pv_fixed_capacity',
              'pcc_consumption_fixed_capacity',

@@ -354,10 +354,11 @@ class generate():
         logging.debug('Added to oemof model: storage oem')
         generic_storage = solph.components.GenericStorage(
             label='generic_storage',
-            investment=solph.Investment(ep_costs=experiment['storage_cost_annuity']),
+            investment=solph.Investment(ep_costs=experiment['storage_capacity_cost_annuity']),
             inputs                          = {bus_electricity_dc: solph.Flow(
                 variable_costs=experiment['storage_cost_var'])},
-            outputs                         = {bus_electricity_dc: solph.Flow()},
+            outputs                         = {bus_electricity_dc: solph.Flow(
+                investment=solph.Investment(ep_costs=experiment['storage_power_cost_annuity']))},
             capacity_loss                   = experiment['storage_loss_timestep'],  # from timestep to timestep
             capacity_min                    = experiment['storage_soc_min'],
             capacity_max                    = experiment['storage_soc_max'],

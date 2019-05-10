@@ -169,7 +169,7 @@ class plausability_tests:
             boolean = True
 
             test = [(((e_flows_df['Excess electricity'][t] != 0)
-                      and (e_flows_df['Feed into main grid'][t] != oemof_results['capacity pcc'][t])) # actual name!
+                      and (e_flows_df['Feed into main grid'][t] != oemof_results['capacity pcc'][t])) # actual item!
                     or
                     ((e_flows_df['Excess electricity'][t] != 0) and (e_flows_df['Grid availability'][t] == 0)))
                     for t in e_flows_df.index]

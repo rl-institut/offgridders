@@ -59,6 +59,7 @@ class output_results:
             'capacity_pv_kWp',
             'capacity_wind_kW',
             'capacity_storage_kWh',
+            'power_storage_kW',
             'capacity_genset_kW',
             'capacity_pcoupling_kW',
             'consumption_fuel_annual_l',

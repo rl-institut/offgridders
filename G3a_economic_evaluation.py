@@ -52,7 +52,8 @@ class economic_evaluation():
         interval_annuity={
             'annuity_pv': experiment['pv_cost_annuity'] * oemof_results['capacity_pv_kWp'],
             'annuity_wind': experiment['wind_cost_annuity'] * oemof_results['capacity_wind_kW'],
-            'annuity_storage': experiment['storage_cost_annuity'] * oemof_results['capacity_storage_kWh'],
+            'annuity_storage': experiment['storage_capacity_cost_annuity'] * oemof_results['capacity_storage_kWh'] +
+                               experiment['storage_power_cost_annuity'] * oemof_results['power_storage_kW'],
             'annuity_genset': experiment['genset_cost_annuity'] * oemof_results['capacity_genset_kW'],
             'annuity_rectifier_ac_dc': experiment['rectifier_ac_dc_cost_annuity'] * oemof_results['capacity_rectifier_ac_dc_kW'],
             'annuity_inverter_dc_ac': experiment['inverter_dc_ac_cost_annuity'] * oemof_results['capacity_inverter_dc_ac_kW']}

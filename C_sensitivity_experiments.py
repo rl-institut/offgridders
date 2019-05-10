@@ -51,7 +51,7 @@ class generate_sensitvitiy_experiments:
 
             #  Add economic values to sensitivity sensitivity_experiment_s
             process_input.economic_values(sensitivitiy_experiment_s[experiment])
-            # Give a file name to the sensitivity_experiment_s
+            # Give a file item to the sensitivity_experiment_s
             get_names.experiment_name(sensitivitiy_experiment_s[experiment], sensitivity_array_dict,
                                 number_of_project_sites)
 
@@ -184,7 +184,7 @@ class generate_experiments():
         else:
             logging.warning('Setting "sensitivity_all_combinations" not valid! Has to be TRUE or FALSE.')
 
-        # define file name to save simulation / get grid availabilities
+        # define file item to save simulation / get grid availabilities
         for blackout_experiment in blackout_experiment_s:
             blackout_experiment_name = get_names.blackout_experiment_name(blackout_experiment_s[blackout_experiment])
             blackout_experiment_s[blackout_experiment].update({'experiment_name': blackout_experiment_name})

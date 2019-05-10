@@ -30,6 +30,7 @@ class helpers:
             'capacity_pv_kWp': oemof_results['capacity_pv_kWp'],
             'capacity_wind_kW': oemof_results['capacity_wind_kW'],
             'capacity_storage_kWh': oemof_results['capacity_storage_kWh'],
+            'power_storage_kW': oemof_results['power_storage_kW'],
             'capacity_genset_kW': oemof_results['capacity_genset_kW'],
             'capacity_pcoupling_kW': oemof_results['capacity_pcoupling_kW'],
             'capacity_rectifier_ac_dc_kW': oemof_results['capacity_rectifier_ac_dc_kW'],
@@ -52,7 +53,7 @@ class helpers:
                 else:
                     result_series = result_series.append(
                         pd.Series([round(oemof_results[key], round_to_comma)], index=[key]))
-            # extend by name of demand profile
+            # extend by item of demand profile
             elif key == 'demand_profile':
                 result_series = result_series.append(pd.Series([experiment[key]], index=[key]))
             # Check if called value is a parameter of sensitivity_experiment_s

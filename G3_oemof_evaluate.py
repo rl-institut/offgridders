@@ -303,13 +303,21 @@ class timeseries:
         if case_dict['storage_fixed_capacity'] == False:
             # Optimized storage capacity
             electricity_bus_dc = outputlib.views.node(results, 'bus_electricity_dc')
-            capacity_battery = electricity_bus_dc['scalars'][(('bus_electricity_dc', 'generic_storage'), 'invest')]/experiment['storage_Crate_charge']
+            print(electricity_bus_dc['scalars'][(('generic_storage', 'None'), 'invest')])
+            print(electricity_bus_dc['scalars'][(('generic_storage', 'bus_electricity_dc'), 'invest')])
+            storage_capacity = electricity_bus_dc['scalars'][(('bus_electricity_dc', 'generic_storage'), 'invest')]/experiment['storage_Crate_charge']
+            storage_power = electricity_bus_dc['scalars'][(('generic_storage','bus_electricity_dc'), 'invest')]
             # possibly using generic_storage['scalars'][((generic_storage, None), invest)]
-            oemof_results.update({'capacity_storage_kWh': capacity_battery})
+            oemof_results.update({'capacity_storage_kWh': storage_capacity,
+                                  'power_storage_kW': storage_power})
+
         elif isinstance(case_dict['storage_fixed_capacity'], float):
-            oemof_results.update({'capacity_storage_kWh': case_dict['storage_fixed_capacity']})
+            oemof_results.update({'capacity_storage_kWh': case_dict['storage_fixed_capacity'],
+                                  'power_storage_kW': case_dict['storage_fixed_power']})
+
         elif case_dict['storage_fixed_capacity'] == None:
-            oemof_results.update({'capacity_storage_kWh': 0})
+            oemof_results.update({'capacity_storage_kWh': 0,
+                                  'power_storage_kW': 0})
 
         #calculate SOC of battery:
         if oemof_results['capacity_storage_kWh']>0:
