@@ -13,6 +13,7 @@ import numpy as np
 import pprint as pp
 from D_process_input import process_input_parameters as process_input
 from Z_output_functions import output_results
+from Z_general_functions import helpers
 
 from copy import deepcopy
 
@@ -41,6 +42,8 @@ class generate_sensitvitiy_experiments:
         logging.info(message[:-2])
 
         for experiment in sensitivitiy_experiment_s:
+            helpers.test_techno_economical_parameters_complete(sensitivitiy_experiment_s[experiment])
+
             # scaling demand according to scaling factor - used for tests regarding tool application
             sensitivitiy_experiment_s[experiment].update({
                 'demand_ac': sensitivitiy_experiment_s[experiment]['demand_ac'] *

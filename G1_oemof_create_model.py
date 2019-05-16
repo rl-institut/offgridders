@@ -48,7 +48,7 @@ class oemof_model:
             if case_dict['genset_with_minimal_loading']==True:
                 # not possible with oemof
                 logging.error('It is not possible to optimize a generator with minimal loading in oemof. \n '
-                              'Please set "genset_with_minimal_loading"=False for this case on tab "case_definitions" in the excel template.')
+                              +'    ' + '    ' + '    ' + 'Please set "genset_with_minimal_loading"=False for this case on tab "case_definitions" in the excel template.')
                 sys.exit()
                 #genset = generate.genset_oem_minload(micro_grid_system, bus_fuel, bus_electricity_ac, experiment, case_dict['number_of_equal_generators'])
             else:

@@ -7,6 +7,7 @@ For efficient iterations? https://docs.python.org/2/library/itertools.html
 
 import pprint as pp
 import os, sys
+import shutil
 from oemof.tools import logger
 import logging
 # Logging
@@ -158,8 +159,9 @@ logging.info('\n Simulation complete. Resulting parameters saved in "results.csv
 pp.pprint(overall_results[output_names])
 
 logging.shutdown()
-
-import shutil, os
 path_from = os.path.abspath('./micro_grid_design_logfile.log')
 path_to = os.path.abspath(settings['output_folder']+'/micro_grid_design_logfile.log')
 shutil.move(path_from, path_to)
+
+print('\n Warnings or errors might have occurred. \n'
+      + 'Please check terminal output or saved log-file to make sure they do not influence your simulation results.')
