@@ -18,8 +18,8 @@ logger.define_logging(logpath='./',
                       #screen_level=logging.DEBUG,
                       file_level=logging.DEBUG)
 
-logging.info('\n \n MICRO GRID TOOL 2.1 '
-             '\n Version: 16.05.2019 (SDG Leicester) '
+logging.info('\n \n MICRO GRID TOOL 2.2 '
+             '\n Version: 16.05.2019 '
              '\n Coded by: Martha M. Hoffmann '
              '\n Reiner Lemoine Institute (Berlin) \n \n ')
 
@@ -28,9 +28,13 @@ logging.info('\n \n MICRO GRID TOOL 2.1 '
 # python3 A_main_script.py PATH/file.xlsx
 ###############################################################################
 
-#os.system('clear')
-#input_excel_file = str(sys.argv[1])
-input_excel_file = './inputs/input_template_excel.xlsx'
+# For compatibility issues: If no key for input file is provided, use generic one input_excel_file
+if len(sys.argv) > 2:
+    # Own key mentioned for input file
+    input_excel_file = str(sys.argv[1])
+else:
+    # generic input file
+    input_excel_file = './inputs/input_template_excel.xlsx'
 
 #-------- Get all settings ---------------------------------------------------#
 # General settings, general parameters, sensitivity parameters, project site  #
