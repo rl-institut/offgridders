@@ -27,9 +27,9 @@ logging.info('\n \n MICRO GRID TOOL 2.0 '
 # python3 A_main_script.py PATH/file.xlsx
 ###############################################################################
 
-os.system('clear')
-input_excel_file = str(sys.argv[1])
-#input_excel_file = './inputs/input_template_excel.xlsx'
+#os.system('clear')
+#input_excel_file = str(sys.argv[1])
+input_excel_file = './inputs/input_template_excel.xlsx'
 
 #-------- Get all settings ---------------------------------------------------#
 # General settings, general parameters, sensitivity parameters, project site  #

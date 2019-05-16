@@ -3,8 +3,9 @@ Small scripts to keep the main file clean
 '''
 
 import pandas as pd
-
+import sys
 import logging
+
 
 from Z_economic_functions import economics
 
@@ -26,6 +27,11 @@ class process_input_parameters():
                     and case_definitions[case]['based_on_case'] == True:
                 case_list.append(case)
                 str_cases_simulated += case + ', '
+
+            if len(case_list)==0:
+                logging.error('No cases defined to be simulated. \n '
+                              'Did you set any "perform_simulation"=True in excel template, tab "case_definitions"?')
+                sys.exit()
 
         logging.info('All simulated cases: ' + str_cases_simulated[:-2])
         return case_list

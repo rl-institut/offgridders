@@ -234,6 +234,7 @@ class generate():
             dict_of_generators.update({number: genset})
         return dict_of_generators
 
+    '''
     def genset_oem_minload(micro_grid_system, bus_fuel, bus_electricity_ac, experiment):
         logging.debug('Added to oemof model: genset oem minload')
         logging.warning('Currently not possible to optimize capacities of generator with minimal loading with OEMOF!')
@@ -250,6 +251,7 @@ class generate():
                                                    )
         micro_grid_system.add(genset)
         return genset
+        '''
 
     def pointofcoupling_feedin_fix(micro_grid_system, bus_electricity_ac, bus_electricity_ng_feedin, experiment, capacity_pointofcoupling):
         logging.debug('Added to oemof model: pcc feedin fix')

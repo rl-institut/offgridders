@@ -52,7 +52,7 @@ class excel_template():
                                  sheet_name=sheet,
                                  header=header_row - 1,
                                  index_col=0)
-            data = data.dropna()
+            data = data.dropna(axis=1)
         else:
             data = pd.read_excel(file,
                                  sheet_name=sheet,
@@ -118,8 +118,13 @@ class excel_template():
     def get_case_definitions(file, sheet_project_sites):
         # defines dictionary connected to project sites
         case_definitions = excel_template.get_data(file, sheet_project_sites, 16, None, None)
+        #if any(case_definitions.columns.str.contains('unnamed', case=False)):
+        #    logging.warning('Input template: Tab "case_definitions" might have unnamed columns, which will be dropped. Check if all your cases are simulated.')
+        #    case_definitions.drop(case_definitions.columns[case_definitions.columns.str.contains('unnamed', case=False)], axis=1, inplace=True)
+
         case_definitions = case_definitions.to_dict(orient='dict')
         # Translate strings 'True' and 'False' from excel sheet to True and False
+
         for case in case_definitions:
             case_definitions[case].update({'case_name': case})
             for key in case_definitions[case]:

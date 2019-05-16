@@ -1,4 +1,5 @@
 import logging
+import sys
 import oemof.solph as solph
 import oemof.outputlib as outputlib
 from G2a_oemof_busses_and_componets import generate
@@ -46,7 +47,10 @@ class oemof_model:
         elif case_dict['genset_fixed_capacity'] == False:
             if case_dict['genset_with_minimal_loading']==True:
                 # not possible with oemof
-                genset = generate.genset_oem_minload(micro_grid_system, bus_fuel, bus_electricity_ac, experiment, case_dict['number_of_equal_generators'])
+                logging.error('It is not possible to optimize a generator with minimal loading in oemof. \n '
+                              'Please set "genset_with_minimal_loading"=False for this case on tab "case_definitions" in the excel template.')
+                sys.exit()
+                #genset = generate.genset_oem_minload(micro_grid_system, bus_fuel, bus_electricity_ac, experiment, case_dict['number_of_equal_generators'])
             else:
                 genset = generate.genset_oem(micro_grid_system, bus_fuel, bus_electricity_ac, experiment,
                                                              case_dict['number_of_equal_generators'])
@@ -254,7 +258,8 @@ class oemof_model:
                                       pcc_consumption = pointofcoupling_consumption,
                                       solar_plant=solar_plant,
                                       wind_plant = wind_plant,
-                                      el_bus=bus_electricity_ac)
+                                      el_bus_ac=bus_electricity_ac,
+                                      el_bus_dc=bus_electricity_dc)
         else:
             logging.warning('Case definition of ' + case_dict['case_name']
                             + ' faulty at renewable_share_constraint. Value can only be True or False')
