@@ -190,7 +190,8 @@ class csv_input():
                         csv_input.column_not_existant(column_item, project_site[column_item], path_from)
                 else:
                     if column_item != 'title_grid_availability':
-                        logging.warning('It is assumed that timeseries ' + column_item[6:] + ' is a vector of zeroes.')
+                        if project_site[column_item] != 'None':
+                            logging.warning('It is assumed that timeseries ' + column_item[6:] + ' is a vector of zeroes.')
                         project_site.update({dictionary_title: pd.Series([0 for i in range(0, 8760)])})
 
         return

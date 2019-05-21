@@ -29,7 +29,7 @@ logging.info('\n \n MICRO GRID TOOL 3.0 '
 ###############################################################################
 
 # For compatibility issues: If no key for input file is provided, use generic one input_excel_file
-if len(sys.argv) > 2:
+if len(sys.argv) >= 2:
     # Own key mentioned for input file
     input_excel_file = str(sys.argv[1])
 else:

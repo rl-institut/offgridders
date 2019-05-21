@@ -12,9 +12,9 @@ python3 A_main_script.py ./inputs/reliable_stage3_mgs.xlsx
 #python3 A_main_script.py ./inputs/shs_stage2_mgs.xlsx
 #python3 A_main_script.py ./inputs/shs_stage3_mgs.xlsx
 
-#python3 A_main_script.py ./inputs/unreliable_stage1_mgs.xlsx
-#python3 A_main_script.py ./inputs/unreliable_stage2_mgs.xlsx
-#python3 A_main_script.py ./inputs/unreliable_stage3_mgs.xlsx
+python3 A_main_script.py ./inputs/unreliable_stage1_mgs.xlsx
+python3 A_main_script.py ./inputs/unreliable_stage2_mgs.xlsx
+python3 A_main_script.py ./inputs/unreliable_stage3_mgs.xlsx
 
 
 #python3 A_main_script.py ./inputs/shs_shortage_stage1_mgs.xlsx
