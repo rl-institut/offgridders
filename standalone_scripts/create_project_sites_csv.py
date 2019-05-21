@@ -57,9 +57,6 @@ for item in data_set_ids.index:
         print('Timeseries for location ' + str(data_set_ids["NESP_ID"][item]) + ' missing!')
 
 
-
-
-
 print('Total count of project sites: ' + str(item))
 print('Total count of project sites: demand_mg_s1 ' + str(len(demand_mg_s1.columns)))
 print('Total count of project sites: demand_mg_s2 ' + str(len(demand_mg_s2.columns)))
