@@ -368,7 +368,7 @@ class stability_criterion():
         return
 
 class renewable_criterion():
-    def share(model, case_dict, experiment, genset, pcc_consumption, solar_plant, wind_plant, el_bus): #wind_plant
+    def share(model, case_dict, experiment, genset, pcc_consumption, solar_plant, wind_plant, el_bus_ac, el_bus_dc): #wind_plant
         '''
         Resulting in an energy system adhering to a minimal renewable factor
 
@@ -396,32 +396,31 @@ class renewable_criterion():
         el_bus: object of class oemof.solph.network.Bus
             For accessing flow-parameters
         '''
-        # todo not using ac dc bus!
+
         def renewable_share_rule(model):
             fossil_generation = 0
             total_generation = 0
 
             if genset is not None:
                 for number in range(1, case_dict['number_of_equal_generators'] + 1):
-                    genset_generation_kWh = sum(model.flow[genset[number], el_bus, :])
+                    genset_generation_kWh = sum(model.flow[genset[number], el_bus_ac, :])
                     total_generation += genset_generation_kWh
                     fossil_generation += genset_generation_kWh
 
             if pcc_consumption is not None:
-                pcc_consumption_kWh = sum(model.flow[pcc_consumption, el_bus, :])
+                pcc_consumption_kWh = sum(model.flow[pcc_consumption, el_bus_ac, :])
                 total_generation += pcc_consumption_kWh
                 fossil_generation += pcc_consumption_kWh * (1 - experiment['maingrid_renewable_share'])
 
             if solar_plant is not None:
-                solar_plant_generation = sum(model.flow[solar_plant, el_bus, :])
+                solar_plant_generation = sum(model.flow[solar_plant, el_bus_dc, :])
                 total_generation += solar_plant_generation
 
             if wind_plant is not None:
-                wind_plant_generation = sum(model.flow[wind_plant, el_bus, :])
+                wind_plant_generation = sum(model.flow[wind_plant, el_bus_ac, :])
                 total_generation += wind_plant_generation
 
             expr = (fossil_generation - (1-experiment['min_renewable_share'])*total_generation)
-            print(expr)
             return expr <= 0
 
         model.renewable_share_constraint = po.Constraint(rule=renewable_share_rule)
@@ -450,7 +449,7 @@ class renewable_criterion():
         return
 
 class battery_management():
-    def forced_charge(model, case_dict, el_bus, storage, experiment):
+    def forced_charge(model, case_dict, el_bus_dc, storage, experiment):
         ## ------- Get CAP Storage ------- #
         CAP_storage = 0
         if case_dict['storage_fixed_capacity'] != None:
@@ -481,7 +480,7 @@ class battery_management():
                 expr = expr * experiment['grid_availability'][t]
 
                 # Actual charge
-                expr += - model.flow[el_bus, storage, t]
+                expr += - model.flow[el_bus_dc, storage, t]
             return (expr <= 0)
 
         model.forced_charge_linear = po.Constraint(model.TIMESTEPS, rule=linear_charge)

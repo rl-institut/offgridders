@@ -7,6 +7,7 @@ For efficient iterations? https://docs.python.org/2/library/itertools.html
 
 import pprint as pp
 import os, sys
+import shutil
 from oemof.tools import logger
 import logging
 # Logging
@@ -17,8 +18,8 @@ logger.define_logging(logpath='./',
                       #screen_level=logging.DEBUG,
                       file_level=logging.DEBUG)
 
-logging.info('\n \n MICRO GRID TOOL 2.0 '
-             '\n Version: 26.04.2019 (SDG Leicester) '
+logging.info('\n \n MICRO GRID TOOL 2.2 '
+             '\n Version: 16.05.2019 '
              '\n Coded by: Martha M. Hoffmann '
              '\n Reiner Lemoine Institute (Berlin) \n \n ')
 
@@ -27,10 +28,13 @@ logging.info('\n \n MICRO GRID TOOL 2.0 '
 # python3 A_main_script.py PATH/file.xlsx
 ###############################################################################
 
-input_excel_file = str(sys.argv[1])
-#input_excel_file = './inputs/input_template_excel.xlsx'
-#input_excel_file = './inputs/locations_stage3_mgs.xlsx'
-logging.info('Processing input file: ' + input_excel_file + '\n')
+# For compatibility issues: If no key for input file is provided, use generic one input_excel_file
+if len(sys.argv) > 2:
+    # Own key mentioned for input file
+    input_excel_file = str(sys.argv[1])
+else:
+    # generic input file
+    input_excel_file = './inputs/input_template_excel.xlsx'
 
 #-------- Get all settings ---------------------------------------------------#
 # General settings, general parameters, sensitivity parameters, project site  #
@@ -91,12 +95,13 @@ total_number_of_simulations = settings['total_number_of_experiments'] * len(case
 for experiment in sensitivity_experiment_s:
 
     capacities_oem = {}
+
     if 'grid_availability' in sensitivity_experiment_s[experiment].keys():
-        logging.info('Using grid availability as included in timeseries file of project location.')
+        logging.debug('Using grid availability as included in timeseries file of project location.')
         # grid availability timeseries from file already included in data
     else:
         # extend experiment with blackout timeseries according to blackout parameters
-        logging.info('Using grid availability timeseries that was randomly generated.')
+        logging.debug('Using grid availability timeseries that was randomly generated.')
         blackout_experiment_name = get_names.blackout_experiment_name(sensitivity_experiment_s[experiment])
         sensitivity_experiment_s[experiment].update({'grid_availability':
                                                          sensitivity_grid_availability[blackout_experiment_name]})
@@ -121,21 +126,11 @@ for experiment in sensitivity_experiment_s:
             + 'experiment no. ' + str(experiment_count) + '/'+ str(total_number_of_simulations) + '...')
 
         # Run simulation, evaluate results
-        try:
-            oemof_results = oemof_simulate.run(sensitivity_experiment_s[experiment], experiment_case_dict)
+        oemof_results = oemof_simulate.run(sensitivity_experiment_s[experiment], experiment_case_dict)
 
-            # Extend base capacities for cases utilizing these values, only valid for specific experiment
-            if case_definitions[specific_case]['based_on_case'] == False:
-                capacities_oem.update({experiment_case_dict['case_name']: helpers.define_base_capacities(oemof_results)})
-
-        # If simulation is not performed successfully
-        except ValueError:
-            logging.warning('Simulation terminated without result. Most likely cause: Infeasible energy system built.')
-            oemof_results = {
-                'case': specific_case,
-                'filename': 'results_' + specific_case + sensitivity_experiment_s[experiment]['filename'],
-                'comments': 'Simulation terminated without results.'
-            }
+        # Extend base capacities for cases utilizing these values, only valid for specific experiment
+        if case_definitions[specific_case]['based_on_case'] == False:
+            capacities_oem.update({experiment_case_dict['case_name']: helpers.define_base_capacities(oemof_results)})
 
         # Extend oemof_results by blackout characteristics
         if 'grid_availability' in sensitivity_experiment_s[experiment].keys():
@@ -145,12 +140,9 @@ for experiment in sensitivity_experiment_s:
             oemof_results   = central_grid.extend_oemof_results(oemof_results, blackout_results[blackout_experiment_name])
 
         # Extend overall results dataframe with simulation results
-        overall_results = helpers.store_result_matrix(overall_results, sensitivity_experiment_s[experiment],
-                                                      oemof_results)
+        overall_results = helpers.store_result_matrix(overall_results, sensitivity_experiment_s[experiment], oemof_results)
         # Writing DataFrame with all results to csv file
-        overall_results.to_csv(
-            sensitivity_experiment_s[experiment]['output_folder'] + '/' + sensitivity_experiment_s[experiment][
-                'output_file'] + '.csv')  # moved from below
+        overall_results.to_csv(sensitivity_experiment_s[experiment]['output_folder'] + '/' + sensitivity_experiment_s[experiment]['output_file'] + '.csv') # moved from below
 
         # Estimating simulation time left - more precise for greater number of simulations
         logging.info('    Estimated simulation time left: '
@@ -171,8 +163,9 @@ logging.info('\n Simulation complete. Resulting parameters saved in "results.csv
 pp.pprint(overall_results[output_names])
 
 logging.shutdown()
-
-import shutil, os
 path_from = os.path.abspath('./micro_grid_design_logfile.log')
 path_to = os.path.abspath(settings['output_folder']+'/micro_grid_design_logfile.log')
 shutil.move(path_from, path_to)
+
+print('\n Warnings or errors might have occurred. \n'
+      + 'Please check terminal output or saved log-file to make sure they do not influence your simulation results.')

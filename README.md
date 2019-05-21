@@ -4,6 +4,23 @@
 * Run: pip install -r requirements.txt
 * Execute: python A_main_script.py
 
+# MicroGridDesignTool_V3.0
+* New excel template - not compatible with previous versions
+* Taking into account investments into storage power
+
+# MicroGridDesignTool_V2.1
+* Error messages
+* Bugfix: Working renewable constraint
+* Bugfix: Excel-issues with max_shortage=='default' error (from columns='unnamed')
+
+# MicroGridDesignTool_V2.0
+Major changes:
+* New excel template
+* DC and AC bus, connected with inverters/rectifiers, possible AC/DC demand
+* Forced battery charge criteria (linearized)
+* Minimal renewable share criteria not working!
+* Console execution via "python3 A_main_script.py FILE.xlsx"
+
 # MicroGridDesignTool_V1.1
 * Fixed termination due to undefined 'comments', occurring when simulation without sensitivity analysis is performed
 * New constraint: Renewable share (testing needed)
