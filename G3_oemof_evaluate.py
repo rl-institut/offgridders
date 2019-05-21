@@ -29,17 +29,12 @@ class utilities:
         return
 
 class timeseries:
+
     def get_demand(case_dict, oemof_results, electricity_bus_ac, electricity_bus_dc, experiment):
         logging.debug('Evaluate flow: demand')
         # Get flow
 
         e_flows_df = pd.DataFrame([0 for i in experiment['date_time_index']], columns=['Demand'], index=experiment['date_time_index'])
-
-        #if case_dict['genset_fixed_capacity'] != None \
-        #        or case_dict['wind_fixed_capacity'] != None \
-        #        or case_dict['pcc_consumption_fixed_capacity'] != None \
-        #        or case_dict['pcc_feedin_fixed_capacity'] != None:
-
         demand_ac = electricity_bus_ac['sequences'][(('bus_electricity_ac', 'sink_demand_ac'), 'flow')]
         e_flows_df = utilities.join_e_flows_df(demand_ac, 'Demand AC', e_flows_df)
         if case_dict['evaluation_perspective'] == 'AC_bus':
@@ -323,7 +318,6 @@ class timeseries:
         if oemof_results['capacity_storage_kWh']>0:
             e_flows_df = utilities.join_e_flows_df(stored_capacity/oemof_results['capacity_storage_kWh'], 'Storage SOC', e_flows_df)
         else:
-            #  todo working?
             e_flows_df = utilities.join_e_flows_df(pd.Series([0 for t in e_flows_df.index], index=e_flows_df.index),
                                                    'Storage SOC', e_flows_df)
 
@@ -343,7 +337,6 @@ class timeseries:
             consumption_mg_side = micro_grid_bus['sequences'][(('transformer_pcc_consumption', 'bus_electricity_ac'), 'flow')]
             e_flows_df = utilities.join_e_flows_df(consumption_mg_side, 'Consumption from main grid (MG side)', e_flows_df)
             utilities.annual_value('consumption_main_grid_mg_side_annual_kWh', consumption_mg_side, oemof_results, case_dict)
-
             bus_electricity_ng_consumption = outputlib.views.node(results, 'bus_electricity_ng_consumption')
             consumption_utility_side = bus_electricity_ng_consumption['sequences'][(('bus_electricity_ng_consumption', 'transformer_pcc_consumption'), 'flow')]
             e_flows_df = utilities.join_e_flows_df(consumption_utility_side, 'Consumption from main grid (utility side)', e_flows_df)
@@ -354,9 +347,12 @@ class timeseries:
             oemof_results.update({'consumption_main_grid_mg_side_annual_kWh': 0,
                                   'consumption_main_grid_utility_side_annual_kWh': 0})
 
-        oemof_results.update({'autonomy_factor':
+        if oemof_results['total_demand_supplied_annual_kWh'] > 0:
+            oemof_results.update({'autonomy_factor':
                                   (oemof_results['total_demand_supplied_annual_kWh']-oemof_results['consumption_main_grid_mg_side_annual_kWh'])
                                   /oemof_results['total_demand_supplied_annual_kWh']})
+        else:
+            oemof_results.update({'autonomy_factor': 0})
 
         if case_dict['pcc_feedin_fixed_capacity'] != None:
             feedin_mg_side = micro_grid_bus['sequences'][(('bus_electricity_ac', 'transformer_pcc_feedin'), 'flow')]
@@ -411,7 +407,11 @@ class timeseries:
         total_fossil_generation = oemof_results['total_genset_generation_kWh']
         # attention: only effectively used electricity consumption counts for renewable share
         total_fossil_generation += oemof_results['consumption_main_grid_mg_side_annual_kWh'] * (1 - experiment['maingrid_renewable_share'])
-        res_share = abs(1 - total_fossil_generation / total_generation)
+        if total_generation > 0:
+            res_share = abs(1 - total_fossil_generation / total_generation)
+        else:
+            res_share = 0
+            logging.warning('Total generation is zero. Please check energy system - is the grid available in evaluated timeframe?')
 
         oemof_results.update({'res_share': res_share})
         return

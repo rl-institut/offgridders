@@ -11,6 +11,9 @@ class oemof_model:
         return
 
     def build(experiment, case_dict):
+        logging.debug('Complete case dictionary:')
+        logging.debug(case_dict)
+
         logging.debug('Create oemof model by adding case-specific busses and components.')
 
         # create energy system
@@ -19,12 +22,6 @@ class oemof_model:
         ###################################
         ## AC side of the energy system   #
         ###################################
-
-        #------------AC electricity bus------------#
-        #if case_dict['genset_fixed_capacity'] != None \
-        #        or case_dict['wind_fixed_capacity'] != None \
-        #        or case_dict['pcc_consumption_fixed_capacity'] != None \
-        #        or case_dict['pcc_feedin_fixed_capacity'] != None:
 
         logging.debug('Added to oemof model: Electricity bus of energy system, AC')
         bus_electricity_ac = solph.Bus(label="bus_electricity_ac")

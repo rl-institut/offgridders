@@ -1,14 +1,27 @@
 #!/usr/bin/env bash
 
-python3 A_main_script.py ./inputs/locations_no_mgs_grid.xlsx
-python3 A_main_script.py ./inputs/locations_no_mgs_mgs.xlsx
-python3 A_main_script.py ./inputs/locations_no_mgs_shs.xlsx
-python3 A_main_script.py ./inputs/locations_stage1_mgs_grid.xlsx
-python3 A_main_script.py ./inputs/locations_stage1_mgs_mg.xlsx
-python3 A_main_script.py ./inputs/locations_stage2_mgs_grid.xlsx
-python3 A_main_script.py ./inputs/locations_stage2_mgs_mg.xlsx
-python3 A_main_script.py ./inputs/locations_stage1_mgs_shs.xlsx
-python3 A_main_script.py ./inputs/locations_stage2_mgs_shs.xlsx
-python3 A_main_script.py ./inputs/locations_no_mgs_grid.xlsx
-python3 A_main_script.py ./inputs/locations_no_mgs_mgs.xlsx
-python3 A_main_script.py ./inputs/locations_no_mgs_shs.xlsx
+cd ../../masterthesis_oemof_virt/bin/
+source activate
+cd ../../Code/simulator_grid-connected_micro_grid
+
+python3 A_main_script.py ./inputs/reliable_stage1_mgs.xlsx
+python3 A_main_script.py ./inputs/reliable_stage2_mgs.xlsx
+python3 A_main_script.py ./inputs/reliable_stage3_mgs.xlsx
+
+python3 A_main_script.py ./inputs/shs_stage1_mgs.xlsx
+python3 A_main_script.py ./inputs/shs_stage2_mgs.xlsx
+python3 A_main_script.py ./inputs/shs_stage3_mgs.xlsx
+
+python3 A_main_script.py ./inputs/unreliable_stage1_mgs.xlsx
+python3 A_main_script.py ./inputs/unreliable_stage2_mgs.xlsx
+python3 A_main_script.py ./inputs/unreliable_stage3_mgs.xlsx
+
+
+python3 A_main_script.py ./inputs/shs_shortage_stage1_mgs.xlsx
+python3 A_main_script.py ./inputs/shs_shortage_stage2_mgs.xlsx
+python3 A_main_script.py ./inputs/shs_shortage_stage3_mgs.xlsx
+
+python3 A_main_script.py ./inputs/reliable_no_mgs.xlsx
+python3 A_main_script.py ./inputs/shs_shortage_no_mgs.xlsx
+python3 A_main_script.py ./inputs/shs_no_mgs.xlsx
+python3 A_main_script.py ./inputs/unreliable_no_mgs.xlsx

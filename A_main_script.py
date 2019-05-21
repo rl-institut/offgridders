@@ -30,6 +30,7 @@ logging.info('\n \n MICRO GRID TOOL 2.0 '
 input_excel_file = str(sys.argv[1])
 #input_excel_file = './inputs/input_template_excel.xlsx'
 #input_excel_file = './inputs/locations_stage3_mgs.xlsx'
+logging.info('Processing input file: ' + input_excel_file + '\n')
 
 #-------- Get all settings ---------------------------------------------------#
 # General settings, general parameters, sensitivity parameters, project site  #
@@ -90,13 +91,12 @@ total_number_of_simulations = settings['total_number_of_experiments'] * len(case
 for experiment in sensitivity_experiment_s:
 
     capacities_oem = {}
-
     if 'grid_availability' in sensitivity_experiment_s[experiment].keys():
-        logging.debug('Using grid availability as included in timeseries file of project location.')
+        logging.info('Using grid availability as included in timeseries file of project location.')
         # grid availability timeseries from file already included in data
     else:
         # extend experiment with blackout timeseries according to blackout parameters
-        logging.debug('Using grid availability timeseries that was randomly generated.')
+        logging.info('Using grid availability timeseries that was randomly generated.')
         blackout_experiment_name = get_names.blackout_experiment_name(sensitivity_experiment_s[experiment])
         sensitivity_experiment_s[experiment].update({'grid_availability':
                                                          sensitivity_grid_availability[blackout_experiment_name]})

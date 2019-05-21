@@ -1,5 +1,6 @@
 import pandas as pd
 import requests
+import matplotlib.pyplot as plt
 import time
 import logging
 import pprint as pp
@@ -12,16 +13,18 @@ logger.define_logging(screen_level=logging.INFO)
 # Read project file      #
 ##########################
 logging.info('Reading from excel sheet')
-#path = "/home/local/RL-INSTITUT/martha.hoffmann/Desktop/Nextcloud/Masterthesis/Nigeria_Data/Nigeria_EnergyData_Plateau.csv"
-path = "/mnt/Storage/Documents/Studium/RLI/Masterthesis/Nigeria_Data/Nigeria_EnergyData_Plateau.csv"
+path = "/home/local/RL-INSTITUT/martha.hoffmann/Desktop/Nigeria/Nigeria_EnergyData_Plateau.csv"
+#path = "/mnt/Storage/Documents/Studium/RLI/Masterthesis/Nigeria_Data/Nigeria_EnergyData_Plateau.csv"
 data_set_ids = pd.read_csv(path, sep=';')
 
 locations = data_set_ids[['NESP_ID', 'Lat', 'Lon']]
 number_of_locations = len(locations.index)
 
-path = "./demand_profiles_nigeria_plateau.csv"
+path = "/home/local/RL-INSTITUT/martha.hoffmann/Desktop/Nigeria/.demand_profiles_nigeria_plateau.csv.~5dc73ba2"
 demands = pd.read_csv(path, sep=',').drop(['Unnamed: 0'], axis=1)
 logging.info('Get data from renewable ninjas:')
+#demands.plot()
+#plt.show()
 
 tokens = [
     'f8c619d5a5a227629019fa61c24ce7bcd3c70ab9',
@@ -137,7 +140,9 @@ for item in locations.index:
             # Reindex solar_generation according to timeshift
             solar_generation = solar_generation.reindex(datetimerange_367 + pd.DateOffset(hours=time_zone_offset))
             wind_generation = wind_generation.reindex(datetimerange_367 + pd.DateOffset(hours=time_zone_offset))
-
+            if str(data_set_ids["NESP_ID"][item]) == "3728":
+                demands[str(data_set_ids["NESP_ID"][item])].plot
+                plt.show()
             ########### Generate csv file ###########
             location_data_frame = pd.DataFrame({'Demand': demands[str(data_set_ids["NESP_ID"][item])].values,
                                                'SolarGen': solar_generation[datetimerange_local].values,

@@ -75,52 +75,45 @@ class oemof_simulate:
             'comments': experiment['comments']
         }
 
-        # get all from node electricity bus
-        #if case_dict['genset_fixed_capacity'] != None \
-        #        or case_dict['wind_fixed_capacity'] != None \
-        #        or case_dict['pcc_consumption_fixed_capacity'] != None \
-        #        or case_dict['pcc_feedin_fixed_capacity'] != None:
-
         electricity_bus_ac = outputlib.views.node(results, 'bus_electricity_ac')
-        #else:
-        #    None
-
-        #if case_dict['pv_fixed_capacity'] != None \
-        #        or case_dict['storage_fixed_capacity'] != None:
 
         electricity_bus_dc = outputlib.views.node(results, 'bus_electricity_dc')
-        #else:
-        #    electricity_bus_dc = None
 
-        e_flows_df = timeseries.get_demand(case_dict, oemof_results, electricity_bus_ac, electricity_bus_dc, experiment)
-        e_flows_df = timeseries.get_shortage(case_dict, oemof_results, electricity_bus_ac, electricity_bus_dc, experiment, e_flows_df)
+        try:
 
-        oemof_results.update({'supply_reliability_kWh':
-                                  oemof_results['total_demand_supplied_annual_kWh'] / oemof_results[
-                                      'total_demand_annual_kWh']})
+            e_flows_df = timeseries.get_demand(case_dict, oemof_results, electricity_bus_ac, electricity_bus_dc, experiment)
+            e_flows_df = timeseries.get_shortage(case_dict, oemof_results, electricity_bus_ac, electricity_bus_dc, experiment, e_flows_df)
 
-        e_flows_df = timeseries.get_excess(case_dict, oemof_results, electricity_bus_ac, electricity_bus_dc, e_flows_df)
+            oemof_results.update({'supply_reliability_kWh':
+                                      oemof_results['total_demand_supplied_annual_kWh'] / oemof_results[
+                                          'total_demand_annual_kWh']})
 
-        timeseries.get_fuel(case_dict, oemof_results, results)
-        e_flows_df = timeseries.get_genset(case_dict, oemof_results, electricity_bus_ac, e_flows_df)
+            e_flows_df = timeseries.get_excess(case_dict, oemof_results, electricity_bus_ac, electricity_bus_dc, e_flows_df)
 
-        e_flows_df = timeseries.get_national_grid(case_dict, oemof_results, results, e_flows_df,
-                                                  experiment['grid_availability'])
+            timeseries.get_fuel(case_dict, oemof_results, results)
+            e_flows_df = timeseries.get_genset(case_dict, oemof_results, electricity_bus_ac, e_flows_df)
 
-        e_flows_df = timeseries.get_wind(case_dict, oemof_results, electricity_bus_ac, e_flows_df,
-                                         experiment['peak_wind_generation_per_kW'])
+            e_flows_df = timeseries.get_national_grid(case_dict, oemof_results, results, e_flows_df,
+                                                      experiment['grid_availability'])
 
-        e_flows_df = timeseries.get_pv(case_dict, oemof_results, electricity_bus_dc, experiment, e_flows_df,
-                                       experiment['peak_pv_generation_per_kWp'])
+            e_flows_df = timeseries.get_wind(case_dict, oemof_results, electricity_bus_ac, e_flows_df,
+                                             experiment['peak_wind_generation_per_kW'])
 
-        e_flows_df = timeseries.get_storage(case_dict, oemof_results, experiment, results, e_flows_df)
+            e_flows_df = timeseries.get_pv(case_dict, oemof_results, electricity_bus_dc, experiment, e_flows_df,
+                                           experiment['peak_pv_generation_per_kWp'])
 
-        e_flows_df = timeseries.get_rectifier(case_dict, oemof_results, electricity_bus_ac, electricity_bus_dc, e_flows_df)
+            e_flows_df = timeseries.get_storage(case_dict, oemof_results, experiment, results, e_flows_df)
 
-        e_flows_df = timeseries.get_inverter(case_dict, oemof_results, electricity_bus_ac, electricity_bus_dc, e_flows_df)
+            e_flows_df = timeseries.get_rectifier(case_dict, oemof_results, electricity_bus_ac, electricity_bus_dc, e_flows_df)
 
-        # determine renewable share of system - not of demand, but of total generation + consumption.
-        timeseries.get_res_share(case_dict, oemof_results, experiment)
+            e_flows_df = timeseries.get_inverter(case_dict, oemof_results, electricity_bus_ac, electricity_bus_dc, e_flows_df)
+
+            # determine renewable share of system - not of demand, but of total generation + consumption.
+            timeseries.get_res_share(case_dict, oemof_results, experiment)
+
+        except (KeyError):
+            logging.error('Optimized values for a component could not be found in simulation results. \n'
+                          'Did you use restore_oemof_if_existant=True? Than you probably reload an out-dated model and its results.')
 
         # Run plausability test on energy flows
         plausability_tests.run(oemof_results, e_flows_df)

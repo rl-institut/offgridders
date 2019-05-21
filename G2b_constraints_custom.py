@@ -396,7 +396,7 @@ class renewable_criterion():
         el_bus: object of class oemof.solph.network.Bus
             For accessing flow-parameters
         '''
-
+        # todo not using ac dc bus!
         def renewable_share_rule(model):
             fossil_generation = 0
             total_generation = 0
@@ -409,7 +409,7 @@ class renewable_criterion():
 
             if pcc_consumption is not None:
                 pcc_consumption_kWh = sum(model.flow[pcc_consumption, el_bus, :])
-                total_generation += pcc_consumption
+                total_generation += pcc_consumption_kWh
                 fossil_generation += pcc_consumption_kWh * (1 - experiment['maingrid_renewable_share'])
 
             if solar_plant is not None:
@@ -421,6 +421,7 @@ class renewable_criterion():
                 total_generation += wind_plant_generation
 
             expr = (fossil_generation - (1-experiment['min_renewable_share'])*total_generation)
+            print(expr)
             return expr <= 0
 
         model.renewable_share_constraint = po.Constraint(rule=renewable_share_rule)

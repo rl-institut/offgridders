@@ -14,9 +14,15 @@ class central_grid:
         data_complete = False
 
         # Search, if file is existant (and should be used)
-        if os.path.isfile(settings['output_folder'] + "/grid_availability.csv") and settings['restore_blackouts_if_existant'] == True:
+
+        if (os.path.isfile(settings['output_folder'] + "/grid_availability.csv") or os.path.isfile(settings['input_folder_timeseries'] + "/grid_availability.csv"))  and settings['restore_blackouts_if_existant'] == True:
+
             #? read to csv: timestamp as first row -> not equal column number, date time without index
-            data_set = pd.read_csv(settings['output_folder'] + '/grid_availability.csv')
+            if os.path.isfile(settings['output_folder'] + "/grid_availability.csv"):
+                data_set = pd.read_csv(settings['output_folder'] + '/grid_availability.csv')
+            elif os.path.isfile(settings['input_folder_timeseries'] + "/grid_availability.csv"):
+                data_set = pd.read_csv(settings['input_folder_timeseries'] + '/grid_availability.csv')
+
             index = pd.DatetimeIndex(data_set['timestep'].values)
             index = [item + pd.DateOffset(year=settings['max_date_time_index'][0].year) for item in index]
             data_set = data_set.drop(columns=['timestep'])
@@ -36,6 +42,11 @@ class central_grid:
                         count_of_red_data = count_of_red_data + 1
                         name_of_experiment_requested_from_file_dataset = blackout_experiment_s[experiment]['experiment_name']
                         blackout_result = central_grid.oemof_extension_for_blackouts(grid_availability_df[name_of_experiment_requested_from_file_dataset])
+                        logging.info('Blackout experiment "' + blackout_experiment_s[experiment]['experiment_name'] + '": ' +
+                                     'Total blackout duration ' + str(blackout_result['grid_total_blackout_duration']) + ' hrs,'
+                                     + ' total number of blackouts ' + str(blackout_result['grid_number_of_blackouts'])
+                                     + ' with grid reliability of ' + str(blackout_result['grid_reliability']))
+
                         blackout_result_s.update({blackout_experiment_s[experiment]['experiment_name']: blackout_result.copy()})
                         del blackout_experiments_left[experiment]
                         logging.info("Previous blackout timeseries restored: " + blackout_experiment_s[experiment]['experiment_name'])

@@ -26,11 +26,11 @@ for row in data_set.index:
         totals[data_set['State'][row]]['MG Customers (k)'] += data_set['Customers'][row] / 1000
 
     totals[data_set['State'][row]]['Customers (k)'] += data_set['Customers'][row]/1000
-    #data_set['Distance_m'][row] = float(data_set['Distance_m'][row])
+    #demand_set['Distance_m'][row] = float(demand_set['Distance_m'][row])
 
 totals.to_csv("/mnt/Storage/Documents/Studium/RLI/Masterthesis/Nigeria_Data/Nigeria_EnergyData_values_per_state.csv")
 
-#data_set[['Distance_m']] = data_set[['Distance_m']].astype(float)
+#demand_set[['Distance_m']] = demand_set[['Distance_m']].astype(float)
 data_set.plot.scatter(x='Distance_m', y='Customers')
 data_set.plot.scatter(x='Distance_m', y='Demand')
 data_set.plot.scatter(x='Demand', y='PV size(kW)')

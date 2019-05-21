@@ -1,0 +1,24 @@
+import pandas as pd
+import requests
+import matplotlib.pyplot as plt
+import time
+import logging
+import pprint as pp
+import os
+from oemof.tools import logger
+
+logger.define_logging(screen_level=logging.INFO)
+
+path = "/home/local/RL-INSTITUT/martha.hoffmann/Desktop/Nigeria/Nigeria_EnergyData_Plateau.csv"
+data_set_ids = pd.read_csv(path, sep=';')
+
+locations = data_set_ids[['NESP_ID', 'Lat', 'Lon']]
+number_of_locations = len(locations.index)
+
+path = "/home/local/RL-INSTITUT/martha.hoffmann/Dokumente/Masterthesis_Martha/Code/simulator_grid-connected_micro_grid/standalone_scripts/demand_profiles_nigeria_plateau.csv"
+demands = pd.read_csv(path, sep=',').drop(['Unnamed: 0'], axis=1)
+
+for item in locations.index:
+    one_file = pd.read_csv('../inputs/timeseries/nesp_' + str(data_set_ids["NESP_ID"][item]) + '.csv', sep=';')
+    one_file['Demand'] = demands[str(data_set_ids["NESP_ID"][item])].values
+    one_file.to_csv('../inputs/timeseries/nesp_' + str(data_set_ids["NESP_ID"][item]) + '.csv', index=False, sep=';')
