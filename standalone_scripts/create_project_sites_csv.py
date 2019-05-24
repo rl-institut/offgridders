@@ -10,7 +10,9 @@ demand_mg_s2 = pd.DataFrame(index=['project_site_name', 'timeseries_file', 'titl
 demand_mg_s3 = pd.DataFrame(index=['project_site_name', 'timeseries_file', 'title_time', 'title_demand_ac', 'title_demand_dc', 'title_pv', 'title_wind', 'title_grid_availability', 'seperator', 'distribution_grid_cost_investment', 'distribution_grid_cost_opex', 'maingrid_distance'])
 demand_no_mg = pd.DataFrame(index=['project_site_name', 'timeseries_file', 'title_time', 'title_demand_ac', 'title_demand_dc', 'title_pv', 'title_wind', 'title_grid_availability', 'seperator', 'distribution_grid_cost_investment', 'distribution_grid_cost_opex', 'maingrid_distance'])
 
-
+distances = pd.DataFrame([data_set_ids["Distance_m"]/1000, data_set_ids["Distance_m"]/1000, data_set_ids["Distance_m"]/1000],
+                         index = data_set_ids.index,
+                         columns=['original_distance_km', 'max_smaller_distance_on_branch', 'add_distance_on_branch'])
 branches = {}
 theoretical_distance = 0
 for item in data_set_ids.index:
@@ -20,7 +22,6 @@ for item in data_set_ids.index:
     else:
         if branches[data_set_ids["Branch_id"][item]] < data_set_ids["Distance_m"][item]/1000:
             branches.update({data_set_ids["Branch_id"][item]: data_set_ids["Distance_m"][item]/1000})
-
 cost_branches = {}
 
 for item in branches:
@@ -30,7 +31,10 @@ total_distance = 0
 for item in branches:
     total_distance += branches[item]
 
-ratio = total_distance/theoretical_distance
+ratio = 2887/total_distance
+
+
+
 print(total_distance)
 print(total_distance - branches[0])
 print('Total number of branches: ' + str(len(branches)))
