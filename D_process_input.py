@@ -41,6 +41,17 @@ class process_input_parameters():
         experiment.update({'annuity_factor': economics.annuity_factor(experiment['project_lifetime'], experiment['wacc'])})
         experiment.update({'crf': economics.crf(experiment['project_lifetime'], experiment['wacc'])})
 
+        if 'price_fuel' not in experiment:
+            cash_flow_fuel_l = 0
+            fuel_price_i = experiment['fuel_price']
+            for i in range(0, experiment['project_lifetime']):
+                cash_flow_fuel_l += fuel_price_i /(1+experiment['wacc'])**(i)
+                fuel_price_i = fuel_price_i * (1+ experiment['fuel_price_change_annual'] )
+            experiment.update({'price_fuel': cash_flow_fuel_l * experiment['crf']})
+        else:
+            logging.warning('You used decrepated value "fuel_price" in your excel input file. \n '
+                            + '    '+  '    '+ '    '+'This still works, but with values "fuel_price" and "fuel_price_change_annual" you could take into account price changes.' )
+
         component_list = ['pv',
                           'wind',
                           'genset',

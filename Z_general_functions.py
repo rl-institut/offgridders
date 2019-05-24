@@ -83,6 +83,8 @@ class helpers:
             'distribution_grid_cost_investment':	0,
             'distribution_grid_cost_opex':	0,
             'distribution_grid_lifetime':	0,
+            #'fuel_price': 0.76,
+            #'fuel_price_change_annual': 0,
             'genset_batch':	1,
             'genset_cost_investment':	0,
             'genset_cost_opex':	0,
@@ -162,8 +164,13 @@ class helpers:
 
         for parameter in parameter_list:
             if parameter not in experiment:
-                logging.warning('Parameter "' + parameter + '" missing. Do you use an old excel-template? \n'
-                                +'    ' + '    ' + '    ' + 'Simulation will continue with generic value of "' + parameter
-                                + '": ' + str(parameter_list[parameter]))
+                if (parameter == 'price_fuel') \
+                        and ('fuel_price' in experiment ) \
+                        and ('fuel_price_change_annual' in experiment):
+                    pass
+                else:
+                    logging.warning('Parameter "' + parameter + '" missing. Do you use an old excel-template? \n'
+                                    +'    ' + '    ' + '    ' + 'Simulation will continue with generic value of "' + parameter
+                                    + '": ' + str(parameter_list[parameter]))
 
-                experiment.update({parameter: parameter_list[parameter]})
+                    experiment.update({parameter: parameter_list[parameter]})

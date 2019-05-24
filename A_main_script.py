@@ -41,6 +41,8 @@ else:
 # data including timeseries (no noise, not clipped to evaluated timeframe     #
 #-----------------------------------------------------------------------------#
 
+logging.info('Performing simulations defined by file "' + input_excel_file + '"\n')
+
 from B_read_from_files import excel_template
 settings, parameters_constant_values, parameters_sensitivity, project_site_s, case_definitions = \
     excel_template.settings(input_excel_file)

@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 
-path = "/home/local/RL-INSTITUT/martha.hoffmann/Desktop/Nextcloud/Masterthesis/Nigeria_Data/Nigeria_EnergyData_Plateau.csv"
+path = "/home/local/RL-INSTITUT/martha.hoffmann/Desktop/Nigeria/Nigeria_EnergyData_Plateau.csv"
 data_set_ids = pd.read_csv(path, sep=';')
 print (data_set_ids.columns)
 
@@ -21,12 +21,18 @@ for item in data_set_ids.index:
         if branches[data_set_ids["Branch_id"][item]] < data_set_ids["Distance_m"][item]/1000:
             branches.update({data_set_ids["Branch_id"][item]: data_set_ids["Distance_m"][item]/1000})
 
+cost_branches = {}
+
+for item in branches:
+    cost_branches.update({item: (branches[item] * 20000 + 20000)/branches[item]})
+
 total_distance = 0
 for item in branches:
     total_distance += branches[item]
 
 ratio = total_distance/theoretical_distance
-
+print(total_distance)
+print(total_distance - branches[0])
 print('Total number of branches: ' + str(len(branches)))
 print('Total distance covered by branches (km): ' + str(total_distance))
 print('Theoretical distance covered by branches (km): ' + str(theoretical_distance))

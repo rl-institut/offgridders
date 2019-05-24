@@ -367,6 +367,95 @@ class stability_criterion():
                 round(100 * ratio_below_zero.values.min(), 4)) + '%). '})
         return
 
+class offgrid_criterion():
+    def autonomy(model, case_dict, experiment, storage, sink_demand, genset, source_shortage,
+                    wind_plant, solar_plant, el_bus_ac, el_bus_dc):
+
+        def autonomy_rule_capacity(model, t):
+            expr = 0
+            ## ------- Get demand at t ------- #
+            demand = model.flows[el_bus_ac, sink_demand].actual_value[t] * model.flows[el_bus_ac, sink_demand].nominal_value
+            expr += - demand
+
+            ## ------- Get shortage at t------- #
+            if case_dict['allow_shortage'] == True:
+                shortage = model.flow[source_shortage, el_bus_ac, t]
+                expr += + stability_limit * shortage
+
+            ## ------- Generation Diesel ------- #
+            if case_dict['genset_fixed_capacity'] != None:
+                for number in range(1, case_dict['number_of_equal_generators'] + 1):
+                    expr += model.flow[genset[number], el_bus_ac, t]
+
+            ##---------Wind generation t-------#
+            if case_dict['wind_fixed_capacity'] == True:
+                expr += model.flow[wind_plant, el_bus_ac, t]
+
+            ##---------PV generation t-------#
+            if case_dict['pv_fixed_capacity'] == True:
+                expr += model.flow[solar_plant, el_bus_dc, t] * experiment['inverter_dc_ac_efficiency']
+
+            ## ------- Get stored capacity storage at t------- #
+            if case_dict['storage_fixed_capacity'] != None:
+                stored_electricity = 0
+                if case_dict['storage_fixed_capacity'] == False:  # Storage subject to OEM
+                    stored_electricity += model.GenericInvestmentStorageBlock.capacity[storage, t]  - experiment['storage_soc_min'] * model.GenericInvestmentStorageBlock.invest[storage]
+                elif isinstance(case_dict['storage_fixed_capacity'], float): # Fixed storage subject to dispatch
+                    stored_electricity += model.GenericStorageBlock.capacity[storage, t] - experiment['storage_soc_min'] * storage.nominal_capacity
+                else:
+                    logging.warning("Error: 'storage_fixed_capacity' can only be None, False or float.")
+                expr += stored_electricity * experiment['storage_Crate_discharge'] \
+                        * experiment['storage_efficiency_discharge'] \
+                        * experiment['inverter_dc_ac_efficiency']
+
+            print ('Test incomplete - power criterion not tested')
+            return (expr >= 0)
+
+        def autonomy_rule_power(model, t):
+            expr = 0
+            ## ------- Get demand at t ------- #
+            demand = model.flows[el_bus_ac, sink_demand].actual_value[t] * model.flows[el_bus_ac, sink_demand].nominal_value
+            expr += - demand
+
+            ## ------- Get shortage at t------- #
+            if case_dict['allow_shortage'] == True:
+                shortage = model.flow[source_shortage, el_bus_ac, t]
+                expr += + stability_limit * shortage
+
+            ## ------- Generation Diesel ------- #
+            if case_dict['genset_fixed_capacity'] != None:
+                for number in range(1, case_dict['number_of_equal_generators'] + 1):
+                    expr += model.flow[genset[number], el_bus_ac, t]
+
+            ##---------Wind generation t-------#
+            if case_dict['wind_fixed_capacity'] == True:
+                expr += model.flow[wind_plant, el_bus_ac, t]
+
+            ##---------PV generation t-------#
+            if case_dict['pv_fixed_capacity'] == True:
+                expr += model.flow[solar_plant, el_bus_dc, t] * experiment['inverter_dc_ac_efficiency']
+
+            ## ------- Get power of storage ------- #
+            if case_dict['storage_fixed_power'] != None:
+                storage_power = 0
+                if case_dict['storage_fixed_capacity'] == False:
+                    storage_power += model.InvestmentFlow.invest[storage, el_bus_dc]
+                elif isinstance(case_dict['storage_fixed_capacity'], float):
+                    storage_power += case_dict['storage_fixed_power']
+                else:
+                    logging.warning("Error: 'storage_fixed_power' can only be None, False or float.")
+
+                expr += storage_power * experiment['inverter_dc_ac_efficiency']
+            return (expr >= 0)
+
+        model.autonomy_constraint_capacity = po.Constraint(model.TIMESTEPS, rule=autonomy_rule_capacity)
+        model.autonomy_constraint_power = po.Constraint(model.TIMESTEPS, rule=autonomy_rule_power)
+        return model
+
+    def autonomy_test(case_dict, oemof_results, experiment, e_flows_df):
+        print('Test not written!')
+        return
+
 class renewable_criterion():
     def share(model, case_dict, experiment, genset, pcc_consumption, solar_plant, wind_plant, el_bus_ac, el_bus_dc): #wind_plant
         '''
