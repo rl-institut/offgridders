@@ -69,7 +69,7 @@ class generate_sensitvitiy_experiments:
         # Creating dict of possible blackout scenarios (combinations of durations  frequencies
         blackout_experiment_s, blackout_experiments_count \
             = generate_experiments.blackout(sensitivity_array_dict, parameters_constant_values, settings)
-        print(blackout_experiment_s)
+
         # save all Experiments with all used input data to csv
         csv_dict = deepcopy(sensitivitiy_experiment_s)
         # delete timeseries to make file readable

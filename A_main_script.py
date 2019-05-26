@@ -34,7 +34,7 @@ if len(sys.argv) >= 2:
     input_excel_file = str(sys.argv[1])
 else:
     # generic input file
-    input_excel_file = './inputs/input_template_excel.xlsx'
+    input_excel_file = './inputs/unreliable_stage3_mgs.xlsx'#'./inputs/input_template_excel.xlsx'
 
 #-------- Get all settings ---------------------------------------------------#
 # General settings, general parameters, sensitivity parameters, project site  #

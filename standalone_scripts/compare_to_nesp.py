@@ -1,27 +1,35 @@
 import pandas as pd
-import matplotlib as plt
+import matplotlib.pyplot as plt
 
 folder = "../simulation_results/"
 
-folder_list = [#"reliable_no_mgs",
-               "reliable_stage1_mgs",
-               "reliable_stage2_mgs",
-               "reliable_stage3_mgs"
+folder_list = ["unreliable_stage1_mgs",
+               "unreliable_stage2_mgs",
+               "unreliable_stage3_mgs",
+               "unreliable_no_mgs"
+               #"reliable_no_mgs",
+               #"reliable_stage1_mgs",
+               #"reliable_stage2_mgs",
+               #"reliable_stage3_mgs"
                #"shs_shortage_stage1_mgs",
                #"shs_shortage_stage2_mgs",
                #"shs_shortage_stage3_mgs",
                #"shs_stage1_mgs",
                #"shs_stage2_mgs",
                #"shs_stage3_mgs",
-               #"unreliable_stage1_mgs",
-               #"unreliable_stage2_mgs",
-               #"unreliable_stage3_mgs"
                ]
 
-path = "/home/local/RL-INSTITUT/martha.hoffmann/Desktop/Nigeria/Nigeria_EnergyData_Plateau.csv"
+path = "./Nigeria_EnergyData_Plateau.csv"
 data_set_ids = pd.read_csv(path, sep=';')
 
-columns=['Peak demand kW', 'Peak demand kW webmap', 'PV tool kWp', 'PV NESP kWp', 'PV diff [%]', 'Storage tool kWh', 'Storage NESP kWh', 'Storage diff [%]', 'Genset tool kW', 'Genset NESP kW', 'Genset diff [%]', 'RES [%]']
+columns=['Peak demand kW', 'Peak demand kW webmap',
+         'PV tool kWp', 'PV NESP kWp', 'PV diff [%]',
+         'Storage tool kWh', 'Storage NESP kWh', 'Storage diff [%]',
+         'Genset tool kW', 'Genset NESP kW', 'Genset diff [%]',
+         'RES [%]', 'Customers',
+         'LCOE [USD/kWh]', 'NPV [kUSD]', 'NPV/HH [USD/HH]', 'NPV/kW [USD/kW]',
+          'LCOE extension [USD/kWh]', 'NPV extension [kUSD]', 'NPV/HH extension [USD/HH]', 'NPV/kW extension [USD/kW]'
+         ]
 capacities = pd.DataFrame(columns=columns)
 
 per_stage = pd.DataFrame(
@@ -29,7 +37,16 @@ per_stage = pd.DataFrame(
     columns=['PV tool total kWp', 'PV NESP total kWp', 'PV diff average [%]', 'PV diff min [%]', 'PV diff max [%]',
              'Storage tool total kWh', 'Storage NESP total kWh', 'Storage diff average [%]', 'Storage diff min [%]', 'Storage diff max [%]',
              'Genset tool total kW', 'Genset NESP total kW', 'Genset diff average [%]', 'Genset diff min [%]', 'Genset diff max [%]',
-             'RES average [%]', 'RES min [%]', 'RES max [%]'])
+             'RES average [%]', 'RES min [%]', 'RES max [%]',
+             'LCOE average [USD/kWh]', 'LCOE min [USD/kWh]', 'LCOE max [USD/kWh]',
+             'NPV average [kUSD]', 'NPV min [kUSD]', 'NPV max [kUSD]',
+             'NPV/HH average [USD/HH]', 'NPV/HH min [USD/HH]', 'NPV/HH max [USD/HH]',
+             'NPV/kW average [USD/kW]', 'NPV/kW min [USD/kW]', 'NPV/kW max [USD/kW]',
+             'LCOE extension average [USD/kWh]', 'LCOE extension min [USD/kWh]', 'LCOE extension max [USD/kWh]',
+             'NPV extension average [kUSD]', 'NPV extension min [kUSD]', 'NPV extension max [kUSD]',
+             'NPV/HH extension average [USD/HH]', 'NPV/HH extension min [USD/HH]', 'NPV/HH extension max [USD/HH]',
+             'NPV/kW extension average [USD/kW]', 'NPV/kW extension min [USD/kW]', 'NPV/kW extension max [USD/kW]'
+             ])
 
 for file in folder_list:
     data = pd.read_csv(folder + file + "/results_" + file + ".csv", sep=',')
@@ -47,14 +64,31 @@ for file in folder_list:
             capacities_stage['Storage tool kWh'][data['project_site_name'][item]]   = data['capacity_storage_kWh'][item]
             capacities_stage['Genset tool kW'][data['project_site_name'][item]]     = data['capacity_genset_kW'][item]
             capacities_stage['RES [%]'][data['project_site_name'][item]] = data['res_share'][item] * 100
+            capacities_stage['LCOE [USD/kWh]'][data['project_site_name'][item]] = data['lcoe'][item]
+            capacities_stage['NPV [kUSD]'][data['project_site_name'][item]] = data['npv'][item]/1000
+            capacities_stage['NPV/kW [USD/kW]'][data['project_site_name'][item]] = capacities_stage['NPV [kUSD]'][data['project_site_name'][item]]/data['demand_peak_kW'][item] * 1000
+
+        if data['case'][item] == 'sole_maingrid':
+            capacities_stage['LCOE extension [USD/kWh]'][data['project_site_name'][item]] \
+                = data['lcoe'][item]
+            capacities_stage['NPV extension [kUSD]'][data['project_site_name'][item]] \
+                = data['npv'][item] / 1000
+            capacities_stage['NPV/kW extension [USD/kW]'][data['project_site_name'][item]]\
+                = capacities_stage['NPV extension [kUSD]'][data['project_site_name'][item]] / data['demand_peak_kW'][item] * 1000
 
     for item in data_set_ids.index:
         name = "nesp_" + str(data_set_ids['NESP_ID'][item])
         if name in name_list:
             capacities_stage['Peak demand kW webmap'][name] = data_set_ids['Demand'][item]
+            capacities_stage['Customers'][name] = data_set_ids['Customers'][item]
             capacities_stage['PV NESP kWp'][name]          = data_set_ids['PV size(kW)'][item]
             capacities_stage['Storage NESP kWh'][name]     = data_set_ids['Battery capacity (kWh)'][item]
             capacities_stage['Genset NESP kW'][name]       = data_set_ids['Generator capacity (kw)'][item]
+            capacities_stage['NPV/HH [USD/HH]'][name] = \
+                capacities_stage['NPV [kUSD]'][name] / data_set_ids['Customers'][item] * 1000
+            capacities_stage['NPV/HH extension [USD/HH]'][name] = \
+                capacities_stage['NPV extension [kUSD]'][name] / data_set_ids['Customers'][item] * 1000
+
 
     capacities_stage['PV diff [%]'] = \
         (capacities_stage['PV tool kWp'] - capacities_stage['PV NESP kWp']) / capacities_stage['PV NESP kWp'] * 100
@@ -85,12 +119,116 @@ for file in folder_list:
     per_stage['RES min [%]'][file] = capacities_stage['RES [%]'].min()
     per_stage['RES max [%]'][file] = capacities_stage['RES [%]'].max()
 
+    per_stage['LCOE average [USD/kWh]'][file] = capacities_stage['LCOE [USD/kWh]'].mean()
+    per_stage['LCOE min [USD/kWh]'][file] = capacities_stage['LCOE [USD/kWh]'].min()
+    per_stage['LCOE max [USD/kWh]'][file] = capacities_stage['LCOE [USD/kWh]'].max()
+
+    per_stage['NPV average [kUSD]'][file] = capacities_stage['NPV [kUSD]'].mean()
+    per_stage['NPV min [kUSD]'][file] = capacities_stage['NPV [kUSD]'].min()
+    per_stage['NPV max [kUSD]'][file] = capacities_stage['NPV [kUSD]'].max()
+
+    per_stage['NPV/HH average [USD/HH]'][file] = capacities_stage['NPV/HH [USD/HH]'].mean()
+    per_stage['NPV/HH min [USD/HH]'][file] = capacities_stage['NPV/HH [USD/HH]'].min()
+    per_stage['NPV/HH max [USD/HH]'][file] = capacities_stage['NPV/HH [USD/HH]'].max()
+
+    per_stage['NPV/kW average [USD/kW]'][file] = capacities_stage['NPV/kW [USD/kW]'].mean()
+    per_stage['NPV/kW min [USD/kW]'][file] = capacities_stage['NPV/kW [USD/kW]'].min()
+    per_stage['NPV/kW max [USD/kW]'][file] = capacities_stage['NPV/kW [USD/kW]'].max()
+
+    per_stage['LCOE extension average [USD/kWh]'][file] = capacities_stage['LCOE extension [USD/kWh]'].mean()
+    per_stage['LCOE extension min [USD/kWh]'][file] = capacities_stage['LCOE extension [USD/kWh]'].min()
+    per_stage['LCOE extension max [USD/kWh]'][file] = capacities_stage['LCOE extension [USD/kWh]'].max()
+
+    per_stage['NPV extension average [kUSD]'][file] = capacities_stage['NPV extension [kUSD]'].mean()
+    per_stage['NPV extension min [kUSD]'][file] = capacities_stage['NPV extension [kUSD]'].min()
+    per_stage['NPV extension max [kUSD]'][file] = capacities_stage['NPV extension [kUSD]'].max()
+
+    per_stage['NPV/HH extension average [USD/HH]'][file] = capacities_stage['NPV/HH extension [USD/HH]'].mean()
+    per_stage['NPV/HH extension min [USD/HH]'][file] = capacities_stage['NPV/HH extension [USD/HH]'].min()
+    per_stage['NPV/HH extension max [USD/HH]'][file] = capacities_stage['NPV/HH extension [USD/HH]'].max()
+
+    per_stage['NPV/kW extension average [USD/kW]'][file] = capacities_stage['NPV/kW extension [USD/kW]'].mean()
+    per_stage['NPV/kW extension min [USD/kW]'][file] = capacities_stage['NPV/kW extension [USD/kW]'].min()
+    per_stage['NPV/kW extension max [USD/kW]'][file] = capacities_stage['NPV/kW extension [USD/kW]'].max()
+
+    #per_stage[][file] = capacities_stage[].mean()
+    #per_stage[][file] = capacities_stage[].min()
+    #per_stage[][file] = capacities_stage[].max()
+
+
+    capacities_stage['Diff NPV/kW [USD/kW]'] = capacities_stage['NPV/kW [USD/kW]'].values - capacities_stage['NPV/kW extension [USD/kW]'].values
+    capacities_stage['Diff NPV/HH [USD/HH]'] = capacities_stage['NPV/HH [USD/HH]'].values - capacities_stage['NPV/HH extension [USD/HH]'].values
+    capacities_stage['Diff NPV [kUSD]'] = capacities_stage['NPV [kUSD]'].values - capacities_stage['NPV extension [kUSD]'].values
+    capacities_stage['Diff LCOE [USD/kWh]'] = capacities_stage['LCOE [USD/kWh]'].values - capacities_stage['LCOE extension [USD/kWh]']
+
+    capacities_stage['Relative diff NPV/kW [USD/kW]'] = \
+        capacities_stage['Diff NPV/kW [USD/kW]'].values / capacities_stage['NPV/kW [USD/kW]'].values
+
+    capacities_stage['Relative diff NPV/HH [USD/HH]'] = \
+        capacities_stage['Diff NPV/HH [USD/HH]'].values / capacities_stage['NPV/HH [USD/HH]'].values
+
+    capacities_stage['Relative diff NPV [kUSD]'] = \
+        capacities_stage['Diff NPV [kUSD]'].values / capacities_stage['NPV [kUSD]'].values
+
+    capacities_stage['Relative diff LCOE [USD/kWh]'] = \
+        capacities_stage['Diff LCOE [USD/kWh]'].values / capacities_stage['LCOE [USD/kWh]'].values
+
+    if file == "unreliable_stage1_mgs":
+        stage1 = capacities_stage.transpose()
+    elif file == "unreliable_stage2_mgs":
+        stage2 = capacities_stage.transpose()
+    elif file == "unreliable_stage3_mgs":
+        stage3 = capacities_stage.transpose()
+    elif file == "unreliable_no_mgs":
+        no_mgs = capacities_stage.transpose()
+
     capacities = capacities.append(capacities_stage)
 
-print(per_stage)
-per_stage.to_csv("./results_nesp_comparison_stages.csv")
-capacities.to_csv("./results_nesp_comparison.csv")
-#capacities.plot.scatter(x='Peak demand kW', y='PV diff [%]', title='PV diff [%]')
-#capacities.plot.scatter(x='Peak demand kW', y='Storage diff [%]', title='Storage diff [%]')
-#capacities.plot.scatter(x='Peak demand kW', y='Genset diff [%]', title='Genset diff [%]')
-#plt.show()
+per_stage.to_csv(folder + "results_nesp_comparison_reliable_stages.csv")
+capacities.to_csv(folder + "./results_nesp_comparison_reliable.csv")
+
+list_x = ['Peak demand kW',
+          'Customers']
+list_y = ['LCOE [USD/kWh]',
+          'Genset diff [%]',
+          'Storage diff [%]',
+          'PV diff [%]',
+          'RES [%]',
+          'NPV/kW [USD/kW]',
+          'NPV/HH [USD/HH]']
+
+list = list_x + list_y
+plots=pd.DataFrame([capacities[name].values for name in list], index=list).transpose()
+number = 0
+for x_value in list_x:
+    for y_value in list_y:
+        print(x_value, y_value)
+        if x_value != y_value:
+            number += 1
+            plots.plot.scatter(
+                x=x_value,
+                y=y_value,
+                title=y_value + ' dependency on ' + x_value)
+            plt.savefig(folder +'graph_' + str(number) + '.png', bbox_inches="tight")
+
+comparison_list_y = ['Relative diff NPV/kW [USD/kW]',
+                     'Relative diff NPV/HH [USD/HH]',
+                     'Relative diff NPV [kUSD]',
+                     'Relative diff LCOE [USD/kWh]']
+comparison_list_x = ['Customers']
+
+comparison_list = comparison_list_y + comparison_list_x
+print(stage1.columns)
+plots1=pd.DataFrame([stage1[name].values for name in list], index=list).transpose()
+plots2=pd.DataFrame([stage2[name].values for name in list], index=list).transpose()
+plots3=pd.DataFrame([stage3[name].values for name in list], index=list).transpose()
+plots0=pd.DataFrame([no_mgs[name].values for name in list], index=list).transpose()
+
+for x_value in comparison_list_x:
+    for y_value in comparison_list_y:
+        fig, axes = plt.subplots(nrows=1, figsize=(16 / 2.54, 10 / 2.54 / 2))
+        plots1.plot.scatter(x=x_value, y=y_value, ax=axes)
+        plots2.plot.scatter(x=x_value, y=y_value, ax=axes)
+        plots3.plot.scatter(x=x_value, y=y_value, ax=axes)
+        plots0.plot.scatter(x=x_value, y=y_value, ax=axes)
+        plt.show()
