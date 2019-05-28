@@ -3,14 +3,14 @@ import matplotlib.pyplot as plt
 
 folder = "../simulation_results/"
 
-folder_list = ["unreliable_stage1_mgs",
-               "unreliable_stage2_mgs",
-               "unreliable_stage3_mgs",
-               "unreliable_no_mgs"
+folder_list = [#"unreliable_stage1_mgs",
+               #"unreliable_stage2_mgs",
+               #"unreliable_stage3_mgs",
+               #"unreliable_no_mgs"
                #"reliable_no_mgs",
-               #"reliable_stage1_mgs",
-               #"reliable_stage2_mgs",
-               #"reliable_stage3_mgs"
+               "reliable_stage1_mgs",
+                "reliable_stage2_mgs",
+               "reliable_stage3_mgs"
                #"shs_shortage_stage1_mgs",
                #"shs_shortage_stage2_mgs",
                #"shs_shortage_stage3_mgs",
@@ -173,14 +173,14 @@ for file in folder_list:
     capacities_stage['Relative diff LCOE [USD/kWh]'] = \
         capacities_stage['Diff LCOE [USD/kWh]'].values / capacities_stage['LCOE [USD/kWh]'].values
 
-    if file == "unreliable_stage1_mgs":
-        stage1 = capacities_stage.transpose()
-    elif file == "unreliable_stage2_mgs":
-        stage2 = capacities_stage.transpose()
-    elif file == "unreliable_stage3_mgs":
-        stage3 = capacities_stage.transpose()
-    elif file == "unreliable_no_mgs":
-        no_mgs = capacities_stage.transpose()
+    if file == "unreliable_stage1_mgs" or file == "reliable_stage1_mgs":
+        stage1 = capacities_stage.copy()
+    elif file == "unreliable_stage2_mgs" or file == "reliable_stage2_mgs":
+        stage2 = capacities_stage.copy()
+    elif file == "unreliable_stage3_mgs" or file == "reliable_stage3_mgs":
+        stage3 = capacities_stage.copy()
+    elif file == "unreliable_no_mgs" or file == "reliable_no_mgs":
+        no_mgs = capacities_stage.copy()
 
     capacities = capacities.append(capacities_stage)
 
@@ -218,17 +218,23 @@ comparison_list_y = ['Relative diff NPV/kW [USD/kW]',
 comparison_list_x = ['Customers']
 
 comparison_list = comparison_list_y + comparison_list_x
-print(stage1.columns)
-plots1=pd.DataFrame([stage1[name].values for name in list], index=list).transpose()
-plots2=pd.DataFrame([stage2[name].values for name in list], index=list).transpose()
-plots3=pd.DataFrame([stage3[name].values for name in list], index=list).transpose()
-plots0=pd.DataFrame([no_mgs[name].values for name in list], index=list).transpose()
+
+#stage1=stage1.transpose()
+#stage2=stage2.transpose()
+#stage3=stage3.transpose()
+#no_mgs=no_mgs.transpose()
+#plots2=pd.DataFrame([stage2[name].values for name in list], index=list).transpose()
+#plots3=pd.DataFrame([stage3[name].values for name in list], index=list).transpose()
+#plots0=pd.DataFrame([no_mgs[name].values for name in list], index=list).transpose()
+
+print(stage1)
 
 for x_value in comparison_list_x:
     for y_value in comparison_list_y:
-        fig, axes = plt.subplots(nrows=1, figsize=(16 / 2.54, 10 / 2.54 / 2))
-        plots1.plot.scatter(x=x_value, y=y_value, ax=axes)
-        plots2.plot.scatter(x=x_value, y=y_value, ax=axes)
-        plots3.plot.scatter(x=x_value, y=y_value, ax=axes)
-        plots0.plot.scatter(x=x_value, y=y_value, ax=axes)
-        plt.show()
+        print(stage1[x_value])
+        print(stage1[y_value])
+        fig = stage1.plot.scatter(x=x_value, y=y_value)
+        stage2.plot.scatter(x=x_value, y=y_value, ax=fig)
+        stage3.plot.scatter(x=x_value, y=y_value, ax=fig)
+        #no_mgs.plot.scatter(x=x_value, y=y_value, ax=fig)
+        fig.show()
