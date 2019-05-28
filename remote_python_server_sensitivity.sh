@@ -11,7 +11,6 @@ python3 A_main_script.py ./inputs/electricity_price_sensitivity.xlsx
 cp ./master_thesis_simulation_mgs/simulator_grid-connected_micro_grid/simulation_results/electricity_price_sensitivity/results_electricity_price_sensitivity.csv ~/user_shares/Martha.Hoffmann/Nigeria_results_sync
 
 python3 A_main_script.py ./inputs/blackout_sensitivity.xlsx
-cp -r ./master_thesis_simulation_mgs/simulator_grid-connected_micro_grid/simulation_results/blackout_sensitivity ~/user_shares/Martha.Hoffmann/Nigeria_results_sync//unreliable_stage3_mgs
 cp ./master_thesis_simulation_mgs/simulator_grid-connected_micro_grid/simulation_results/blackout_sensitivity/results_blackout_sensitivity.csv ~/user_shares/Martha.Hoffmann/Nigeria_results_sync
 
 exit
