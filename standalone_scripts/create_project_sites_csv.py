@@ -46,6 +46,8 @@ for loc in distances.columns:
 
 ratio = 2887/total
 
+distances.to_csv('Plateau_distances.csv')
+
 print('Total number of branches: ' + str(len(branches)))
 print('Total distance covered by branches (km): ' + str(total))
 print('Theoretical distance covered by branches (km): 2887')
