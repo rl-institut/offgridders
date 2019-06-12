@@ -73,11 +73,11 @@ for perspective in ['mg perspective', 'global perspective']:
         year = 1
         for file in list:
             data = pd.read_csv(file+item, index_col=False)
-            costs_trends[year] = data[[title + perspective for title in header]].iloc[546].tolist()#, index=header, columns=[year]))
+            costs_trends[year] = data[[title + perspective for title in header]].iloc[544].tolist()#, index=header, columns=[year]))
             year += 1
             if file == list[4]:
-                average_5[perspective+item]=data[[title + perspective for title in header]].iloc[546].tolist()
-
+                average_5[perspective+item]=data[[title + perspective for title in header]].iloc[544].tolist()
+                print(data[[title + perspective for title in header]].iloc[544])
         costs_trends = costs_trends.transpose()
         costs_trends['year'] = [i for i in range(1, 20)]
         plotting = 0
@@ -108,17 +108,19 @@ for perspective in ['mg perspective', 'global perspective']:
         plt.savefig('../simulation_results/grid_arrival_npv_'+perspective+item[:-4]+'.png', bbox_inches="tight")
         plt.close()
         costs_trends.to_csv('../simulation_results/trends_'+perspective+item+'.csv')
-
-
-        print(len(costs_trends.drop('average')))
-        fig = plots.boxplot(column=comparison_list_y)
-        plt.savefig(folder + save_subfolder + 'graph_boxplot_' + prefix + str(number) + '.png',
+        '''
+        costs_5 = pd.read_csv(list[4]+item, nrows=544)
+        list_cases = [head[17:] for head in header1]
+        to_plot=pd.DataFrame(index=costs_5.index)
+        for case in range(0,len(list_cases)):
+            to_plot[list_cases[case]]=costs_5[header1[case]+perspective]
+        #to_plot = pd.DataFrame(costs_5[[title + perspective for title in header1]], columns=list_cases)
+        print(to_plot)
+        fig = to_plot.boxplot(column=list_cases, rot=45)
+        plt.show()
+        plt.savefig('../simulation_results/graph_boxplot_npv_' + perspective + item + '.png',
                     bbox_inches="tight")
         plt.close()
-
-        fig = plots.boxplot(column=comparison_list_y)
-        plt.savefig('../simulation_results/graph_boxplot_npv_' + prefix + str(number) + '.png',
-                    bbox_inches="tight")
-        plt.close()
+        '''
 
 average_5.to_csv('../simulation_results/average_intercon.csv')

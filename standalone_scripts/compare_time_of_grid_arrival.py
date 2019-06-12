@@ -117,13 +117,16 @@ def evaluate_nesp(save_subfolder):
                     capacities_stage['RES percent'][nesp_id] = data['res_share'][item] * 100
                     capacities_stage['LCOE USD per kWh'][nesp_id] =\
                         data['lcoe'][item] + (20000*crf20 - 3200)/data['total_demand_annual_kWh'][item]
+
                     capacities_stage['NPV USD'][nesp_id] = data['npv'][item] + (20000-3200/crf20)
                     capacities_stage['NPV per kW USD per kW'][nesp_id] = capacities_stage['NPV USD'][nesp_id] / \
                                                                    data['demand_peak_kW'][item]
 
                 if case == 'sole_maingrid':
                     capacities_stage['LCOE extension USD per kWh'][nesp_id] \
-                        = data['lcoe'][item]
+                        = data['lcoe'][item] + (20000 * crf20 - 3200) / \
+                          (data['supply_reliability_kWh'][item]* data['total_demand_annual_kWh'][item])
+
                     capacities_stage['Cost extension USD'][nesp_id] \
                         = data['costs_maingrid_extension'][item]
                     capacities_stage['Cost transformers USD'][nesp_id] \
@@ -132,7 +135,7 @@ def evaluate_nesp(save_subfolder):
                     capacities_stage['Supply reliability extension percent'][nesp_id] \
                         = data['supply_reliability_kWh'][item]
                     capacities_stage['NPV extension USD'][nesp_id] \
-                        = data['npv'][item]
+                        = data['npv'][item]  + (20000 - 3200 / crf20)
                     capacities_stage['NPV per kW extension USD per kW'][nesp_id] \
                         = capacities_stage['NPV extension USD'][nesp_id] / data['demand_peak_kW'][item]
 
@@ -293,10 +296,10 @@ def evaluate_nesp(save_subfolder):
                              'Additional branch distance km',
                              'Customers ']
 
-        number = plot_x_y_stages(folder, save_subfolder, prefix, comparison_list_x, comparison_list_y, stage1, stage2, stage3, no_mgs, number)
+        number = plot_x_y_stages(folder, grid_arrival, save_subfolder, prefix, comparison_list_x, comparison_list_y, stage1, stage2, stage3, no_mgs, number)
     return number
 
-def plot_comparison_intercon(folder, save_subfolder, prefix, comparison_list_x, comparison_list_y, costs, number, perspective):
+def plot_comparison_intercon(folder, grid_arrival, save_subfolder, prefix, comparison_list_x, comparison_list_y, costs, number, perspective):
     color_dict = {'LCOE USD per kWh spp': (0.5803921568627451, 0.5803921568627451, 0.5803921568627451),
                   'LCOE USD per kWh offgrid_mg': (0.00392156862745098, 0.45098039215686275, 0.6980392156862745),
                   'LCOE USD per kWh ongrid_mg_cons_prod': (0.792156862745098, 0.5686274509803921, 0.3803921568627451),
@@ -317,19 +320,20 @@ def plot_comparison_intercon(folder, save_subfolder, prefix, comparison_list_x, 
     plots_file = plots.copy()
     plots_file['NESP ID']=[str(name) for name in costs['nesp_id'].values]
     plots_file.to_csv(folder + save_subfolder + "interconnected_lcoe_" + perspective + '_' + prefix[:-1] + ".csv")
-    for x in comparison_list_x:
-        plotting = 0
-        number += 1
-        for y in comparison_list_y:
-            if plotting == 0:
-                fig = plots.plot.scatter(x=x, y=y, label=y[15:], color=color_dict[y]) # s=df['c'] * 200 plot THREE VALUES
-                plotting = 1
-            else:
-                plots.plot.scatter(x=x, y=y, ax=fig, label=y[15:], color=color_dict[y])
-        fig.set(ylabel='LCOE USD per kWh', title='Cost comparison, '+ perspective)
-        fig.legend(loc='center left', bbox_to_anchor=(1, 0.5), frameon=False)
-        plt.savefig(folder + save_subfolder + 'graph_' + prefix + str(number) + ' '+ x +' ' + y +'.png', bbox_inches="tight")
-        plt.close()
+    if grid_arrival == 5:
+        for x in comparison_list_x:
+            plotting = 0
+            number += 1
+            for y in comparison_list_y:
+                if plotting == 0:
+                    fig = plots.plot.scatter(x=x, y=y, label=y[15:], color=color_dict[y]) # s=df['c'] * 200 plot THREE VALUES
+                    plotting = 1
+                else:
+                    plots.plot.scatter(x=x, y=y, ax=fig, label=y[15:], color=color_dict[y])
+            fig.set(ylabel='LCOE USD per kWh', title='Cost comparison, '+ perspective)
+            fig.legend(loc='center left', bbox_to_anchor=(1, 0.5), frameon=False)
+            plt.savefig(folder + save_subfolder + 'graph_' + prefix + str(number) + ' '+ x +' ' + y +'.png', bbox_inches="tight")
+            plt.close()
     return number
 
 def add_sum_save(folder, save_subfolder, prefix, number_of_favoured, name, perspective):
@@ -368,26 +372,27 @@ def add_statistics_matrix(matrix):
     matrix = matrix.append(add.transpose(), sort=False)
     return matrix
 
-def plot_x_y_stages(folder, save_subfolder, prefix, comparison_list_x, comparison_list_y, stage1, stage2, stage3, no_mgs, number):
+def plot_x_y_stages(folder, grid_arrival, save_subfolder, prefix, comparison_list_x, comparison_list_y, stage1, stage2, stage3, no_mgs, number):
 
     comparison_list = comparison_list_y + comparison_list_x
     plots_1 = pd.DataFrame([stage1[name].values for name in comparison_list], index=comparison_list).transpose()
     plots_2 = pd.DataFrame([stage2[name].values for name in comparison_list], index=comparison_list).transpose()
     plots_3 = pd.DataFrame([stage3[name].values for name in comparison_list], index=comparison_list).transpose()
     plots_no = pd.DataFrame([no_mgs[name].values for name in comparison_list], index=comparison_list).transpose()
-
-    for x_value in comparison_list_x:
-        for y_value in comparison_list_y:
-            if x_value != y_value:
-                number += 1
-                fig = plots_no.plot.scatter(x=x_value, y=y_value, color='#cc0000', label='No MGs')
-                plots_2.plot.scatter(x=x_value, y=y_value, ax=fig, color='#0033cc', label='Stage 2')
-                plots_3.plot.scatter(x=x_value, y=y_value, ax=fig, color='#990099', label='Stage 3')
-                plots_1.plot.scatter(x=x_value, y=y_value, ax=fig, color='#66cc33', label='Stage 1')
-                fig.legend(loc='center left', bbox_to_anchor=(1, 0.5), frameon=False)
-                fig.set(title='Comparison of trends in stages')
-                plt.savefig(folder + save_subfolder + 'graph_' + prefix + str(number) + ' '+ x_value +' ' + y_value +'.png', bbox_inches="tight")
-                plt.close()
+    
+    if grid_arrival == 5:
+        for x_value in comparison_list_x:
+            for y_value in comparison_list_y:
+                if x_value != y_value:
+                    number += 1
+                    fig = plots_no.plot.scatter(x=x_value, y=y_value, color='#cc0000', label='No MGs')
+                    plots_2.plot.scatter(x=x_value, y=y_value, ax=fig, color='#0033cc', label='Stage 2')
+                    plots_3.plot.scatter(x=x_value, y=y_value, ax=fig, color='#990099', label='Stage 3')
+                    plots_1.plot.scatter(x=x_value, y=y_value, ax=fig, color='#66cc33', label='Stage 1')
+                    fig.legend(loc='center left', bbox_to_anchor=(1, 0.5), frameon=False)
+                    fig.set(title='Comparison of trends in stages')
+                    plt.savefig(folder + save_subfolder + 'graph_' + prefix + str(number) + ' '+ x_value +' ' + y_value +'.png', bbox_inches="tight")
+                    plt.close()
 
     return number
 
@@ -735,7 +740,7 @@ def evaluate_grid_arrival_time(grid_arrival, save_subfolder):
                          'ongrid_mg_cons_prod']:
                 if item == 'sole_maingrid':
                     costs_stage['NPV USD ' + item + ' mg perspective'] = \
-                        (costs_stage['NPV USD ' + item] / d_t - costs_stage['Grid extension incl pcc USD'])
+                        (costs_stage['NPV USD ' + item] / d_t) - costs_stage['Grid extension incl pcc USD'] * crf_20_t/crf_20
 
                     costs_stage['NPV USD ' + item + ' global perspective'] = costs_stage['NPV USD ' + item] / d_t
 
@@ -919,20 +924,20 @@ def evaluate_grid_arrival_time(grid_arrival, save_subfolder):
 
         if grid_arrival == 5:
 
-            number = plot_x_y_stages(folder, "evaluation/", prefix, comparison_list_x, comparison_list_y_3,
+            number = plot_x_y_stages(folder, grid_arrival, "evaluation/", prefix, comparison_list_x, comparison_list_y_3,
                                     costs_stage1, costs_stage2, costs_stage3,
                                     costs_no_mgs, number_5)
 
-            number = plot_x_y_stages(folder, save_subfolder, prefix, comparison_list_x, comparison_list_y_1, costs_stage1, costs_stage2, costs_stage3,
+            number = plot_x_y_stages(folder, grid_arrival, save_subfolder, prefix, comparison_list_x, comparison_list_y_1, costs_stage1, costs_stage2, costs_stage3,
                                  costs_no_mgs, number)
 
-            number = plot_x_y_stages(folder, save_subfolder, prefix, comparison_list_x, comparison_list_y_2, costs_stage1, costs_stage2, costs_stage3,
+            number = plot_x_y_stages(folder, grid_arrival, save_subfolder, prefix, comparison_list_x, comparison_list_y_2, costs_stage1, costs_stage2, costs_stage3,
                                  costs_no_mgs, number)
 
-        number = plot_comparison_intercon(folder, save_subfolder, prefix, comparison_list_x, comparison_list_y_1, costs,
+        number = plot_comparison_intercon(folder, grid_arrival, save_subfolder, prefix, comparison_list_x, comparison_list_y_1, costs,
                                           number, 'mg perspective')
 
-        number = plot_comparison_intercon(folder, save_subfolder, prefix, comparison_list_x, comparison_list_y_2, costs,
+        number = plot_comparison_intercon(folder, grid_arrival, save_subfolder, prefix, comparison_list_x, comparison_list_y_2, costs,
                                           number, 'global perspective')
 
         for y in comparison_list_y_1 + comparison_list_y_2 + comparison_list_y_3:
