@@ -30,8 +30,6 @@ class economics():
 
         # Substraction of component value at end of life with last replacement (= number_of_investments - 1)
         if number_of_investments * lifetime > project_life:
-            print(number_of_investments * lifetime)
-            print(investment_t0)
             last_investment = first_time_investment / ((1 + wacc) ** ((number_of_investments - 1) * lifetime))
             linear_depreciation_last_investment = last_investment / lifetime
             capex = capex -  linear_depreciation_last_investment * (number_of_investments * lifetime - project_life)

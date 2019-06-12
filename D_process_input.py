@@ -65,7 +65,6 @@ class process_input_parameters():
                           'project']
 
         for item in component_list:
-            print(item)
             # --------------------------------------------------#
             # CAPEX without opex/a                              #
             # --------------------------------------------------#
@@ -86,8 +85,7 @@ class process_input_parameters():
             # costs. Includes project_cost_annuity, distribution_grid_cost_annuity, maingrid_extension_cost_annuity for
             # consistency eventhough these are not used in optimization.
             experiment.update({item + '_cost_annuity': experiment[item + '_cost_annuity'] / 365*experiment['evaluated_days']})
-            if item == 'project':
-                print(experiment[item + '_cost_investment'], experiment[item + '_cost_capex'], experiment[item + '_cost_annuity']*365/experiment['evaluated_days'])
+
         return experiment
 
     def add_timeseries(experiment_s):
