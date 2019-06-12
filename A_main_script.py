@@ -18,8 +18,8 @@ logger.define_logging(logpath='./',
                       #screen_level=logging.DEBUG,
                       file_level=logging.DEBUG)
 
-logging.info('\n \n MICRO GRID TOOL 3.0 '
-             '\n Version: 21.05.2019 '
+logging.info('\n \n MICRO GRID TOOL 3.0 BETA'
+             '\n Version: 12.06.2019 '
              '\n Coded by: Martha M. Hoffmann '
              '\n Reiner Lemoine Institute (Berlin) \n \n ')
 
