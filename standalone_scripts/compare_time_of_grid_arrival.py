@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 
 
 def evaluate_nesp(save_subfolder):
+    crf20, d20 = get_crf(20)
     pd.options.mode.chained_assignment = None
 
     folder = "../simulation_results/"
@@ -57,6 +58,13 @@ def evaluate_nesp(save_subfolder):
                        "stage2_mgs",
                        "stage3_mgs"
                        ]
+        #new_data = []
+        heads = ['LCOE', 'NPV', 'NPV per HH', 'NPV per kW', 'PV kWp per kW Demand', 'Genset kW per kW Demand', 'Storage kW per kW Demand', 'Storage kWh per kW Demand']
+        #for item in heads:
+        #    new_data = new_data \
+        #               + [item + ' ' + case in ['offgrid_mg', 'sole_maingrid', 'offgrid_mg_cons', 'offgrid_mg_cons_prod', 'ongrid_mg_cons',
+        #                   'ongrid_mg_cons_prod']]
+
 
         columns = ['Peak demand kW', 'Peak demand NESP kW', 'Peak demand diff percent',
                    'PV tool kWp', 'PV NESP kWp', 'PV diff percent',
@@ -67,15 +75,17 @@ def evaluate_nesp(save_subfolder):
                    'Distance to national grid km', 'Additional branch distance km',
                    'LCOE USD per kWh', 'NPV USD', 'NPV per HH USD per HH', 'NPV per kW USD per kW',
                    'LCOE extension USD per kWh', 'NPV extension USD', 'NPV per HH extension USD per HH',
-                   'NPV per kW extension USD per kW'
-                   ]
+                   'NPV per kW extension USD per kW']
         capacities = pd.DataFrame(columns=columns)
 
         column_list_per_stage_totals = ['PV tool total kWp', 'PV NESP total kWp',
                                         'Storage tool total kWh', 'Storage tool total kW',
                                         'Storage NESP total kWh',
                                         'Genset tool total kW', 'Genset NESP total kW',
-                                        'NPV total USD']
+                                        'NPV total USD',
+                                        'LCOE', 'NPV', 'NPV per HH', 'NPV per kW', 'PV kWp per kW Demand',
+                                        'Genset kW per kW Demand', 'Storage kW per kW Demand',
+                                        'Storage kWh per kW Demand']
 
         column_list_per_stage_vars = []
         for item in columns:
@@ -105,8 +115,9 @@ def evaluate_nesp(save_subfolder):
                     capacities_stage['Storage tool kW'][nesp_id] = data['power_storage_kW'][item]
                     capacities_stage['Genset tool kW'][nesp_id] = data['capacity_genset_kW'][item]
                     capacities_stage['RES percent'][nesp_id] = data['res_share'][item] * 100
-                    capacities_stage['LCOE USD per kWh'][nesp_id] = data['lcoe'][item]
-                    capacities_stage['NPV USD'][nesp_id] = data['npv'][item]
+                    capacities_stage['LCOE USD per kWh'][nesp_id] =\
+                        data['lcoe'][item] + (20000*crf20 - 3200)/data['total_demand_annual_kWh'][item]
+                    capacities_stage['NPV USD'][nesp_id] = data['npv'][item] + (20000-3200/crf20)
                     capacities_stage['NPV per kW USD per kW'][nesp_id] = capacities_stage['NPV USD'][nesp_id] / \
                                                                    data['demand_peak_kW'][item]
 
@@ -220,12 +231,14 @@ def evaluate_nesp(save_subfolder):
         fig = plots.plot.hexbin(x=x, y=y, colormap='viridis', gridsize=15)
         fig.set(title="Distribution of project sites")
         plt.savefig(folder + save_subfolder + 'graph_' + prefix + str(number) + ' '+ x +' ' + y +'.png', bbox_inches="tight")
+        plt.close()
 
         number = number + 1
         x = 'Distance to national grid km'
         fig = plots.plot.hexbin(x=x, y=y, colormap='viridis', gridsize=15)
         fig.set(title="Distribution of project sites")
         plt.savefig(folder + save_subfolder + 'graph_' + prefix + str(number) + ' '+ x +' ' + y +'.png', bbox_inches="tight")
+        plt.close()
 
         number = number + 1
         x = 'Additional branch distance km'
@@ -233,12 +246,14 @@ def evaluate_nesp(save_subfolder):
         fig = plots.plot.hexbin(x=x, y=y, colormap='viridis', gridsize=15)
         fig.set(title="Influence of distance form national grid")
         plt.savefig(folder + save_subfolder + 'graph_' + prefix + str(number) + ' '+ x +' ' + y +'.png', bbox_inches="tight")
+        plt.close()
 
         number = number + 1
         x = 'Distance to national grid km'
         fig = plots.plot.hexbin(x=x, y=y, colormap='viridis', gridsize=15)
         fig.set(title="Influence of additional branch distance")
         plt.savefig(folder + save_subfolder + 'graph_' + prefix + str(number) + ' '+ x +' ' + y +'.png', bbox_inches="tight")
+        plt.close()
 
         number = number + 1
         x = 'Additional branch distance km'
@@ -247,12 +262,14 @@ def evaluate_nesp(save_subfolder):
         fig = plots.plot.hexbin(x=x, y=y, C=c, colormap='viridis', gridsize=15)
         fig.set(title="LCOE of main grid supply")
         plt.savefig(folder + save_subfolder + 'graph_' + prefix + str(number) + ' '+ x +' ' + y+' ' + c  +'.png', bbox_inches="tight")
+        plt.close()
 
         number = number + 1
         x = 'Distance to national grid km'
         fig = plots.plot.hexbin(x=x, y=y, C=c, colormap='viridis', gridsize=15)
         fig.set(title="LCOE of main grid supply")
         plt.savefig(folder + save_subfolder + 'graph_' + prefix + str(number) + ' '+ x +' ' + y +' ' + c +'.png', bbox_inches="tight")
+        plt.close()
 
         capacities_file = add_statistics_matrix(capacities)
         per_stage = add_statistics_matrix(per_stage)
@@ -280,29 +297,26 @@ def evaluate_nesp(save_subfolder):
     return number
 
 def plot_comparison_intercon(folder, save_subfolder, prefix, comparison_list_x, comparison_list_y, costs, number, perspective):
-    color_dict = {'LCOE USD per kWh offgrid_mg mg perspective': '#33ff00',
-                  'LCOE USD per kWh offgrid_mg global perspective': '#33ff00',
-                  'LCOE USD per kWh sole_maingrid mg perspective': '#000000',
-                  'LCOE USD per kWh sole_maingrid global perspective': '#000000',
-                  'LCOE USD per kWh offgrid_mg_cons mg perspective': '#0033cc',
-                  'LCOE USD per kWh offgrid_mg_cons global perspective': '#0033cc',
-                  'LCOE USD per kWh offgrid_mg_cons_prod mg perspective': '#990099',
-                  'LCOE USD per kWh offgrid_mg_cons_prod global perspective': '#990099',
-                  'LCOE USD per kWh ongrid_mg_cons mg perspective': '#ffcc00',
-                  'LCOE USD per kWh ongrid_mg_cons global perspective': '#ffcc00',
-                  'LCOE USD per kWh ongrid_mg_cons_prod mg perspective': '#ffcc00',
-                  'LCOE USD per kWh ongrid_mg_cons_prod global perspective': '#ffcc00',
-                  'LCOE USD per kWh reimbursement mg perspective': '#cc0000',
-                  'LCOE USD per kWh reimbursement global perspective': '#cc0000',
-                  'LCOE USD per kWh spp mg perspective': '#cc3300',
-                  'LCOE USD per kWh spp global perspective': '#cc3300',
-                  'LCOE USD per kWh spd mg perspective': '#cc0033',
-                  'LCOE USD per kWh spd global perspective': '#cc0033',
-                  'LCOE USD per kWh abandonment mg perspective': '#cc0099',
-                  'LCOE USD per kWh abandonment global perspective': '#cc0099'}
+    color_dict = {'LCOE USD per kWh spp': (0.5803921568627451, 0.5803921568627451, 0.5803921568627451),
+                  'LCOE USD per kWh offgrid_mg': (0.00392156862745098, 0.45098039215686275, 0.6980392156862745),
+                  'LCOE USD per kWh ongrid_mg_cons_prod': (0.792156862745098, 0.5686274509803921, 0.3803921568627451),
+                  'LCOE USD per kWh abandonment': (0.33725490196078434, 0.7058823529411765, 0.9137254901960784),
+                  'LCOE USD per kWh spd': (0.9254901960784314, 0.8823529411764706, 0.2),
+                  'LCOE USD per kWh ongrid_mg_cons': (0.8, 0.47058823529411764, 0.7372549019607844),
+                  'LCOE USD per kWh sole_maingrid': (0.8705882352941177, 0.5607843137254902, 0.0196078431372549),
+                  'LCOE USD per kWh offgrid_mg_cons': (0.00784313725490196, 0.6196078431372549, 0.45098039215686275),
+                  'LCOE USD per kWh reimbursement': (0.984313725490196, 0.6862745098039216, 0.8941176470588236),
+                  'LCOE USD per kWh offgrid_mg_cons_prod': (0.8352941176470589, 0.3686274509803922, 0.0)}
+
+    for case in color_dict.copy():
+        color_dict.update({case + ' mg perspective': color_dict[case]})
+        color_dict.update({case + ' global perspective': color_dict[case]})
     comparison_list = comparison_list_x + comparison_list_y
+
     plots = pd.DataFrame([costs[name].values for name in comparison_list], index=comparison_list).transpose()
-    plots.to_csv(folder + save_subfolder + "interconnected_lcoe_" + perspective + '_' + prefix[:-1] + ".csv")
+    plots_file = plots.copy()
+    plots_file['NESP ID']=[str(name) for name in costs['nesp_id'].values]
+    plots_file.to_csv(folder + save_subfolder + "interconnected_lcoe_" + perspective + '_' + prefix[:-1] + ".csv")
     for x in comparison_list_x:
         plotting = 0
         number += 1
@@ -346,17 +360,12 @@ def add_statistics(per_stage, capacities_stage, column_name, file):
     return per_stage
 
 def add_statistics_matrix(matrix):
-    print(matrix.columns)
-    print(matrix.index)
     add = pd.DataFrame({'sum': [matrix[column].values.sum() for column in matrix.columns],
                         'average':[matrix[column].values.mean() for column in matrix.columns],
                         'max':[matrix[column].values.max() for column in matrix.columns],
                         'min':[matrix[column].values.min() for column in matrix.columns]
                         }, index=matrix.columns)
-    #matrix = matrix.append(pd.DataFrame(, columns=['sum'], index=matrix_copy.columns).transpose(), sort=False)
-    #matrix = matrix.append(pd.DataFrame(, columns=['average'], index=matrix_copy.columns).transpose(), sort=False)
-    #matrix = matrix.append(pd.DataFrame([matrix_copy[column].values.max() for column in matrix_copy.columns], columns=['max'], index=matrix_copy.columns).transpose(), sort=False)
-    matrix = matrix.append(add, sort=False)
+    matrix = matrix.append(add.transpose(), sort=False)
     return matrix
 
 def plot_x_y_stages(folder, save_subfolder, prefix, comparison_list_x, comparison_list_y, stage1, stage2, stage3, no_mgs, number):
@@ -476,14 +485,14 @@ def evaluate_grid_arrival_time(grid_arrival, save_subfolder):
         list_cases = ['offgrid_mg', 'sole_maingrid', 'offgrid_mg_cons', 'offgrid_mg_cons_prod', 'ongrid_mg_cons',
                       'ongrid_mg_cons_prod', 'reimbursement', 'abandonment', 'spp', 'spd']
 
-        costs_titles = ['nesp_id',
-                        'Peak demand kW',
+        costs_titles = ['Peak demand kW',
                         'Customers ',
                         'reliability ',
                         'Distance to national grid km',
                         'Additional branch distance km',
                         'annual demand kWh/a',
                         'Grid extension incl pcc USD',
+                        'distribution grid costs USD',
                         'PV CAP',
                         'MG costs until grid arrival USD',
                         'abandonment USD',
@@ -578,7 +587,6 @@ def evaluate_grid_arrival_time(grid_arrival, save_subfolder):
 
             for item in data_set_ids.index:
                 name = "nesp_" + str(data_set_ids['NESP_ID'][item])
-                costs_stage['nesp_id'][name] = name
                 if name in name_list:
                     costs_stage['Additional branch distance km'][name] = distances[item][
                                                                                'add_distance_on_branch'] * ratio
@@ -587,10 +595,6 @@ def evaluate_grid_arrival_time(grid_arrival, save_subfolder):
                     generation = pd.read_csv('../inputs/timeseries/' + name + '.csv', sep=';')
                     costs_stage['solar generation [kWh/a/kWp]'][name] = generation['SolarGen'].sum()
                     costs_stage['solar generation peak [kW/kWp]'][name] = generation['SolarGen'].max()
-                    if name_list == 'ongrid_mg_cons':
-                        costs_stage['spp upgrade costs USD'][name] = \
-                            (data['annuity_pcoupling'][item] / data['capacity_pcoupling_kW'][item]
-                             + data['annuity_inverter_dc_ac'][item] / data['capacity_inverter_dc_ac_kW'][item])
 
             for item in data.index:
                 case = data['case'][item]
@@ -600,9 +604,11 @@ def evaluate_grid_arrival_time(grid_arrival, save_subfolder):
                     costs_stage['Autonomy percent ' + case][nesp_id] = data['autonomy_factor'][item]
                     costs_stage['Peak demand kW'][nesp_id] = data['demand_peak_kW'][item]
                     costs_stage['annual demand kWh/a'][nesp_id] = data['total_demand_annual_kWh'][item]
+                    costs_stage['distribution grid costs USD'][nesp_id] = data['costs_distribution_grid'][item]
 
-                    costs_stage['LCOE USD per kWh ' + case][nesp_id] = data['lcoe'][item]
-                    costs_stage['NPV USD ' + case][nesp_id] = data['npv'][item]
+                    costs_stage['LCOE USD per kWh ' + case][nesp_id] = \
+                        data['lcoe'][item] + (20000 * crf_20 - 3200) / data['total_demand_annual_kWh'][item]
+                    costs_stage['NPV USD ' + case][nesp_id] = data['npv'][item]  + (20000 - 3200 / crf_20)
 
                     costs_stage['NPV per kW USD per kW ' + case][nesp_id] = \
                         costs_stage['NPV USD ' + case][nesp_id] / data['demand_peak_kW'][item]
@@ -618,6 +624,9 @@ def evaluate_grid_arrival_time(grid_arrival, save_subfolder):
                                 item])/ crf_20_t / d_t
 
                         costs_stage['reliability '][nesp_id] = data['supply_reliability_kWh'][item]
+                    if case == 'ongrid_mg_cons': #todo check
+                        costs_stage['spp upgrade costs USD'][nesp_id] = \
+                            (data['annuity_pcoupling'][item] / data['capacity_pcoupling_kW'][item])
 
                     if case == 'offgrid_mg':
                         costs_stage['PV CAP'][nesp_id] = data['capacity_pv_kWp'][item]
@@ -653,7 +662,7 @@ def evaluate_grid_arrival_time(grid_arrival, save_subfolder):
 
                         costs_stage['spp future operation costs USD'][nesp_id] \
                             = costs_stage['spp upgrade costs USD'][nesp_id] + \
-                              + (data['annuity_pv'][item]) / crf_20_t / d_t
+                              + (data['annuity_pv'][item]+data['annuity_inverter_dc_ac'][item]) / crf_20_t / d_t
 
                         # present value of reimbursement of distribution cost - annuities until arrival paid, rest value
                         costs_stage['reimbursement distribution grid USD'][nesp_id] = \
@@ -707,6 +716,11 @@ def evaluate_grid_arrival_time(grid_arrival, save_subfolder):
                         costs_stage['NPV USD ' + item + ' global perspective'] \
                         + costs_stage['reimbursement distribution grid USD']
 
+                elif item == 'abandonment':
+                    costs_stage['NPV USD ' + item + ' global perspective'] = \
+                        costs_stage['NPV USD ' + item + ' global perspective'] \
+                        + costs_stage['distribution grid costs USD']/d_t
+
                 elif item == 'reimbursement':
                     costs_stage['NPV USD ' + item + ' global perspective'] = \
                         costs_stage['NPV USD ' + item + ' global perspective'] \
@@ -727,16 +741,16 @@ def evaluate_grid_arrival_time(grid_arrival, save_subfolder):
 
                     costs_stage['LCOE USD per kWh ' + item + ' mg perspective'] = \
                         costs_stage['NPV USD ' + item + ' mg perspective'] \
-                        / (costs_stage['annual demand kWh/a']/crf_t + costs_stage['reliability ']*costs_stage['annual demand kWh/a'] /crf_20_t/d_t)
+                        / (costs_stage['reliability ']*costs_stage['annual demand kWh/a'] /crf_20/d_t)
 
                     costs_stage['LCOE USD per kWh ' + item + ' global perspective'] = \
                         costs_stage['NPV USD ' + item + ' global perspective'] \
-                        / (costs_stage['annual demand kWh/a']/crf_t + costs_stage['reliability ']*costs_stage['annual demand kWh/a'] /crf_20_t/d_t)
+                        / (costs_stage['reliability ']*costs_stage['annual demand kWh/a'] /crf_20/d_t)
 
                 else:
                     if item == "offgrid_mg":
                         costs_stage['NPV USD ' + item + ' mg perspective'] = \
-                            costs_stage['NPV USD offgrid_mg'] * crf_20 / crf_t + costs_stage['NPV USD ' + item] * crf_20 / crf_20_t / d_t
+                            costs_stage['NPV USD offgrid_mg'] #* crf_20 / crf_t + costs_stage['NPV USD ' + item] * crf_20 / crf_20_t / d_t
                     else:
                         costs_stage['NPV USD ' + item + ' mg perspective'] = \
                             costs_stage['NPV USD offgrid_mg'] * crf_20 / crf_t +\
@@ -747,15 +761,20 @@ def evaluate_grid_arrival_time(grid_arrival, save_subfolder):
                         costs_stage['NPV USD ' + item + ' mg perspective'] * crf_20 \
                         / costs_stage['annual demand kWh/a']
 
-                    costs_stage['NPV USD ' + item + ' global perspective'] = \
-                        costs_stage['NPV USD ' + item + ' mg perspective'] \
-                        + costs_stage['Grid extension incl pcc USD']
+                    if item == "offgrid_mg":
+                        costs_stage['NPV USD ' + item + ' global perspective'] = \
+                        costs_stage['NPV USD ' + item + ' mg perspective']
+                    else:
+                        costs_stage['NPV USD ' + item + ' global perspective'] = \
+                            costs_stage['NPV USD ' + item + ' mg perspective'] \
+                            + costs_stage['Grid extension incl pcc USD']
 
                     costs_stage['LCOE USD per kWh ' + item + ' global perspective'] = \
                         costs_stage['NPV USD ' + item + ' global perspective'] * crf_20 / \
                         costs_stage['annual demand kWh/a']
 
             for perspective in [' mg perspective', ' global perspective']:
+
                 for item in list_cases:
                     costs_stage['NPV per kW USD per kW ' + item + perspective] = \
                         costs_stage['NPV USD ' + item + perspective] / \
@@ -823,67 +842,67 @@ def evaluate_grid_arrival_time(grid_arrival, save_subfolder):
             elif file == "no_mgs":
                 costs_no_mgs = costs_stage.copy()
 
-            #costs_stage = add_statistics_matrix(costs_stage)
+            costs_stage = add_statistics_matrix(costs_stage)
             for column in favoured.columns:
                 costs_stage[column] = favoured[column]
+            costs_stage['nesp_id'] = name_list + ['', '', '', '']
+            costs = costs.append(costs_stage.drop(['min', 'max', 'average', 'sum']), sort=False)            #
+            costs_stage.to_csv(folder + save_subfolder + "costs_" + file + '_' + prefix[:-1] + ".csv")
 
-            costs = costs.append(costs_stage, sort=False)            # .drop(['min', 'max', 'average', 'sum'])
-            costs_stage.to_csv(folder + save_subfolder + "costs_" + file + prefix[:-1] + ".csv")
-
-
-
-        name_list = favoured.columns
+        title_favoured_columns = favoured.columns
         add_sum_save(folder, save_subfolder, prefix, number_of_favoured_aspect1[[name + ' global perspective' for name in case_list_aspect1]],
-                     name_list[0], ' global perspective')
+                     title_favoured_columns[0], ' global perspective')
         add_sum_save(folder, save_subfolder, prefix,
             number_of_favoured_aspect2_on_off[[name + ' global perspective' for name in case_list_aspect2_on_off]],
-            name_list[1], ' global perspective')
+                     title_favoured_columns[1], ' global perspective')
         add_sum_save(folder, save_subfolder, prefix, number_of_favoured_aspect2_on[[name + ' global perspective' for name in case_list_aspect2_on]],
-                     name_list[2], ' global perspective')
+                     title_favoured_columns[2], ' global perspective')
         add_sum_save(folder, save_subfolder, prefix,
             number_of_favoured_aspect3_on_off[[name + ' global perspective' for name in case_list_aspect3_on_off]],
-            name_list[3], ' global perspective')
+                     title_favoured_columns[3], ' global perspective')
         add_sum_save(folder, save_subfolder, prefix, number_of_favoured_aspect3_on[[name + ' global perspective' for name in case_list_aspect3_on]],
-                     name_list[4], ' global perspective')
+                     title_favoured_columns[4], ' global perspective')
         add_sum_save(folder, save_subfolder, prefix, number_of_favoured_aspect3_npv[[name + ' global perspective' for name in case_list_aspect3_all]],
-                     name_list[5], ' global perspective')
+                     title_favoured_columns[5], ' global perspective')
         add_sum_save(folder, save_subfolder, prefix, number_of_favoured_aspect3_lcoe[[name + ' global perspective' for name in case_list_aspect3_all]],
-                     name_list[6], ' global perspective')
+                     title_favoured_columns[6], ' global perspective')
         add_sum_save(folder, save_subfolder, prefix,
             number_of_favoured_aspect3_adapt_lcoe[[name + ' global perspective' for name in case_list_aspect3_adapt]],
-            name_list[7], ' global perspective')
+                     title_favoured_columns[7], ' global perspective')
 
         add_sum_save(folder, save_subfolder, prefix, number_of_favoured_aspect1[[name + ' mg perspective' for name in case_list_aspect1]], name_list[0],
                      'mg perspective')
         add_sum_save(folder, save_subfolder, prefix, number_of_favoured_aspect2_on_off[[name + ' mg perspective' for name in case_list_aspect2_on_off]],
-                     name_list[1], ' mg perspective')
+                     title_favoured_columns[1], ' mg perspective')
         add_sum_save(folder, save_subfolder, prefix, number_of_favoured_aspect2_on[[name + ' mg perspective' for name in case_list_aspect2_on]],
-                     name_list[2], ' mg perspective')
+                     title_favoured_columns[2], ' mg perspective')
         add_sum_save(folder, save_subfolder, prefix, number_of_favoured_aspect3_on_off[[name + ' mg perspective' for name in case_list_aspect3_on_off]],
-                     name_list[3], ' mg perspective')
+                     title_favoured_columns[3], ' mg perspective')
         add_sum_save(folder, save_subfolder, prefix, number_of_favoured_aspect3_on[[name + ' mg perspective' for name in case_list_aspect3_on]],
-                     name_list[4], ' mg perspective')
+                     title_favoured_columns[4], ' mg perspective')
         add_sum_save(folder, save_subfolder, prefix, number_of_favoured_aspect3_npv[[name + ' mg perspective' for name in case_list_aspect3_all]],
-                     name_list[5], ' mg perspective')
+                     title_favoured_columns[5], ' mg perspective')
         add_sum_save(folder, save_subfolder, prefix, number_of_favoured_aspect3_lcoe[[name + ' mg perspective' for name in case_list_aspect3_all]],
-                     name_list[6], ' mg perspective')
+                     title_favoured_columns[6], ' mg perspective')
         add_sum_save(folder, save_subfolder, prefix,
             number_of_favoured_aspect3_adapt_lcoe[[name + ' mg perspective' for name in case_list_aspect3_adapt]],
-            name_list[7], ' mg perspective')
+                     title_favoured_columns[7], ' mg perspective')
 
 
         add_sum_save(folder, save_subfolder, prefix, number_of_favoured_aspect2_on_off[[name + ' mg perspective' for name in case_list_aspect2_on_off]],
-                     name_list[1], '')
+                     title_favoured_columns[1], '')
         add_sum_save(folder, save_subfolder, prefix, number_of_favoured_aspect2_on[[name + ' mg perspective' for name in case_list_aspect2_on]],
-                     name_list[2], '')
+                     title_favoured_columns[2], '')
 
         favoured = costs[[item for item in favoured.columns]]
+        favoured['nesp_id']=costs['nesp_id']
         costs = costs.drop([item for item in favoured.columns], axis=1)
-        costs_file = add_statistics_matrix(costs)
-        for column in favoured.columns:
-            costs_file[column] = favoured[column]
 
-        costs_file.to_csv(folder + save_subfolder + "costs_all_solutions_" + prefix[:-1] + ".csv")
+        costs = add_statistics_matrix(costs)
+        for column in favoured.columns:
+            costs[column] = favoured[column]
+
+        costs.to_csv(folder + save_subfolder + "costs_all_solutions_" + prefix[:-1] + ".csv")
 
         comparison_list_y_1 = [title + ' mg perspective' for title in
                              ['LCOE USD per kWh ' + item for item in list_cases]]
@@ -919,8 +938,9 @@ def evaluate_grid_arrival_time(grid_arrival, save_subfolder):
         for y in comparison_list_y_1 + comparison_list_y_2 + comparison_list_y_3:
             number = plot_matrix(folder, save_subfolder, prefix, costs, number, y)
 
+print('ATTENTION! LCOE AND NPV CORRECTION FOR DISTRIBUTION GRID ERROR IN PLACE')
 save_subfolder = 'evaluation'
-for grid_arrival in range(5,6):
+for grid_arrival in range(1,20):
     save_subfolder_loop = save_subfolder+"_"+str(grid_arrival)+'/'
     evaluate_grid_arrival_time(grid_arrival, save_subfolder_loop)
     print('Interconnection after ' + str(grid_arrival) + ' evaluated.')

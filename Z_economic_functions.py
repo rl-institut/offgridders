@@ -12,8 +12,10 @@ class economics():
 
     def capex_from_investment(investment_t0, lifetime, project_life, wacc, tax):
         # [quantity, investment, installation, weight, lifetime, om, first_investment]
-        number_of_investments = int(round(project_life / lifetime+0.5))
-
+        if project_life == lifetime:
+            number_of_investments = 1
+        else:
+            number_of_investments = int(round(project_life / lifetime + 0.5))
         # costs with quantity and import tax at t=0
         first_time_investment = investment_t0 * (1+tax)
 
@@ -28,6 +30,8 @@ class economics():
 
         # Substraction of component value at end of life with last replacement (= number_of_investments - 1)
         if number_of_investments * lifetime > project_life:
+            print(number_of_investments * lifetime)
+            print(investment_t0)
             last_investment = first_time_investment / ((1 + wacc) ** ((number_of_investments - 1) * lifetime))
             linear_depreciation_last_investment = last_investment / lifetime
             capex = capex -  linear_depreciation_last_investment * (number_of_investments * lifetime - project_life)
