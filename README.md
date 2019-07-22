@@ -28,7 +28,7 @@ Examples for electricity systems that can be simulated with oesmot:
 
 For Details: See [github wiki](https://github.com/smartie2076/simulator_grid-connected_micro_grid/wiki/Installation)
 
-# Changelog
+# Change log
 
 ## MicroGridDesignTool_V3.0
 * New excel template - not compatible with previous versions
