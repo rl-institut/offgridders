@@ -18,8 +18,8 @@ logger.define_logging(logpath='./',
                       #screen_level=logging.DEBUG,
                       file_level=logging.DEBUG)
 
-logging.info('\n \n MICRO GRID TOOL 3.0 BETA'
-             '\n Version: 12.06.2019 '
+logging.info('\n \n MICRO GRID TOOL 3.0'
+             '\n Version: 19.06.2019 '
              '\n Coded by: Martha M. Hoffmann '
              '\n Reiner Lemoine Institute (Berlin) \n \n ')
 
@@ -34,7 +34,7 @@ if len(sys.argv) >= 2:
     input_excel_file = str(sys.argv[1])
 else:
     # generic input file
-    input_excel_file = './inputs/unreliable_stage3_mgs.xlsx'#'./inputs/input_template_excel.xlsx'
+    input_excel_file = './inputs/test_input_template.xlsx'
 
 #-------- Get all settings ---------------------------------------------------#
 # General settings, general parameters, sensitivity parameters, project site  #
