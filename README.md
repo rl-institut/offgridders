@@ -1,8 +1,6 @@
 # Tool description
 
-The simulation tool **oesmot - Open Electricity System Modelling and Optimization Tool** (working name) 
-generates a model of an user-defined electricity supply system, optimizes the capacities of the system's 
- generation, storage and electrical components and then performs a dispatch optimization of the optimized capacities.
+The simulation tool **offgridders** * generates a model of an user-defined electricity supply system, optimizes the capacities of the system's generation, storage and electrical components and then performs a dispatch optimization of the optimized capacities.
  
 Oesmot is written in python3 and utilizes the Open Energy Modelling Framework ([Website](https://oemof.org/)) ([Code](https://github.com/oemof)) 
 and as such uses linerarized component models. 
@@ -18,6 +16,8 @@ Examples for electricity systems that can be simulated with oesmot:
 * On-grid micro grid, either only consuming or also feeding into the central grid
 * Off-grid SHS
 * Backup systems (diesel generator, SHS, ...) to ensure reliable supply of consumers connected to weak national grids
+
+*) previous working name: oesmot - Open Electricity System Modelling and Optimization Tool
 
 # Setup
 * If python3 not pre-installed: Install miniconda
