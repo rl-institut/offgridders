@@ -140,8 +140,9 @@ class economic_evaluation():
 
     def expenditures_fuel(oemof_results, experiment):
         logging.debug('Economic evaluation. Calculating fuel consumption and expenditures.')
+        oemof_results.update({'consumption_fuel_annual_l': oemof_results['consumption_fuel_annual_kWh'] / experiment['combustion_value_fuel'] })
         oemof_results.update({'expenditures_fuel_annual':
-                oemof_results['consumption_fuel_annual_l'] * experiment['price_fuel'] / experiment['combustion_value_fuel']})
+                oemof_results['consumption_fuel_annual_l'] * experiment['price_fuel']})
 
         oemof_results.update({'expenditures_fuel_total':
                 oemof_results['expenditures_fuel_annual'] * experiment['annuity_factor']})

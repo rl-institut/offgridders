@@ -11,9 +11,7 @@ import os
 import itertools
 import numpy as np
 import pprint as pp
-from D_process_input import process_input_parameters as process_input
-from Z_output_functions import output_results
-from Z_general_functions import helpers
+from D0_process_input import process_input_parameters as process_input
 
 from copy import deepcopy
 
@@ -89,7 +87,7 @@ class generate_sensitvitiy_experiments:
         experiments_dataframe.to_csv(settings['output_folder'] + '/sensitivity_experiments.csv')
 
         # Generate a overall title of the oemof-results DataFrame
-        title_overall_results = output_results.overall_results_title(settings, number_of_project_sites, sensitivity_array_dict)
+        title_overall_results = helpers.overall_results_title(settings, number_of_project_sites, sensitivity_array_dict)
 
         message = 'For ' + str(number_of_project_sites) + ' project sites'
         message += ' with ' + str(int(total_number_of_experiments/number_of_project_sites)) + ' scenarios each,'
@@ -406,3 +404,208 @@ class remove_doubles():
                   :-2] + '" defined in constant and sensitivity parameters. Only sensitivity parameter value will be used for sensitivity_experiment_s.'
             logging.warning(str)
         return
+
+class helpers:
+    def test_techno_economical_parameters_complete(experiment):
+        parameter_list = {
+            'blackout_duration':	0,
+            'blackout_duration_std_deviation':	0,
+            'blackout_frequency':	0,
+            'blackout_frequency_std_deviation':	0,
+            'combustion_value_fuel':	9.8,
+            'demand_ac_scaling_factor':	1,
+            'demand_dc_scaling_factor':	1,
+            'distribution_grid_cost_investment':	0,
+            'distribution_grid_cost_opex':	0,
+            'distribution_grid_lifetime':	0,
+            #'fuel_price': 0.76,
+            #'fuel_price_change_annual': 0,
+            'genset_batch':	1,
+            'genset_cost_investment':	0,
+            'genset_cost_opex':	0,
+            'genset_cost_var':	0,
+            'genset_efficiency':	0.33,
+            'genset_lifetime':	15,
+            'genset_max_loading':	1,
+            'genset_min_loading':	0,
+            'genset_oversize_factor':	1.2,
+            'inverter_dc_ac_batch':	1,
+            'inverter_dc_ac_cost_investment':	0,
+            'inverter_dc_ac_cost_opex':	0,
+            'inverter_dc_ac_cost_var':	0,
+            'inverter_dc_ac_efficiency':	1,
+            'inverter_dc_ac_lifetime':	15,
+            'maingrid_distance':	0,
+            'maingrid_electricity_price':	0.15,
+            'maingrid_extension_cost_investment':	0,
+            'maingrid_extension_cost_opex':	0,
+            'maingrid_extension_lifetime':	40,
+            'maingrid_feedin_tariff':	0,
+            'maingrid_renewable_share':	0,
+            'min_renewable_share':	0,
+            'pcoupling_batch':	1,
+            'pcoupling_cost_investment':	0,
+            'pcoupling_cost_opex':	0,
+            'pcoupling_cost_var':	0,
+            'pcoupling_efficiency': 1,
+            'pcoupling_lifetime':	15,
+            'pcoupling_oversize_factor':	1.05,
+            'price_fuel':	0.76,
+            'project_cost_investment':	0,
+            'project_cost_opex':	0,
+            'project_lifetime':	20,
+            'pv_batch':	1,
+            'pv_cost_investment':	0,
+            'pv_cost_opex':	0,
+            'pv_cost_var':	0,
+            'pv_lifetime':	20,
+            'rectifier_ac_dc_batch':	1,
+            'rectifier_ac_dc_cost_investment':	0,
+            'rectifier_ac_dc_cost_opex':	0,
+            'rectifier_ac_dc_cost_var':	0,
+            'rectifier_ac_dc_efficiency':	1,
+            'rectifier_ac_dc_lifetime':	15,
+            'shortage_max_allowed':	0,
+            'shortage_max_timestep':	1,
+            'shortage_penalty_costs':	0.2,
+            'stability_limit':	0.4,
+            'storage_batch_capacity': 1,
+            'storage_batch_power': 1,
+            'storage_capacity_cost_investment': 0,
+            'storage_capacity_cost_opex': 0,
+            'storage_capacity_lifetime': 5,
+            'storage_cost_var': 0,
+            'storage_Crate_charge': 1,
+            'storage_Crate_discharge': 1,
+            'storage_efficiency_charge': 0.8,
+            'storage_efficiency_discharge': 1,
+            'storage_loss_timestep': 0,
+            'storage_power_cost_investment': 0,
+            'storage_power_cost_opex': 0,
+            'storage_power_lifetime': 5,
+            'storage_soc_initial': None,
+            'storage_soc_max': 0.95,
+            'storage_soc_min': 0.3,
+            'tax':	0,
+            'wacc':	0.09,
+            'white_noise_demand':	0,
+            'white_noise_pv':	0,
+            'white_noise_wind':	0,
+            'wind_batch':	1,
+            'wind_cost_investment':	0,
+            'wind_cost_opex':	0,
+            'wind_cost_var':	0,
+            'wind_lifetime':    15}
+
+        for parameter in parameter_list:
+            if parameter not in experiment:
+                if (parameter == 'price_fuel') \
+                        and ('fuel_price' in experiment ) \
+                        and ('fuel_price_change_annual' in experiment):
+                    pass
+                else:
+                    logging.warning('Parameter "' + parameter + '" missing. Do you use an old excel-template? \n'
+                                    +'    ' + '    ' + '    ' + 'Simulation will continue with generic value of "' + parameter
+                                    + '": ' + str(parameter_list[parameter]))
+
+                    experiment.update({parameter: parameter_list[parameter]})
+
+    def overall_results_title(settings, number_of_project_sites, sensitivity_array_dict):
+        logging.debug('Generating header for results.csv')
+        title_overall_results = pd.DataFrame(columns=[
+            'case',
+            'project_site_name'])
+
+        for keys in sensitivity_array_dict:
+            title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[keys])], axis=1)
+
+        title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[
+            'lcoe',
+            'annuity',
+            'npv',
+            'supply_reliability_kWh',
+            'res_share',
+            'autonomy_factor'])], axis=1, sort=False)
+
+        if settings['results_demand_characteristics'] == True:
+            title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[
+                'total_demand_annual_kWh',
+                'demand_peak_kW',
+                'total_demand_supplied_annual_kWh',
+                'total_demand_shortage_annual_kWh'])], axis=1, sort=False)
+            '''
+            'total_demand_ac'
+            'peak_demand_ac'
+            'total_demand_dc'
+            'peak_demand_dc'
+            'mean_demand_ac'
+            'mean_demand_dc'
+            'peak/mean_demand_ratio_ac'
+            'peak/mean_demand_ratio_dc'
+            '''
+
+        if settings['results_blackout_characteristics'] == True:
+            title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[
+                'national_grid_reliability_h',
+                'national_grid_total_blackout_duration',
+                'national_grid_number_of_blackouts'])], axis=1, sort=False)
+
+        title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[
+            'capacity_pv_kWp',
+            'capacity_storage_kWh',
+            'power_storage_kW',
+            'capacity_rectifier_ac_dc_kW',
+            'capacity_inverter_kW',
+            'capacity_wind_kW',
+            'capacity_genset_kW',
+            'capacity_pcoupling_kW',
+            'consumption_fuel_annual_l',
+            'consumption_main_grid_mg_side_annual_kWh',
+            'feedin_main_grid_mg_side_annual_kWh'])], axis=1, sort=False)
+
+        if settings['results_annuities'] == True:
+            title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[
+                'annuity_pv',
+                'annuity_storage',
+                'annuity_rectifier_ac_dc',
+                'annuity_inverter_dc_ac',
+                'annuity_wind',
+                'annuity_genset',
+                'annuity_pcoupling',
+                'annuity_distribution_grid',
+                'annuity_project',
+                'annuity_maingrid_extension'])], axis=1, sort=False)
+
+        title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[
+            'expenditures_fuel_annual',
+            'expenditures_main_grid_consumption_annual',
+            'expenditures_shortage_annual',
+            'revenue_main_grid_feedin_annual'])], axis=1, sort=False)
+
+        # Called costs because they include the operation, while they are also not the present value because
+        # the variable costs are included in the oem
+        if settings['results_costs'] == True:
+            title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[
+                'costs_pv',
+                'costs_storage',
+                'costs_rectifier_ac_dc',
+                'costs_inverter_dc_ac',
+                'costs_wind',
+                'costs_genset',
+                'costs_pcoupling',
+                'costs_distribution_grid',
+                'costs_project',
+                'costs_maingrid_extension',
+                'expenditures_fuel_total',
+                'expenditures_main_grid_consumption_total',
+                'expenditures_shortage_total',
+                'revenue_main_grid_feedin_total'])], axis=1, sort=False)
+
+        title_overall_results = pd.concat([title_overall_results, pd.DataFrame(columns=[
+            'objective_value',
+            'simulation_time',
+            'evaluation_time',
+            'filename',
+            'comments'])], axis=1, sort=False)
+
+        return title_overall_results

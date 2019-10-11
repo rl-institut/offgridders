@@ -193,9 +193,9 @@ class timeseries:
 
         # Get capacity
         if case_dict['inverter_dc_ac_fixed_capacity'] == False:
-            rectifier_capacity = electricity_bus_dc['scalars'][
+            inverter_capacity = electricity_bus_dc['scalars'][
                 (('bus_electricity_dc', 'transformer_inverter_dc_ac'), 'invest')]
-            oemof_results.update({'capacity_inverter_dc_ac_kW': rectifier_capacity})
+            oemof_results.update({'capacity_inverter_dc_ac_kW': inverter_capacity})
 
         elif isinstance(case_dict['inverter_dc_ac_fixed_capacity'], float):
             oemof_results.update({'capacity_inverter_dc_ac_kW': case_dict['inverter_dc_ac_fixed_capacity']})
@@ -262,9 +262,9 @@ class timeseries:
         if case_dict['genset_fixed_capacity'] != None:
             fuel_bus = outputlib.views.node(results, 'bus_fuel')
             fuel = fuel_bus['sequences'][(('source_fuel', 'bus_fuel'), 'flow')]
-            utilities.annual_value('consumption_fuel_annual_l', fuel, oemof_results, case_dict)
+            utilities.annual_value('consumption_fuel_annual_kWh', fuel, oemof_results, case_dict)
         else:
-            oemof_results.update({'consumption_fuel_annual_l': 0})
+            oemof_results.update({'consumption_fuel_annual_kWh': 0})
         return
 
     def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):

@@ -22,7 +22,7 @@ from G2b_constraints_custom import stability_criterion, renewable_criterion, bat
 from G3_oemof_evaluate import timeseries
 from G3a_economic_evaluation import economic_evaluation
 from G3b_plausability_tests import plausability_tests
-from Z_output_functions import output
+from G4_output_functions import output
 
 # This is not really a necessary class, as the whole experiement could be given to the function, but it ensures, that
 # only correct input data is included

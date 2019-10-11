@@ -56,7 +56,7 @@ sensitivity_experiment_s, blackout_experiment_s, overall_results, names_sensitiv
 # Process and initialize                                                      #
 ###############################################################################
 #-------- Generate list of cases analysed in simulation ----------------------#
-from D_process_input import process_input_parameters as process_input
+from D0_process_input import process_input_parameters as process_input
 case_list = process_input.list_of_cases(case_definitions)
 
 logging.info('With these cases, a total of '+ str(settings['total_number_of_experiments'] * len(case_list)) + ' simulations will be performed. \n')
@@ -64,7 +64,7 @@ logging.info('With these cases, a total of '+ str(settings['total_number_of_expe
 #----------------- Extend sensitivity_experiment_s----------------------------#
 # with demand, pv_generation_per_kWp, wind_generation_per_kW                  #
 #-----------------------------------------------------------------------------#
-from D_process_input import noise, process_input_parameters
+from D0_process_input import noise, process_input_parameters
 # Adapt timeseries of experiments according to evaluated days
 max_date_time_index, max_evaluated_days = process_input_parameters.add_timeseries(sensitivity_experiment_s)
 settings.update({'max_date_time_index': max_date_time_index})
@@ -87,7 +87,7 @@ if settings['necessity_for_blackout_timeseries_generation']==True:
 # Based on demand, pv generation and subjected to sensitivity analysis SOEM   #
 #-----------------------------------------------------------------------------#
 # import all scripts necessary for loop
-from Z_general_functions import helpers
+from A1_general_functions import helpers
 from F_case_definitions import cases
 from G0_oemof_simulate import oemof_simulate
 
@@ -158,7 +158,7 @@ for experiment in sensitivity_experiment_s:
         pp.pprint(sensitivity_experiment_s[experiment])
 
 # display all results
-output_names = ['case']
+output_names = ['project_site_name', 'case']
 output_names.extend(names_sensitivities)
 output_names.extend(['lcoe', 'res_share'])
 logging.info('\n Simulation complete. Resulting parameters saved in "results.csv". \n Overview over results:')
