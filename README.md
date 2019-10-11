@@ -17,6 +17,8 @@ Examples for electricity systems that can be simulated with oesmot:
 * Off-grid SHS
 * Backup systems (diesel generator, SHS, ...) to ensure reliable supply of consumers connected to weak national grids
 
+If you have questions regarding the tool's execution or it's code pieces, please drop an issue so that by time I can build an FAQ for offgridders as well as improve its features.
+
 *) previous working name: oesmot - Open Electricity System Modelling and Optimization Tool
 
 # Setup
