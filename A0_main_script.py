@@ -34,7 +34,7 @@ if len(sys.argv) >= 2:
     input_excel_file = str(sys.argv[1])
 else:
     # generic input file
-    input_excel_file = './inputs/test_input_template.xlsx'
+    input_excel_file = './inputs/input_for_multicriteria_peru.xlsx'
 
 #-------- Get all settings ---------------------------------------------------#
 # General settings, general parameters, sensitivity parameters, project site  #
@@ -90,9 +90,14 @@ if settings['necessity_for_blackout_timeseries_generation']==True:
 from A1_general_functions import helpers
 from F_case_definitions import cases
 from G0_oemof_simulate import oemof_simulate
+from H0_multicriteria_analysis import multicriteria_helpers
 
 experiment_count = 0
 total_number_of_simulations = settings['total_number_of_experiments'] * len(case_list)
+
+# variables necessary to store results for subsequent multicriteria analysis
+all_results = {}
+shortage_levels = []
 
 for experiment in sensitivity_experiment_s:
 
@@ -112,6 +117,7 @@ for experiment in sensitivity_experiment_s:
     # Simulations of all cases                                                    #
     # first the ones defining base capacities, then the others                    #
     ###############################################################################
+
     for specific_case in case_list:
         # --------get case definition for specific loop------------------------------#
         experiment_case_dict = \
@@ -129,6 +135,10 @@ for experiment in sensitivity_experiment_s:
 
         # Run simulation, evaluate results
         oemof_results = oemof_simulate.run(sensitivity_experiment_s[experiment], experiment_case_dict)
+
+        # Store results for subsequent multicriteria analysis
+        multicriteria_helpers.presentation(all_results,shortage_levels,oemof_results,sensitivity_experiment_s[experiment])
+
 
         # Extend base capacities for cases utilizing these values, only valid for specific experiment
         if case_definitions[specific_case]['based_on_case'] == False:
@@ -156,6 +166,16 @@ for experiment in sensitivity_experiment_s:
     if settings['display_experiment'] == True:
         logging.info('The experiment with following parameters has been analysed:')
         pp.pprint(sensitivity_experiment_s[experiment])
+
+
+# Calculate multicriteria
+from H0_multicriteria_analysis import Multicriteria
+logging.info('Starting multicriteria postprocess analysis')
+project_locations = []
+for location in all_results:
+    project_locations.append(location)
+Multicriteria.main_analysis(all_results,project_locations,shortage_levels)
+
 
 # display all results
 output_names = ['project_site_name', 'case']

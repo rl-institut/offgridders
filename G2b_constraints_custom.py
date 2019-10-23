@@ -137,7 +137,7 @@ class stability_criterion():
         else:
             pass
 
-    def hybrid(model, case_dict, experiment, storage, sink_demand, genset, pcc_consumption, source_shortage,
+    def hybrid(model, case_dict, experiment, storage, sink_demand, genset, pv, pcc_consumption, source_shortage,
                el_bus_ac, el_bus_dc):
 
         stability_limit = experiment['stability_limit']
@@ -174,6 +174,11 @@ class stability_criterion():
                 expr += stored_electricity * experiment['storage_Crate_discharge'] \
                         * experiment['storage_efficiency_discharge'] \
                         * experiment['inverter_dc_ac_efficiency']
+
+            ## ------- Get pv t ------- #
+            if case_dict['pv_fixed_capacity'] != None:
+                expr += model.flow[pv, el_bus_dc, t] * experiment['inverter_dc_ac_efficiency']
+
             return (expr >= 0)
 
         def stability_rule_power(model, t):
@@ -207,6 +212,12 @@ class stability_criterion():
                     logging.warning("Error: 'storage_fixed_power' can only be None, False or float.")
 
                 expr += storage_power * experiment['inverter_dc_ac_efficiency']
+
+            ## ------- Get pv t ------- #
+            if case_dict['pv_fixed_capacity'] != None:
+                expr += model.flow[pv, el_bus_dc, t] * experiment['inverter_dc_ac_efficiency']
+
+
             return (expr >= 0)
 
         model.stability_constraint_capacity = po.Constraint(model.TIMESTEPS, rule=stability_rule_capacity)
@@ -622,7 +633,7 @@ class ac_dc_bus:
 class shortage_constraints:
 
     # todo shortage constraint / stbaility constraint only relates to AC bus
-    def timestep(model, case_dict, experiment, el_bus, sink_demand, source_shortage):
+    def timestep(model, case_dict, experiment, sink_demand, source_shortage, el_bus, bus_type):
 
         def stability_per_timestep_rule(model, t):
             expr = 0
@@ -635,6 +646,9 @@ class shortage_constraints:
 
             return (expr >= 0)
 
-        model.stability_constraint = po.Constraint(model.TIMESTEPS, rule=stability_per_timestep_rule)
+        if bus_type == 'ac':
+            model.stability_constraint_timestep_ac = po.Constraint(model.TIMESTEPS, rule=stability_per_timestep_rule)
+        else:
+            model.stability_constraint_timestep_dc = po.Constraint(model.TIMESTEPS, rule=stability_per_timestep_rule)
 
         return model

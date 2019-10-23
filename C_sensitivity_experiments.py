@@ -317,6 +317,8 @@ class get:
 class get_names():
     def experiment_name(experiment, sensitivity_array_dict, number_of_project_sites):
         # define file postfix to save simulation
+
+
         filename = '_s'
         if number_of_project_sites > 1:
             if isinstance(experiment['project_site_name'], str):
@@ -523,6 +525,8 @@ class helpers:
             'lcoe',
             'annuity',
             'npv',
+            'first_investment',
+            'operation_mantainance_expenditures',
             'supply_reliability_kWh',
             'res_share',
             'autonomy_factor'])], axis=1, sort=False)
@@ -555,10 +559,13 @@ class helpers:
             'capacity_storage_kWh',
             'power_storage_kW',
             'capacity_rectifier_ac_dc_kW',
-            'capacity_inverter_kW',
+            'capacity_inverter_dc_ac_kW',
             'capacity_wind_kW',
             'capacity_genset_kW',
             'capacity_pcoupling_kW',
+            'total_pv_generation_kWh',
+            'total_wind_generation_kWh',
+            'total_genset_generation_kWh',
             'consumption_fuel_annual_l',
             'consumption_main_grid_mg_side_annual_kWh',
             'feedin_main_grid_mg_side_annual_kWh'])], axis=1, sort=False)

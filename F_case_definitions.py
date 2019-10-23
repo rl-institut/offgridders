@@ -125,6 +125,16 @@ class cases:
                 warning_string + ' value "stability_constraint" (False/share_backup/share_usage) not defined properly')
 
         ###########################################
+        # Include shortage timestep constraint    #
+        ###########################################
+
+        if specific_case['shortage_timestep_constraint'] == True:
+            experiment_case_dict.update({'shortage_timestep_constraint':True})
+        else:
+            experiment_case_dict.update({'shortage_timestep_constraint': False})
+
+
+        ###########################################
         # Include renewable constraint            #
         ###########################################
 

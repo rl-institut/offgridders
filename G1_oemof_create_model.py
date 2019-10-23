@@ -7,7 +7,7 @@ from G2b_constraints_custom import stability_criterion, renewable_criterion, bat
 
 class oemof_model:
 
-    def load_energysystem_lp():
+    def load_energysystem_lp(self):
         # based on lp file
         return
 
@@ -240,6 +240,7 @@ class oemof_model:
                                        storage = storage,
                                        sink_demand = sink_demand_ac,
                                        genset = genset,
+                                       pv = solar_plant,
                                        pcc_consumption = pointofcoupling_consumption,
                                        source_shortage=source_shortage,
                                        el_bus_ac= bus_electricity_ac,
@@ -295,17 +296,20 @@ class oemof_model:
             logging.warning('Case definition of ' + case_dict['case_name']
                             + ' faulty at enable_inverter_at_backout. Value can only be True or False')
 
-        '''
+
         # ------------Allow shortage only for certain percentage of demand in a timestep------------#
-        if case_dict['allow_shortage'] == True:
+        if case_dict['allow_shortage'] == True and case_dict['shortage_timestep_constraint'] == True:
+            logging.info('Added constraint: Maximum hourly shortage allowed.')
             if bus_electricity_ac != None:
                 shortage_constraints.timestep(model, case_dict, experiment, sink_demand_ac, 
-                                              source_shortage, bus_electricity_ac)
+                                              source_shortage, bus_electricity_ac,'ac')
             if bus_electricity_dc != None:
                 shortage_constraints.timestep(model, case_dict, experiment, sink_demand_dc, 
-                                              source_shortage, bus_electricity_dc)
-        '''
+                                              source_shortage, bus_electricity_dc,'dc')
+
+
         return micro_grid_system, model
+
 
     def simulate(experiment, micro_grid_system, model, file_name):
         logging.info('Simulating...')

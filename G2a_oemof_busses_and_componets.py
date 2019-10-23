@@ -320,9 +320,9 @@ class generate():
             outputs={bus_electricity_dc: solph.Flow(
                 nominal_value = power_storage #capacity_storage*experiment['storage_Crate_discharge']
                 )},  # maximum discharge possible in one timestep
-            capacity_loss               = experiment['storage_loss_timestep'],  # from timestep to timestep
-            capacity_min                = experiment['storage_soc_min'],
-            capacity_max                = experiment['storage_soc_max'],
+            loss_rate               = experiment['storage_loss_timestep'],  # from timestep to timestep
+            min_storage_level                = experiment['storage_soc_min'],
+            max_storage_level                = experiment['storage_soc_max'],
             initial_capacity            = experiment['storage_soc_initial'],  # in terms of SOC?
             inflow_conversion_factor    = experiment['storage_efficiency_charge'],  # storing efficiency
             outflow_conversion_factor   = experiment['storage_efficiency_discharge'])  # efficiency of discharge
@@ -361,9 +361,9 @@ class generate():
                 variable_costs=experiment['storage_cost_var'])},
             outputs                         = {bus_electricity_dc: solph.Flow(
                 investment=solph.Investment(ep_costs=experiment['storage_power_cost_annuity']))},
-            capacity_loss                   = experiment['storage_loss_timestep'],  # from timestep to timestep
-            capacity_min                    = experiment['storage_soc_min'],
-            capacity_max                    = experiment['storage_soc_max'],
+            loss_rate                   = experiment['storage_loss_timestep'],  # from timestep to timestep
+            min_storage_level                    = experiment['storage_soc_min'],
+            max_storage_level                    = experiment['storage_soc_max'],
             inflow_conversion_factor        = experiment['storage_efficiency_charge'],  # storing efficiency
             outflow_conversion_factor       = experiment['storage_efficiency_discharge'],  # efficiency of discharge
             invest_relation_input_capacity  = experiment['storage_Crate_charge'],  # storage can be charged with invest_relation_output_capacity*capacity in one timeperiod

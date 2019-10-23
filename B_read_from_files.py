@@ -117,7 +117,7 @@ class excel_template():
 
     def get_case_definitions(file, sheet_project_sites):
         # defines dictionary connected to project sites
-        case_definitions = excel_template.get_data(file, sheet_project_sites, 16, None, None)
+        case_definitions = excel_template.get_data(file, sheet_project_sites, 17, None, None)
         #if any(case_definitions.columns.str.contains('unnamed', case=False)):
         #    logging.warning('Input template: Tab "case_definitions" might have unnamed columns, which will be dropped. Check if all your cases are simulated.')
         #    case_definitions.drop(case_definitions.columns[case_definitions.columns.str.contains('unnamed', case=False)], axis=1, inplace=True)
