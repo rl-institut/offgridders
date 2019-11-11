@@ -91,9 +91,9 @@ class cases:
 
             utilities.define_capacity(experiment_case_dict, case_dict_capacity, list_build_oemof_names[item])
 
-        ###########################################
-        # Allowing shortage, define max. shortage #
-        ###########################################
+        #################################################################
+        # Allowing shortage, define max. shortage, define penalty costs #
+        #################################################################
         if specific_case['allow_shortage']== 'default':
             experiment_case_dict.update({'allow_shortage': experiment['allow_shortage']})
             experiment_case_dict.update({'max_shortage': experiment['shortage_max_allowed']})
@@ -102,17 +102,22 @@ class cases:
             experiment_case_dict.update({'allow_shortage': False})
             experiment_case_dict.update({'max_shortage': 0})
 
-        elif specific_case['allow_shortage']==True and specific_case['max_shortage']== 'default':
-            experiment_case_dict.update({'allow_shortage': True})
-            experiment_case_dict.update({'max_shortage': experiment['shortage_max_allowed']})
-
         elif specific_case['allow_shortage']==True:
-            if (isinstance(specific_case['max_shortage'], float) or isinstance(specific_case['max_shortage'], int)):
+            if specific_case['max_shortage']== 'default':
+                experiment_case_dict.update({'allow_shortage': True})
+                experiment_case_dict.update({'max_shortage': experiment['shortage_max_allowed']})
+            elif (isinstance(specific_case['max_shortage'], float) or isinstance(specific_case['max_shortage'], int)):
                 experiment_case_dict.update({'allow_shortage': True})
                 experiment_case_dict.update({'max_shortage': specific_case['max_shortage']})
+            if specific_case['shortage_penalty_costs']== 'default':
+                experiment_case_dict.update({'allow_shortage': True})
+                experiment_case_dict.update({'shortage_penalty_costs': experiment['shortage_penalty_costs']})
+            elif (isinstance(specific_case['shortage_penalty_costs'], float) or isinstance(specific_case['shortage_penalty_costs'], int)):
+                experiment_case_dict.update({'allow_shortage': True})
+                experiment_case_dict.update({'shortage_penalty_costs': specific_case['shortage_penalty_costs']})
 
         else:
-            logging.warning(warning_string + ' values "allow_shortage" (True/False/default) and "max_shortage" (float/default) not defined properly: ' + str(specific_case['allow_shortage']) + str(isinstance(specific_case['allow_shortage'], str)))
+            logging.warning(warning_string + ' values "allow_shortage" (True/False/default), "max_shortage" (float/default) and "shortage_penalty_costs" (float/default) not defined properly: ' + str(specific_case['allow_shortage']) + str(isinstance(specific_case['allow_shortage'], str)) + str(isinstance(specific_case['shortage_penalty_costs'], str)))
 
         ###########################################
         # Include stability constraint            #

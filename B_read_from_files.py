@@ -117,7 +117,7 @@ class excel_template():
 
     def get_case_definitions(file, sheet_project_sites):
         # defines dictionary connected to project sites
-        case_definitions = excel_template.get_data(file, sheet_project_sites, 17, None, None)
+        case_definitions = excel_template.get_data(file, sheet_project_sites, 18, None, None)
         #if any(case_definitions.columns.str.contains('unnamed', case=False)):
         #    logging.warning('Input template: Tab "case_definitions" might have unnamed columns, which will be dropped. Check if all your cases are simulated.')
         #    case_definitions.drop(case_definitions.columns[case_definitions.columns.str.contains('unnamed', case=False)], axis=1, inplace=True)
@@ -131,6 +131,8 @@ class excel_template():
                 case_definitions[case][key] = excel_template.identify_true_false(case_definitions[case][key])
             if case_definitions[case]['max_shortage'] != 'default':
                 case_definitions[case].update({'max_shortage': float(case_definitions[case]['max_shortage'])})
+            if case_definitions[case]['shortage_penalty_costs'] != 'default':
+                case_definitions[case].update({'shortage_penalty_costs': float(case_definitions[case]['shortage_penalty_costs'])})
 
             case_definitions[case].update({'number_of_equal_generators': int(case_definitions[case]['number_of_equal_generators'])})
         return case_definitions

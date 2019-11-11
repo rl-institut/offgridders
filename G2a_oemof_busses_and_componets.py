@@ -38,11 +38,11 @@ class generate():
         source_shortage = solph.Source(label="source_shortage",
                                        outputs={
                                            bus_electricity_ac: solph.Flow(
-                                               variable_costs   = experiment['shortage_penalty_costs'],
+                                               variable_costs   = case_dict['shortage_penalty_costs'],
                                                nominal_value    = case_dict['max_shortage'] * case_dict['total_demand_ac'],
                                                summed_max       = 1),
                                            bus_electricity_dc: solph.Flow(
-                                               variable_costs   = experiment['shortage_penalty_costs'],
+                                               variable_costs   = case_dict['shortage_penalty_costs'],
                                                nominal_value    = case_dict['max_shortage'] * case_dict['total_demand_dc'],
                                                summed_max       = 1)})
         micro_grid_system.add(source_shortage)

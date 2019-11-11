@@ -123,6 +123,7 @@ for experiment in sensitivity_experiment_s:
         experiment_case_dict = \
             cases.update_dict(capacities_oem, case_definitions[specific_case], sensitivity_experiment_s[experiment])
 
+
         ###############################################################################
         # Creating, simulating and storing micro grid energy systems with oemof       #
         # According to parameters set beforehand                                      #
@@ -137,7 +138,8 @@ for experiment in sensitivity_experiment_s:
         oemof_results = oemof_simulate.run(sensitivity_experiment_s[experiment], experiment_case_dict)
 
         # Store results for subsequent multicriteria analysis
-        multicriteria_helpers.presentation(all_results,shortage_levels,oemof_results,sensitivity_experiment_s[experiment])
+        if settings['perform_multicriteria_analysis'] == True:
+            multicriteria_helpers.presentation(all_results,shortage_levels,oemof_results,sensitivity_experiment_s[experiment])
 
 
         # Extend base capacities for cases utilizing these values, only valid for specific experiment
@@ -169,12 +171,13 @@ for experiment in sensitivity_experiment_s:
 
 
 # Calculate multicriteria
-from H0_multicriteria_analysis import Multicriteria
-logging.info('Starting multicriteria postprocess analysis')
-project_locations = []
-for location in all_results:
-    project_locations.append(location)
-Multicriteria.main_analysis(all_results,project_locations,shortage_levels)
+if settings['perform_multicriteria_analysis'] == True:
+    from H0_multicriteria_analysis import Multicriteria
+    logging.info('Starting multicriteria postprocess analysis')
+    project_locations = []
+    for location in all_results:
+        project_locations.append(location)
+    Multicriteria.main_analysis(all_results,project_locations,shortage_levels,settings)
 
 
 # display all results
