@@ -17,14 +17,6 @@ import logging
 # python3 A_main_script.py PATH/file.xlsx
 ###############################################################################
 
-# For compatibility issues: If no key for input file is provided, use generic one input_excel_file
-if len(sys.argv) >= 2:
-    # Own key mentioned for input file
-    input_excel_file = str(sys.argv[1])
-else:
-    # generic input file
-    input_excel_file = './inputs/test_input_template.xlsx'
-
 #-------- Get all settings ---------------------------------------------------#
 # General settings, general parameters, sensitivity parameters, project site  #
 # data including timeseries (no noise, not clipped to evaluated timeframe     #
