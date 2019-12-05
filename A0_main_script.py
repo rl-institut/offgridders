@@ -63,7 +63,8 @@ def main():
 
     # For compatibility issues: If no key for input file is provided, use generic one input_excel_file
     if len(sys.argv) >= 2:
-        if sys.argv[1] == "./tests/tests.py":
+        test_name_legth = len("tests/tests.py")
+        if sys.argv[1][-test_name_legth:] == "tests/tests.py":
             input_excel_file = "./tests/inputs/pytest_test.xlsx"
         else:
             # Own key mentioned for input file
