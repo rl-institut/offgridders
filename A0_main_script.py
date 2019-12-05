@@ -10,18 +10,7 @@ import os, sys
 import shutil
 from oemof.tools import logger
 import logging
-# Logging
 
-logger.define_logging(logpath='./',
-                      logfile='micro_grid_design_logfile.log',
-                      screen_level=logging.INFO,
-                      #screen_level=logging.DEBUG,
-                      file_level=logging.DEBUG)
-
-logging.info('\n \n MICRO GRID TOOL 3.1'
-             '\n Version: 11.10.2019 '
-             '\n Coded by: Martha M. Hoffmann '
-             '\n Reiner Lemoine Institute (Berlin) \n \n ')
 
 ###############################################################################
 # Get values from excel_template called in terminal                           #
@@ -101,6 +90,21 @@ for experiment in sensitivity_experiment_s:
     if 'grid_availability' in sensitivity_experiment_s[experiment].keys():
         logging.debug('Using grid availability as included in timeseries file of project location.')
         # grid availability timeseries from file already included in data
+    # Logging
+    logger.define_logging(
+        logpath="./",
+        logfile="micro_grid_design_logfile.log",
+        screen_level=logging.INFO,
+        # screen_level=logging.DEBUG,
+        file_level=logging.DEBUG,
+    )
+
+    logging.info(
+        "\n \n Offgridders 3.1"
+        "\n Version: 11.10.2019 "
+        "\n Coded by: Martha M. Hoffmann "
+        "\n Reiner Lemoine Institute (Berlin) \n \n "
+    )
     else:
         # extend experiment with blackout timeseries according to blackout parameters
         logging.debug('Using grid availability timeseries that was randomly generated.')
