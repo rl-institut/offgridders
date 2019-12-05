@@ -62,16 +62,16 @@ def main():
     ###############################################################################
 
     # For compatibility issues: If no key for input file is provided, use generic one input_excel_file
-    if len(sys.argv) >= 2:
-        if sys.argv[1] == "./tests/tests.py":
-            input_excel_file = "./tests/inputs/pytest_test.xlsx"
+        if len(sys.argv) >= 2:
+            if sys.argv[1] == "./tests/tests.py":
+                input_excel_file = "./tests/inputs/pytest_test.xlsx"
+            else:
+                # Own key mentioned for input file
+                input_excel_file = str(sys.argv[1])
+                print(sys.argv)
         else:
-            # Own key mentioned for input file
-            input_excel_file = str(sys.argv[1])
-            print(sys.argv)
-    else:
-        # generic input file
-        input_excel_file = "./inputs/test_input_template.xlsx"
+            # generic input file
+            input_excel_file = "./inputs/test_input_template.xlsx"
 
     # -------- Get all settings ---------------------------------------------------#
     # General settings, general parameters, sensitivity parameters, project site  #
