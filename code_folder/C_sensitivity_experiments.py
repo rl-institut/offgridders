@@ -909,6 +909,8 @@ class helpers:
                             "costs_pcoupling",
                             "costs_distribution_grid",
                             "costs_project",
+                            "first_investment",
+                            "operation_mantainance_expenditures",
                             "costs_maingrid_extension",
                             "expenditures_fuel_total",
                             "expenditures_main_grid_consumption_total",
