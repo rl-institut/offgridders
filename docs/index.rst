@@ -1,17 +1,19 @@
-.. rli_template documentation master file, created by
-   sphinx-quickstart on Tue Jan 21 11:59:38 2020.
+.. Multi-Vector Simulator (MVS) documentation master file, created by
+   sphinx-quickstart on Wed Dec 11 11:34:59 2019.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to rli_template's documentation!
-========================================
+========================================================
+Welcome to Multi-Vector Simulator (MVS)'s documentation!
+========================================================
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   Overview
+   Installation
+   Developing
+   Code
 
-
-
+==================
 Indices and tables
 ==================
 
