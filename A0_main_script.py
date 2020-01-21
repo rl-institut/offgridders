@@ -233,6 +233,7 @@ def main():
             overall_results = helpers.store_result_matrix(
                 overall_results, sensitivity_experiment_s[experiment], oemof_results
             )
+
             # Writing DataFrame with all results to csv file
             overall_results.to_csv(
                 sensitivity_experiment_s[experiment]["output_folder"]

@@ -1,1 +1,9 @@
 /simulation_results/
+/.idea/
+/code_folder/__pycache__/
+/ubuntuenv/
+/win_env/
+/tests/__pycache__/
+/__pychache__/
+/simulation_results/test/
+/simulation_results/test/
