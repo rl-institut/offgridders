@@ -19,6 +19,7 @@ class excel_template:
         sheet_input_sensitivity = "input_sensitivity"
         sheet_project_sites = "project_sites"
         sheet_case_definitions = "case_definitions"
+        sheet_multicriteria_data = "multicriteria_data"
 
         settings = excel_template.get_settings(input_excel_file, sheet_settings)
 
@@ -67,12 +68,17 @@ class excel_template:
         case_definitions = excel_template.get_case_definitions(
             input_excel_file, sheet_case_definitions
         )
+        multicriteria_data = excel_template.get_multicriteria_data(
+            input_excel_file, sheet_multicriteria_data, case_definitions
+        )
+
         return (
             settings,
             parameters_constant_values,
             parameters_sensitivity,
             project_site_s,
             case_definitions,
+            multicriteria_data,
         )
 
     def get_data(file, sheet, header_row, index_column, last_column):
@@ -160,13 +166,14 @@ class excel_template:
     def get_case_definitions(file, sheet_project_sites):
         # defines dictionary connected to project sites
         case_definitions = excel_template.get_data(
-            file, sheet_project_sites, 16, None, None
+            file, sheet_project_sites, 17, None, None
         )
         # if any(case_definitions.columns.str.contains('unnamed', case=False)):
         #    logging.warning('Input template: Tab "case_definitions" might have unnamed columns, which will be dropped. Check if all your cases are simulated.')
         #    case_definitions.drop(case_definitions.columns[case_definitions.columns.str.contains('unnamed', case=False)], axis=1, inplace=True)
 
         case_definitions = case_definitions.to_dict(orient="dict")
+
         # Translate strings 'True' and 'False' from excel sheet to True and False
 
         for case in case_definitions:
@@ -188,6 +195,56 @@ class excel_template:
                 }
             )
         return case_definitions
+
+    def get_multicriteria_data(file, sheet_multicriteria_analysis, case_definitions):
+        # gets weights of the dimensions
+        dimension_weights = pd.read_excel(
+            file,
+            sheet_name=sheet_multicriteria_analysis,
+            header=10 - 1,
+            nrows=4,
+            usecols="A:B",
+        )
+        dimension_weights = dimension_weights.to_dict(orient="index")
+
+        # gets weights of the criteria
+        criteria_weights = pd.read_excel(
+            file,
+            sheet_name=sheet_multicriteria_analysis,
+            header=17 - 1,
+            nrows=12,
+            usecols="B:I",
+        )
+        criteria_weights = criteria_weights.to_dict(orient="index")
+
+        # gets whether a parameter of the sensibility analysis must be considered in the multicriteria analysis or not
+        parameters = pd.read_excel(
+            file,
+            sheet_name=sheet_multicriteria_analysis,
+            header=33 - 1,
+            nrows=18,
+            usecols="A:B",
+        )
+        parameters = parameters.to_dict(orient="index")
+
+        multicriteria_data = {
+            "dimensions": dimension_weights,
+            "criteria": criteria_weights,
+            "parameters": parameters,
+        }
+
+        # gets the tariff for each case scenario from the case_definitions dictionary
+        multicriteria_data["tariff"] = {}
+        for case in case_definitions:
+            for key in case_definitions[case]:
+                if key == "tariff for electrical service":
+                    tariff = case_definitions[case][key]
+                    if tariff != "None":
+                        multicriteria_data["tariff"][case] = float(tariff)
+                    else:
+                        multicriteria_data["tariff"][case] = tariff
+
+        return multicriteria_data
 
 
 class csv_input:

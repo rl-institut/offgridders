@@ -21,8 +21,10 @@ python-dateutil==2.7.3
 pytz==2018.5
 PyUtilib==5.6.3
 setuptools==40.4.3
+scipy==1.4.1
 six==1.11.0
 tables==3.4.4
 urllib3==1.25.2
 wheel==0.32.1
 xlrd==1.2.0
+xlsxwriter==1.2.7
