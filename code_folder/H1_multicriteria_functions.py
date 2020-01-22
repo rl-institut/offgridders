@@ -351,10 +351,9 @@ class calculation_helpers:
         for criterion in criteria:
             total += weights_criteria[criterion]
 
-        for criterion in criteria:
-            weights_criteria[criterion] = weights_criteria[criterion] / total
-
-        weights_criteria.update()
+        if total > 0:
+            for criterion in criteria:
+                weights_criteria[criterion] = weights_criteria[criterion] / total
 
         return
 
