@@ -1,6 +1,6 @@
 # Tool description
 
-The simulation tool **offgridders** * generates a model of an user-defined electricity supply system, optimizes the capacities of the system's generation, storage and electrical components and then performs a dispatch optimization of the optimized capacities.
+The simulation tool **Offgridders** * generates a model of an user-defined electricity supply system, optimizes the capacities of the system's generation, storage and electrical components and then performs a dispatch optimization of the optimized capacities.
  
 Oesmot is written in python3 and utilizes the Open Energy Modelling Framework ([Website](https://oemof.org/)) ([Code](https://github.com/oemof)) 
 and as such uses linerarized component models. 
