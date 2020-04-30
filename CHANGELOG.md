@@ -16,7 +16,16 @@ Here is a template for new release sections
 ### Removed
 -
 ```
-## [Unreleased] 2020-04-01
+## [Unreleased] 2020-05-01
+
+### Added
+-
+### Changed
+-
+### Removed
+
+
+## [Offgridders V4.0] 2020-04-30
 
 ### Added
 - Multi-Criteria Analysis (MCA), a post-processing comparison of the optimization results with H0 and H1
