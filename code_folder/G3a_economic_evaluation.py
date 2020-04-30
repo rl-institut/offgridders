@@ -119,31 +119,6 @@ class economic_evaluation:
         else:
             interval_annuity.update({"annuity_maingrid_extension": 0})
 
-        logging.debug(
-            "Economic evaluation. Calculating O&M costs over analysed timeframe."
-        )
-
-        om_var_interval = {}
-        for item in ["pv", "wind", "genset"]:
-            om_var_interval.update(
-                {
-                    "om_var_"
-                    + item: oemof_results["total_" + item + "_generation_kWh"]
-                    * experiment[item + "_cost_var"]
-                }
-            )
-
-        for item in ["pcoupling", "storage", "rectifier_ac_dc", "inverter_dc_ac"]:
-            om_var_interval.update(
-                {
-                    "om_var_"
-                    + item: oemof_results["total_" + item + "_throughput_kWh"]
-                    * experiment[item + "_cost_var"]
-                }
-            )
-
-        logging.debug("Economic evaluation. Scaling investment costs and O&M to year.")
-
         component_list = [
             "pv",
             "wind",
@@ -156,6 +131,89 @@ class economic_evaluation:
             "inverter_dc_ac",
             "project",
         ]
+
+        # include in oemof_results just first investment costs
+        investment = 0
+        for item in component_list:
+            if item == "pv":
+                investment += (
+                    experiment["pv_cost_investment"] * oemof_results["capacity_pv_kWp"]
+                )
+            elif item == "storage":
+                investment += (
+                    experiment["storage_capacity_cost_investment"]
+                    * oemof_results["capacity_storage_kWh"]
+                )
+                investment += (
+                    experiment["storage_power_cost_investment"]
+                    * oemof_results["capacity_storage_kWh"]
+                )
+            elif item == "maingrid_extension":
+                investment += (
+                    experiment["maingrid_extension_cost_investment"]
+                    * experiment["maingrid_distance"]
+                )
+            elif item in ["distribution_grid", "project"]:
+                investment += experiment[item + "_cost_investment"]
+            else:
+                investment += (
+                    experiment[item + "_cost_investment"]
+                    * oemof_results["capacity_" + item + "_kW"]
+                )
+
+        oemof_results.update({"first_investment": investment})
+
+        logging.debug(
+            "Economic evaluation. Calculating O&M costs over analysed timeframe."
+        )
+
+        om_var_interval = {}
+        om = (
+            0  # first, var costs are included, then opex costs and finally expenditures
+        )
+        for item in ["pv", "wind", "genset"]:
+            om_var_interval.update(
+                {
+                    "om_var_"
+                    + item: oemof_results["total_" + item + "_generation_kWh"]
+                    * experiment[item + "_cost_var"]
+                }
+            )
+            om += (
+                oemof_results["total_" + item + "_generation_kWh"]
+                * experiment[item + "_cost_var"]
+            )
+
+        for item in ["pcoupling", "storage", "rectifier_ac_dc", "inverter_dc_ac"]:
+            om_var_interval.update(
+                {
+                    "om_var_"
+                    + item: oemof_results["total_" + item + "_throughput_kWh"]
+                    * experiment[item + "_cost_var"]
+                }
+            )
+            om += (
+                oemof_results["total_" + item + "_throughput_kWh"]
+                * experiment[item + "_cost_var"]
+            )
+
+        # include opex costs
+        for item in component_list:
+            if item == "storage":
+                om += (
+                    experiment["storage_capacity_cost_opex"]
+                    * experiment["storage_capacity_lifetime"]
+                )
+                om += (
+                    experiment["storage_power_cost_opex"]
+                    * experiment["storage_power_lifetime"]
+                )
+            else:
+                om += experiment[item + "_cost_opex"] * experiment[item + "_lifetime"]
+
+        oemof_results.update({"operation_mantainance_expenditures": om})
+
+        logging.debug("Economic evaluation. Scaling investment costs and O&M to year.")
 
         for item in component_list:
 
@@ -238,6 +296,15 @@ class economic_evaluation:
 
         oemof_results.update(
             {
+                "operation_mantainance_expenditures": oemof_results[
+                    "operation_mantainance_expenditures"
+                ]
+                + oemof_results["expenditures_fuel_annual"]
+            }
+        )
+
+        oemof_results.update(
+            {
                 "expenditures_fuel_total": oemof_results["expenditures_fuel_annual"]
                 * experiment["annuity_factor"]
             }
@@ -267,6 +334,15 @@ class economic_evaluation:
 
         oemof_results.update(
             {
+                "operation_mantainance_expenditures": oemof_results[
+                    "operation_mantainance_expenditures"
+                ]
+                + oemof_results["expenditures_main_grid_consumption_annual"]
+            }
+        )
+
+        oemof_results.update(
+            {
                 "expenditures_main_grid_consumption_total": oemof_results[
                     "expenditures_main_grid_consumption_annual"
                 ]
@@ -291,6 +367,15 @@ class economic_evaluation:
                     "total_demand_shortage_annual_kWh"
                 ]
                 * experiment["shortage_penalty_costs"]
+            }
+        )
+
+        oemof_results.update(
+            {
+                "operation_mantainance_expenditures": oemof_results[
+                    "operation_mantainance_expenditures"
+                ]
+                + oemof_results["expenditures_shortage_annual"]
             }
         )
 

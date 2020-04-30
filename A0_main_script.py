@@ -24,6 +24,7 @@ try:
     from .code_folder.E_blackouts_central_grid import central_grid
     from .code_folder.F_case_definitions import cases
     from .code_folder.G0_oemof_simulate import oemof_simulate
+    from .code_folder.H0_multicriteria_analysis import multicriteria_analysis
 
 except ModuleNotFoundError:
     # for terminal execution
@@ -37,6 +38,7 @@ except ModuleNotFoundError:
     from code_folder.E_blackouts_central_grid import central_grid
     from code_folder.F_case_definitions import cases
     from code_folder.G0_oemof_simulate import oemof_simulate
+    from code_folder.H0_multicriteria_analysis import multicriteria_analysis
 
 
 def main():
@@ -69,7 +71,6 @@ def main():
         else:
             # Own key mentioned for input file
             input_excel_file = str(sys.argv[1])
-            print(sys.argv)
     else:
         # generic input file
         input_excel_file = "./inputs/test_input_template.xlsx"
@@ -87,6 +88,7 @@ def main():
         parameters_sensitivity,
         project_site_s,
         case_definitions,
+        multicriteria_data,
     ) = excel_template.settings(input_excel_file)
 
     # ---- Define all sensitivity_experiment_s, define result parameters ----------#
@@ -269,6 +271,14 @@ def main():
         '\n Simulation complete. Resulting parameters saved in "results.csv". \n Overview over results:'
     )
     pp.pprint(overall_results[output_names])
+
+    # Calculate multicriteria analysis
+    if settings["perform_multicriteria_analysis"] == True:
+        logging.info("Performing multicriteria analysis")
+        multicriteria_analysis.main_analysis(
+            overall_results, multicriteria_data, settings
+        )
+        logging.info("Multicriteria analysis was successfully performed")
 
     logging.shutdown()
     path_from = os.path.abspath("./micro_grid_design_logfile.log")
