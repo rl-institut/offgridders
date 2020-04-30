@@ -16,14 +16,6 @@ Here is a template for new release sections
 ### Removed
 -
 ```
-## [Unreleased] 2020-05-01
-
-### Added
--
-### Changed
--
-### Removed
-
 
 ## [Offgridders V4.0] 2020-04-30
 
