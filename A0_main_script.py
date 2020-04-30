@@ -71,7 +71,6 @@ def main():
         else:
             # Own key mentioned for input file
             input_excel_file = str(sys.argv[1])
-            print(sys.argv)
     else:
         # generic input file
         input_excel_file = "./inputs/test_input_template.xlsx"
