@@ -19,12 +19,12 @@ sys.path.insert(0, os.path.abspath(".."))
 
 # -- Project information -----------------------------------------------------
 
-project = "rli_template"
-copyright = "2020, Reiner Lemoine Institut"
-author = "Reiner Lemoine Institut"
+project = "Offgridders"
+copyright = "2019, Reiner Lemoine Institut and Martha M. Hoffmann"
+author = "Reiner Lemoine Institut and Martha M. Hoffmann"
 
 # The full version, including alpha/beta/rc tags
-release = "0.0.1"
+release = "0.4.0"
 
 
 # -- General configuration ---------------------------------------------------
