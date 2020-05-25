@@ -1,0 +1,261 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Evaluation of oemof results &mdash; Offgridders 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Cost analysis" href="Cost.html" />
+    <link rel="prev" title="Input values" href="Inputs.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Offgridders
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Home.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Definition.html">Definition of an electricity supply system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Exemplary.html">Exemplary electricity supply systems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Results.html">Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Inputs.html">Input values</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Evaluation of oemof results</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#general-remarks-regarding-computation-of-parameters">General remarks regarding computation of parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#oem-of-all-components">OEM of all components</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#partly-oem-and-dispatch-analysis">Partly OEM and dispatch analysis</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Cost.html">Cost analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Blackouts.html">Randomized Blackouts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Stability.html">Stability criteria</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Sensitivity.html">Sensitivity analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Components.html">Component library: oemof_generatemodel.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Validity.html">Validity test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Solar.html">Solar irradiation and pv generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Load.html">Load profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example.html">Example: Zambia</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Constrains.html">General: Adding constraints</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Offgridders</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Evaluation of oemof results</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Evaluation.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="evaluation-of-oemof-results">
+<h1>Evaluation of oemof results<a class="headerlink" href="#evaluation-of-oemof-results" title="Permalink to this headline">¶</a></h1>
+<p><strong>to be updated</strong></p>
+<p>The evaluation of the oemof-results is case-specific.</p>
+<div class="section" id="general-remarks-regarding-computation-of-parameters">
+<h2>General remarks regarding computation of parameters<a class="headerlink" href="#general-remarks-regarding-computation-of-parameters" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="oem-of-all-components">
+<h3>OEM of all components<a class="headerlink" href="#oem-of-all-components" title="Permalink to this headline">¶</a></h3>
+<p>Objective value of a OEM resulting in a optimal capacity for each component is the imaginary annual value of the timeframe analysed. To allow interpretation as a truly annual value, the objective value has to be corrected by::</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">annuity</span> <span class="o">=</span> <span class="n">obj</span> <span class="o">*</span> <span class="mi">365</span><span class="o">/</span><span class="n">evaluated</span> <span class="n">days</span>
+</pre></div>
+</div>
+<p>When saving the total demand, fuel consumtion or fuel expenditures to the results, the same adjustment has to take place. This allows the computation of the levelized electricity costs (LCOE) of the project::</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">LCOE</span> <span class="o">=</span> <span class="n">annuity</span> <span class="o">/</span> <span class="p">(</span><span class="n">demand</span> <span class="ow">in</span> <span class="n">timeframe</span> <span class="o">*</span> <span class="mi">365</span><span class="o">/</span><span class="n">evaluated</span> <span class="n">days</span><span class="p">)</span> <span class="o">=</span> <span class="n">annuity</span> <span class="o">/</span> <span class="n">total</span> <span class="n">annual</span> <span class="n">demand</span>
+</pre></div>
+</div>
+<p>And of the net present value NPV::</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NPV</span> <span class="o">=</span> <span class="n">annuity</span> <span class="o">*</span> <span class="n">annuity</span> <span class="n">factor</span>
+</pre></div>
+</div>
+<p>To include project development costs, it’s annuity and NPV have to be added respectively.</p>
+</div>
+<div class="section" id="partly-oem-and-dispatch-analysis">
+<h3>Partly OEM and dispatch analysis<a class="headerlink" href="#partly-oem-and-dispatch-analysis" title="Permalink to this headline">¶</a></h3>
+<p>When including components with fixed capacities in an OEM, ie. by</p>
+<ul class="simple">
+<li><p>adding a fixed-capacity generator with load minimum</p></li>
+<li><p>optimizing the capacities of a grid-tied micro grid with fixed point of common coupling</p></li>
+</ul>
+<p>or when performing a dispatch analysis, in which all capacities are fixed, the investment costs of all capacities are not considered. They can not be influenced by the optimization process and thus exempted from calculations. A dispatch analysis thus finds the operation with the least marginal costs. To be able to compare the results later in-between cases, the fixed costs have to be added according to the concept of the analyzed case. This can mean:</p>
+<ul class="simple">
+<li><p>Adding capital costs of the point of common coupling according to it’s capacity in case of OEM of an grid-tied micro grid</p></li>
+<li><p>Adding capital costs of the point of common coupling according to it’s capacity in case of dispatch analysis of an interconnecting micro grid</p></li>
+<li><p>Adding capital costs of diesel generators to objective value of OEM with generator with minimal loading</p></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Cost.html" class="btn btn-neutral float-right" title="Cost analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Inputs.html" class="btn btn-neutral float-left" title="Input values" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Reiner Lemoine Institut
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

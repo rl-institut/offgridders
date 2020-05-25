@@ -1,0 +1,425 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>General: Adding constraints &mdash; Offgridders 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Example: Zambia" href="Example.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Offgridders
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Home.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Definition.html">Definition of an electricity supply system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Exemplary.html">Exemplary electricity supply systems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Results.html">Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Inputs.html">Input values</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Evaluation.html">Evaluation of oemof results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Cost.html">Cost analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Blackouts.html">Randomized Blackouts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Stability.html">Stability criteria</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Sensitivity.html">Sensitivity analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Components.html">Component library: oemof_generatemodel.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Validity.html">Validity test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Solar.html">Solar irradiation and pv generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Load.html">Load profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example.html">Example: Zambia</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">General: Adding constraints</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#general-structure-of-a-constraint">General structure of a constraint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#defining-the-constraint">Defining the constraint</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#directly-accessing-attributes-of-flows-in-an-oemof-model-1">Directly accessing attributes of Flows in an oemof-model (1)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#directly-accessing-timestep-values-of-flows">Directly accessing timestep values of flows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#calling-attibutes-from-the-component-definitions-2">Calling attibutes from the component definitions (2)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#equation-for-pyomo-3">Equation for pyomo (3)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sidenotes-indirectly-accessing-attributes-of-flows-of-an-oemof-model-1">Sidenotes: Indirectly accessing attributes of Flows of an oemof-model (1)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#final-constraint">Final constraint:</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#including-the-constraint-into-the-oemof-model">Including the constraint into the oemof-model</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Offgridders</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>General: Adding constraints</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Constrains.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="general-adding-constraints">
+<h1>General: Adding constraints<a class="headerlink" href="#general-adding-constraints" title="Permalink to this headline">¶</a></h1>
+<p>Sometimes, a scenario analyzed by oemof needs additional constraints for a proper optimization result. As presented in [readthedocs](<a class="reference external" href="https://oemof.readthedocs.io/en/stable/_modules/oemof/solph/constraints.html">https://oemof.readthedocs.io/en/stable/_modules/oemof/solph/constraints.html</a>) this could be as easy as limiting the total investment allowed. In other cases, more elaborate constraints have to be formulated.</p>
+<p>In the case of this tool, a constraint defining minimal grid-stabilizing capacities (fossil-fulled generator, storage) was needed. The constraint has to be full-filled in every time step, but also accesses constants and optimized investment capacities. The procedure to add this customized constraint shall be described below.</p>
+<div class="section" id="general-structure-of-a-constraint">
+<h2>General structure of a constraint<a class="headerlink" href="#general-structure-of-a-constraint" title="Permalink to this headline">¶</a></h2>
+<p>Create a separate file “constraints_custom.py”. Load pyomo library and define your constraint. Arguments submitted to the function are the model and  arguments specific to your constraint. Do not forget to describe your constraint for later use.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>import pyomo.environ as po
+
+def stability_criterion(model, limit):
+    ´´´
+    Constraint description
+    ´´´
+    return model
+</pre></div>
+</div>
+<p>General code, eg. extracting constant data from the model, will be placed right into the function _stability_criterion_. The rule itself will be placed into the subfunction _stability_rule_, with above mentioned arguments. The using the pyomo function <strong>po.Constraints</strong>, the _stability_rule_ is added to the model and thus the lp file for the optimization.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyomo.environ</span> <span class="k">as</span> <span class="nn">po</span>
+
+<span class="k">def</span> <span class="nf">stability_criterion</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">limit</span><span class="p">):</span>
+
+    <span class="c1"># (1) general code</span>
+
+    <span class="k">def</span> <span class="nf">stability_rule</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
+
+        <span class="c1"># (2) value definition</span>
+
+        <span class="k">return</span> <span class="c1"># (3) equation expressing constraint</span>
+
+    <span class="n">model</span><span class="o">.</span><span class="n">stability_criterion</span> <span class="o">=</span> <span class="n">po</span><span class="o">.</span><span class="n">Constraints</span><span class="p">(</span><span class="n">rule</span><span class="o">=</span><span class="n">stability_rule</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">model</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="defining-the-constraint">
+<h2>Defining the constraint<a class="headerlink" href="#defining-the-constraint" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="directly-accessing-attributes-of-flows-in-an-oemof-model-1">
+<h3>Directly accessing attributes of Flows in an oemof-model (1)<a class="headerlink" href="#directly-accessing-attributes-of-flows-in-an-oemof-model-1" title="Permalink to this headline">¶</a></h3>
+<p>To directly call values of flows from module, the constraint has to have the oemof-objects of component and bus <strong>directly</strong> as an argument. Then, calling their values is much easier (optional in investment-mode or fixed)::</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># genset capacity subject to oem</span>
+<span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s2">&quot;InvestmentFlow&quot;</span><span class="p">):</span>
+        <span class="n">CAP_genset</span> <span class="o">+=</span> <span class="n">model</span><span class="o">.</span><span class="n">InvestmentFlow</span><span class="o">.</span><span class="n">invest</span><span class="p">[</span><span class="n">genset</span><span class="p">,</span> <span class="n">el_bus</span><span class="p">]</span>
+<span class="c1"># genset capacity subject to dispatch</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">CAP_genset</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">flows</span><span class="p">[</span><span class="n">genset</span><span class="p">,</span> <span class="n">el_bus</span><span class="p">]</span><span class="o">.</span><span class="n">nominal_capacity</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="directly-accessing-timestep-values-of-flows">
+<h3>Directly accessing timestep values of flows<a class="headerlink" href="#directly-accessing-timestep-values-of-flows" title="Permalink to this headline">¶</a></h3>
+<p>When a bus-component combination is an argument of the constraint, accessing it’s connected flow is easy::</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">demand</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">flow</span><span class="p">[</span><span class="n">el_bus</span><span class="p">,</span><span class="n">sink_demand</span><span class="p">,</span><span class="n">t</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>When accessing the flows of a storage, one has to make a distinction between a storage subject to investment optimization or dispatch optimization::</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Storage subject to OEM</span>
+<span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s2">&quot;InvestmentFlow&quot;</span><span class="p">):</span>
+    <span class="n">storage_capacity</span> <span class="o">+=</span> <span class="n">model</span><span class="o">.</span><span class="n">GenericInvestmentStorageBlock</span><span class="o">.</span><span class="n">capacity</span><span class="p">[</span><span class="n">storage</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span>
+<span class="c1"># Fixed storage subject to dispatch</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">storage_capacity</span> <span class="o">+=</span> <span class="n">model</span><span class="o">.</span><span class="n">GenericStorageBlock</span><span class="o">.</span><span class="n">capacity</span><span class="p">[</span><span class="n">storage</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="calling-attibutes-from-the-component-definitions-2">
+<h3>Calling attibutes from the component definitions (2)<a class="headerlink" href="#calling-attibutes-from-the-component-definitions-2" title="Permalink to this headline">¶</a></h3>
+<p>When a component is an argument of the constraint, accessing it’s attributes is easy::</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">invest_relation_output_capacity</span> <span class="o">=</span> <span class="n">storage</span><span class="o">.</span><span class="n">invest_relation_output_capacity</span>
+</pre></div>
+</div>
+<p>Make sure that this value is defined for your component.</p>
+</div>
+<div class="section" id="equation-for-pyomo-3">
+<h3>Equation for pyomo (3)<a class="headerlink" href="#equation-for-pyomo-3" title="Permalink to this headline">¶</a></h3>
+<p>The constraint itself is defined by an equation (&lt;=, ==, &gt;=). Make sure, that your equation does not result in a value (True/False) but in the generation of an commonly applicable rule. This can happen if you print out results during coding the constraint and use calls like _model.flow[el_bus,sink_demand,t].value_.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">expr</span> <span class="o">=</span> <span class="n">CAP_genset</span> <span class="o">+</span> <span class="n">storage_capacity</span> <span class="o">*</span> <span class="n">storage</span><span class="o">.</span><span class="n">invest_relation_output_capacity</span>\
+       <span class="o">&gt;=</span> <span class="n">stability_limit</span> <span class="o">*</span> <span class="n">demand</span>
+</pre></div>
+</div>
+<p>To make sure this rule is applied to every timestep, you can either explicitly loop over the expression - or you perform po.Constraints with the argument model.TIMESTEPS while leaving t as an argument of your rule.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">stability_constraint</span> <span class="o">=</span> <span class="n">po</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">TIMESTEPS</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="n">stability_rule</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="sidenotes-indirectly-accessing-attributes-of-flows-of-an-oemof-model-1">
+<h3>Sidenotes: Indirectly accessing attributes of Flows of an oemof-model (1)<a class="headerlink" href="#sidenotes-indirectly-accessing-attributes-of-flows-of-an-oemof-model-1" title="Permalink to this headline">¶</a></h3>
+<p>Calling constant attributes of Flows or InvestmentFlows indirectly makes most sense, if a certain class of components/busses is subjected to the constraint and if you can not or do not want to group it’s element. Possible classes can be::</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">*</span> <span class="n">oemof</span><span class="o">.</span><span class="n">solph</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">GenericStorage</span>
+<span class="o">*</span> <span class="n">oemof</span><span class="o">.</span><span class="n">solph</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">Transformer</span>
+<span class="o">*</span> <span class="n">oemof</span><span class="o">.</span><span class="n">solph</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">Source</span>
+<span class="o">*</span> <span class="n">oemof</span><span class="o">.</span><span class="n">solph</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">Sink</span>
+<span class="o">*</span> <span class="n">oemof</span><span class="o">.</span><span class="n">solph</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">Bus</span>
+</pre></div>
+</div>
+<p>To use a whole class of oemof-objects, it is possible to search for this class in all entries of  module.Flows or module.InvestmentFlow. This way, multiple storages, transformers, ie. can be subject to the constraint without calling them directly.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">oemof</span>
+<span class="o">...</span>
+<span class="n">CAP_genset</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="c1"># genset capacity subject to oem (Investment mode)</span>
+<span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s2">&quot;InvestmentFlow&quot;</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">o</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">InvestmentFlow</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">oemof</span><span class="o">.</span><span class="n">solph</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">Transformer</span><span class="p">)</span>  <span class="ow">and</span> <span class="nb">str</span><span class="p">(</span><span class="n">o</span><span class="p">)</span><span class="o">==</span><span class="s1">&#39;bus_electricity_mg&#39;</span><span class="p">:</span>
+            <span class="n">CAP_genset</span> <span class="o">+=</span> <span class="n">model</span><span class="o">.</span><span class="n">InvestmentFlow</span><span class="o">.</span><span class="n">invest</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">o</span><span class="p">]</span>
+
+
+<span class="c1"># genset capacity subject to dispatch</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">o</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">Flows</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">oemof</span><span class="o">.</span><span class="n">solph</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">Transformer</span><span class="p">)</span>  <span class="ow">and</span> <span class="nb">str</span><span class="p">(</span><span class="n">o</span><span class="p">)</span><span class="o">==</span><span class="s1">&#39;bus_electricity_mg&#39;</span><span class="p">:</span>
+            <span class="n">CAP_genset</span> <span class="o">+=</span> <span class="n">module</span><span class="o">.</span><span class="n">flows</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">o</span><span class="p">]</span><span class="o">.</span><span class="n">nominal_capacity</span>
+</pre></div>
+</div>
+<p>This is not used in the tool, as calling for the general transformer would also include the PCC of an interconnected micro grid without taking into account grid availability - the stability constraint would always be full-filled, even though the grid could not aid the MG during blackouts.</p>
+<p>It is not possible to call an element (given flow) by the name of the component “component_name” and bus “busname”. If names are to be used, then it is necessary to loop over all InvestmentFlow entries and check manually for those names. With multiple instances like this, it might be better to access the oemof-object directly (see above section).</p>
+<p>The code to access a specific transformer with the name ‘transformer_fuel_generator’,  which can either be subject to an Investment optimization or a dispatch optimization, is::</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CAP_genset</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="c1"># genset capacity subject to oem (Investment mode)</span>
+<span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s2">&quot;InvestmentFlow&quot;</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">o</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">InvestmentFlow</span><span class="o">.</span><span class="n">invest</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">==</span><span class="s1">&#39;transformer_fuel_generator&#39;</span> <span class="ow">and</span> <span class="nb">str</span><span class="p">(</span><span class="n">o</span><span class="p">)</span><span class="o">==</span><span class="s1">&#39;bus_electricity_mg&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">InvestmentFlow</span><span class="o">.</span><span class="n">invest</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">o</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="n">CAP_genset</span> <span class="o">+=</span><span class="n">model</span><span class="o">.</span><span class="n">InvestmentFlow</span><span class="o">.</span><span class="n">invest</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">o</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+
+<span class="c1"># genset capacity subject to dispatch</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">o</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">Flows</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">==</span><span class="s1">&#39;transformer_fuel_generator&#39;</span> <span class="ow">and</span> <span class="nb">str</span><span class="p">(</span><span class="n">o</span><span class="p">)</span><span class="o">==</span><span class="s1">&#39;bus_electricity_mg&#39;</span><span class="p">:</span>
+            <span class="n">CAP_genset</span> <span class="o">+=</span> <span class="n">module</span><span class="o">.</span><span class="n">flows</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">o</span><span class="p">]</span><span class="o">.</span><span class="n">nominal_capacity</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="final-constraint">
+<h2>Final constraint:<a class="headerlink" href="#final-constraint" title="Permalink to this headline">¶</a></h2>
+<p>All blocks (1), (2) and (3) are included::</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">stability_criterion</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">stability_limit</span><span class="p">,</span> <span class="n">storage</span><span class="p">,</span> <span class="n">sink_demand</span><span class="p">,</span> <span class="n">genset</span><span class="p">,</span> <span class="n">el_bus</span><span class="p">):</span>
+    <span class="c1">## ------- Get CAP_genset ------- #</span>
+    <span class="n">CAP_genset</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="c1"># genset capacity subject to oem</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s2">&quot;InvestmentFlow&quot;</span><span class="p">):</span>     <span class="c1"># todo: not all generators have variable capacities, only because there are *any* investments optimized</span>
+        <span class="n">CAP_genset</span> <span class="o">+=</span> <span class="n">model</span><span class="o">.</span><span class="n">InvestmentFlow</span><span class="o">.</span><span class="n">invest</span><span class="p">[</span><span class="n">genset</span><span class="p">,</span> <span class="n">el_bus</span><span class="p">]</span>
+    <span class="c1"># genset capacity subject to oem</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">CAP_genset</span> <span class="o">+=</span> <span class="n">module</span><span class="o">.</span><span class="n">flows</span><span class="p">[</span><span class="n">genset</span><span class="p">,</span> <span class="n">el_bus</span><span class="p">]</span><span class="o">.</span><span class="n">nominal_capacity</span>
+
+    <span class="k">def</span> <span class="nf">stability_rule</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+        <span class="c1">## ------- Get demand at t ------- #</span>
+        <span class="n">demand</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">flow</span><span class="p">[</span><span class="n">el_bus</span><span class="p">,</span><span class="n">sink_demand</span><span class="p">,</span><span class="n">t</span><span class="p">]</span>
+        <span class="c1">## ------- Get stored capacity storage at t------- #</span>
+        <span class="n">storage_capacity</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s2">&quot;InvestmentFlow&quot;</span><span class="p">):</span> <span class="c1"># Storage subject to OEM</span>
+            <span class="n">storage_capacity</span> <span class="o">+=</span> <span class="n">model</span><span class="o">.</span><span class="n">GenericInvestmentStorageBlock</span><span class="o">.</span><span class="n">capacity</span><span class="p">[</span><span class="n">storage</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span> <span class="c1"># Fixed storage subject to dispatch</span>
+            <span class="n">storage_capacity</span> <span class="o">+=</span> <span class="n">model</span><span class="o">.</span><span class="n">GenericStorageBlock</span><span class="o">.</span><span class="n">capacity</span><span class="p">[</span><span class="n">storage</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span>
+        <span class="c1"># todo adjust if timestep not 1 hr</span>
+        <span class="n">expr</span> <span class="o">=</span> <span class="n">CAP_genset</span> <span class="o">+</span> <span class="n">storage_capacity</span> <span class="o">*</span> <span class="n">storage</span><span class="o">.</span><span class="n">invest_relation_output_capacity</span>\
+               <span class="o">&gt;=</span> <span class="n">stability_limit</span> <span class="o">*</span> <span class="n">demand</span>
+        <span class="k">return</span> <span class="n">expr</span>
+
+    <span class="n">model</span><span class="o">.</span><span class="n">stability_constraint</span> <span class="o">=</span> <span class="n">po</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">TIMESTEPS</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="n">stability_rule</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">model</span>
+</pre></div>
+</div>
+<p>To verify the simulation and make sure, that the rule is properly included, the optimization results are later on tested::</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">boolean_test</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">genset_capacity</span> <span class="o">+</span> <span class="n">storage_capacity</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">*</span> <span class="n">experiment</span><span class="p">[</span><span class="s1">&#39;storage_Crate&#39;</span><span class="p">]</span> \
+    <span class="o">&gt;=</span> <span class="n">experiment</span><span class="p">[</span><span class="s1">&#39;stability_limit&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">demand_profile</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">demand_profile</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+
+<span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">boolean_test</span><span class="p">)</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;ATTENTION: Stability criterion NOT fullfilled!&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Stability criterion is fullfilled.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="including-the-constraint-into-the-oemof-model">
+<h3>Including the constraint into the oemof-model<a class="headerlink" href="#including-the-constraint-into-the-oemof-model" title="Permalink to this headline">¶</a></h3>
+<p>A constraint can be added to the oemof energysystem after adding all components and creating the model using solph::</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">constraints_custom</span> <span class="k">as</span> <span class="nn">constraints</span>
+<span class="o">...</span>
+<span class="n">micro_grid_system</span> <span class="o">=</span> <span class="n">solph</span><span class="o">.</span><span class="n">EnergySystem</span><span class="p">(</span><span class="n">timeindex</span><span class="o">=</span><span class="n">date_time_index</span><span class="p">)</span>
+<span class="o">...</span> <span class="c1"># Lenghly model description)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">solph</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">micro_grid_system</span><span class="p">)</span>
+
+<span class="n">limit</span><span class="o">=</span><span class="mf">0.5</span>
+<span class="n">constraints</span><span class="o">.</span><span class="n">stability_criterion</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">limit</span><span class="p">)</span>
+
+<span class="n">model</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">solver</span> <span class="o">=</span> <span class="n">solver</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="Example.html" class="btn btn-neutral float-left" title="Example: Zambia" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Reiner Lemoine Institut
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

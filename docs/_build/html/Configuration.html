@@ -1,0 +1,379 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Configuration &mdash; Offgridders 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Input values" href="Inputs.html" />
+    <link rel="prev" title="Results" href="Results.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Offgridders
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Home.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Definition.html">Definition of an electricity supply system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Exemplary.html">Exemplary electricity supply systems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Results.html">Results</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#coding-mode">Coding mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#restoring-results">Restoring results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#simulated-cases">Simulated cases</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#additional-settings">Additional settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#in-and-output-files">In- and output files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#display-of-results-and-graphs">Display of results and graphs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#oemof-settings">Oemof settings</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#evaluated-timeframe">Evaluated timeframe</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Inputs.html">Input values</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Evaluation.html">Evaluation of oemof results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Cost.html">Cost analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Blackouts.html">Randomized Blackouts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Stability.html">Stability criteria</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Sensitivity.html">Sensitivity analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Components.html">Component library: oemof_generatemodel.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Validity.html">Validity test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Solar.html">Solar irradiation and pv generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Load.html">Load profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example.html">Example: Zambia</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Constrains.html">General: Adding constraints</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Offgridders</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Configuration</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Configuration.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="configuration">
+<h1>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h1>
+<p><strong>to be updated, mostly accurate</strong></p>
+<p>The configuration file enables the user to adapt the simulation to ones need, as listed below. The input file should, however, not be overlooked, as it summarizes all simulation input data and especially enables a sensitivity analysis of a number of parameters. This file and the sensitivity parameters will be discussed in separate Wiki entries each.</p>
+<div class="section" id="coding-mode">
+<h2>Coding mode<a class="headerlink" href="#coding-mode" title="Permalink to this headline">¶</a></h2>
+<p>To simplify the simulation during coding (speeding up the calculations), <strong>coding_process</strong> can be set to True, shortening the analyzed time frame (_time_start_, _time_end_, _frequency_) and disabling white noise (not coded jet neither for irradiation nor for demand, set in input file with _white_noise_demand_, _white_noise_weather_).:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">coding_process</span>              <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="restoring-results">
+<h2>Restoring results<a class="headerlink" href="#restoring-results" title="Permalink to this headline">¶</a></h2>
+<p>It is possible to continue a sensitivity analysis where it was interrupted by checking:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">restore_oemof_if_existant</span>   <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+<p>Otherwise, all previous results will be deleted and should be manually moved to another folder, if they should be stored long-term!</p>
+<p>For this setting to work, <strong>setting_save_oemofresults</strong> also has to be set to True.</p>
+<p>Please keep in mind that the oemof-files are saved with the name of their case and, if present, their sensitivity case. Changing values in the config-file or the input values will therefore will not generate a new oemof-file! When changing settings or values that are not sensitivity values, _restore_oemof_if_existant_ should be disabled to result in a new simulation!.</p>
+</div>
+<div class="section" id="simulated-cases">
+<h2>Simulated cases<a class="headerlink" href="#simulated-cases" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p>Base case OEM is by default performed without minimal loading of generators, enabling sizing of generators. If a minimal loading has to be taken into account, then the setting  <strong>base_case_with_min_loading</strong> fixes the generator capacity to the demand peak value (without security margin).:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">base_case_with_min_loading</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</li>
+<li><p>Checking all operational modes (cases) to be analyzed in <strong>simulated_cases</strong>. A base case OEM to determine necessary capacities is always performed.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">simulated_cases</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;offgrid_fixed&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>            <span class="c1"># dispatch with base oem capacities</span>
+    <span class="s1">&#39;interconnected_buy&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>       <span class="c1"># dispatch with interconnected main grid (only consumption)</span>
+    <span class="s1">&#39;interconnected_buysell&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>   <span class="c1"># dispatch with interconnected main grid (consumption+feedin)</span>
+    <span class="s1">&#39;oem_grid_tied_mg&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>         <span class="c1"># optimization of grid-tied mg (consumption+feedin)</span>
+    <span class="s1">&#39;buyoff&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>                  <span class="c1"># NOT IMPLEMENTED</span>
+    <span class="s1">&#39;parallel&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>                <span class="c1"># NOT IMPLEMENTED</span>
+    <span class="s1">&#39;adapted&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>                 <span class="c1"># NOT IMPLEMENTED</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<div class="section" id="additional-settings">
+<h3>Additional settings<a class="headerlink" href="#additional-settings" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p>A sensitivity constraint is added with::</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">include_stability_constraint</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</li>
+<li><p>Enabling / disabling supply shortage at the project site with <strong>allow_shortage</strong>, especially important when including noise. The maximal share of demand not supplied (shortage) and variable costs can be defined in input_values.py:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">allow_shortage</span>              <span class="o">=</span> <span class="kc">False</span>
+</pre></div>
+</div>
+</li>
+<li><p>If <strong>setting_batch_capacity</strong> is True, then the results of the OEM will be processed in regard to batch capacity sizes. The batch capacities for system components (PV, storage, genset) are defined with _round_to_batch_. The values are always round up to the next batch size (also meaning that an OEM result of 15 kW will be 15kW+batch capacity). If batch capacities are not activated, the dispatch optimization of a micro grid using the OEM capacities can sometimes fail.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">setting_batch_capacity</span>      <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="in-and-output-files">
+<h3>In- and output files<a class="headerlink" href="#in-and-output-files" title="Permalink to this headline">¶</a></h3>
+<p>Defining, whether or not input files are to be used for weather (not jet functional) and demand with <strong>use_input_file_demand</strong> and <strong>use_input_file_weather</strong>. If enabled, the file path should be specified with _input_file_demand_ and _input_file_weather_. In input_values.py unit and path of the data in the .csv file have to be specified (_unit_of_input_file_ Wh/kWh) to normalized the values in regards to the energy system, which performs calculations based on kWh.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">use_input_file_demand</span>       <span class="o">=</span> <span class="kc">True</span>
+<span class="n">use_input_file_weather</span>      <span class="o">=</span> <span class="kc">False</span>
+</pre></div>
+</div>
+<p>If no input files are used for demand and weather, the calculated demand and irradiation series can be saved by enabling <strong>write_demand_to_file</strong>, <strong>write_demand_to_file</strong>. The output folder and file prefix (<strong>output_folder</strong> and <strong>output_file</strong>) is defined further below. Notice, that all oemof simulation results are saved in the output folder. The files can be quite numerous, if a sensitivity analysis is performed, but each file is named explicitly after the sensitivity parameters used to generate the results.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">write_demand_to_file</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">write_weather_to_file</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">if</span> <span class="n">use_input_file_demand</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span> <span class="n">write_demand_to_file</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">if</span> <span class="n">use_input_file_weather</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span> <span class="n">write_weather_to_file</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="n">output_folder</span><span class="o">=</span><span class="s1">&#39;./simulation_results&#39;</span>
+<span class="n">output_file</span><span class="o">=</span><span class="s1">&#39;results&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="display-of-results-and-graphs">
+<h3>Display of results and graphs<a class="headerlink" href="#display-of-results-and-graphs" title="Permalink to this headline">¶</a></h3>
+<p>Oemof can generate and save .lp files and .oemof files with the simulation results. These can be saved to the output folder, <strong>setting_save_lp_file</strong>, <strong>setting_save_oemofresults</strong> if are set to True. Especially with long computing times, the oemof results should be saved.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">setting_save_lp_file</span>        <span class="o">=</span> <span class="kc">False</span>
+<span class="n">setting_save_oemofresults</span>   <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+<p>During simulation, a number of graphs can be generated (<strong>display_graphs_solar</strong>, <strong>display_graphs_demand</strong>, <strong>display_graphs_simulation</strong>, display interrupts computation) and simulation results printed in the command line (<strong>print_simulation_meta</strong>, <strong>print_simulation_main</strong>, <strong>print_simulation_invest</strong>). If the performed simulation includes a sensitivity analysis, it is advisable to disable all these functions. The details of the simulated case can be displayed with <strong>print_simulation_experiment</strong>.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">display_graphs_solar</span>        <span class="o">=</span> <span class="kc">False</span>
+<span class="n">display_graphs_demand</span>       <span class="o">=</span> <span class="kc">False</span>
+<span class="n">display_graphs_simulation</span>   <span class="o">=</span> <span class="kc">True</span>
+<span class="n">print_simulation_meta</span>       <span class="o">=</span> <span class="kc">False</span>
+<span class="n">print_simulation_main</span>       <span class="o">=</span> <span class="kc">False</span>
+<span class="n">print_simulation_invest</span>     <span class="o">=</span> <span class="kc">False</span>
+<span class="n">print_simulation_experiment</span> <span class="o">=</span> <span class="kc">False</span>
+</pre></div>
+</div>
+<p>Results saved to csv-file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">results_demand_characteristics</span>      <span class="o">=</span> <span class="kc">True</span>
+<span class="n">results_blackout_characteristics</span>    <span class="o">=</span> <span class="kc">True</span>
+<span class="n">results_annuities</span>                   <span class="o">=</span> <span class="kc">True</span>
+<span class="n">results_costs</span>                       <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="oemof-settings">
+<h3>Oemof settings<a class="headerlink" href="#oemof-settings" title="Permalink to this headline">¶</a></h3>
+<p>In general, the solver of oemof is set to cbc (<strong>solver</strong>). The solver output (<strong>solver_verbose</strong>) is not shown if False.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">solver</span> <span class="o">=</span> <span class="s1">&#39;cbc&#39;</span>
+<span class="n">solver_verbose</span> <span class="o">=</span> <span class="kc">False</span>
+</pre></div>
+</div>
+<p>To increase computation speed (especially for nonconvex flows in the dispatch OEM), an additional solver option <strong>cmdline_option</strong> is added  with value _cmdline_option_value_. It influences, when the solver accepts the found solution as optimal. Possible options:</p>
+<ul class="simple">
+<li><p>ratioGap: ?</p></li>
+<li><p>allowedGap: ?</p></li>
+<li><p>mipgap: ?</p></li>
+</ul>
+<p>Comand line options:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cmdline_option</span>       <span class="o">=</span> <span class="s1">&#39;ratioGap&#39;</span>
+<span class="n">cmdline_option_value</span> <span class="o">=</span> <span class="mf">0.01</span>
+</pre></div>
+</div>
+<p>The lp file of the energy system analysis with oemof can be saved as well (<strong>setting_lp_file</strong>). When debugging, one should set <strong>debug</strong> to True and limit the analysed timesteps (<strong>coding_process</strong> or even less (ie. 3) timesteps).:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">debug</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="evaluated-timeframe">
+<h2>Evaluated timeframe<a class="headerlink" href="#evaluated-timeframe" title="Permalink to this headline">¶</a></h2>
+<p>The results (NPV, LCOE, Annuity, fuel consumption) are scaled to <strong>represent the real (annual) values</strong> and are <strong>not</strong> the costs / consumption for the evaluated time period alone (see oemof_general.py)!:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">coding_process</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="n">evaluated_days</span>          <span class="o">=</span>  <span class="mi">1</span>
+    <span class="n">time_start</span>              <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="s1">&#39;2018-07-07 0:00&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M&#39;</span><span class="p">)</span>
+    <span class="n">time_end</span>       <span class="o">=</span> <span class="n">time_start</span> <span class="o">+</span> <span class="n">pd</span><span class="o">.</span><span class="n">DateOffset</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">evaluated_days</span><span class="p">)</span> <span class="o">-</span> <span class="n">pd</span><span class="o">.</span><span class="n">DateOffset</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">time_frequency</span>          <span class="o">=</span> <span class="s1">&#39;H&#39;</span>
+
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">evaluated_days</span>          <span class="o">=</span>  <span class="mi">1</span>
+    <span class="n">time_start</span>              <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="s1">&#39;2018-01-01 0:00&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M&#39;</span><span class="p">)</span>
+    <span class="n">time_end</span>                <span class="o">=</span> <span class="n">time_start</span> <span class="o">+</span> <span class="n">pd</span><span class="o">.</span><span class="n">DateOffset</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">evaluated_days</span><span class="p">)</span> <span class="o">-</span> <span class="n">pd</span><span class="o">.</span><span class="n">DateOffset</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">time_frequency</span>          <span class="o">=</span> <span class="s1">&#39;H&#39;</span>
+
+<span class="n">date_time_index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">time_start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">time_end</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="n">time_frequency</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Currently, the tool can ONLY evaluate hourly timesteps.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Inputs.html" class="btn btn-neutral float-right" title="Input values" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Results.html" class="btn btn-neutral float-left" title="Results" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Reiner Lemoine Institut
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

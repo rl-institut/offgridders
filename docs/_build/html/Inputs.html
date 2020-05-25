@@ -1,0 +1,364 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Input values &mdash; Offgridders 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Evaluation of oemof results" href="Evaluation.html" />
+    <link rel="prev" title="Configuration" href="Configuration.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Offgridders
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Home.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Definition.html">Definition of an electricity supply system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Exemplary.html">Exemplary electricity supply systems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Results.html">Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Configuration.html">Configuration</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Input values</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#costs-and-prices">Costs and prices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#constraints">Constraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pure-calculation">Pure calculation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#using-input-data-not-implemented">Using input data (NOT IMPLEMENTED)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#point-of-coupling-not-implemented">Point of Coupling (NOT IMPLEMENTED)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Evaluation.html">Evaluation of oemof results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Cost.html">Cost analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Blackouts.html">Randomized Blackouts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Stability.html">Stability criteria</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Sensitivity.html">Sensitivity analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Components.html">Component library: oemof_generatemodel.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Validity.html">Validity test</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Solar.html">Solar irradiation and pv generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Load.html">Load profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example.html">Example: Zambia</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Constrains.html">General: Adding constraints</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Offgridders</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Input values</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Inputs.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="input-values">
+<h1>Input values<a class="headerlink" href="#input-values" title="Permalink to this headline">¶</a></h1>
+<p><strong>to be updated, mostly accurate</strong></p>
+<p>TThere are numerous input values that have to be provided for the model. Most of those can be defined either as a constant value (_sensitivity_constants_):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sensitivity_constants</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;variable_name&#39;</span><span class="p">:</span>  <span class="n">constant</span> <span class="n">value</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>or as an interval (_sensitivity_bounds_), thus being subject of the sensitivity analysis::</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sensitivity_bounds</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;variable_name&#39;</span><span class="p">:</span>
+    <span class="p">{</span><span class="s1">&#39;min&#39;</span><span class="p">:</span> <span class="n">min_value</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">:</span> <span class="n">max_value</span><span class="p">,</span> <span class="s1">&#39;step&#39;</span><span class="p">:</span> <span class="n">steplenght</span><span class="p">}}</span>
+</pre></div>
+</div>
+<div class="section" id="costs-and-prices">
+<h2>Costs and prices<a class="headerlink" href="#costs-and-prices" title="Permalink to this headline">¶</a></h2>
+<p>While prices and related factors can be defined directly:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;price_fuel&#39;</span><span class="p">:</span>                   <span class="mi">10</span>    <span class="c1"># /unit</span>
+<span class="s1">&#39;combustion_value_fuel&#39;</span><span class="p">:</span>        <span class="mf">9.41</span>  <span class="c1"># kWh/unit</span>
+<span class="s1">&#39;wacc&#39;</span><span class="p">:</span>                         <span class="mf">0.12</span>  <span class="c1"># factor</span>
+<span class="s1">&#39;project_life&#39;</span><span class="p">:</span>                 <span class="mi">20</span>    <span class="c1"># a</span>
+</pre></div>
+</div>
+<p>Component costs are defined using above _wacc_ (used as discounting factor) as well as the investment costs (first time price of component per unit), the fixed annual operational costs (eg. operation and maintenance), the variable costs per kWh (eg. wear) and the components lifetime. While not explicitly implemented, one could try to put a economic value to the kWh-throughput of batteries to mirror their wear better than with the simplification of a constant lifetime.</p>
+<p>Additional costs::</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;project_cost_fix&#39;</span><span class="p">:</span>    <span class="mi">0</span>  <span class="c1"># -</span>
+<span class="s1">&#39;project_cost_opex&#39;</span><span class="p">:</span>   <span class="mi">0</span>  <span class="c1"># /a</span>
+</pre></div>
+</div>
+<p>The distribution grid costs should be mentioned separately from the project costs to allow for certain operation modes (cases)::</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;distribution_grid_cost_investment&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>  <span class="c1">#</span>
+<span class="s1">&#39;distribution_grid_cost_opex&#39;</span><span class="p">:</span>      <span class="mi">50</span><span class="p">,</span>  <span class="c1"># /a</span>
+<span class="s1">&#39;distribution_grid_lifetime&#39;</span><span class="p">:</span>       <span class="mi">40</span><span class="p">,</span>  <span class="c1">#</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="constraints">
+<h2>Constraints<a class="headerlink" href="#constraints" title="Permalink to this headline">¶</a></h2>
+<p>If the stability constraint is activated in the simulation settings [simulation settings](<a class="reference external" href="https://github.com/smartie2076/simulator_grid-connected_micro_grid/wiki/Configuration-file">https://github.com/smartie2076/simulator_grid-connected_micro_grid/wiki/Configuration-file</a>), the stability limit in terms of minimal share of demand that the system should be able to meet in case of volatilities by fossil-fuelled generation or battery discharge has to be defined::</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;stability_limit&#39;</span><span class="p">:</span>     <span class="mf">0.5</span> <span class="c1"># factor of demand</span>
+</pre></div>
+</div>
+<p>Same goes for allowed demand shortage (a setting in the config-file): define the boundaries of the shortage an enumerate the shortage.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;max_share_unsupplied_load&#39;</span><span class="p">:</span>    <span class="mi">0</span>   <span class="c1"># factor</span>
+<span class="s1">&#39;costs_var_unsupplied_load&#39;</span><span class="p">:</span>    <span class="mi">10</span>  <span class="c1"># /kWh</span>
+</pre></div>
+</div>
+<p>The minimal renewable factor can currently only be defined for off-grid micro grids: The boundary is only included in the fuel source, while electricity consumed from the main grid would also have to be counted as non-renewable energy (at least partly).:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;min_renewable_share&#39;</span><span class="p">:</span>                <span class="mi">0</span>   <span class="c1"># factor</span>
+</pre></div>
+</div>
+<p>Main grid:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;maingrid_distance&#39;</span><span class="p">:</span>                   <span class="mi">10</span>     <span class="c1"># km</span>
+<span class="s1">&#39;maingrid_extension_cost_investment&#39;</span><span class="p">:</span>  <span class="mi">15000</span>  <span class="c1"># /km</span>
+<span class="s1">&#39;maingrid_extension_cost_opex&#39;</span><span class="p">:</span>        <span class="mi">0</span>      <span class="c1"># /km/a</span>
+<span class="s1">&#39;maingrid_extension_lifetime&#39;</span><span class="p">:</span>         <span class="mi">0</span>      <span class="c1"># /km/a</span>
+<span class="s1">&#39;maingrid_renewable_share&#39;</span><span class="p">:</span>            <span class="mi">0</span>      <span class="c1"># factor</span>
+<span class="s1">&#39;maingrid_electricity_price&#39;</span><span class="p">:</span>          <span class="mf">0.20</span>   <span class="c1"># /unit</span>
+<span class="s1">&#39;maingrid_feedin_tariff&#39;</span><span class="p">:</span>              <span class="mf">0.12</span>   <span class="c1"># /unit</span>
+</pre></div>
+</div>
+<p>Blackouts:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;blackout_duration&#39;</span><span class="p">:</span>                <span class="mi">2</span>  <span class="c1"># hrs per blackout</span>
+<span class="s1">&#39;blackout_duration_std_deviation&#39;</span>   <span class="mi">0</span>  <span class="c1"># While programming</span>
+<span class="s1">&#39;blackout_frequency&#39;</span><span class="p">:</span>               <span class="mi">7</span>  <span class="c1"># blackouts per month</span>
+<span class="s1">&#39;blackout_frequency_std_deviation&#39;</span>  <span class="mi">0</span>  <span class="c1"># While programming</span>
+</pre></div>
+</div>
+<p>Storage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;storage_capacity_max&#39;</span><span class="p">:</span>        <span class="mi">1</span>     <span class="c1"># factor</span>
+<span class="s1">&#39;storage_capacity_min&#39;</span><span class="p">:</span>        <span class="mf">0.2</span>   <span class="c1"># factor (1-DOD)</span>
+<span class="s1">&#39;storage_cost_investment&#39;</span><span class="p">:</span>     <span class="mi">800</span>   <span class="c1"># /unit</span>
+<span class="s1">&#39;storage_cost_opex&#39;</span><span class="p">:</span>           <span class="mi">0</span>     <span class="c1"># /unit/a</span>
+<span class="s1">&#39;storage_cost_var&#39;</span><span class="p">:</span>            <span class="mi">0</span>     <span class="c1"># /kWh</span>
+<span class="s1">&#39;storage_Crate&#39;</span><span class="p">:</span>               <span class="mi">1</span>          <span class="c1"># factor</span>
+<span class="s1">&#39;storage_inflow_efficiency&#39;</span><span class="p">:</span>   <span class="mf">0.9</span>   <span class="c1"># factor</span>
+<span class="s1">&#39;storage_initial_soc&#39;</span><span class="p">:</span>         <span class="kc">None</span>  <span class="c1"># None or factor</span>
+<span class="s1">&#39;storage_lifetime&#39;</span><span class="p">:</span>            <span class="mi">6</span>     <span class="c1"># a</span>
+<span class="s1">&#39;storage_loss_timestep&#39;</span><span class="p">:</span>       <span class="mi">0</span>     <span class="c1"># factor</span>
+<span class="s1">&#39;storage_outflow_efficiency&#39;</span><span class="p">:</span>  <span class="mf">0.9</span>   <span class="c1"># factor</span>
+</pre></div>
+</div>
+<p>Fossil-fueled generator:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;genset_cost_investment&#39;</span><span class="p">:</span>      <span class="mi">800</span>    <span class="c1"># /unit</span>
+<span class="s1">&#39;genset_cost_opex&#39;</span><span class="p">:</span>            <span class="mi">25</span>     <span class="c1"># /unit/a</span>
+<span class="s1">&#39;genset_cost_var&#39;</span><span class="p">:</span>             <span class="mf">0.023</span>  <span class="c1"># /kWh</span>
+<span class="s1">&#39;genset_efficiency&#39;</span><span class="p">:</span>           <span class="mf">0.33</span>   <span class="c1"># factor</span>
+<span class="s1">&#39;genset_lifetime&#39;</span><span class="p">:</span>             <span class="mi">10</span>     <span class="c1"># a</span>
+<span class="s1">&#39;genset_max_loading&#39;</span><span class="p">:</span>          <span class="mi">1</span>      <span class="c1"># factor</span>
+<span class="s1">&#39;genset_min_loading&#39;</span><span class="p">:</span>          <span class="mi">0</span>      <span class="c1"># factor</span>
+</pre></div>
+</div>
+<p>PV System:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;pv_cost_investment&#39;</span><span class="p">:</span>      <span class="mi">950</span>  <span class="c1"># /unit</span>
+<span class="s1">&#39;pv_cost_opex&#39;</span><span class="p">:</span>            <span class="mi">0</span>    <span class="c1"># /unit/a</span>
+<span class="s1">&#39;pv_cost_var&#39;</span><span class="p">:</span>             <span class="mi">0</span>    <span class="c1"># /kWh</span>
+<span class="s1">&#39;pv_lifetime&#39;</span><span class="p">:</span>             <span class="mi">20</span>   <span class="c1"># a</span>
+</pre></div>
+</div>
+<p>The PV system generation per kWp be based on a calculation with pvlib or can be provided by input parameters. The definition is not part of the dictionary list of simulation parameters.</p>
+</div>
+<div class="section" id="pure-calculation">
+<h2>Pure calculation<a class="headerlink" href="#pure-calculation" title="Permalink to this headline">¶</a></h2>
+<p>The pv system generation per kWp can be calculated based on Location:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">location_name</span> <span class="o">=</span> <span class="s1">&#39;Berlin&#39;</span>
+<span class="n">latitude</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="n">longitude</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">altitude</span> <span class="o">=</span> <span class="mi">34</span>
+<span class="n">timezone</span> <span class="o">=</span> <span class="s1">&#39;Etc/GMT-1&#39;</span>
+</pre></div>
+</div>
+<p>and PV and inverter specifications. The specific module and inverter used can be chosen from the SANDIA list and already includes all technical parameters.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pv_composite_name</span> <span class="o">=</span> <span class="s1">&#39;basic&#39;</span>
+<span class="n">surface_azimuth</span> <span class="o">=</span> <span class="mi">180</span>
+<span class="n">tilt</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">module_name</span> <span class="o">=</span> <span class="s1">&#39;Canadian_Solar_CS5P_220M___2009_&#39;</span>
+<span class="n">inverter_name</span> <span class="o">=</span> <span class="s1">&#39;ABB__MICRO_0_25_I_OUTD_US_208_208V__CEC_2014_&#39;</span>
+</pre></div>
+</div>
+<div class="section" id="using-input-data-not-implemented">
+<h3>Using input data (NOT IMPLEMENTED)<a class="headerlink" href="#using-input-data-not-implemented" title="Permalink to this headline">¶</a></h3>
+<p>Alternatively, PV irradiation data, temperature coefficient and panel efficiency can be loaded.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">weatherfile</span> <span class="o">=</span> <span class="s1">&#39;weather.csv&#39;</span> <span class="c1"># including...???</span>
+<span class="n">pv_efficiency</span> <span class="o">=</span> <span class="mf">0.16</span>
+<span class="n">pv_temperature_coefficient</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.04</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="point-of-coupling-not-implemented">
+<h3>Point of Coupling (NOT IMPLEMENTED)<a class="headerlink" href="#point-of-coupling-not-implemented" title="Permalink to this headline">¶</a></h3>
+<p>Point of coupling:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;pcoupling_cost_investment&#39;</span><span class="p">:</span>   <span class="mi">1500</span>   <span class="c1"># /unit</span>
+<span class="s1">&#39;pcoupling_cost_opex&#39;</span><span class="p">:</span>         <span class="mi">0</span>      <span class="c1"># /unit/a</span>
+<span class="s1">&#39;pcoupling_cost_var&#39;</span><span class="p">:</span>          <span class="mi">0</span>      <span class="c1"># /kWh</span>
+<span class="s1">&#39;pcoupling_efficiency&#39;</span><span class="p">:</span>        <span class="mf">0.98</span>   <span class="c1"># factor</span>
+<span class="s1">&#39;pcoupling_lifetime&#39;</span><span class="p">:</span>          <span class="mi">20</span>     <span class="c1"># a</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Evaluation.html" class="btn btn-neutral float-right" title="Evaluation of oemof results" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Configuration.html" class="btn btn-neutral float-left" title="Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Reiner Lemoine Institut
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
