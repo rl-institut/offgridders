@@ -20,8 +20,8 @@ sys.path.insert(0, os.path.abspath(".."))
 # -- Project information -----------------------------------------------------
 
 project = "Offgridders"
-copyright = "2020, Reiner Lemoine Institut"
-author = "Reiner Lemoine Institut"
+copyright = "2019, Martha M. Hoffmann and Reiner Lemoine Institut"
+author = "Martha M. Hoffmann and Reiner Lemoine Institut"
 
 # The full version, including alpha/beta/rc tags
 release = "0.0.1"
