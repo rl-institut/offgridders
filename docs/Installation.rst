@@ -1,6 +1,6 @@
-========================
-Getting started with MVS
-========================
+================================
+Getting started with Offgridders
+================================
 
 
 Setup process for users
