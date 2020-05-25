@@ -1,6 +1,6 @@
-===================
-Contributing to MVS
-===================
+===========================
+Contributing to Offgridders
+===========================
 
 Proposed workflow
 -----------------
