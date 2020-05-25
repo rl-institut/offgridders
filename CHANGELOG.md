@@ -23,7 +23,7 @@ Here is a template for new release sections
 - readthedocs.yml file (#59)
 
 ### Changed
-- 
+- Moved Wiki to Readthedocs (#41)
 
 ### Removed
 -
