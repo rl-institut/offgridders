@@ -161,4 +161,4 @@ Constraints:::
         'distance_to_grid':             10
 
 Sources:
-* NREL, 2018: [Tariff considerations for micro-grids in Sub-Saharan Africa](https://www.nrel.gov/docs/fy18osti/69044.pdf)
+    * NREL, 2018: [Tariff considerations for micro-grids in Sub-Saharan Africa](https://www.nrel.gov/docs/fy18osti/69044.pdf)
