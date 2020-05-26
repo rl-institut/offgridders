@@ -51,6 +51,6 @@ Sinks
 
 * **excess** (_micro_grid_system, bus_electricity_mg_): Creates sink for excess electricity "sink_excess", eg. if PV panels generate too much electricity.
 
-* **demand**(_micro_grid_system, bus_electricity_mg, demand_profile_): Creates demand sink "sink_demand" with fixed flow.
+* **demand** (_micro_grid_system, bus_electricity_mg, demand_profile_): Creates demand sink "sink_demand" with fixed flow.
 
 * **feedin** (_micro_grid_system, bus_electricity_ng_): Creates sink "sink_feedin" for electricity fed into the national grid. CURRENTLY WITHOUT FEEDIN TARIFF
