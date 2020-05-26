@@ -20,11 +20,16 @@ Here is a template for new release sections
 ## [Unreleased] - 2020-05-01
 
 ### Added
--
+- readthedocs.yml file (#59)
+
 ### Changed
--
+- Moved Wiki to Readthedocs (#41)
+
 ### Removed
 -
+
+### Fixed
+- Compilation of readthedocs by changing advanced settings on readthedocs.io (#59)
 
 ## [Offgridders V4.0] 2020-04-30
 

@@ -18,6 +18,7 @@ install:
 
 # commands to run tests 
 script:
+  - black .
   - pytest tests/tests.py
 
 #jobs:
