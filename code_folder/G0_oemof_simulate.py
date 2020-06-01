@@ -47,9 +47,7 @@ except ModuleNotFoundError:
 # This is not really a necessary class, as the whole experiement could be given to the function, but it ensures, that
 # only correct input data is included
 
-
-class oemof_simulate:
-    def run(experiment, case_dict):
+def run(experiment, case_dict):
         """
         Funktion to generate oemof-lp file, simulate and extract simulation results from oemof-results,
         including extraction of time series, accumulated values, optimized capacities.
