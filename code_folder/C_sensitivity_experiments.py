@@ -17,7 +17,7 @@ try:
 except ModuleNotFoundError:
     from code_folder.D0_process_input import process_input_parameters
 
-
+#Sensitivy
 def get(
     settings, parameters_constant_values, parameters_sensitivity, project_sites
 ):
@@ -169,7 +169,7 @@ def get(
         names_sensitivities,
     )
 
-
+#Generate Exp
 def all_possible(
     settings, parameters_constant_values, parameters_sensitivity, project_site_s
 ):
