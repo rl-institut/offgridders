@@ -13,9 +13,10 @@ from copy import deepcopy
 
 # todo: this module should not be called here
 try:
-    from .D0_process_input import process_input_parameters
+    import code_folder.D0_process_input as process_input_parameters
 except ModuleNotFoundError:
-    from code_folder.D0_process_input import process_input_parameters
+    print("Module not found at C")
+    import code_folder.D0_process_input as process_input_parameters
 
 #Sensitivy
 def get(

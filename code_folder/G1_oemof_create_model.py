@@ -5,14 +5,11 @@ import oemof.outputlib as outputlib
 
 # todo this is called both from G0 and here
 try:
-    from .G2a_oemof_busses_and_componets import generate
-    from .G2b_constraints_custom import (
-        stability_criterion,
-        renewable_criterion,
-        battery_management,
-        ac_dc_bus,
-    )
+   import code_folder.G2a_oemof_busses_and_componets as generate
+   import code_folder.G2b_constraints_custom as constraints_custom
+
 except ModuleNotFoundError:
+    print("Module error at G1")
     from code_folder.G2a_oemof_busses_and_componets import generate
     from code_folder.G2b_constraints_custom import (
         stability_criterion,
@@ -334,7 +331,7 @@ def build(experiment, case_dict):
         pass
     elif case_dict["stability_constraint"] == "share_backup":
         logging.info("Added constraint: Stability through backup.")
-        stability_criterion.backup(
+        constraints_custom.backup(
             model,
             case_dict,
             experiment=experiment,
@@ -348,7 +345,7 @@ def build(experiment, case_dict):
         )
     elif case_dict["stability_constraint"] == "share_usage":
         logging.info("Added constraint: Stability though actual generation.")
-        stability_criterion.usage(
+        constraints_custom.usage(
             model,
             case_dict,
             experiment=experiment,
@@ -363,7 +360,7 @@ def build(experiment, case_dict):
         logging.info(
             "Added constraint: Stability though actual generation of diesel generators and backup through batteries."
         )
-        stability_criterion.hybrid(
+        constraints_custom.hybrid(
             model,
             case_dict,
             experiment=experiment,
@@ -387,7 +384,7 @@ def build(experiment, case_dict):
         pass
     elif case_dict["renewable_share_constraint"] == True:
         logging.info("Adding constraint: Renewable share.")
-        renewable_criterion.share(
+        constraints_custom.share(
             model,
             case_dict,
             experiment,
@@ -410,7 +407,7 @@ def build(experiment, case_dict):
         pass
     elif case_dict["force_charge_from_maingrid"] == True:
         logging.info("Added constraint: Forcing charge from main grid.")
-        battery_management.forced_charge(
+        constraints_custom.forced_charge(
             model, case_dict, bus_electricity_dc, storage, experiment
         )
     else:
@@ -425,7 +422,7 @@ def build(experiment, case_dict):
         pass
     elif case_dict["discharge_only_when_blackout"] == True:
         logging.info("Added constraint: Allowing discharge only at blackout times.")
-        battery_management.discharge_only_at_blackout(
+        constraints_custom.discharge_only_at_blackout(
             model, case_dict, bus_electricity_dc, storage, experiment
         )
     else:
@@ -442,7 +439,7 @@ def build(experiment, case_dict):
         logging.info(
             "Added constraint: Allowing inverter use only at blackout times."
         )
-        ac_dc_bus.inverter_only_at_blackout(
+        constraints_custom.inverter_only_at_blackout(
             model, case_dict, bus_electricity_dc, inverter, experiment
         )
     else:

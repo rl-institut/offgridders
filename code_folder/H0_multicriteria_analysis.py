@@ -1,12 +1,10 @@
 import logging
 
 try:
-    from .H1_multicriteria_functions import (
-        calculations,
-        calculation_helpers,
-        mca_representation,
-    )
+    import code_folder.H1_multicriteria_functions as multicriteria_functions
+
 except ModuleNotFoundError:
+    print("Module error at H0")
     from code_folder.H1_multicriteria_functions import (
         calculations,
         calculation_helpers,
@@ -51,7 +49,7 @@ def main_analysis(overallresults, multicriteria_data, settings):
     # the multicriteria analysis with sensibility parameters can only be realised if all combinations have been calculated
     if settings["sensitivity_all_combinations"] or not sensibility:
         # criteria are evaluated for all cases
-        evaluations, capacities = calculations.evaluate_criteria(
+        evaluations, capacities = multicriteria_functions.evaluate_criteria(
             all_results, qualitative_punctuations, multicriteria_data
         )
         all_projects_MCA_data["capacities"] = capacities
@@ -65,7 +63,7 @@ def main_analysis(overallresults, multicriteria_data, settings):
 
             # first, a global ranking, for all solutions, is calculated
             # evaluations are normalized
-            global_normalized_evaluations = calculations.normalize_evaluations(
+            global_normalized_evaluations = multicriteria_functions.normalize_evaluations(
                 global_evaluations, weights_criteria, "global"
             )
             all_projects_MCA_data["normalized_evaluations"][
@@ -73,7 +71,7 @@ def main_analysis(overallresults, multicriteria_data, settings):
             ] = global_normalized_evaluations
 
             # the ranking is calculated
-            global_Ls = calculations.rank(
+            global_Ls = multicriteria_functions.rank(
                 global_normalized_evaluations, weights_dimensions, weights_criteria
             )
             all_projects_MCA_data["global_Ls"][project] = global_Ls
@@ -81,17 +79,17 @@ def main_analysis(overallresults, multicriteria_data, settings):
             # then, a local ranking, for each combinations of parameters (if asked), is calculated
             if sensibility:
                 # first, the global_evaluations dictionary is splitted in several local_evaluations for each combination of parameters
-                local_evaluations = calculations.prepare_local_evaluations(
+                local_evaluations = multicriteria_functions.prepare_local_evaluations(
                     global_evaluations, cases
                 )
 
                 # second, each local_evaluations are normalized and a ranking is calculated
                 local_Ls = []
                 for evaluation in local_evaluations:
-                    local_normalized_evaluation = calculations.normalize_evaluations(
+                    local_normalized_evaluation = multicriteria_functions.normalize_evaluations(
                         evaluation, weights_criteria, "local"
                     )
-                    local_Ls_each = calculations.rank(
+                    local_Ls_each = multicriteria_functions.rank(
                         local_normalized_evaluation,
                         weights_dimensions,
                         weights_criteria,
@@ -100,7 +98,7 @@ def main_analysis(overallresults, multicriteria_data, settings):
                 all_projects_MCA_data["local_Ls"][project] = local_Ls
 
         # present results of the multicriteria analysis in excel file
-        mca_representation.representation(
+        multicriteria_functions.representation(
             all_projects_MCA_data,
             weights_dimensions,
             weights_criteria,
@@ -112,7 +110,7 @@ def main_analysis(overallresults, multicriteria_data, settings):
         )
 
         # plot criteria evaluations
-        mca_representation.plot_evaluations(
+        multicriteria_functions.plot_evaluations(
             all_projects_MCA_data["evaluations"],
             plot_criteria,
             parameters,
@@ -275,7 +273,7 @@ def prepare_global_evaluations(evaluations):
     :return:
     a dictionary with the new format
     """
-    global_evaluations = calculation_helpers.create_diccionary([])
+    global_evaluations = multicriteria_functions.create_diccionary([])
     for alternative in evaluations:
         case = evaluations[alternative]
         for dimension in global_evaluations:
