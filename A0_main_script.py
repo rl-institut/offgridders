@@ -158,7 +158,7 @@ def main():
             logging.debug(
                 "Using grid availability timeseries that was randomly generated."
             )
-            blackout_experiment_name = sensitivity_experiments.blackout_experiment_name(
+            blackout_experiment_name = sensitivity_experiments.get_blackout_experiment_name(
                 sensitivity_experiment_s[experiment]
             )
             sensitivity_experiment_s[experiment].update(

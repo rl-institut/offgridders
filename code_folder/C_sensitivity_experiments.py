@@ -12,11 +12,32 @@ import numpy as np
 from copy import deepcopy
 
 # todo: this module should not be called here
-try:
-    import code_folder.D0_process_input as process_input_parameters
-except ModuleNotFoundError:
-    print("Module not found at C")
-    import code_folder.D0_process_input as process_input_parameters
+import code_folder.D0_process_input as process_input_parameters
+
+# Generate names for blackout sensitivity_experiment_s, used in sensitivity.blackoutexperiments and in maintool
+def get_blackout_experiment_name(blackout_experiment):
+    blackout_experiment_name = (
+        "blackout_dur"
+        + "_"
+        + str(round(float(blackout_experiment["blackout_duration"]), 3))
+        + "_"
+        + "dur_dev"
+        + "_"
+        + str(
+            round(float(blackout_experiment["blackout_duration_std_deviation"]), 3)
+        )
+        + "_"
+        + "freq"
+        + "_"
+        + str(round(float(blackout_experiment["blackout_frequency"]), 3))
+        + "_"
+        + "freq_dev"
+        + "_"
+        + str(
+            round(float(blackout_experiment["blackout_frequency_std_deviation"]), 3)
+        )
+    )
+    return blackout_experiment_name
 
 #Sensitivy
 def get(
@@ -186,11 +207,11 @@ def all_possible(
     project_sites_sensitivity(parameters_sensitivity, project_site_s)
 
     # From now on, universal parameters poses the base scenario. some parameters might only be set with project sites!
-    universal_parameters, number_of_project_sites = get.universal_parameters(
+    universal_parameters, number_of_project_sites = get_universal_parameters(
         settings, parameters_constant_values, parameters_sensitivity, project_site_s
     )
 
-    sensitivity_array_dict = get.dict_sensitivies_arrays(
+    sensitivity_array_dict = get_dict_sensitivies_arrays(
         parameters_sensitivity, project_site_s
     )
 
@@ -200,7 +221,7 @@ def all_possible(
     (
         sensitivity_experiment_s,
         total_number_of_experiments,
-    ) = get.all_possible_combinations(sensitivity_array_dict, project_site_dict)
+    ) = get_all_possible_combinations(sensitivity_array_dict, project_site_dict)
 
     for experiment in sensitivity_experiment_s:
         sensitivity_experiment_s[experiment].update(deepcopy(universal_parameters))
@@ -231,7 +252,7 @@ def with_base_case(
     )
 
     # From now on, universal parameters poses the base scenario. some parameters might only be set with project sites!
-    sensitivity_array_dict = get.dict_sensitivies_arrays(
+    sensitivity_array_dict = get_dict_sensitivies_arrays(
         parameters_sensitivity, project_site_s
     )
 
@@ -275,7 +296,7 @@ def blackout(sensitivity_array_dict, parameters_constants, settings):
         (
             blackout_experiment_s,
             blackout_experiments_count,
-        ) = get.all_possible_combinations(blackout_parameters, {})
+        ) = get_all_possible_combinations(blackout_parameters, {})
         for blackout_experiment in blackout_experiment_s:
             blackout_experiment_s[blackout_experiment].update(
                 deepcopy(blackout_constants)
@@ -330,7 +351,7 @@ def blackout(sensitivity_array_dict, parameters_constants, settings):
 
     # define file item to save simulation / get grid availabilities
     for blackout_experiment in blackout_experiment_s:
-        blackout_experiment_name = blackout_experiment_name(
+        blackout_experiment_name = get_blackout_experiment_name(
             blackout_experiment_s[blackout_experiment]
         )
         blackout_experiment_s[blackout_experiment].update(
@@ -359,7 +380,7 @@ def blackout(sensitivity_array_dict, parameters_constants, settings):
 
     return blackout_experiment_s, blackout_experiments_count
 
-def universal_parameters(
+def get_universal_parameters(
     settings, parameters_constant_values, parameters_sensitivity, project_site_s
 ):
     # create base case
@@ -372,7 +393,7 @@ def universal_parameters(
 
     return universal_parameters, number_of_project_sites
 
-def dict_sensitivies_arrays(parameters_sensitivity, project_sites):
+def get_dict_sensitivies_arrays(parameters_sensitivity, project_sites):
     # fill dictionary with all sensitivity ranges defining the different simulations of the sensitivity analysis
     # ! do not use a key two times, as it will be overwritten by new information
     sensitivity_array_dict = {}
@@ -397,7 +418,7 @@ def dict_sensitivies_arrays(parameters_sensitivity, project_sites):
             )
     return sensitivity_array_dict
 
-def all_possible_combinations(sensitivity_array_dict, name_entry_dict):
+def get_all_possible_combinations(sensitivity_array_dict, name_entry_dict):
     # create all possible combinations of sensitive parameters
     all_parameters = {}
     for key in sensitivity_array_dict:
@@ -549,31 +570,6 @@ def experiment_name(experiment, sensitivity_array_dict, number_of_project_sites)
         filename = ""
     experiment.update({"filename": filename})
     return
-
-# Generate names for blackout sensitivity_experiment_s, used in sensitivity.blackoutexperiments and in maintool
-def blackout_experiment_name(blackout_experiment):
-    blackout_experiment_name = (
-        "blackout_dur"
-        + "_"
-        + str(round(float(blackout_experiment["blackout_duration"]), 3))
-        + "_"
-        + "dur_dev"
-        + "_"
-        + str(
-            round(float(blackout_experiment["blackout_duration_std_deviation"]), 3)
-        )
-        + "_"
-        + "freq"
-        + "_"
-        + str(round(float(blackout_experiment["blackout_frequency"]), 3))
-        + "_"
-        + "freq_dev"
-        + "_"
-        + str(
-            round(float(blackout_experiment["blackout_frequency_std_deviation"]), 3)
-        )
-    )
-    return blackout_experiment_name
 
 def constants_project_sites(parameters_constant_values, project_sites):
     # remove all entries that are doubled in parameters_constant_values, settings & project_site_s from parameters_constant_values
