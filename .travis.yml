@@ -12,7 +12,7 @@ before_install:
 
 # command to install dependencies
 install:
-#  - pip install -e .
+#  - pip install -e . #Needs a setup.py, run virtual_machine
   - pip install -r requirements.txt
   - pip install -r tests/test_requirements.txt
 
