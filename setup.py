@@ -4,7 +4,7 @@ __license__    = "GNU Affero General Public License Version 3 (AGPL-3.0)"
 __url__        = "https://github.com/rl-institut/offgridders/blob/dev/LICENSE"
 
 
-from setuptools import setup
+from setuptools import setup, find_packages
 import os
 
 
@@ -21,7 +21,7 @@ setup(name='offgridders',
       url='https://github.com/rl-institut/offgridders',
       license='GNU GPLv3',
       package_dir={"":"code_folder"},
-      packages=["code_folder"],
+      packages = find_packages(),
       classifiers=[
         "Development Status :: 3 - Alpha",
         "Environment :: Console",
