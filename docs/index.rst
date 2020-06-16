@@ -26,6 +26,9 @@ Welcome to Offgridders's documentation!
    Load
    Example
    Constrains
+   Oesmot_Home
+   Installation_2
+   Multicriteria_Analysis
 
 
 
