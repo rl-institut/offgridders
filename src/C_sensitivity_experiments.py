@@ -12,7 +12,7 @@ import numpy as np
 from copy import deepcopy
 
 # todo: this module should not be called here
-import code_folder.D0_process_input as process_input_parameters
+import src.D0_process_input as process_input_parameters
 
 # Generate names for blackout sensitivity_experiment_s, used in sensitivity.blackoutexperiments and in maintool
 def get_blackout_experiment_name(blackout_experiment):

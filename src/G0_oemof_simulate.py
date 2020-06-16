@@ -19,26 +19,26 @@ import oemof.outputlib as outputlib
 # For speeding up lp_files and bus/component definition in oemof as well as processing
 
 try:
-    import code_folder.G1_oemof_create_model as oemof_model
-    import code_folder.G2b_constraints_custom as constraints_custom
-    import code_folder.G3_oemof_evaluate as timeseries
-    import code_folder.G3a_economic_evaluation as economic_evaluation
-    import code_folder.G3b_plausability_tests as plausability_tests
-    import code_folder.G4_output_functions as output
+    import src.G1_oemof_create_model as oemof_model
+    import src.G2b_constraints_custom as constraints_custom
+    import src.G3_oemof_evaluate as timeseries
+    import src.G3a_economic_evaluation as economic_evaluation
+    import src.G3b_plausability_tests as plausability_tests
+    import src.G4_output_functions as output
 
 except ModuleNotFoundError:
     print("Module error at G0")
-    from code_folder.G1_oemof_create_model import oemof_model
-    from code_folder.G2b_constraints_custom import (
+    from src.G1_oemof_create_model import oemof_model
+    from src.G2b_constraints_custom import (
         stability_criterion,
         renewable_criterion,
         battery_management,
         ac_dc_bus,
     )
-    from code_folder.G3_oemof_evaluate import timeseries
-    from code_folder.G3a_economic_evaluation import economic_evaluation
-    from code_folder.G3b_plausability_tests import plausability_tests
-    from code_folder.G4_output_functions import output
+    from src.G3_oemof_evaluate import timeseries
+    from src.G3a_economic_evaluation import economic_evaluation
+    from src.G3b_plausability_tests import plausability_tests
+    from src.G4_output_functions import output
 
 # This is not really a necessary class, as the whole experiement could be given to the function, but it ensures, that
 # only correct input data is included

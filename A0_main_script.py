@@ -14,28 +14,28 @@ import logging
 # Loading all child functions
 try:
     # for tests
-    import code_folder.A1_general_functions as helpers
-    import code_folder.B_read_from_files as excel_template
-    import code_folder.C_sensitivity_experiments as sensitivity_experiments
-    import code_folder.D0_process_input as process_input
-    import code_folder.E_blackouts_central_grid as central_grid
-    import code_folder.F_case_definitions as cases
-    import code_folder.G0_oemof_simulate as oemof_simulate
-    import code_folder.H0_multicriteria_analysis as multicriteria_analysis
+    import src.A1_general_functions as helpers
+    import src.B_read_from_files as excel_template
+    import src.C_sensitivity_experiments as sensitivity_experiments
+    import src.D0_process_input as process_input
+    import src.E_blackouts_central_grid as central_grid
+    import src.F_case_definitions as cases
+    import src.G0_oemof_simulate as oemof_simulate
+    import src.H0_multicriteria_analysis as multicriteria_analysis
 
 except ModuleNotFoundError:
     # for terminal execution
-    from code_folder.A1_general_functions import helpers
-    from code_folder.B_read_from_files import excel_template
-    from code_folder.C_sensitivity_experiments import (
+    from src.A1_general_functions import helpers
+    from src.B_read_from_files import excel_template
+    from src.C_sensitivity_experiments import (
         generate_sensitvitiy_experiments,
         get_names,
     )
-    from code_folder.D0_process_input import process_input_parameters, noise
-    from code_folder.E_blackouts_central_grid import central_grid
-    from code_folder.F_case_definitions import cases
-    from code_folder.G0_oemof_simulate import oemof_simulate
-    from code_folder.H0_multicriteria_analysis import multicriteria_analysis
+    from src.D0_process_input import process_input_parameters, noise
+    from src.E_blackouts_central_grid import central_grid
+    from src.F_case_definitions import cases
+    from src.G0_oemof_simulate import oemof_simulate
+    from src.H0_multicriteria_analysis import multicriteria_analysis
 
 
 def main():

@@ -1,11 +1,11 @@
 import logging
 
 try:
-    import code_folder.H1_multicriteria_functions as multicriteria_functions
+    import src.H1_multicriteria_functions as multicriteria_functions
 
 except ModuleNotFoundError:
     print("Module error at H0")
-    from code_folder.H1_multicriteria_functions import (
+    from src.H1_multicriteria_functions import (
         calculations,
         calculation_helpers,
         mca_representation,

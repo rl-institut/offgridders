@@ -7,10 +7,10 @@ import sys
 import logging
 
 try:
-    import code_folder.D1_economic_functions as economics
+    import src.D1_economic_functions as economics
 except ModuleNotFoundError:
     print("Module error at D0")
-    import code_folder.D1_economic_functions as economics
+    import src.D1_economic_functions as economics
 
 def list_of_cases(case_definitions):
     case_list = []

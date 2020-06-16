@@ -5,13 +5,13 @@ import oemof.outputlib as outputlib
 
 # todo this is called both from G0 and here
 try:
-   import code_folder.G2a_oemof_busses_and_componets as generate
-   import code_folder.G2b_constraints_custom as constraints_custom
+   import src.G2a_oemof_busses_and_componets as generate
+   import src.G2b_constraints_custom as constraints_custom
 
 except ModuleNotFoundError:
     print("Module error at G1")
-    from code_folder.G2a_oemof_busses_and_componets import generate
-    from code_folder.G2b_constraints_custom import (
+    from src.G2a_oemof_busses_and_componets import generate
+    from src.G2b_constraints_custom import (
         stability_criterion,
         renewable_criterion,
         battery_management,
