@@ -20,7 +20,6 @@ setup(name='offgridders',
       long_description=read('README.md'),
       url='https://github.com/rl-institut/offgridders',
       license='GNU GPLv3',
-      package_dir={"":"code_folder"},
       packages = find_packages(),
       classifiers=[
         "Development Status :: 3 - Alpha",
