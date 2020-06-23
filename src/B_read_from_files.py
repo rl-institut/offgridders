@@ -265,7 +265,7 @@ def from_file(project_site, path_from):
 
     list_columns = [
         TITLE_TIME,
-        "title_demand_ac",
+       TITLE_DEMAND_AC,
         "title_demand_dc",
         "title_pv",
         "title_wind",
@@ -295,7 +295,7 @@ def from_file(project_site, path_from):
             project_site.update({"file_index": file_index})
 
         else:
-            if column_item == "title_demand_ac":
+            if column_item ==TITLE_DEMAND_AC:
                 dictionary_title = "demand_ac"
             elif column_item == "title_demand_dc":
                 dictionary_title = "demand_dc"
