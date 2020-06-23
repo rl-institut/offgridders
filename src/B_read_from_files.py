@@ -60,7 +60,7 @@ def process_excel_file(input_excel_file):
 
     settings.update(
         {
-            "necessity_for_blackout_timeseries_generation": necessity_for_blackout_timeseries_generation
+            NECESSITY_FOR_BLACKOUT_TIMESERIES_GENERATION: necessity_for_blackout_timeseries_generation
         }
     )
     case_definitions = get_case_definitions(

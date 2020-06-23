@@ -112,7 +112,7 @@ def main():
     process_input.apply_noise(sensitivity_experiment_s) #Applies white noise
 
     # Calculation of grid_availability with randomized blackouts
-    if settings["necessity_for_blackout_timeseries_generation"] == True:
+    if settings[NECESSITY_FOR_BLACKOUT_TIMESERIES_GENERATION] == True:
         sensitivity_grid_availability, blackout_results = central_grid.get_blackouts(
             settings, blackout_experiment_s
         )
