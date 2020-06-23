@@ -1,5 +1,5 @@
 
-__copyright__  = "Reiner Lemoine Institut gGmbH"
+__copyright__  = "Martha Hoffmann and Reiner Lemoine Institut gGmbH"
 __license__    = "GNU Affero General Public License Version 3 (AGPL-3.0)"
 __url__        = "https://github.com/rl-institut/offgridders/blob/dev/LICENSE"
 
