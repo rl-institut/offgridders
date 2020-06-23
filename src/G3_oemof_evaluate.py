@@ -290,19 +290,19 @@ def get_rectifier(
         rectifier_capacity = electricity_bus_ac["scalars"][
             (("bus_electricity_ac", "transformer_rectifier"), "invest")
         ]
-        oemof_results.update({"capacity_rectifier_ac_dc_kW": rectifier_capacity})
+        oemof_results.update({CAPACITY_RECTIFIER_AC_DC_KW: rectifier_capacity})
 
     elif isinstance(case_dict["rectifier_ac_dc_fixed_capacity"], float):
         oemof_results.update(
             {
-                "capacity_rectifier_ac_dc_kW": case_dict[
+                CAPACITY_RECTIFIER_AC_DC_KW: case_dict[
                     "rectifier_ac_dc_fixed_capacity"
                 ]
             }
         )
 
     elif case_dict["rectifier_ac_dc_fixed_capacity"] == None:
-        oemof_results.update({"capacity_rectifier_ac_dc_kW": 0})
+        oemof_results.update({CAPACITY_RECTIFIER_AC_DC_KW: 0})
     return e_flows_df
 
 def get_inverter(
@@ -339,19 +339,19 @@ def get_inverter(
         inverter_capacity = electricity_bus_dc["scalars"][
             (("bus_electricity_dc", "transformer_inverter_dc_ac"), "invest")
         ]
-        oemof_results.update({"capacity_inverter_dc_ac_kW": inverter_capacity})
+        oemof_results.update({CAPACITY_INVERTER_DC_AC_KW: inverter_capacity})
 
     elif isinstance(case_dict["inverter_dc_ac_fixed_capacity"], float):
         oemof_results.update(
             {
-                "capacity_inverter_dc_ac_kW": case_dict[
+                CAPACITY_INVERTER_DC_AC_KW: case_dict[
                     "inverter_dc_ac_fixed_capacity"
                 ]
             }
         )
 
     elif case_dict["inverter_dc_ac_fixed_capacity"] == None:
-        oemof_results.update({"capacity_inverter_dc_ac_kW": 0})
+        oemof_results.update({CAPACITY_INVERTER_DC_AC_KW: 0})
     return e_flows_df
 
 def get_wind(
@@ -694,12 +694,12 @@ def get_national_grid(
         elif isinstance(case_dict["pcc_feedin_fixed_capacity"], float):
             pcc_cap.append(case_dict["pcc_feedin_fixed_capacity"])
 
-        oemof_results.update({"capacity_pcoupling_kW": max(pcc_cap)})
+        oemof_results.update({CAPACITY_PCOUPLING_KW: max(pcc_cap)})
     elif (
         case_dict["pcc_consumption_fixed_capacity"] == None
         and case_dict["pcc_feedin_fixed_capacity"] == None
     ):
-        oemof_results.update({"capacity_pcoupling_kW": 0})
+        oemof_results.update({CAPACITY_PCOUPLING_KW: 0})
     else:
         logging.warning(
             "Invalid value of pcc_consumption_fixed_capacity and/or pcc_feedin_fixed_capacity."

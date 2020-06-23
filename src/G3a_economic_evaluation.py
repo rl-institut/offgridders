@@ -73,9 +73,9 @@ def annuities_365(case_dict, oemof_results, experiment):
         "annuity_genset": experiment["genset_cost_annuity"]
         * oemof_results[CAPACITY_GENSET_KW],
         "annuity_rectifier_ac_dc": experiment["rectifier_ac_dc_cost_annuity"]
-        * oemof_results["capacity_rectifier_ac_dc_kW"],
+        * oemof_results[CAPACITY_RECTIFIER_AC_DC_KW],
         "annuity_inverter_dc_ac": experiment["inverter_dc_ac_cost_annuity"]
-        * oemof_results["capacity_inverter_dc_ac_kW"],
+        * oemof_results[CAPACITY_INVERTER_DC_AC_KW],
     }
 
     list_fix = ["project", "distribution_grid"]
@@ -92,14 +92,14 @@ def annuities_365(case_dict, oemof_results, experiment):
             {
                 "annuity_pcoupling": 2
                 * experiment["pcoupling_cost_annuity"]
-                * oemof_results["capacity_pcoupling_kW"]
+                * oemof_results[CAPACITY_PCOUPLING_KW]
             }
         )
     else:
         interval_annuity.update(
             {
                 "annuity_pcoupling": experiment["pcoupling_cost_annuity"]
-                * oemof_results["capacity_pcoupling_kW"]
+                * oemof_results[CAPACITY_PCOUPLING_KW]
             }
         )
 

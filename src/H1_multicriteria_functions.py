@@ -23,7 +23,7 @@ def evaluate_criteria(all_results, qualitative_punctuations, multicriteria_data)
         "wind": CAPACITY_WIND_KW,
         "genset": CAPACITY_GENSET_KW,
         "storage": CAPACITY_STORAGE_KWH,
-        "maingrid": "capacity_pcoupling_kW",
+        "maingrid": CAPACITY_PCOUPLING_KW,
     }
     generation_components = {
         "pv": "total_pv_generation_kWh",
@@ -43,7 +43,7 @@ def evaluate_criteria(all_results, qualitative_punctuations, multicriteria_data)
             CAPACITY_WIND_KW: [],
             CAPACITY_STORAGE_KWH: [],
             CAPACITY_GENSET_KW: [],
-            "capacity_pcoupling_kW": [],
+            CAPACITY_PCOUPLING_KW: [],
         }
 
         for cases in all_results[project_site]:

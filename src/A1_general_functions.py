@@ -33,9 +33,9 @@ def define_base_capacities(oemof_results):
         CAPACITY_STORAGE_KWH: oemof_results[CAPACITY_STORAGE_KWH],
         POWER_STORAGE_KW: oemof_results[POWER_STORAGE_KW],
         CAPACITY_GENSET_KW: oemof_results[CAPACITY_GENSET_KW],
-        "capacity_pcoupling_kW": oemof_results["capacity_pcoupling_kW"],
-        "capacity_rectifier_ac_dc_kW": oemof_results["capacity_rectifier_ac_dc_kW"],
-        "capacity_inverter_dc_ac_kW": oemof_results["capacity_inverter_dc_ac_kW"],
+        CAPACITY_PCOUPLING_KW: oemof_results[CAPACITY_PCOUPLING_KW],
+        CAPACITY_RECTIFIER_AC_DC_KW: oemof_results[CAPACITY_RECTIFIER_AC_DC_KW],
+        CAPACITY_INVERTER_DC_AC_KW: oemof_results[CAPACITY_INVERTER_DC_AC_KW],
     }
     return capacities_base
 

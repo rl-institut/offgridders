@@ -145,7 +145,7 @@ def backup_test(case_dict, oemof_results, experiment, e_flows_df):
 
         if "Grid availability" in e_flows_df.columns:
             pcc_capacity = (
-                oemof_results["capacity_pcoupling_kW"]
+                oemof_results[CAPACITY_PCOUPLING_KW]
                 * e_flows_df["Grid availability"]
             )
         else:
@@ -912,7 +912,7 @@ def inverter_only_at_blackout_test(case_dict, oemof_results, e_flows_df):
         boolean_test = [
             e_flows_df["Inverter input"][t]
             <= (1 - e_flows_df["Grid availability"][t])
-            * oemof_results["capacity_inverter_dc_ac_kW"]
+            * oemof_results[CAPACITY_INVERTER_DC_AC_KW]
             for t in range(0, len(e_flows_df.index))
         ]
 
@@ -924,7 +924,7 @@ def inverter_only_at_blackout_test(case_dict, oemof_results, e_flows_df):
                     (
                         e_flows_df["Inverter input"][t]
                         - (1 - e_flows_df["Grid availability"][t])
-                        * oemof_results["capacity_inverter_dc_ac_kW"]
+                        * oemof_results[CAPACITY_INVERTER_DC_AC_KW]
                     )
                     for t in range(0, len(e_flows_df.index))
                 ],
