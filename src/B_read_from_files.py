@@ -180,9 +180,9 @@ def get_case_definitions(file, sheet_project_sites):
             case_definitions[case][key] = identify_true_false(
                 case_definitions[case][key]
             )
-        if case_definitions[case]["max_shortage"] != "default":
+        if case_definitions[case][MAX_SHORTAGE] != "default":
             case_definitions[case].update(
-                {"max_shortage": float(case_definitions[case]["max_shortage"])}
+                {MAX_SHORTAGE: float(case_definitions[case][MAX_SHORTAGE])}
             )
 
         case_definitions[case].update(

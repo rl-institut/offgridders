@@ -128,35 +128,35 @@ def update_dict(capacities_oem, specific_case, experiment):
             {"allow_shortage": experiment["allow_shortage"]}
         )
         experiment_case_dict.update(
-            {"max_shortage": experiment["shortage_max_allowed"]}
+            {MAX_SHORTAGE: experiment["shortage_max_allowed"]}
         )
 
     elif specific_case["allow_shortage"] == False:
         experiment_case_dict.update({"allow_shortage": False})
-        experiment_case_dict.update({"max_shortage": 0})
+        experiment_case_dict.update({MAX_SHORTAGE: 0})
 
     elif (
         specific_case["allow_shortage"] == True
-        and specific_case["max_shortage"] == "default"
+        and specific_case[MAX_SHORTAGE] == "default"
     ):
         experiment_case_dict.update({"allow_shortage": True})
         experiment_case_dict.update(
-            {"max_shortage": experiment["shortage_max_allowed"]}
+            {MAX_SHORTAGE: experiment["shortage_max_allowed"]}
         )
 
     elif specific_case["allow_shortage"] == True:
-        if isinstance(specific_case["max_shortage"], float) or isinstance(
-            specific_case["max_shortage"], int
+        if isinstance(specific_case[MAX_SHORTAGE], float) or isinstance(
+            specific_case[MAX_SHORTAGE], int
         ):
             experiment_case_dict.update({"allow_shortage": True})
             experiment_case_dict.update(
-                {"max_shortage": specific_case["max_shortage"]}
+                {MAX_SHORTAGE: specific_case[MAX_SHORTAGE]}
             )
 
     else:
         logging.warning(
             warning_string
-            + ' values "allow_shortage" (True/False/default) and "max_shortage" (float/default) not defined properly: '
+            + ' values "allow_shortage" (True/False/default) and MAX_SHORTAGE (float/default) not defined properly: '
             + str(specific_case["allow_shortage"])
             + str(isinstance(specific_case["allow_shortage"], str))
         )
