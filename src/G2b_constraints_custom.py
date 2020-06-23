@@ -24,10 +24,10 @@ def backup(
     CAP_genset = 0
     if case_dict["genset_fixed_capacity"] != None:
         if case_dict["genset_fixed_capacity"] == False:
-            for number in range(1, case_dict["number_of_equal_generators"] + 1):
+            for number in range(1, case_dict[NUMBER_OF_EQUAL_GENERATORS] + 1):
                 CAP_genset += model.InvestmentFlow.invest[genset[number], el_bus_ac]
         elif isinstance(case_dict["genset_fixed_capacity"], float):
-            for number in range(1, case_dict["number_of_equal_generators"] + 1):
+            for number in range(1, case_dict[NUMBER_OF_EQUAL_GENERATORS] + 1):
                 CAP_genset += model.flows[genset[number], el_bus_ac].nominal_value
 
     ## ------- Get CAP PCC ------- #
@@ -239,7 +239,7 @@ def hybrid(
 
         ## ------- Generation Diesel ------- #
         if case_dict["genset_fixed_capacity"] != None:
-            for number in range(1, case_dict["number_of_equal_generators"] + 1):
+            for number in range(1, case_dict[NUMBER_OF_EQUAL_GENERATORS] + 1):
                 expr += model.flow[genset[number], el_bus_ac, t]
 
         ##---------Grid consumption t-------#
@@ -292,7 +292,7 @@ def hybrid(
 
         ## ------- Generation Diesel ------- #
         if case_dict["genset_fixed_capacity"] != None:
-            for number in range(1, case_dict["number_of_equal_generators"] + 1):
+            for number in range(1, case_dict[NUMBER_OF_EQUAL_GENERATORS] + 1):
                 expr += model.flow[genset[number], el_bus_ac, t]
 
         ##---------Grid consumption t-------#
@@ -438,7 +438,7 @@ def usage(
 
         ## ------- Generation Diesel ------- #
         if case_dict["genset_fixed_capacity"] != None:
-            for number in range(1, case_dict["number_of_equal_generators"] + 1):
+            for number in range(1, case_dict[NUMBER_OF_EQUAL_GENERATORS] + 1):
                 expr += model.flow[genset[number], el_bus, t]
 
         ##---------Grid consumption t-------#
@@ -598,7 +598,7 @@ def share(
         total_generation = 0
 
         if genset is not None:
-            for number in range(1, case_dict["number_of_equal_generators"] + 1):
+            for number in range(1, case_dict[NUMBER_OF_EQUAL_GENERATORS] + 1):
                 genset_generation_kWh = sum(
                     model.flow[genset[number], el_bus_ac, :]
                 )

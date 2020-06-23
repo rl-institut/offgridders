@@ -201,8 +201,8 @@ def update_dict(capacities_oem, specific_case, experiment):
             + ' value "renewable_share_constraint" (True/False/default) not defined properly'
         )
 
-    experiment_case_dict["number_of_equal_generators"] = specific_case[
-        "number_of_equal_generators"
+    experiment_case_dict[NUMBER_OF_EQUAL_GENERATORS] = specific_case[
+        NUMBER_OF_EQUAL_GENERATORS
     ]
     experiment_case_dict["evaluation_perspective"] = specific_case[
         "evaluation_perspective"

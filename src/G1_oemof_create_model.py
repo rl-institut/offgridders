@@ -74,7 +74,7 @@ def build(experiment, case_dict):
                 bus_fuel,
                 bus_electricity_ac,
                 experiment,
-                case_dict["number_of_equal_generators"],
+                case_dict[NUMBER_OF_EQUAL_GENERATORS],
             )
 
     elif isinstance(case_dict["genset_fixed_capacity"], float):
@@ -85,7 +85,7 @@ def build(experiment, case_dict):
                 bus_electricity_ac,
                 experiment,
                 capacity_fuel_gen=case_dict["genset_fixed_capacity"],
-                number_of_equal_generators=case_dict["number_of_equal_generators"],
+                number_of_equal_generators=case_dict[NUMBER_OF_EQUAL_GENERATORS],
             )
         else:
             genset = generate.genset_fix(
@@ -94,7 +94,7 @@ def build(experiment, case_dict):
                 bus_electricity_ac,
                 experiment,
                 capacity_fuel_gen=case_dict["genset_fixed_capacity"],
-                number_of_equal_generators=case_dict["number_of_equal_generators"],
+                number_of_equal_generators=case_dict[NUMBER_OF_EQUAL_GENERATORS],
             )
     else:
         logging.warning(

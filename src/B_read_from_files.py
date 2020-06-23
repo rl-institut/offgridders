@@ -187,8 +187,8 @@ def get_case_definitions(file, sheet_project_sites):
 
         case_definitions[case].update(
             {
-                "number_of_equal_generators": int(
-                    case_definitions[case]["number_of_equal_generators"]
+                NUMBER_OF_EQUAL_GENERATORS: int(
+                    case_definitions[case][NUMBER_OF_EQUAL_GENERATORS]
                 )
             }
         )
@@ -226,7 +226,7 @@ def get_multicriteria_data(file, sheet_multicriteria_analysis, case_definitions)
     parameters = parameters.to_dict(orient="index")
 
     multicriteria_data = {
-        "dimensions": dimension_weights,
+        DIMENSION: dimension_weights,
         "criteria": criteria_weights,
         "parameters": parameters,
     }

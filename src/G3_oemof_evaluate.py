@@ -411,7 +411,7 @@ def get_genset(case_dict, oemof_results, electricity_bus_ac, e_flows_df):
             genset, "Genset 1 generation", e_flows_df
         )
         total_genset = genset
-        for number in range(2, case_dict["number_of_equal_generators"] + 1):
+        for number in range(2, case_dict[NUMBER_OF_EQUAL_GENERATORS] + 1):
             genset = electricity_bus_ac["sequences"][
                 (
                     ("transformer_genset_" + str(number), "bus_electricity_ac"),
@@ -435,7 +435,7 @@ def get_genset(case_dict, oemof_results, electricity_bus_ac, e_flows_df):
     if case_dict["genset_fixed_capacity"] == False:
         # Optimized generator capacity (sum)
         genset_capacity = 0
-        for number in range(1, case_dict["number_of_equal_generators"] + 1):
+        for number in range(1, case_dict[NUMBER_OF_EQUAL_GENERATORS] + 1):
             genset_capacity += electricity_bus_ac["scalars"][
                 (
                     ("transformer_genset_" + str(number), "bus_electricity_ac"),
