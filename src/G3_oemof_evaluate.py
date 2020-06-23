@@ -377,7 +377,7 @@ def get_wind(
         if wind_generation_max > 1:
             oemof_results.update(
                 {
-                    "capacity_wind_kW": electricity_bus_ac["scalars"][
+                    CAPACITY_WIND_KW: electricity_bus_ac["scalars"][
                         (("source_wind", "bus_electricity_ac"), "invest")
                     ]
                     * wind_generation_max
@@ -386,7 +386,7 @@ def get_wind(
         elif wind_generation_max > 0 and wind_generation_max < 1:
             oemof_results.update(
                 {
-                    "capacity_wind_kW": electricity_bus_ac["scalars"][
+                    CAPACITY_WIND_KW: electricity_bus_ac["scalars"][
                         (("source_wind", "bus_electricity_ac"), "invest")
                     ]
                     / wind_generation_max
@@ -395,9 +395,9 @@ def get_wind(
         else:
             logging.warning("Error, Strange Wind behaviour (Wind gen < 0)")
     elif isinstance(case_dict["wind_fixed_capacity"], float):
-        oemof_results.update({"capacity_wind_kW": case_dict["wind_fixed_capacity"]})
+        oemof_results.update({CAPACITY_WIND_KW: case_dict["wind_fixed_capacity"]})
     elif case_dict["wind_fixed_capacity"] == None:
-        oemof_results.update({"capacity_wind_kW": 0})
+        oemof_results.update({CAPACITY_WIND_KW: 0})
     return e_flows_df
 
 def get_genset(case_dict, oemof_results, electricity_bus_ac, e_flows_df):

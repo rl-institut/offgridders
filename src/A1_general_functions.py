@@ -3,7 +3,7 @@ Small scripts to keep the main file clean
 """
 
 import pandas as pd
-from src.constants import CAPACITY_PV_KWP
+from src.constants import CAPACITY_PV_KWP,CAPACITY_WIND_KW
 from oemof.tools import logger
 import logging
 
@@ -29,7 +29,7 @@ def plot_results(pandas_dataframe, title, xaxis, yaxis):
 def define_base_capacities(oemof_results):
     capacities_base = {
         CAPACITY_PV_KWP: oemof_results[CAPACITY_PV_KWP],
-        "capacity_wind_kW": oemof_results["capacity_wind_kW"],
+        CAPACITY_WIND_KW: oemof_results[CAPACITY_WIND_KW],
         "capacity_storage_kWh": oemof_results["capacity_storage_kWh"],
         "power_storage_kW": oemof_results["power_storage_kW"],
         "capacity_genset_kW": oemof_results["capacity_genset_kW"],

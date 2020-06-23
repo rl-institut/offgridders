@@ -65,7 +65,7 @@ def annuities_365(case_dict, oemof_results, experiment):
         "annuity_pv": experiment["pv_cost_annuity"]
         * oemof_results[CAPACITY_PV_KWP],
         "annuity_wind": experiment["wind_cost_annuity"]
-        * oemof_results["capacity_wind_kW"],
+        * oemof_results[CAPACITY_WIND_KW],
         "annuity_storage": experiment["storage_capacity_cost_annuity"]
         * oemof_results["capacity_storage_kWh"]
         + experiment["storage_power_cost_annuity"]
