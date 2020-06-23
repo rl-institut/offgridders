@@ -24,6 +24,7 @@ Here is a template for new release sections
 
 ### Changed
 - Moved Wiki to Readthedocs (#41)
+- Change
 
 ### Removed
 -

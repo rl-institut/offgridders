@@ -1,7 +1,7 @@
 import pytest
 import os
 
-from ..A0_main_script import main
+from ..Offgridders import main
 
 
 def test_execution_not_terminated():
