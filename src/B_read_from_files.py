@@ -264,7 +264,7 @@ def from_file(project_site, path_from):
     data_set = pd.read_csv(path_from, sep=project_site["seperator"])
 
     list_columns = [
-        "title_time",
+        TITLE_TIME,
         "title_demand_ac",
         "title_demand_dc",
         "title_pv",
@@ -280,13 +280,13 @@ def from_file(project_site, path_from):
     # If-else clauses allow that some of the timeseries are not included in csv file.
 
     for column_item in list_columns:
-        if column_item == "title_time":
+        if column_item == TITLE_TIME:
             if project_site[column_item] == "None":
                 file_index = None
             else:
                 try:
                     file_index = pd.DatetimeIndex(
-                        data_set[project_site["title_time"]].values
+                        data_set[project_site[TITLE_TIME]].values
                     )
                 except (KeyError):
                     column_not_existant(
