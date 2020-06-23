@@ -232,15 +232,15 @@ def get_multicriteria_data(file, sheet_multicriteria_analysis, case_definitions)
     }
 
     # gets the tariff for each case scenario from the case_definitions dictionary
-    multicriteria_data["tariff"] = {}
+    multicriteria_data[TARIFF] = {}
     for case in case_definitions:
         for key in case_definitions[case]:
             if key == "tariff for electrical service":
                 tariff = case_definitions[case][key]
                 if tariff != "None":
-                    multicriteria_data["tariff"][case] = float(tariff)
+                    multicriteria_data[TARIFF][case] = float(tariff)
                 else:
-                    multicriteria_data["tariff"][case] = tariff
+                    multicriteria_data[TARIFF][case] = tariff
 
     return multicriteria_data
 

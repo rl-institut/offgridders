@@ -80,7 +80,7 @@ def evaluate_criteria(all_results, qualitative_punctuations, multicriteria_data)
             S1 = linear_evaluation(
                 qualitative_punctuations, generation_components, case, "S1"
             )
-            S2 = multicriteria_data["tariff"][case["case"]]
+            S2 = multicriteria_data[TARIFF][case["case"]]
             S3 = linear_evaluation(
                 qualitative_punctuations, generation_components, case, "S3"
             )
