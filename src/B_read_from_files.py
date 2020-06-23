@@ -15,7 +15,7 @@ def process_excel_file(input_excel_file):
     sheet_settings = SETTINGS
     sheet_input_constant = INPUT_CONSTANT
     sheet_input_sensitivity = INPUT_SENSITIVITY
-    sheet_project_sites = "project_sites"
+    sheet_project_sites = PROJECT_SITES
     sheet_case_definitions = "case_definitions"
     sheet_multicriteria_data = "multicriteria_data"
 

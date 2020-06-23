@@ -7,6 +7,8 @@ CAPACITY_PCOUPLING_KW = "capacity_pcoupling_kW"
 CAPACITY_RECTIFIER_AC_DC_KW = "capacity_rectifier_ac_dc_kW"
 CAPACITY_INVERTER_DC_AC_KW = "capacity_inverter_dc_ac_kW"
 DEMAND_PROFILE = "demand_profile"
+
 SETTINGS ="settings"
 INPUT_CONSTANT = "input_constant"
 INPUT_SENSITIVITY = "input_sensitivity"
+PROJECT_SITES = "project_sites"
