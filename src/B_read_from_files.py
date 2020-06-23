@@ -12,7 +12,7 @@ def process_excel_file(input_excel_file):
     #######################################
 
     # Name of tabs
-    sheet_settings = "settings"
+    sheet_settings = SETTINGS
     sheet_input_constant = "input_constant"
     sheet_input_sensitivity = "input_sensitivity"
     sheet_project_sites = "project_sites"
