@@ -235,8 +235,8 @@ def format_punctuations(multicriteria_data):
     weights_criteria = {}
     punctuations = {}
     plot_criteria = []
-    for criterion in multicriteria_data["criteria"]:
-        assessment = multicriteria_data["criteria"][criterion]
+    for criterion in multicriteria_data[CRITERIA]:
+        assessment = multicriteria_data[CRITERIA][criterion]
         weights_criteria[assessment["Abrev"]] = assessment["weight"]
         punctuations[assessment["Abrev"]] = {
             "pv": assessment["pv"],

@@ -590,7 +590,7 @@ def representation(
             "A" + str(row + 1) + ":B" + str(row + 1), DIMENSION, format_highlight
         )
         worksheet.merge_range(
-            "C" + str(row + 1) + ":D" + str(row + 1), "Criteria", format_highlight
+            "C" + str(row + 1) + ":D" + str(row + 1), CRITERIA, format_highlight
         )
         col = 4
         worksheet.merge_range(
@@ -645,7 +645,7 @@ def representation(
         col = 0
         worksheet.write(row, col, DIMENSION, format_highlight)
         worksheet.write(row, col + 1, "Weights", format_highlight)
-        worksheet.write(row, col + 2, "Criteria", format_highlight)
+        worksheet.write(row, col + 2, CRITERIA, format_highlight)
         worksheet.write(row, col + 3, "Weights", format_highlight)
         col = 4
         worksheet.merge_range(
