@@ -228,7 +228,7 @@ def get_multicriteria_data(file, sheet_multicriteria_analysis, case_definitions)
     multicriteria_data = {
         DIMENSION: dimension_weights,
         CRITERIA: criteria_weights,
-        "parameters": parameters,
+        PARAMETERS: parameters,
     }
 
     # gets the tariff for each case scenario from the case_definitions dictionary

@@ -248,8 +248,8 @@ def format_punctuations(multicriteria_data):
             plot_criteria.append(assessment["Abrev"])
 
     parameters = {}
-    for parameter in multicriteria_data["parameters"]:
-        assessment = multicriteria_data["parameters"][parameter]
+    for parameter in multicriteria_data[PARAMETERS]:
+        assessment = multicriteria_data[PARAMETERS][parameter]
         if isinstance(assessment["parameter"], str):
             if assessment["show"] == 1.0:
                 parameters[assessment["parameter"]] = {"analyse": True}
