@@ -125,7 +125,7 @@ def get_parameters_constant(file, sheet_input_constant):
         file, sheet_input_constant, 6, "A", "C"
     )
     parameters_constant = parameters_constant.to_dict(orient="dict")
-    parameters_constant_units = parameters_constant["Unit"]
+    parameters_constant_units = parameters_constant[UNIT]
     parameters_constant_values = parameters_constant["Value"]
     return parameters_constant_units, parameters_constant_values
 
