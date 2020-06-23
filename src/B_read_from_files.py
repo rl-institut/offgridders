@@ -126,7 +126,7 @@ def get_parameters_constant(file, sheet_input_constant):
     )
     parameters_constant = parameters_constant.to_dict(orient="dict")
     parameters_constant_units = parameters_constant[UNIT]
-    parameters_constant_values = parameters_constant["Value"]
+    parameters_constant_values = parameters_constant[VALUE]
     return parameters_constant_units, parameters_constant_values
 
 def get_parameters_sensitivity(file, sheet_input_sensitivity):
