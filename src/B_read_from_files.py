@@ -6,7 +6,7 @@ import shutil
 
 # requires xlrd
 
-def settings(input_excel_file):
+def process_excel_file(input_excel_file):
     #######################################
     # Reads all input from excel template #
     #######################################

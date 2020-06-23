@@ -68,7 +68,7 @@ def main():
         project_site_s,
         case_definitions,
         multicriteria_data,
-    ) = excel_template.settings(input_excel_file)
+    ) = excel_template.process_excel_file(input_excel_file)
 
     # ---- Define all sensitivity_experiment_s, define result parameters ----------#
     (
