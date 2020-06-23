@@ -32,7 +32,7 @@ def define_base_capacities(oemof_results):
         CAPACITY_WIND_KW: oemof_results[CAPACITY_WIND_KW],
         CAPACITY_STORAGE_KWH: oemof_results[CAPACITY_STORAGE_KWH],
         POWER_STORAGE_KW: oemof_results[POWER_STORAGE_KW],
-        "capacity_genset_kW": oemof_results["capacity_genset_kW"],
+        CAPACITY_GENSET_KW: oemof_results[CAPACITY_GENSET_KW],
         "capacity_pcoupling_kW": oemof_results["capacity_pcoupling_kW"],
         "capacity_rectifier_ac_dc_kW": oemof_results["capacity_rectifier_ac_dc_kW"],
         "capacity_inverter_dc_ac_kW": oemof_results["capacity_inverter_dc_ac_kW"],

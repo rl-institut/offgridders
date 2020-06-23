@@ -288,7 +288,7 @@ def run(experiment, case_dict):
             + " kWp PV, "
             + str(round(oemof_results[CAPACITY_WIND_KW], 3))
             + " kW wind, "
-            + str(round(oemof_results["capacity_genset_kW"], 3))
+            + str(round(oemof_results[CAPACITY_GENSET_KW], 3))
             + " kW genset "
             + "at a renewable share of "
             + str(round(oemof_results["res_share"] * 100, 2))

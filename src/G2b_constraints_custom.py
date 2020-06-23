@@ -153,7 +153,7 @@ def backup_test(case_dict, oemof_results, experiment, e_flows_df):
                 [0 for t in demand_profile.index], index=demand_profile.index
             )
 
-        genset_capacity = oemof_results["capacity_genset_kW"]
+        genset_capacity = oemof_results[CAPACITY_GENSET_KW]
 
         if case_dict["allow_shortage"] == True:
             shortage = e_flows_df["Demand shortage"]

@@ -442,13 +442,13 @@ def get_genset(case_dict, oemof_results, electricity_bus_ac, e_flows_df):
                     "invest",
                 )
             ]
-        oemof_results.update({"capacity_genset_kW": genset_capacity})
+        oemof_results.update({CAPACITY_GENSET_KW: genset_capacity})
     elif isinstance(case_dict["genset_fixed_capacity"], float):
         oemof_results.update(
-            {"capacity_genset_kW": case_dict["genset_fixed_capacity"]}
+            {CAPACITY_GENSET_KW: case_dict["genset_fixed_capacity"]}
         )
     elif case_dict["genset_fixed_capacity"] == None:
-        oemof_results.update({"capacity_genset_kW": 0})
+        oemof_results.update({CAPACITY_GENSET_KW: 0})
     return e_flows_df
 
 def get_fuel(case_dict, oemof_results, results):

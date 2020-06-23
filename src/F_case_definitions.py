@@ -49,7 +49,7 @@ def update_dict(capacities_oem, specific_case, experiment):
     list_base_capacities = [
         CAPACITY_STORAGE_KWH,
         POWER_STORAGE_KW,
-        "capacity_genset_kW",
+        CAPACITY_GENSET_KW,
         CAPACITY_PV_KWP,
         "capacity_pcc_consumption_kW",
         "capacity_pcc_feedin_kW",
@@ -101,7 +101,7 @@ def update_dict(capacities_oem, specific_case, experiment):
         )
         # Correction factor for oversizing generator and pcc by factor (and include inefficiency of transformer)
         if case_dict_entry == "peak_demand":
-            if component_name == "capacity_genset_kW":
+            if component_name == CAPACITY_GENSET_KW:
                 case_dict_capacity = (
                     case_dict_capacity * experiment["genset_oversize_factor"]
                 )
