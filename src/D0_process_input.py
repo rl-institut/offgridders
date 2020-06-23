@@ -463,7 +463,7 @@ def add_timeseries(experiment_s):
 
     return max_date_time_index, max_evaluated_days
 
-def apply(experiment_s):
+def apply_noise(experiment_s):
     for experiment in experiment_s:
         on_series(experiment_s[experiment], "white_noise_demand", "demand_ac")
         on_series(experiment_s[experiment], "white_noise_demand", "demand_dc")
