@@ -16,7 +16,7 @@ def process_excel_file(input_excel_file):
     sheet_input_constant = INPUT_CONSTANT
     sheet_input_sensitivity = INPUT_SENSITIVITY
     sheet_project_sites = PROJECT_SITES
-    sheet_case_definitions = "case_definitions"
+    sheet_case_definitions = CASE_DEFINITIONS
     sheet_multicriteria_data = "multicriteria_data"
 
     settings = get_settings(input_excel_file, sheet_settings)
@@ -167,7 +167,7 @@ def get_case_definitions(file, sheet_project_sites):
         file, sheet_project_sites, 17, None, None
     )
     # if any(case_definitions.columns.str.contains('unnamed', case=False)):
-    #    logging.warning('Input template: Tab "case_definitions" might have unnamed columns, which will be dropped. Check if all your cases are simulated.')
+    #    logging.warning('Input template: Tab CASE_DEFINITIONS might have unnamed columns, which will be dropped. Check if all your cases are simulated.')
     #    case_definitions.drop(case_definitions.columns[case_definitions.columns.str.contains('unnamed', case=False)], axis=1, inplace=True)
 
     case_definitions = case_definitions.to_dict(orient="dict")

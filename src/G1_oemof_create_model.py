@@ -64,7 +64,7 @@ def build(experiment, case_dict):
                 + "    "
                 + "    "
                 + "    "
-                + 'Please set "genset_with_minimal_loading"=False for this case on tab "case_definitions" in the excel template.'
+                + 'Please set "genset_with_minimal_loading"=False for this case on tab CASE_DEFINITIONS in the excel template.'
             )
             sys.exit()
             # genset = generate.genset_oem_minload(micro_grid_system, bus_fuel, bus_electricity_ac, experiment, case_dict['number_of_equal_generators'])

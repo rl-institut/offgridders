@@ -37,7 +37,7 @@ def list_of_cases(case_definitions):
         if len(case_list) == 0:
             logging.error(
                 "No cases defined to be simulated. \n "
-                'Did you set any "perform_simulation"=True in excel template, tab "case_definitions"?'
+                'Did you set any "perform_simulation"=True in excel template, tab CASE_DEFINITIONS?'
             )
             sys.exit()
 
