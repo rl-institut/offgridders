@@ -23,8 +23,8 @@ def update_dict(capacities_oem, specific_case, experiment):
 
     experiment_case_dict.update(
         {
-            "case_name": specific_case["case_name"],
-            "filename": specific_case["case_name"]
+            CASE_NAME: specific_case[CASE_NAME],
+            "filename": specific_case[CASE_NAME]
             + experiment[
                 "filename"
             ],  # experiment['output_folder'] + "_" + specific_case['case_name'] + experiment['filename']
@@ -39,7 +39,7 @@ def update_dict(capacities_oem, specific_case, experiment):
     )
 
     warning_string = (
-        "Invalid case definitions. For case " + specific_case["case_name"]
+        "Invalid case definitions. For case " + specific_case[CASE_NAME]
     )
 
     ###########################################

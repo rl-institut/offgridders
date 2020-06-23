@@ -21,3 +21,4 @@ NECESSITY_FOR_BLACKOUT_TIMESERIES_GENERATION = "necessity_for_blackout_timeserie
 SETTING_VALUE = "setting_value"
 UNIT = "Unit"
 VALUE = "Value"
+CASE_NAME = "case_name"

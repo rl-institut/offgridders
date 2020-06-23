@@ -192,7 +192,7 @@ def main():
                 capacities_oem.update(
                     {
                         experiment_case_dict[
-                            "case_name"
+                            CASE_NAME
                         ]: helpers.define_base_capacities(oemof_results)
                     }
                 )

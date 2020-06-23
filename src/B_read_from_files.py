@@ -175,7 +175,7 @@ def get_case_definitions(file, sheet_project_sites):
     # Translate strings 'True' and 'False' from excel sheet to True and False
 
     for case in case_definitions:
-        case_definitions[case].update({"case_name": case})
+        case_definitions[case].update({CASE_NAME: case})
         for key in case_definitions[case]:
             case_definitions[case][key] = identify_true_false(
                 case_definitions[case][key]

@@ -64,7 +64,7 @@ def run(experiment, case_dict):
             )
             and experiment["restore_oemof_if_existant"] == True
         ):
-            logging.info("Previous results of " + case_dict["case_name"] + " restored.")
+            logging.info("Previous results of " + case_dict[CASE_NAME] + " restored.")
 
         # If .oemof results do not already exist, start oemof-process
         else:
@@ -93,8 +93,8 @@ def run(experiment, case_dict):
         meta = micro_grid_system.results["meta"]
 
         oemof_results = {
-            "case": case_dict["case_name"],
-            "filename": "results_" + case_dict["case_name"] + experiment["filename"],
+            "case": case_dict[CASE_NAME],
+            "filename": "results_" + case_dict[CASE_NAME] + experiment["filename"],
             "objective_value": meta["objective"],
             "simulation_time": meta["solver"]["Time"],
             "comments": experiment["comments"],
@@ -233,11 +233,11 @@ def run(experiment, case_dict):
         # print meta/main results in command window
         if electricity_bus_ac != None:
             output.print_oemof_meta_main_invest(
-                experiment, meta, electricity_bus_ac, case_dict["case_name"]
+                experiment, meta, electricity_bus_ac, case_dict[CASE_NAME]
             )
         if electricity_bus_dc != None:
             output.print_oemof_meta_main_invest(
-                experiment, meta, electricity_bus_dc, case_dict["case_name"]
+                experiment, meta, electricity_bus_dc, case_dict[CASE_NAME]
             )
 
         # Evaluate simulated systems regarding costs
@@ -249,7 +249,7 @@ def run(experiment, case_dict):
         # Infos on simulation
         logging.info(
             'Simulation of case "'
-            + case_dict["case_name"]
+            + case_dict[CASE_NAME]
             + '" resulted in : \n'
             + "    "
             + "  "
@@ -275,7 +275,7 @@ def run(experiment, case_dict):
         # Debug messages
         logging.debug(
             '    Exact OEM results of case "'
-            + case_dict["case_name"]
+            + case_dict[CASE_NAME]
             + '" : \n'
             + "    "
             + "  "
@@ -297,7 +297,7 @@ def run(experiment, case_dict):
             + str(round(oemof_results["supply_reliability_kWh"] * 100, 2))
             + " percent"
         )
-        logging.debug("    Simulation of case " + case_dict["case_name"] + " complete.")
+        logging.debug("    Simulation of case " + case_dict[CASE_NAME] + " complete.")
         logging.debug("\n")
 
         if experiment["save_oemofresults"] == False:

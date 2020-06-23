@@ -99,7 +99,7 @@ def build(experiment, case_dict):
     else:
         logging.warning(
             "Case definition of "
-            + case_dict["case_name"]
+            + case_dict[CASE_NAME]
             + " faulty at genset_fixed_capacity. Value can only be False, float or None"
         )
 
@@ -122,7 +122,7 @@ def build(experiment, case_dict):
     else:
         logging.warning(
             "Case definition of "
-            + case_dict["case_name"]
+            + case_dict[CASE_NAME]
             + " faulty at wind_fixed_capacity. Value can only be False, float or None"
         )
 
@@ -161,7 +161,7 @@ def build(experiment, case_dict):
     else:
         logging.warning(
             "Case definition of "
-            + case_dict["case_name"]
+            + case_dict[CASE_NAME]
             + " faulty at pcc_consumption_fixed_capacity. Value can only be False, float or None"
         )
 
@@ -189,7 +189,7 @@ def build(experiment, case_dict):
     else:
         logging.warning(
             "Case definition of "
-            + case_dict["case_name"]
+            + case_dict[CASE_NAME]
             + " faulty at pcc_feedin_fixed_capacity. Value can only be False, float or None"
         )
 
@@ -226,7 +226,7 @@ def build(experiment, case_dict):
     else:
         logging.warning(
             "Case definition of "
-            + case_dict["case_name"]
+            + case_dict[CASE_NAME]
             + " faulty at pv_fixed_capacity. Value can only be False, float or None"
         )
 
@@ -250,7 +250,7 @@ def build(experiment, case_dict):
     else:
         logging.warning(
             "Case definition of "
-            + case_dict["case_name"]
+            + case_dict[CASE_NAME]
             + " faulty at genset_fixed_capacity. Value can only be False, float or None"
         )
 
@@ -275,7 +275,7 @@ def build(experiment, case_dict):
     else:
         logging.warning(
             "Case definition of "
-            + case_dict["case_name"]
+            + case_dict[CASE_NAME]
             + " faulty at rectifier_ac_dc_capacity_. Value can only be False, float or None"
         )
 
@@ -300,7 +300,7 @@ def build(experiment, case_dict):
     else:
         logging.warning(
             "Case definition of "
-            + case_dict["case_name"]
+            + case_dict[CASE_NAME]
             + " faulty at inverter_dc_ac_capacity. Value can only be False, float or None"
         )
 
@@ -375,7 +375,7 @@ def build(experiment, case_dict):
     else:
         logging.warning(
             "Case definition of "
-            + case_dict["case_name"]
+            + case_dict[CASE_NAME]
             + " faulty at stability_constraint. Value can only be False, float or None"
         )
 
@@ -398,7 +398,7 @@ def build(experiment, case_dict):
     else:
         logging.warning(
             "Case definition of "
-            + case_dict["case_name"]
+            + case_dict[CASE_NAME]
             + " faulty at renewable_share_constraint. Value can only be True or False"
         )
 
@@ -413,7 +413,7 @@ def build(experiment, case_dict):
     else:
         logging.warning(
             "Case definition of "
-            + case_dict["case_name"]
+            + case_dict[CASE_NAME]
             + " faulty at force_charge_from_maingrid. Value can only be True or False"
         )
 
@@ -428,7 +428,7 @@ def build(experiment, case_dict):
     else:
         logging.warning(
             "Case definition of "
-            + case_dict["case_name"]
+            + case_dict[CASE_NAME]
             + " faulty at discharge_only_when_blackout. Value can only be True or False"
         )
 
@@ -445,7 +445,7 @@ def build(experiment, case_dict):
     else:
         logging.warning(
             "Case definition of "
-            + case_dict["case_name"]
+            + case_dict[CASE_NAME]
             + " faulty at enable_inverter_at_backout. Value can only be True or False"
         )
 

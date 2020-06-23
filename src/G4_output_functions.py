@@ -128,7 +128,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
         mg_flows.to_csv(
             experiment["output_folder"]
             + "/electricity_mg/"
-            + case_dict["case_name"]
+            + case_dict[CASE_NAME]
             + filename
             + "_electricity_mg.csv"
         )
@@ -159,7 +159,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
                 plt.savefig(
                     experiment["output_folder"]
                     + "/electricity_mg/"
-                    + case_dict["case_name"]
+                    + case_dict[CASE_NAME]
                     + filename
                     + "_electricity_mg.png",
                     bbox_inches="tight",
@@ -176,7 +176,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
                 plt.savefig(
                     experiment["output_folder"]
                     + "/electricity_mg/"
-                    + case_dict["case_name"]
+                    + case_dict[CASE_NAME]
                     + filename
                     + "_electricity_mg_4days.png",
                     bbox_inches="tight",
@@ -214,7 +214,7 @@ def plot_flows(case_dict, experiment, mg_flows, e_flows_df, number_of_subplots):
 
     mg_flows.plot(
         title="MG Operation of case "
-        + case_dict["case_name"]
+        + case_dict[CASE_NAME]
         + " in "
         + experiment["project_site_name"],
         color=[color_dict.get(x, "#333333") for x in mg_flows.columns],
@@ -293,7 +293,7 @@ def save_storage(experiment, case_dict, e_flows_df, filename):
             storage_flows.to_csv(
                 experiment["output_folder"]
                 + "/storage/"
-                + case_dict["case_name"]
+                + case_dict[CASE_NAME]
                 + filename
                 + "_storage.csv"
             )
@@ -301,7 +301,7 @@ def save_storage(experiment, case_dict, e_flows_df, filename):
         if experiment["save_to_png_flows_storage"] == True:
             fig = storage_flows.plot(
                 title="Storage flows of case "
-                + case_dict["case_name"]
+                + case_dict[CASE_NAME]
                 + " in "
                 + experiment["project_site_name"]
             )
@@ -310,7 +310,7 @@ def save_storage(experiment, case_dict, e_flows_df, filename):
             plt.savefig(
                 experiment["output_folder"]
                 + "/storage/"
-                + case_dict["case_name"]
+                + case_dict[CASE_NAME]
                 + filename
                 + "_storage.png",
                 bbox_inches="tight",
@@ -321,7 +321,7 @@ def save_storage(experiment, case_dict, e_flows_df, filename):
             if len(storage_flows["Stored capacity"]) >= 5 * 24:
                 fig = storage_flows[24 : 5 * 24].plot(
                     title="Storage flows of case "
-                    + case_dict["case_name"]
+                    + case_dict[CASE_NAME]
                     + " in "
                     + experiment["project_site_name"]
                 )
@@ -332,7 +332,7 @@ def save_storage(experiment, case_dict, e_flows_df, filename):
                 plt.savefig(
                     experiment["output_folder"]
                     + "/storage/"
-                    + case_dict["case_name"]
+                    + case_dict[CASE_NAME]
                     + filename
                     + "_storage_4days.png",
                     bbox_inches="tight",
