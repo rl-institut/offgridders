@@ -823,7 +823,7 @@ def overall_results_title(
             pd.DataFrame(
                 columns=[
                     CAPACITY_PV_KWP,
-                    "capacity_storage_kWh",
+                    CAPACITY_STORAGE_KWH,
                     "power_storage_kW",
                     "capacity_rectifier_ac_dc_kW",
                     "capacity_inverter_kW",

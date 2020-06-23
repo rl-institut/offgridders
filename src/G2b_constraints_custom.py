@@ -166,7 +166,7 @@ def backup_test(case_dict, oemof_results, experiment, e_flows_df):
             genset_capacity
             + (
                 stored_electricity[t]
-                - oemof_results["capacity_storage_kWh"]
+                - oemof_results[CAPACITY_STORAGE_KWH]
                 * experiment["storage_capacity_min"]
             )
             * experiment["storage_Crate_discharge"]
@@ -186,7 +186,7 @@ def backup_test(case_dict, oemof_results, experiment, e_flows_df):
                         genset_capacity
                         + (
                             stored_electricity[t]
-                            - oemof_results["capacity_storage_kWh"]
+                            - oemof_results[CAPACITY_STORAGE_KWH]
                             * experiment["storage_capacity_min"]
                         )
                         * experiment["storage_Crate_discharge"]
@@ -362,7 +362,7 @@ def hybrid_test(case_dict, oemof_results, experiment, e_flows_df):
             genset_generation[t]
             + (
                 stored_electricity[t]
-                - oemof_results["capacity_storage_kWh"]
+                - oemof_results[CAPACITY_STORAGE_KWH]
                 * experiment["storage_soc_min"]
             )
             * experiment["storage_Crate_discharge"]
@@ -382,7 +382,7 @@ def hybrid_test(case_dict, oemof_results, experiment, e_flows_df):
                         genset_generation[t]
                         + (
                             stored_electricity[t]
-                            - oemof_results["capacity_storage_kWh"]
+                            - oemof_results[CAPACITY_STORAGE_KWH]
                             * experiment["storage_soc_min"]
                         )
                         * experiment["storage_Crate_discharge"]
@@ -724,7 +724,7 @@ def forced_charge_test(case_dict, oemof_results, experiment, e_flows_df):
         boolean_test = [
             (
                 experiment["storage_Crate_charge"]
-                * oemof_results["capacity_storage_kWh"]
+                * oemof_results[CAPACITY_STORAGE_KWH]
                 * (
                     1
                     + experiment["storage_soc_min"]
@@ -734,7 +734,7 @@ def forced_charge_test(case_dict, oemof_results, experiment, e_flows_df):
                     )
                 )
                 + (
-                    oemof_results["capacity_storage_kWh"]
+                    oemof_results[CAPACITY_STORAGE_KWH]
                     - e_flows_df["Stored capacity"][t]
                 )
                 / (experiment["storage_soc_max"] - experiment["storage_soc_min"])
@@ -754,7 +754,7 @@ def forced_charge_test(case_dict, oemof_results, experiment, e_flows_df):
                 [
                     (
                         experiment["storage_Crate_charge"]
-                        * oemof_results["capacity_storage_kWh"]
+                        * oemof_results[CAPACITY_STORAGE_KWH]
                         * (
                             1
                             + experiment["storage_soc_min"]
@@ -764,7 +764,7 @@ def forced_charge_test(case_dict, oemof_results, experiment, e_flows_df):
                             )
                         )
                         + (
-                            oemof_results["capacity_storage_kWh"]
+                            oemof_results[CAPACITY_STORAGE_KWH]
                             - e_flows_df["Stored capacity"][t]
                         )
                         / (

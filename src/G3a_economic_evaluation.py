@@ -67,7 +67,7 @@ def annuities_365(case_dict, oemof_results, experiment):
         "annuity_wind": experiment["wind_cost_annuity"]
         * oemof_results[CAPACITY_WIND_KW],
         "annuity_storage": experiment["storage_capacity_cost_annuity"]
-        * oemof_results["capacity_storage_kWh"]
+        * oemof_results[CAPACITY_STORAGE_KWH]
         + experiment["storage_power_cost_annuity"]
         * oemof_results["power_storage_kW"],
         "annuity_genset": experiment["genset_cost_annuity"]
@@ -142,11 +142,11 @@ def annuities_365(case_dict, oemof_results, experiment):
         elif item == "storage":
             investment += (
                 experiment["storage_capacity_cost_investment"]
-                * oemof_results["capacity_storage_kWh"]
+                * oemof_results[CAPACITY_STORAGE_KWH]
             )
             investment += (
                 experiment["storage_power_cost_investment"]
-                * oemof_results["capacity_storage_kWh"]
+                * oemof_results[CAPACITY_STORAGE_KWH]
             )
         elif item == "maingrid_extension":
             investment += (

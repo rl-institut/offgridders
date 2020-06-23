@@ -533,7 +533,7 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
 
         oemof_results.update(
             {
-                "capacity_storage_kWh": storage_capacity,
+                CAPACITY_STORAGE_KWH: storage_capacity,
                 "power_storage_kW": storage_power,
             }
         )
@@ -541,18 +541,18 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
     elif isinstance(case_dict["storage_fixed_capacity"], float):
         oemof_results.update(
             {
-                "capacity_storage_kWh": case_dict["storage_fixed_capacity"],
+                CAPACITY_STORAGE_KWH: case_dict["storage_fixed_capacity"],
                 "power_storage_kW": case_dict["storage_fixed_power"],
             }
         )
 
     elif case_dict["storage_fixed_capacity"] == None:
-        oemof_results.update({"capacity_storage_kWh": 0, "power_storage_kW": 0})
+        oemof_results.update({CAPACITY_STORAGE_KWH: 0, "power_storage_kW": 0})
 
     # calculate SOC of battery:
-    if oemof_results["capacity_storage_kWh"] > 0:
+    if oemof_results[CAPACITY_STORAGE_KWH] > 0:
         e_flows_df = join_e_flows_df(
-            stored_capacity / oemof_results["capacity_storage_kWh"],
+            stored_capacity / oemof_results[CAPACITY_STORAGE_KWH],
             "Storage SOC",
             e_flows_df,
         )

@@ -282,7 +282,7 @@ def run(experiment, case_dict):
             + "    "
             + "    "
             + "    "
-            + str(round(oemof_results["capacity_storage_kWh"], 3))
+            + str(round(oemof_results[CAPACITY_STORAGE_KWH], 3))
             + " kWh battery, "
             + str(round(oemof_results[CAPACITY_PV_KWP], 3))
             + " kWp PV, "
