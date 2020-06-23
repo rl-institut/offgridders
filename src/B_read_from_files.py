@@ -55,7 +55,7 @@ def process_excel_file(input_excel_file):
         shutil.copy(path_from, path_to)
 
         from_file(project_site_s[project_site], path_from)
-        if project_site_s[project_site]["title_grid_availability"] == "None":
+        if project_site_s[project_site][TITLE_GRID_AVAILABILITY] == "None":
             necessity_for_blackout_timeseries_generation = True
 
     settings.update(
@@ -269,7 +269,7 @@ def from_file(project_site, path_from):
         "title_demand_dc",
         "title_pv",
         "title_wind",
-        "title_grid_availability",
+        TITLE_GRID_AVAILABILITY,
     ]
 
     # Attached data to each project site analysed. Does NOT apply noise here,
@@ -303,7 +303,7 @@ def from_file(project_site, path_from):
                 dictionary_title = "pv_generation_per_kWp"
             elif column_item == "title_wind":
                 dictionary_title = "wind_generation_per_kW"
-            elif column_item == "title_grid_availability":
+            elif column_item == TITLE_GRID_AVAILABILITY:
                 dictionary_title = "grid_availability"
 
             if project_site[column_item] != "None":
@@ -316,7 +316,7 @@ def from_file(project_site, path_from):
                         column_item, project_site[column_item], path_from
                     )
             else:
-                if column_item != "title_grid_availability":
+                if column_item != TITLE_GRID_AVAILABILITY:
                     if project_site[column_item] != "None":
                         logging.warning(
                             "It is assumed that timeseries "
