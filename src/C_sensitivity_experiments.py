@@ -824,7 +824,7 @@ def overall_results_title(
                 columns=[
                     CAPACITY_PV_KWP,
                     CAPACITY_STORAGE_KWH,
-                    "power_storage_kW",
+                    POWER_STORAGE_KW,
                     "capacity_rectifier_ac_dc_kW",
                     "capacity_inverter_kW",
                     CAPACITY_WIND_KW,

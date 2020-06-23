@@ -48,7 +48,7 @@ def update_dict(capacities_oem, specific_case, experiment):
     # pv, storage, genset, wind, pcc consumption/feedin
     list_base_capacities = [
         CAPACITY_STORAGE_KWH,
-        "power_storage_kW",
+        POWER_STORAGE_KW,
         "capacity_genset_kW",
         CAPACITY_PV_KWP,
         "capacity_pcc_consumption_kW",
@@ -85,7 +85,7 @@ def update_dict(capacities_oem, specific_case, experiment):
 
     for item in range(0, len(list_base_capacities)):
         if (
-            list_base_capacities[item] == "power_storage_kW"
+            list_base_capacities[item] == POWER_STORAGE_KW
         ):  # it is not possible to set the optimization ect. of the storage power; the setting of storage will be used
             case_dict_entry = specific_case[CAPACITY_STORAGE_KWH]
         else:
