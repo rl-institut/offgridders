@@ -13,7 +13,7 @@ import logging
 
 import src.A1_general_functions as helpers
 import src.B_read_from_files as excel_template
-import src.C_sensitivity_experiments as sensitivity_experiments
+import src.C_sensitivity_experiments as generate_sensitvitiy_experiments
 import src.D0_process_input as process_input
 import src.E_blackouts_central_grid as central_grid
 import src.F_case_definitions as cases
@@ -76,7 +76,7 @@ def main():
         blackout_experiment_s,
         overall_results,
         names_sensitivities,
-    ) = sensitivity_experiments.get(
+    ) = generate_sensitvitiy_experiments.get(
         settings, parameters_constant_values, parameters_sensitivity, project_site_s
     )
 
@@ -140,7 +140,7 @@ def main():
             logging.debug(
                 "Using grid availability timeseries that was randomly generated."
             )
-            blackout_experiment_name = sensitivity_experiments.get_blackout_experiment_name(
+            blackout_experiment_name = generate_sensitvitiy_experiments.get_blackout_experiment_name(
                 sensitivity_experiment_s[experiment]
             )
             sensitivity_experiment_s[experiment].update(
