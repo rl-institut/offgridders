@@ -3,7 +3,16 @@ Small scripts to keep the main file clean
 """
 
 import pandas as pd
-from src.constants import CAPACITY_PV_KWP,CAPACITY_WIND_KW
+from src.constants import (CAPACITY_PV_KWP,
+                            CAPACITY_WIND_KW,
+                            CAPACITY_STORAGE_KWH,
+                            POWER_STORAGE_KW,
+                            CAPACITY_GENSET_KW,
+                            CAPACITY_PCOUPLING_KW,
+                            CAPACITY_RECTIFIER_AC_DC_KW,
+                            CAPACITY_INVERTER_DC_AC_KW,
+                            DEMAND_PROFILE)
+
 from oemof.tools import logger
 import logging
 
@@ -60,7 +69,7 @@ def store_result_matrix(overall_results, experiment, oemof_results):
                     )
                 )
         # extend by item of demand profile
-        elif key == "demand_profile":
+        elif key == DEMAND_PROFILE:
             result_series = result_series.append(
                 pd.Series([experiment[key]], index=[key])
             )
