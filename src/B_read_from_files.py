@@ -45,12 +45,12 @@ def process_excel_file(input_excel_file):
         path_from = os.path.abspath(
             settings[INPUT_FOLDER_TIMESERIES]
             + "/"
-            + project_site_s[project_site]["timeseries_file"]
+            + project_site_s[project_site][TIMESERIES_FILE]
         )
         path_to = os.path.abspath(
             settings["output_folder"]
             + "/inputs/"
-            + project_site_s[project_site]["timeseries_file"]
+            + project_site_s[project_site][TIMESERIES_FILE]
         )
         shutil.copy(path_from, path_to)
 
