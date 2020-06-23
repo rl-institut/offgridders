@@ -19,7 +19,7 @@ def get_blackouts(settings, blackout_experiment_s):
     if (
         os.path.isfile(settings["output_folder"] + "/grid_availability.csv")
         or os.path.isfile(
-            settings["input_folder_timeseries"] + "/grid_availability.csv"
+            settings[INPUT_FOLDER_TIMESERIES] + "/grid_availability.csv"
         )
     ) and settings["restore_blackouts_if_existant"] == True:
 
@@ -29,10 +29,10 @@ def get_blackouts(settings, blackout_experiment_s):
                 settings["output_folder"] + "/grid_availability.csv"
             )
         elif os.path.isfile(
-            settings["input_folder_timeseries"] + "/grid_availability.csv"
+            settings[INPUT_FOLDER_TIMESERIES] + "/grid_availability.csv"
         ):
             data_set = pd.read_csv(
-                settings["input_folder_timeseries"] + "/grid_availability.csv"
+                settings[INPUT_FOLDER_TIMESERIES] + "/grid_availability.csv"
             )
 
         index = pd.DatetimeIndex(data_set["timestep"].values)

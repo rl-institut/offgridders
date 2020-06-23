@@ -43,7 +43,7 @@ def process_excel_file(input_excel_file):
     for project_site in project_site_s:
         # copy input timeseries to new location
         path_from = os.path.abspath(
-            settings["input_folder_timeseries"]
+            settings[INPUT_FOLDER_TIMESERIES]
             + "/"
             + project_site_s[project_site]["timeseries_file"]
         )
