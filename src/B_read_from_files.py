@@ -112,7 +112,7 @@ def get_settings(file, sheet_settings):
     # defines dictionary connected to settings
     settings = get_data(file, sheet_settings, 11, "B", "C")
     settings = settings.to_dict(orient="dict")
-    settings = settings["setting_value"]
+    settings = settings[SETTING_VALUE]
 
     # Translate strings 'True' and 'False' from excel sheet to True and False
     for key in settings:
