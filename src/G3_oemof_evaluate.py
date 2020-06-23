@@ -233,7 +233,7 @@ def get_pv(
         if pv_generation_max > 1:
             oemof_results.update(
                 {
-                    "capacity_pv_kWp": electricity_bus_dc["scalars"][
+                    CAPACITY_PV_KWP: electricity_bus_dc["scalars"][
                         (("source_pv", "bus_electricity_dc"), "invest")
                     ]
                     * pv_generation_max
@@ -242,7 +242,7 @@ def get_pv(
         elif pv_generation_max > 0 and pv_generation_max < 1:
             oemof_results.update(
                 {
-                    "capacity_pv_kWp": electricity_bus_dc["scalars"][
+                    CAPACITY_PV_KWP: electricity_bus_dc["scalars"][
                         (("source_pv", "bus_electricity_dc"), "invest")
                     ]
                     / pv_generation_max
@@ -251,9 +251,9 @@ def get_pv(
         else:
             logging.warning("Error, Strange PV behaviour (PV gen < 0)")
     elif isinstance(case_dict["pv_fixed_capacity"], float):
-        oemof_results.update({"capacity_pv_kWp": case_dict["pv_fixed_capacity"]})
+        oemof_results.update({CAPACITY_PV_KWP: case_dict["pv_fixed_capacity"]})
     elif case_dict["pv_fixed_capacity"] == None:
-        oemof_results.update({"capacity_pv_kWp": 0})
+        oemof_results.update({CAPACITY_PV_KWP: 0})
     return e_flows_df
 
 def get_rectifier(

@@ -63,7 +63,7 @@ def annuities_365(case_dict, oemof_results, experiment):
 
     interval_annuity = {
         "annuity_pv": experiment["pv_cost_annuity"]
-        * oemof_results["capacity_pv_kWp"],
+        * oemof_results[CAPACITY_PV_KWP],
         "annuity_wind": experiment["wind_cost_annuity"]
         * oemof_results["capacity_wind_kW"],
         "annuity_storage": experiment["storage_capacity_cost_annuity"]
@@ -137,7 +137,7 @@ def annuities_365(case_dict, oemof_results, experiment):
     for item in component_list:
         if item == "pv":
             investment += (
-                experiment["pv_cost_investment"] * oemof_results["capacity_pv_kWp"]
+                experiment["pv_cost_investment"] * oemof_results[CAPACITY_PV_KWP]
             )
         elif item == "storage":
             investment += (

@@ -1,0 +1,1 @@
+CAPACITY_PV_KWP = "capacity_pv_kWp"

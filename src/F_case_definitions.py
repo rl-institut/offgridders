@@ -50,7 +50,7 @@ def update_dict(capacities_oem, specific_case, experiment):
         "capacity_storage_kWh",
         "power_storage_kW",
         "capacity_genset_kW",
-        "capacity_pv_kWp",
+        CAPACITY_PV_KWP,
         "capacity_pcc_consumption_kW",
         "capacity_pcc_feedin_kW",
         "capacity_wind_kW",
