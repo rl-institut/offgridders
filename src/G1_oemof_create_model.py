@@ -474,7 +474,7 @@ def simulate(experiment, micro_grid_system, model, file_name):
     )  # ratioGap allowedGap mipgap
     logging.debug("Problem solved")
 
-    if experiment["save_lp_file"] == True:
+    if experiment[SAVE_LP_FILE] == True:
         logging.debug("Saving lp-file to folder.")
         model.write(
             experiment[OUTPUT_FOLDER] + "/lp_files/model_" + file_name + ".lp",
