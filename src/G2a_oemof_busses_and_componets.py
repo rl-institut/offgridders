@@ -101,7 +101,7 @@ def pv_fix(micro_grid_system, bus_electricity_dc, experiment, capacity_pv):
         outputs={
             bus_electricity_dc: solph.Flow(
                 label="PV generation",
-                actual_value=experiment["pv_generation_per_kWp"],
+                actual_value=experiment[PV_GENERATION_PER_KWP],
                 fixed=True,
                 nominal_value=capacity_pv,
                 variable_costs=experiment["pv_cost_var"],
@@ -115,7 +115,7 @@ def pv_fix(micro_grid_system, bus_electricity_dc, experiment, capacity_pv):
 def pv_oem(micro_grid_system, bus_electricity_dc, experiment):
     logging.debug("Added to oemof model: pv oem")
     peak_pv_generation = experiment["peak_pv_generation_per_kWp"]
-    pv_norm = experiment["pv_generation_per_kWp"] / peak_pv_generation
+    pv_norm = experiment[PV_GENERATION_PER_KWP] / peak_pv_generation
     if pv_norm.any() > 1:
         logging.warning("Error, PV generation not normalized, greater than 1")
     if pv_norm.any() < 0:

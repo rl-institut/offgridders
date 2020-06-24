@@ -300,7 +300,7 @@ def from_file(project_site, path_from):
             elif column_item == TITLE_DEMAND_DC:
                 dictionary_title = DEMAND_DC
             elif column_item == TITLE_PV:
-                dictionary_title = "pv_generation_per_kWp"
+                dictionary_title = PV_GENERATION_PER_KWP
             elif column_item == TITLE_WIND:
                 dictionary_title = "wind_generation_per_kW"
             elif column_item == TITLE_GRID_AVAILABILITY:

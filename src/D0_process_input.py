@@ -197,7 +197,7 @@ def add_timeseries(experiment_s):
                     index=experiment_s[experiment]["file_index"],
                 )
                 pv_generation_per_kWp = pd.Series(
-                    experiment_s[experiment]["pv_generation_per_kWp"].values,
+                    experiment_s[experiment][PV_GENERATION_PER_KWP].values,
                     index=experiment_s[experiment]["file_index"],
                 )
                 wind_generation_per_kW = pd.Series(
@@ -212,7 +212,7 @@ def add_timeseries(experiment_s):
                     {"demand_profile_dc": demand_dc[index]}
                 )
                 experiment_s[experiment].update(
-                    {"pv_generation_per_kWp": pv_generation_per_kWp[index]}
+                    {PV_GENERATION_PER_KWP: pv_generation_per_kWp[index]}
                 )
                 experiment_s[experiment].update(
                     {"wind_generation_per_kW": wind_generation_per_kW[index]}
@@ -255,8 +255,8 @@ def add_timeseries(experiment_s):
             )
             experiment_s[experiment].update(
                 {
-                    "pv_generation_per_kWp": pd.Series(
-                        experiment_s[experiment]["pv_generation_per_kWp"][
+                    PV_GENERATION_PER_KWP: pd.Series(
+                        experiment_s[experiment][PV_GENERATION_PER_KWP][
                             0 : len(index)
                         ].values,
                         index=index,
@@ -332,8 +332,8 @@ def add_timeseries(experiment_s):
             )
             experiment_s[experiment].update(
                 {
-                    "pv_generation_per_kWp": experiment_s[experiment][
-                        "pv_generation_per_kWp"
+                    PV_GENERATION_PER_KWP: experiment_s[experiment][
+                        PV_GENERATION_PER_KWP
                     ][index]
                 }
             )
@@ -387,7 +387,7 @@ def add_timeseries(experiment_s):
                     experiment_s[experiment]["demand_profile_dc"]
                 ),
                 "peak_pv_generation_per_kWp": max(
-                    experiment_s[experiment]["pv_generation_per_kWp"]
+                    experiment_s[experiment][PV_GENERATION_PER_KWP]
                 ),
                 "peak_wind_generation_per_kW": max(
                     experiment_s[experiment]["wind_generation_per_kW"]
@@ -468,7 +468,7 @@ def apply_noise(experiment_s):
         on_series(experiment_s[experiment], "white_noise_demand", DEMAND_AC)
         on_series(experiment_s[experiment], "white_noise_demand", DEMAND_DC)
         on_series(
-            experiment_s[experiment], "white_noise_pv", "pv_generation_per_kWp"
+            experiment_s[experiment], "white_noise_pv", PV_GENERATION_PER_KWP
         )
         on_series(
             experiment_s[experiment], "white_noise_wind", "wind_generation_per_kW"

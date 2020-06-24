@@ -139,7 +139,7 @@ def get(
     timeseries_names = [
         DEMAND_AC,
         DEMAND_DC,
-        "pv_generation_per_kWp",
+        PV_GENERATION_PER_KWP,
         "wind_generation_per_kW",
         "grid_availability",
     ]
