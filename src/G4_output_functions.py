@@ -289,7 +289,7 @@ def save_storage(experiment, case_dict, e_flows_df, filename):
                     )
                 storage_flows = storage_flows.join(new_column)
 
-        if experiment["save_to_csv_flows_storage"] == True:
+        if experiment[SAVE_TO_CSV_FLOWS_STORAGE] == True:
             storage_flows.to_csv(
                 experiment[OUTPUT_FOLDER]
                 + "/storage/"
