@@ -292,7 +292,7 @@ def add_timeseries(experiment_s):
             )
 
         # Used for generation of lp file with only 3-timesteps = Useful to verify optimized equations
-        if experiment_s[experiment]["lp_file_for_only_3_timesteps"] == True:
+        if experiment_s[experiment][LP_FILE_FOR_ONLY_3_TIMESTEPS] == True:
             experiment_s[experiment].update(
                 {
                     "time_start": experiment_s[experiment]["time_start"]

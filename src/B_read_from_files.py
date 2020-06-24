@@ -385,7 +385,7 @@ def check_output_directory(settings, input_excel_file):
 
     if (
         settings[SAVE_LP_FILE] == True
-        or settings["lp_file_for_only_3_timesteps"] == True
+        or settings[LP_FILE_FOR_ONLY_3_TIMESTEPS] == True
     ):
         os.mkdir(output_folder + "/lp_files")
 
