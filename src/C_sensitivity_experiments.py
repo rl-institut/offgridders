@@ -93,7 +93,7 @@ def get(
         # scaling demand according to scaling factor - used for tests regarding tool application
         sensitivitiy_experiment_s[experiment].update(
             {
-                "demand_ac": sensitivitiy_experiment_s[experiment]["demand_ac"]
+                DEMAND_AC: sensitivitiy_experiment_s[experiment][DEMAND_AC]
                 * sensitivitiy_experiment_s[experiment]["demand_ac_scaling_factor"]
             }
         )
@@ -137,7 +137,7 @@ def get(
     csv_dict = deepcopy(sensitivitiy_experiment_s)
     # delete timeseries to make file readable
     timeseries_names = [
-        "demand_ac",
+        DEMAND_AC,
         "demand_dc",
         "pv_generation_per_kWp",
         "wind_generation_per_kW",

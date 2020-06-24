@@ -265,7 +265,7 @@ def from_file(project_site, path_from):
 
     list_columns = [
         TITLE_TIME,
-       TITLE_DEMAND_AC,
+        TITLE_DEMAND_AC,
         TITLE_DEMAND_DC,
         TITLE_PV,
         TITLE_WIND,
@@ -296,7 +296,7 @@ def from_file(project_site, path_from):
 
         else:
             if column_item ==TITLE_DEMAND_AC:
-                dictionary_title = "demand_ac"
+                dictionary_title = DEMAND_AC
             elif column_item == TITLE_DEMAND_DC:
                 dictionary_title = "demand_dc"
             elif column_item == TITLE_PV:
