@@ -124,7 +124,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
 
                 mg_flows = mg_flows.join(new_column)
 
-    if experiment["save_to_csv_flows_electricity_mg"] == True:
+    if experiment[SAVE_TO_CSV_FLOWS_ELECTRICITY_MG] == True:
         mg_flows.to_csv(
             experiment[OUTPUT_FOLDER]
             + "/electricity_mg/"

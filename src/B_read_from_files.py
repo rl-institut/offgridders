@@ -396,7 +396,7 @@ def check_output_directory(settings, input_excel_file):
         os.mkdir(output_folder + "/storage")
 
     if (
-        settings["save_to_csv_flows_electricity_mg"] == True
+        settings[SAVE_TO_CSV_FLOWS_ELECTRICITY_MG] == True
         or settings["save_to_png_flows_electricity_mg"] == True
     ):
         os.mkdir(output_folder + "/electricity_mg")
