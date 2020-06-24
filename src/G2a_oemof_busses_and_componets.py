@@ -146,7 +146,7 @@ def wind_fix(micro_grid_system, bus_electricity_ac, experiment, capacity_wind):
         outputs={
             bus_electricity_ac: solph.Flow(
                 label="Wind generation",
-                actual_value=experiment["wind_generation_per_kW"],
+                actual_value=experiment[WIND_GENERATION_PER_KW],
                 fixed=True,
                 nominal_value=capacity_wind,
                 variable_costs=experiment["wind_cost_var"],
@@ -160,7 +160,7 @@ def wind_fix(micro_grid_system, bus_electricity_ac, experiment, capacity_wind):
 def wind_oem(micro_grid_system, bus_electricity_ac, experiment):
     logging.debug("Added to oemof model: wind")
     peak_wind_generation = experiment["peak_wind_generation_per_kW"]
-    wind_norm = experiment["wind_generation_per_kW"] / peak_wind_generation
+    wind_norm = experiment[WIND_GENERATION_PER_KW] / peak_wind_generation
     if wind_norm.any() > 1:
         logging.warning("Error, Wind generation not normalized, greater than 1")
     if wind_norm.any() < 0:

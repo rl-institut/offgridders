@@ -140,7 +140,7 @@ def get(
         DEMAND_AC,
         DEMAND_DC,
         PV_GENERATION_PER_KWP,
-        "wind_generation_per_kW",
+        WIND_GENERATION_PER_KW,
         "grid_availability",
     ]
     for entry in csv_dict:
