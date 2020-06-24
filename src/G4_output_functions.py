@@ -133,7 +133,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
             + "_electricity_mg.csv"
         )
 
-    if experiment["save_to_png_flows_electricity_mg"] == True:
+    if experiment[SAVE_TO_PNG_FLOWS_ELECTRICITY_MG] == True:
         number_of_subplots = 0
 
         for item in droplist:
