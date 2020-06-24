@@ -218,13 +218,13 @@ def add_timeseries(experiment_s):
                     {WIND_GENERATION_PER_KW: wind_generation_per_kW[index]}
                 )
 
-                if "grid_availability" in experiment_s[experiment].keys():
+                if GRID_AVAILABILITY in experiment_s[experiment].keys():
                     grid_availability = pd.Series(
-                        experiment_s[experiment]["grid_availability"].values,
+                        experiment_s[experiment][GRID_AVAILABILITY].values,
                         index=experiment_s[experiment]["file_index"],
                     )
                     experiment_s[experiment].update(
-                        {"grid_availability": grid_availability[index]}
+                        {GRID_AVAILABILITY: grid_availability[index]}
                     )
 
             else:
@@ -274,11 +274,11 @@ def add_timeseries(experiment_s):
                 }
             )
 
-            if "grid_availability" in experiment_s[experiment].keys():
+            if GRID_AVAILABILITY in experiment_s[experiment].keys():
                 experiment_s[experiment].update(
                     {
-                        "grid_availability": pd.Series(
-                            experiment_s[experiment]["grid_availability"][
+                        GRID_AVAILABILITY: pd.Series(
+                            experiment_s[experiment][GRID_AVAILABILITY][
                                 0 : len(index)
                             ].values,
                             index=index,
@@ -344,11 +344,11 @@ def add_timeseries(experiment_s):
                     ][index]
                 }
             )
-            if "grid_availability" in experiment_s[experiment].keys():
+            if GRID_AVAILABILITY in experiment_s[experiment].keys():
                 experiment_s[experiment].update(
                     {
-                        "grid_availability": experiment_s[experiment][
-                            "grid_availability"
+                        GRID_AVAILABILITY: experiment_s[experiment][
+                            GRID_AVAILABILITY
                         ][index]
                     }
                 )

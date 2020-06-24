@@ -304,7 +304,7 @@ def from_file(project_site, path_from):
             elif column_item == TITLE_WIND:
                 dictionary_title = WIND_GENERATION_PER_KW
             elif column_item == TITLE_GRID_AVAILABILITY:
-                dictionary_title = "grid_availability"
+                dictionary_title = GRID_AVAILABILITY
 
             if project_site[column_item] != "None":
                 try:

@@ -75,7 +75,7 @@ def maingrid_consumption(micro_grid_system, experiment):
         label="source_maingrid_consumption",
         outputs={
             bus_electricity_ng_consumption: solph.Flow(
-                actual_value=experiment["grid_availability"],
+                actual_value=experiment[GRID_AVAILABILITY],
                 fixed=True,
                 investment=solph.Investment(ep_costs=0),
             )
@@ -673,7 +673,7 @@ def maingrid_feedin(micro_grid_system, experiment):
         label="sink_maingrid_feedin",
         inputs={
             bus_electricity_ng_feedin: solph.Flow(
-                actual_value=experiment["grid_availability"],
+                actual_value=experiment[GRID_AVAILABILITY],
                 fixed=True,
                 investment=solph.Investment(ep_costs=0),
             )

@@ -130,7 +130,7 @@ def main():
 
         capacities_oem = {}
 
-        if "grid_availability" in sensitivity_experiment_s[experiment].keys():
+        if GRID_AVAILABILITY in sensitivity_experiment_s[experiment].keys():
             logging.debug(
                 "Using grid availability as included in timeseries file of project location."
             )
@@ -145,7 +145,7 @@ def main():
             )
             sensitivity_experiment_s[experiment].update(
                 {
-                    "grid_availability": sensitivity_grid_availability[
+                    GRID_AVAILABILITY: sensitivity_grid_availability[
                         blackout_experiment_name
                     ]
                 }
@@ -198,9 +198,9 @@ def main():
                 )
 
             # Extend oemof_results by blackout characteristics
-            if "grid_availability" in sensitivity_experiment_s[experiment].keys():
+            if GRID_AVAILABILITY in sensitivity_experiment_s[experiment].keys():
                 blackout_result = central_grid.oemof_extension_for_blackouts(
-                    sensitivity_experiment_s[experiment]["grid_availability"]
+                    sensitivity_experiment_s[experiment][GRID_AVAILABILITY]
                 )
                 oemof_results = central_grid.extend_oemof_results(
                     oemof_results, blackout_result

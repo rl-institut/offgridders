@@ -149,7 +149,7 @@ def run(experiment, case_dict):
                 oemof_results,
                 results,
                 e_flows_df,
-                experiment["grid_availability"],
+                experiment[GRID_AVAILABILITY],
             )
 
             e_flows_df = timeseries.get_wind(

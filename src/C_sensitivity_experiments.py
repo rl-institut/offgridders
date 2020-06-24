@@ -141,7 +141,7 @@ def get(
         DEMAND_DC,
         PV_GENERATION_PER_KWP,
         WIND_GENERATION_PER_KW,
-        "grid_availability",
+        GRID_AVAILABILITY,
     ]
     for entry in csv_dict:
         for series in timeseries_names:

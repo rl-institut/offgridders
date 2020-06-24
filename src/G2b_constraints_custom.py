@@ -56,7 +56,7 @@ def backup(
         ##---------Grid consumption t-------#
         # this should not be actual consumption but possible one  - like grid_availability[t]*pcc_consumption_cap
         if case_dict["pcc_consumption_fixed_capacity"] != None:
-            expr += CAP_pcc * experiment["grid_availability"][t]
+            expr += CAP_pcc * experiment[GRID_AVAILABILITY][t]
 
         ## ------- Get stored capacity storage at t------- #
         if case_dict["storage_fixed_capacity"] != None:
@@ -104,7 +104,7 @@ def backup(
         ##---------Grid consumption t-------#
         # this should not be actual consumption but possible one  - like grid_availability[t]*pcc_consumption_cap
         if case_dict["pcc_consumption_fixed_capacity"] != None:
-            expr += CAP_pcc * experiment["grid_availability"][t]
+            expr += CAP_pcc * experiment[GRID_AVAILABILITY][t]
 
         ## ------- Get power of storage ------- #
         if case_dict["storage_fixed_power"] != None:
@@ -706,7 +706,7 @@ def forced_charge(model, case_dict, el_bus_dc, storage, experiment):
             expr = m * stored_electricity + n  # * 0.99
 
             # Only apply linearization if no blackout occurs
-            expr = expr * experiment["grid_availability"][t]
+            expr = expr * experiment[GRID_AVAILABILITY][t]
 
             # Actual charge
             expr += -model.flow[el_bus_dc, storage, t]
@@ -797,7 +797,7 @@ def forced_charge_test(case_dict, oemof_results, experiment, e_flows_df):
     return
 
 def discharge_only_at_blackout(model, case_dict, el_bus, storage, experiment):
-    grid_inavailability = 1 - experiment["grid_availability"]
+    grid_inavailability = 1 - experiment[GRID_AVAILABILITY]
 
     def discharge_rule_upper(model, t):
         expr = 0
@@ -875,7 +875,7 @@ def discharge_only_at_blackout_test(case_dict, oemof_results, e_flows_df):
     return
 
 def inverter_only_at_blackout(model, case_dict, el_bus, inverter, experiment):
-    grid_inavailability = 1 - experiment["grid_availability"]
+    grid_inavailability = 1 - experiment[GRID_AVAILABILITY]
 
     ## ------- Get CAP inverter ------- #
     CAP_inverter = 0
