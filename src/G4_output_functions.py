@@ -298,7 +298,7 @@ def save_storage(experiment, case_dict, e_flows_df, filename):
                 + "_storage.csv"
             )
 
-        if experiment["save_to_png_flows_storage"] == True:
+        if experiment[SAVE_TO_PNG_FLOWS_STORAGE] == True:
             fig = storage_flows.plot(
                 title="Storage flows of case "
                 + case_dict[CASE_NAME]

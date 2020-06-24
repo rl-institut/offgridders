@@ -391,7 +391,7 @@ def check_output_directory(settings, input_excel_file):
 
     if (
         settings[SAVE_TO_CSV_FLOWS_STORAGE] == True
-        or settings["save_to_png_flows_storage"] == True
+        or settings[SAVE_TO_PNG_FLOWS_STORAGE] == True
     ):
         os.mkdir(output_folder + "/storage")
 
