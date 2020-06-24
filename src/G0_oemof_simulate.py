@@ -62,7 +62,7 @@ def run(experiment, case_dict):
             os.path.isfile(
                 experiment[OUTPUT_FOLDER] + "/oemof/" + file_name + ".oemof"
             )
-            and experiment["restore_oemof_if_existant"] == True
+            and experiment[RESTORE_OEMOF_IF_EXISTENT] == True
         ):
             logging.info("Previous results of " + case_dict[CASE_NAME] + " restored.")
 

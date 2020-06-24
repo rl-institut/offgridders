@@ -345,7 +345,7 @@ def check_output_directory(settings, input_excel_file):
             # Delete all folders. Special case: oemof folder
             if folder == "/oemof" and os.path.isdir(output_folder + folder) == True:
                 # dont delete oemof folder if necessary for restoring results
-                if settings["restore_oemof_if_existant"] == True:
+                if settings[RESTORE_OEMOF_IF_EXISTENT] == True:
                     pass
                 # delete oemof folder if no restoring necessary
                 else:
