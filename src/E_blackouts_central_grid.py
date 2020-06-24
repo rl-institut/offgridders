@@ -17,16 +17,16 @@ def get_blackouts(settings, blackout_experiment_s):
     # Search, if file is existant (and should be used)
 
     if (
-        os.path.isfile(settings["output_folder"] + "/grid_availability.csv")
+        os.path.isfile(settings[OUTPUT_FOLDER] + "/grid_availability.csv")
         or os.path.isfile(
             settings[INPUT_FOLDER_TIMESERIES] + "/grid_availability.csv"
         )
     ) and settings["restore_blackouts_if_existant"] == True:
 
         # ? read to csv: timestamp as first row -> not equal column number, date time without index
-        if os.path.isfile(settings["output_folder"] + "/grid_availability.csv"):
+        if os.path.isfile(settings[OUTPUT_FOLDER] + "/grid_availability.csv"):
             data_set = pd.read_csv(
-                settings["output_folder"] + "/grid_availability.csv"
+                settings[OUTPUT_FOLDER] + "/grid_availability.csv"
             )
         elif os.path.isfile(
             settings[INPUT_FOLDER_TIMESERIES] + "/grid_availability.csv"
@@ -122,7 +122,7 @@ def get_blackouts(settings, blackout_experiment_s):
 
     grid_availability_df.index.name = "timestep"
     grid_availability_df.to_csv(
-        settings["output_folder"] + "/grid_availability.csv"
+        settings[OUTPUT_FOLDER] + "/grid_availability.csv"
     )
 
     return grid_availability_df, blackout_result_s

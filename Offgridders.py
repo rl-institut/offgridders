@@ -216,7 +216,7 @@ def main():
             )
             # Writing DataFrame with all results to csv file
             overall_results.to_csv(
-                sensitivity_experiment_s[experiment]["output_folder"]
+                sensitivity_experiment_s[experiment][OUTPUT_FOLDER]
                 + "/"
                 + sensitivity_experiment_s[experiment]["output_file"]
                 + ".csv"
@@ -262,7 +262,7 @@ def main():
     logging.shutdown()
     path_from = os.path.abspath("./micro_grid_design_logfile.log")
     path_to = os.path.abspath(
-        settings["output_folder"] + "/micro_grid_design_logfile.log"
+        settings[OUTPUT_FOLDER] + "/micro_grid_design_logfile.log"
     )
     shutil.move(path_from, path_to)
 

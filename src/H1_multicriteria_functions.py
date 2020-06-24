@@ -440,7 +440,7 @@ def representation(
     }
 
     workbook = xlsxwriter.Workbook(
-        settings["output_folder"] + "/MCA_evaluations.xlsx"
+        settings[OUTPUT_FOLDER] + "/MCA_evaluations.xlsx"
     )
 
     for n in range(len(all_data["evaluations"])):
@@ -828,10 +828,10 @@ def plot_evaluations(
     for i in range(combinations):
         cases_exp.append("case_" + str(i + 1))
 
-    if os.path.isdir(settings["output_folder"] + "/mca_plots"):
-        shutil.rmtree(settings["output_folder"] + "/mca_plots", ignore_errors=True)
+    if os.path.isdir(settings[OUTPUT_FOLDER] + "/mca_plots"):
+        shutil.rmtree(settings[OUTPUT_FOLDER] + "/mca_plots", ignore_errors=True)
     if len(plot_criteria) > 0:
-        os.mkdir(settings["output_folder"] + "/mca_plots")
+        os.mkdir(settings[OUTPUT_FOLDER] + "/mca_plots")
 
     # a bar chart is created for the evaluations of each required criteria and for each project
     for project in evaluations:
@@ -855,7 +855,7 @@ def plot_evaluations(
                     )
 
                     plt.savefig(
-                        settings["output_folder"]
+                        settings[OUTPUT_FOLDER]
                         + "/mca_plots"
                         + "/evaluation_"
                         + criterion

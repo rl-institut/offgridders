@@ -150,7 +150,7 @@ def get(
 
     experiments_dataframe = pd.DataFrame.from_dict(csv_dict, orient="index")
     experiments_dataframe.to_csv(
-        settings["output_folder"] + "/simulation_experiments.csv"
+        settings[OUTPUT_FOLDER] + "/simulation_experiments.csv"
     )
 
     for item in experiments_dataframe.columns:
@@ -160,7 +160,7 @@ def get(
             experiments_dataframe = experiments_dataframe.drop(columns=item)
 
     experiments_dataframe.to_csv(
-        settings["output_folder"] + "/sensitivity_experiments.csv"
+        settings[OUTPUT_FOLDER] + "/sensitivity_experiments.csv"
     )
 
     # Generate a overall title of the oemof-results DataFrame

@@ -477,7 +477,7 @@ def simulate(experiment, micro_grid_system, model, file_name):
     if experiment["save_lp_file"] == True:
         logging.debug("Saving lp-file to folder.")
         model.write(
-            experiment["output_folder"] + "/lp_files/model_" + file_name + ".lp",
+            experiment[OUTPUT_FOLDER] + "/lp_files/model_" + file_name + ".lp",
             io_options={"symbolic_solver_labels": True},
         )
 

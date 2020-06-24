@@ -126,7 +126,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
 
     if experiment["save_to_csv_flows_electricity_mg"] == True:
         mg_flows.to_csv(
-            experiment["output_folder"]
+            experiment[OUTPUT_FOLDER]
             + "/electricity_mg/"
             + case_dict[CASE_NAME]
             + filename
@@ -157,7 +157,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
                     case_dict, experiment, mg_flows, e_flows_df, number_of_subplots
                 )
                 plt.savefig(
-                    experiment["output_folder"]
+                    experiment[OUTPUT_FOLDER]
                     + "/electricity_mg/"
                     + case_dict[CASE_NAME]
                     + filename
@@ -174,7 +174,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
                     number_of_subplots,
                 )
                 plt.savefig(
-                    experiment["output_folder"]
+                    experiment[OUTPUT_FOLDER]
                     + "/electricity_mg/"
                     + case_dict[CASE_NAME]
                     + filename
@@ -291,7 +291,7 @@ def save_storage(experiment, case_dict, e_flows_df, filename):
 
         if experiment["save_to_csv_flows_storage"] == True:
             storage_flows.to_csv(
-                experiment["output_folder"]
+                experiment[OUTPUT_FOLDER]
                 + "/storage/"
                 + case_dict[CASE_NAME]
                 + filename
@@ -308,7 +308,7 @@ def save_storage(experiment, case_dict, e_flows_df, filename):
             fig.set(xlabel="Time", ylabel="Electricity flow/stored in kWh")
             fig.legend(loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
             plt.savefig(
-                experiment["output_folder"]
+                experiment[OUTPUT_FOLDER]
                 + "/storage/"
                 + case_dict[CASE_NAME]
                 + filename
@@ -330,7 +330,7 @@ def save_storage(experiment, case_dict, e_flows_df, filename):
                     loc="center left", bbox_to_anchor=(1, 0.5), frameon=False
                 )
                 plt.savefig(
-                    experiment["output_folder"]
+                    experiment[OUTPUT_FOLDER]
                     + "/storage/"
                     + case_dict[CASE_NAME]
                     + filename

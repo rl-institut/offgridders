@@ -60,7 +60,7 @@ def run(experiment, case_dict):
         # For restoring .oemof results if that is possible (speeding up computation time)
         if (
             os.path.isfile(
-                experiment["output_folder"] + "/oemof/" + file_name + ".oemof"
+                experiment[OUTPUT_FOLDER] + "/oemof/" + file_name + ".oemof"
             )
             and experiment["restore_oemof_if_existant"] == True
         ):
@@ -76,13 +76,13 @@ def run(experiment, case_dict):
             )
             # store simulation results to .oemof
             oemof_model.store_results(
-                micro_grid_system, file_name, experiment["output_folder"]
+                micro_grid_system, file_name, experiment[OUTPUT_FOLDER]
             )
 
         # it actually is not really necessary to restore just simulated results... but for consistency and to make sure that calling results is easy, this is used nevertheless
         # load oemof results from previous or just finished simulation
         micro_grid_system = oemof_model.load_oemof_results(
-            experiment["output_folder"], file_name
+            experiment[OUTPUT_FOLDER], file_name
         )
 
         # output.save_network_graph(micro_grid_system, case_dict['case_name'])
@@ -301,6 +301,6 @@ def run(experiment, case_dict):
         logging.debug("\n")
 
         if experiment["save_oemofresults"] == False:
-            os.remove(experiment["output_folder"] + "/oemof/" + file_name + ".oemof")
+            os.remove(experiment[OUTPUT_FOLDER] + "/oemof/" + file_name + ".oemof")
 
         return oemof_results

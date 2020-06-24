@@ -48,7 +48,7 @@ def process_excel_file(input_excel_file):
             + project_site_s[project_site][TIMESERIES_FILE]
         )
         path_to = os.path.abspath(
-            settings["output_folder"]
+            settings[OUTPUT_FOLDER]
             + "/inputs/"
             + project_site_s[project_site][TIMESERIES_FILE]
         )
@@ -336,7 +336,7 @@ def check_output_directory(settings, input_excel_file):
     import os
     import shutil
 
-    output_folder = settings["output_folder"]
+    output_folder = settings[OUTPUT_FOLDER]
     folder_list = ["/lp_files", "/storage", "/electricity_mg", "/inputs", "/oemof"]
 
     if os.path.isdir(output_folder) == True:
