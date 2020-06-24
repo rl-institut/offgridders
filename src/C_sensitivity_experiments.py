@@ -99,7 +99,7 @@ def get(
         )
         sensitivitiy_experiment_s[experiment].update(
             {
-                "demand_dc": sensitivitiy_experiment_s[experiment]["demand_dc"]
+                DEMAND_DC: sensitivitiy_experiment_s[experiment][DEMAND_DC]
                 * sensitivitiy_experiment_s[experiment]["demand_dc_scaling_factor"]
             }
         )
@@ -138,7 +138,7 @@ def get(
     # delete timeseries to make file readable
     timeseries_names = [
         DEMAND_AC,
-        "demand_dc",
+        DEMAND_DC,
         "pv_generation_per_kWp",
         "wind_generation_per_kW",
         "grid_availability",

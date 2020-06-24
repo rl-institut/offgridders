@@ -298,7 +298,7 @@ def from_file(project_site, path_from):
             if column_item ==TITLE_DEMAND_AC:
                 dictionary_title = DEMAND_AC
             elif column_item == TITLE_DEMAND_DC:
-                dictionary_title = "demand_dc"
+                dictionary_title = DEMAND_DC
             elif column_item == TITLE_PV:
                 dictionary_title = "pv_generation_per_kWp"
             elif column_item == TITLE_WIND:

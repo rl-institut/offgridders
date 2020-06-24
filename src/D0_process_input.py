@@ -176,7 +176,7 @@ def add_timeseries(experiment_s):
                 )
             else:
                 year_timeseries_in_file = (
-                    experiment_s[experiment]["demand_dc"].index[0].year
+                    experiment_s[experiment][DEMAND_DC].index[0].year
                 )
 
             if (
@@ -193,7 +193,7 @@ def add_timeseries(experiment_s):
                     index=experiment_s[experiment]["file_index"],
                 )
                 demand_dc = pd.Series(
-                    experiment_s[experiment]["demand_dc"].values,
+                    experiment_s[experiment][DEMAND_DC].values,
                     index=experiment_s[experiment]["file_index"],
                 )
                 pv_generation_per_kWp = pd.Series(
@@ -246,7 +246,7 @@ def add_timeseries(experiment_s):
             experiment_s[experiment].update(
                 {
                     "demand_profile_dc": pd.Series(
-                        experiment_s[experiment]["demand_dc"][
+                        experiment_s[experiment][DEMAND_DC][
                             0 : len(index)
                         ].values,
                         index=index,
@@ -466,7 +466,7 @@ def add_timeseries(experiment_s):
 def apply_noise(experiment_s):
     for experiment in experiment_s:
         on_series(experiment_s[experiment], "white_noise_demand", DEMAND_AC)
-        on_series(experiment_s[experiment], "white_noise_demand", "demand_dc")
+        on_series(experiment_s[experiment], "white_noise_demand", DEMAND_DC)
         on_series(
             experiment_s[experiment], "white_noise_pv", "pv_generation_per_kWp"
         )
