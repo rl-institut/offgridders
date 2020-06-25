@@ -15,7 +15,7 @@ with open('requirements.txt') as f:
     requirements = f.read().splitlines()
 
 setup(name='offgridders',
-      version='4.0',
+      version='4.1',
       description='Simulator for electricty supplied systems',
       long_description=read('README.md'),
       url='https://github.com/rl-institut/offgridders',
