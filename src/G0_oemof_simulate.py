@@ -19,37 +19,31 @@ import oemof.outputlib as outputlib
 # For speeding up lp_files and bus/component definition in oemof as well as processing
 
 try:
-    from .G1_oemof_create_model import oemof_model
-    from .G2b_constraints_custom import (
-        stability_criterion,
-        renewable_criterion,
-        battery_management,
-        ac_dc_bus,
-    )
-    from .G3_oemof_evaluate import timeseries
-    from .G3a_economic_evaluation import economic_evaluation
-    from .G3b_plausability_tests import plausability_tests
-    from .G4_output_functions import output
+    import src.G1_oemof_create_model as oemof_model
+    import src.G2b_constraints_custom as constraints_custom
+    import src.G3_oemof_evaluate as timeseries
+    import src.G3a_economic_evaluation as economic_evaluation
+    import src.G3b_plausability_tests as plausability_tests
+    import src.G4_output_functions as output
 
 except ModuleNotFoundError:
-    from code_folder.G1_oemof_create_model import oemof_model
-    from code_folder.G2b_constraints_custom import (
+    print("Module error at G0")
+    from src.G1_oemof_create_model import oemof_model
+    from src.G2b_constraints_custom import (
         stability_criterion,
         renewable_criterion,
         battery_management,
         ac_dc_bus,
     )
-    from code_folder.G3_oemof_evaluate import timeseries
-    from code_folder.G3a_economic_evaluation import economic_evaluation
-    from code_folder.G3b_plausability_tests import plausability_tests
-    from code_folder.G4_output_functions import output
+    from src.G3_oemof_evaluate import timeseries
+    from src.G3a_economic_evaluation import economic_evaluation
+    from src.G3b_plausability_tests import plausability_tests
+    from src.G4_output_functions import output
 
 # This is not really a necessary class, as the whole experiement could be given to the function, but it ensures, that
 # only correct input data is included
 
-
-class oemof_simulate:
-    def run(experiment, case_dict):
+def run(experiment, case_dict):
         """
         Funktion to generate oemof-lp file, simulate and extract simulation results from oemof-results,
         including extraction of time series, accumulated values, optimized capacities.
@@ -211,26 +205,26 @@ class oemof_simulate:
         if case_dict["stability_constraint"] == False:
             pass
         elif case_dict["stability_constraint"] == "share_backup":
-            stability_criterion.backup_test(
+            constraints_custom.backup_test(
                 case_dict, oemof_results, experiment, e_flows_df
             )
         elif case_dict["stability_constraint"] == "share_usage":
-            stability_criterion.usage_test(
+            constraints_custom.usage_test(
                 case_dict, oemof_results, experiment, e_flows_df
             )
         elif case_dict["stability_constraint"] == "share_hybrid":
-            stability_criterion.hybrid_test(
+            constraints_custom.hybrid_test(
                 case_dict, oemof_results, experiment, e_flows_df
             )
 
-        renewable_criterion.share_test(case_dict, oemof_results, experiment)
-        battery_management.forced_charge_test(
+        constraints_custom.share_test(case_dict, oemof_results, experiment)
+        constraints_custom.forced_charge_test(
             case_dict, oemof_results, experiment, e_flows_df
         )
-        battery_management.discharge_only_at_blackout_test(
+        constraints_custom.discharge_only_at_blackout_test(
             case_dict, oemof_results, e_flows_df
         )
-        ac_dc_bus.inverter_only_at_blackout_test(case_dict, oemof_results, e_flows_df)
+        constraints_custom.inverter_only_at_blackout_test(case_dict, oemof_results, e_flows_df)
 
         # Generate output (csv, png) for energy/storage flows
         output.save_mg_flows(experiment, case_dict, e_flows_df, experiment["filename"])

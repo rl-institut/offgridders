@@ -6,13 +6,16 @@ python:
 # To install packages which are not on pip
 before_install:
   - sudo apt-get install coinor-cbc
+  - pip install -U pip
+  - python setup.py install
+
 #addons:
 #  apt:
 #    update: true
 
 # command to install dependencies
 install:
-#  - pip install -e .
+#  - pip install -e . #Needs a setup.py, run virtual_machine
   - pip install -r requirements.txt
   - pip install -r tests/test_requirements.txt
 

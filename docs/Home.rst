@@ -26,9 +26,10 @@ exemplary electricity systems that can be simulated are:
 
 A description of these different electricity systems is provided in [github wiki: Exemplary electricity supply systems](https://github.com/smartie2076/simulator_grid-connected_micro_grid/wiki/Exemplary-electricity-supply-systems).
 
-For setting-up oesmot on your operating system, please check the [github wiki: Installation](https://github.com/smartie2076/simulator_grid-connected_micro_grid/wiki/Installation).
+For setting-up **Offgridders** on your operating system, please check the [github wiki: Installation](https://github.com/smartie2076/simulator_grid-connected_micro_grid/wiki/Installation).
 
-# Features of oesmot
+Features of Offgridders
+------------------------
 The features of the simulation tool can be summarized with:
 
 * **Versatile application and scenario definition**. Through scenario definitions, a

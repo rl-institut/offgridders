@@ -1,7 +1,7 @@
 import pytest
 import os
 
-from ..A0_main_script import main
+from ..Offgridders import main
 
 
 def test_execution_not_terminated():
@@ -16,5 +16,5 @@ def test_blacks_main():
 
 def test_blacks_code_folder():
     # Testing code formatting in code folder
-    r = os.system("black --check code_folder/*.py")
+    r = os.system("black --check src/*.py")
     assert r == 0

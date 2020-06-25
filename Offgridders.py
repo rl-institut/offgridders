@@ -11,35 +11,14 @@ import shutil
 from oemof.tools import logger
 import logging
 
-# Loading all child functions
-try:
-    # for tests
-    from .code_folder.A1_general_functions import helpers
-    from .code_folder.B_read_from_files import excel_template
-    from .code_folder.C_sensitivity_experiments import (
-        generate_sensitvitiy_experiments,
-        get_names,
-    )
-    from .code_folder.D0_process_input import process_input_parameters, noise
-    from .code_folder.E_blackouts_central_grid import central_grid
-    from .code_folder.F_case_definitions import cases
-    from .code_folder.G0_oemof_simulate import oemof_simulate
-    from .code_folder.H0_multicriteria_analysis import multicriteria_analysis
-
-except ModuleNotFoundError:
-    # for terminal execution
-    from code_folder.A1_general_functions import helpers
-    from code_folder.B_read_from_files import excel_template
-    from code_folder.C_sensitivity_experiments import (
-        generate_sensitvitiy_experiments,
-        get_names,
-    )
-    from code_folder.D0_process_input import process_input_parameters, noise
-    from code_folder.E_blackouts_central_grid import central_grid
-    from code_folder.F_case_definitions import cases
-    from code_folder.G0_oemof_simulate import oemof_simulate
-    from code_folder.H0_multicriteria_analysis import multicriteria_analysis
-
+import src.A1_general_functions as helpers
+import src.B_read_from_files as excel_template
+import src.C_sensitivity_experiments as generate_sensitvitiy_experiments
+import src.D0_process_input as process_input
+import src.E_blackouts_central_grid as central_grid
+import src.F_case_definitions as cases
+import src.G0_oemof_simulate as oemof_simulate
+import src.H0_multicriteria_analysis as multicriteria_analysis
 
 def main():
     # Logging
@@ -89,7 +68,7 @@ def main():
         project_site_s,
         case_definitions,
         multicriteria_data,
-    ) = excel_template.settings(input_excel_file)
+    ) = excel_template.process_excel_file(input_excel_file)
 
     # ---- Define all sensitivity_experiment_s, define result parameters ----------#
     (
@@ -105,7 +84,7 @@ def main():
     # Process and initialize                                                      #
     ###############################################################################
     # -------- Generate list of cases analysed in simulation ----------------------#
-    case_list = process_input_parameters.list_of_cases(case_definitions)
+    case_list = process_input.list_of_cases(case_definitions)
 
     logging.info(
         "With these cases, a total of "
@@ -117,7 +96,7 @@ def main():
     # with demand, pv_generation_per_kWp, wind_generation_per_kW                  #
     # -----------------------------------------------------------------------------#
     # Adapt timeseries of experiments according to evaluated days
-    max_date_time_index, max_evaluated_days = process_input_parameters.add_timeseries(
+    max_date_time_index, max_evaluated_days = process_input.add_timeseries(
         sensitivity_experiment_s
     )
     settings.update({"max_date_time_index": max_date_time_index})
@@ -130,7 +109,7 @@ def main():
     # noisy timeseries at a project site, noise has to be included in csv data!   #
     # -----------------------------------------------------------------------------#
     # todo test and optionally delete noise function
-    noise.apply(sensitivity_experiment_s)
+    process_input.apply_noise(sensitivity_experiment_s) #Applies white noise
 
     # Calculation of grid_availability with randomized blackouts
     if settings["necessity_for_blackout_timeseries_generation"] == True:
@@ -161,7 +140,7 @@ def main():
             logging.debug(
                 "Using grid availability timeseries that was randomly generated."
             )
-            blackout_experiment_name = get_names.blackout_experiment_name(
+            blackout_experiment_name = generate_sensitvitiy_experiments.get_blackout_experiment_name(
                 sensitivity_experiment_s[experiment]
             )
             sensitivity_experiment_s[experiment].update(
