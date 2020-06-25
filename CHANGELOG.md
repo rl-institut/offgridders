@@ -17,14 +17,14 @@ Here is a template for new release sections
 -
 ```
 
-## [Unreleased] - 2020-05-01
+## [Offgridders V4.1] - 2020-05-01
 
 ### Added
 - readthedocs.yml file (#59)
 
 ### Changed
 - Moved Wiki to Readthedocs (#41)
-- Change
+- Changed class structure to modules/functions (#53)
 
 ### Removed
 -
