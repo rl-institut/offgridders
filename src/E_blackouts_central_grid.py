@@ -263,7 +263,7 @@ def number_of_blackouts(evaluated_days, experiment):
     # Calculation of expected blackouts per analysed timeframe
     blackout_events_per_month = np.random.normal(
         loc=experiment[BLACKOUT_FREQUENCY],  # median value: blackout duration
-        scale=experiment["blackout_frequency_std_deviation"]
+        scale=experiment[BLACKOUT_FREQUENCY_STD_DEVIATION]
         * experiment[BLACKOUT_FREQUENCY],  # Standard deviation
         size=12,
     )  # random values for number of blackouts
@@ -304,7 +304,7 @@ def get_blackout_event_durations(experiment, timestep, number_of_blackouts):
     # Generating blackout durations for the number of events
     blackout_event_durations = np.random.normal(
         loc=experiment[BLACKOUT_DURATION],  # median value: blackout duration
-        scale=experiment["blackout_frequency_std_deviation"]
+        scale=experiment[BLACKOUT_FREQUENCY_STD_DEVIATION]
         * experiment[BLACKOUT_DURATION],  # Standard deviation
         size=number_of_blackouts,
     )  # random values for number of blackouts
