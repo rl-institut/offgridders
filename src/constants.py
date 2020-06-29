@@ -136,4 +136,5 @@ STORAGE_SOC_MIN = "storage_soc_min"
 TAX = "tax"
 WACC = "wacc"
 WHITE_NOISE_DEMAND = "white_noise_demand"
+WHITE_NOISE_PV = "white_noise_pv"
 
