@@ -103,7 +103,7 @@ def update_dict(capacities_oem, specific_case, experiment):
         if case_dict_entry == "peak_demand":
             if component_name == CAPACITY_GENSET_KW:
                 case_dict_capacity = (
-                    case_dict_capacity * experiment["genset_oversize_factor"]
+                    case_dict_capacity * experiment[GENSET_OVERSIZE_FACTOR]
                 )
             elif (
                 component_name == "capacity_pcc_consumption_kW"
