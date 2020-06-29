@@ -661,7 +661,7 @@ def test_techno_economical_parameters_complete(experiment):
         MAINGRID_DISTANCE: 0,
         MAINGRID_ELECTRICITY_PRICE: 0.15,
         MAINGRID_ELECTRICITY_COST_INVESTMENT: 0,
-        "maingrid_extension_cost_opex": 0,
+        MAINGRID_EXTENSION_COST_OPEX: 0,
         "maingrid_extension_lifetime": 40,
         "maingrid_feedin_tariff": 0,
         "maingrid_renewable_share": 0,
