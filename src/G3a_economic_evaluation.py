@@ -411,7 +411,7 @@ def revenue_main_grid_feedin(oemof_results, experiment):
             "revenue_main_grid_feedin_annual": -oemof_results[
                 "feedin_main_grid_mg_side_annual_kWh"
             ]
-            * experiment["maingrid_feedin_tariff"]
+            * experiment[MAINGRID_FEEDIN_TARIFF]
         }
     )
 

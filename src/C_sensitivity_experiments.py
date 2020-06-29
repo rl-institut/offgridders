@@ -663,7 +663,7 @@ def test_techno_economical_parameters_complete(experiment):
         MAINGRID_ELECTRICITY_COST_INVESTMENT: 0,
         MAINGRID_EXTENSION_COST_OPEX: 0,
         MAINGRID_EXTENSION_LIFETIME: 40,
-        "maingrid_feedin_tariff": 0,
+        MAINGRID_FEEDIN_TARIFF: 0,
         "maingrid_renewable_share": 0,
         "min_renewable_share": 0,
         "pcoupling_batch": 1,

@@ -397,7 +397,7 @@ def pointofcoupling_feedin_fix(
             bus_electricity_ac: solph.Flow(
                 nominal_value=capacity_pointofcoupling,
                 variable_costs=experiment["pcoupling_cost_var"]
-                - experiment["maingrid_feedin_tariff"],
+                - experiment[MAINGRID_FEEDIN_TARIFF],
             )
         },
         outputs={bus_electricity_ng_feedin: solph.Flow()},
@@ -425,7 +425,7 @@ def pointofcoupling_feedin_oem(
                     ep_costs=experiment["pcoupling_cost_annuity"]
                 ),
                 variable_costs=experiment["pcoupling_cost_var"]
-                - experiment["maingrid_feedin_tariff"],
+                - experiment[MAINGRID_FEEDIN_TARIFF],
             )
         },
         outputs={bus_electricity_ng_feedin: solph.Flow()},
