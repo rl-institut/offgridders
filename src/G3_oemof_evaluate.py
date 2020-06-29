@@ -736,7 +736,7 @@ def get_res_share(case_dict, oemof_results, experiment):
     # attention: only effectively used electricity consumption counts for renewable share
     total_fossil_generation += oemof_results[
         "consumption_main_grid_mg_side_annual_kWh"
-    ] * (1 - experiment["maingrid_renewable_share"])
+    ] * (1 - experiment[MAINGRID_RENEWABLE_SHARE])
     if total_generation > 0:
         res_share = abs(1 - total_fossil_generation / total_generation)
     else:

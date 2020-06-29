@@ -609,7 +609,7 @@ def share(
             pcc_consumption_kWh = sum(model.flow[pcc_consumption, el_bus_ac, :])
             total_generation += pcc_consumption_kWh
             fossil_generation += pcc_consumption_kWh * (
-                1 - experiment["maingrid_renewable_share"]
+                1 - experiment[MAINGRID_RENEWABLE_SHARE]
             )
 
         if solar_plant is not None:
