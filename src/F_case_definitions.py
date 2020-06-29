@@ -65,7 +65,7 @@ def update_dict(capacities_oem, specific_case, experiment):
         PCOUPLING_BATCH ,  # check entry
         PCOUPLING_BATCH ,  # check entry
         "wind_batch",
-        "rectifier_ac_dc_batch",
+        RECTIFIER_AC_DC_BATCH,
         INVERTER_DC_AC_BATCH,
     ]  # create entry
     list_build_oemof_names = [
