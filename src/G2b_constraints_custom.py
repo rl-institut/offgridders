@@ -955,7 +955,7 @@ def timestep(model, case_dict, experiment, el_bus, sink_demand, source_shortage)
             model.flows[el_bus, sink_demand].actual_value[t]
             * model.flows[el_bus, sink_demand].nominal_value
         )
-        expr += experiment["shortage_max_timestep"] * demand
+        expr += experiment[SHORTAGE_MAX_TIMESTEP] * demand
         ## ------- Get shortage at t------- #
         if case_dict["allow_shortage"] == True:
             expr += -model.flow[source_shortage, el_bus, t]
