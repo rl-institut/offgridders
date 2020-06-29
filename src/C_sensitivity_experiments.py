@@ -707,7 +707,7 @@ def test_techno_economical_parameters_complete(experiment):
         STORAGE_POWER_COST_OPEX: 0,
         STORAGE_POWER_LIFETIME: 5,
         STORAGE_SOC_INITIAL: None,
-        "storage_soc_max": 0.95,
+        STORAGE_SOC_MAX: 0.95,
         "storage_soc_min": 0.3,
         "tax": 0,
         "wacc": 0.09,

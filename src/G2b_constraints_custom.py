@@ -673,7 +673,7 @@ def forced_charge(model, case_dict, el_bus_dc, storage, experiment):
             CAP_storage += storage.nominal_capacity
 
     m = -experiment[STORAGE_CRATE_CHARGE] / (
-        experiment["storage_soc_max"] - experiment["storage_soc_min"]
+        experiment[STORAGE_SOC_MAX] - experiment["storage_soc_min"]
     )
 
     n = (
@@ -682,7 +682,7 @@ def forced_charge(model, case_dict, el_bus_dc, storage, experiment):
         * (
             1
             + experiment["storage_soc_min"]
-            / (experiment["storage_soc_max"] - experiment["storage_soc_min"])
+            / (experiment[STORAGE_SOC_MAX] - experiment["storage_soc_min"])
         )
     )
 
@@ -729,7 +729,7 @@ def forced_charge_test(case_dict, oemof_results, experiment, e_flows_df):
                     1
                     + experiment["storage_soc_min"]
                     / (
-                        experiment["storage_soc_max"]
+                        experiment[STORAGE_SOC_MAX]
                         - experiment["storage_soc_min"]
                     )
                 )
@@ -737,7 +737,7 @@ def forced_charge_test(case_dict, oemof_results, experiment, e_flows_df):
                     oemof_results[CAPACITY_STORAGE_KWH]
                     - e_flows_df["Stored capacity"][t]
                 )
-                / (experiment["storage_soc_max"] - experiment["storage_soc_min"])
+                / (experiment[STORAGE_SOC_MAX] - experiment["storage_soc_min"])
             )
             * e_flows_df["Grid availability"][t]
             <= e_flows_df["Storage charge DC"][t]
@@ -759,7 +759,7 @@ def forced_charge_test(case_dict, oemof_results, experiment, e_flows_df):
                             1
                             + experiment["storage_soc_min"]
                             / (
-                                experiment["storage_soc_max"]
+                                experiment[STORAGE_SOC_MAX]
                                 - experiment["storage_soc_min"]
                             )
                         )
@@ -768,7 +768,7 @@ def forced_charge_test(case_dict, oemof_results, experiment, e_flows_df):
                             - e_flows_df["Stored capacity"][t]
                         )
                         / (
-                            experiment["storage_soc_max"]
+                            experiment[STORAGE_SOC_MAX]
                             - experiment["storage_soc_min"]
                         )
                     )
