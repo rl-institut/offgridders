@@ -691,7 +691,7 @@ def test_techno_economical_parameters_complete(experiment):
         SHORTAGE_MAX_ALLOWED: 0,
         SHORTAGE_MAX_TIMESTEP: 1,
         SHORTAGE_PENALTY_COST: 0.2,
-        "stability_limit": 0.4,
+        SHORTAGE_LIMIT: 0.4,
         "storage_batch_capacity": 1,
         "storage_batch_power": 1,
         "storage_capacity_cost_investment": 0,

@@ -19,7 +19,7 @@ def backup(
     el_bus_ac,
     el_bus_dc,
 ):
-    stability_limit = experiment["stability_limit"]
+    stability_limit = experiment[SHORTAGE_LIMIT]
     ## ------- Get CAP genset ------- #
     CAP_genset = 0
     if case_dict["genset_fixed_capacity"] != None:
@@ -173,7 +173,7 @@ def backup_test(case_dict, oemof_results, experiment, e_flows_df):
             * experiment["storage_efficiency_discharge"]
             * experiment[INVERTER_DC_AC_EFFICIENCY]
             + pcc_capacity[t]
-            >= experiment["stability_limit"] * (demand_profile[t] - shortage[t])
+            >= experiment[SHORTAGE_LIMIT] * (demand_profile[t] - shortage[t])
             for t in range(0, len(demand_profile.index))
         ]
 
@@ -193,7 +193,7 @@ def backup_test(case_dict, oemof_results, experiment, e_flows_df):
                         * experiment["storage_efficiency_discharge"]
                         * experiment[INVERTER_DC_AC_EFFICIENCY]
                         + pcc_capacity[t]
-                        - experiment["stability_limit"]
+                        - experiment[SHORTAGE_LIMIT]
                         * (demand_profile[t] - shortage[t])
                     )
                     / (experiment["peak_demand"])
@@ -221,7 +221,7 @@ def hybrid(
     el_bus_dc,
 ):
 
-    stability_limit = experiment["stability_limit"]
+    stability_limit = experiment[SHORTAGE_LIMIT]
 
     def stability_rule_capacity(model, t):
         expr = 0
@@ -369,7 +369,7 @@ def hybrid_test(case_dict, oemof_results, experiment, e_flows_df):
             * experiment["storage_efficiency_discharge"]
             * experiment[INVERTER_DC_AC_EFFICIENCY]
             + pcc_consumption[t]
-            >= experiment["stability_limit"] * (demand_profile[t] - shortage[t])
+            >= experiment[SHORTAGE_LIMIT] * (demand_profile[t] - shortage[t])
             for t in range(0, len(demand_profile.index))
         ]
 
@@ -389,7 +389,7 @@ def hybrid_test(case_dict, oemof_results, experiment, e_flows_df):
                         * experiment["storage_efficiency_discharge"]
                         * experiment[INVERTER_DC_AC_EFFICIENCY]
                         + pcc_consumption[t]
-                        - experiment["stability_limit"]
+                        - experiment[SHORTAGE_LIMIT]
                         * (demand_profile[t] - shortage[t])
                     )
                     / (experiment["peak_demand_ac"])
@@ -419,7 +419,7 @@ def usage(
     el_bus,
 ):
 
-    stability_limit = experiment["stability_limit"]
+    stability_limit = experiment[SHORTAGE_LIMIT]
 
     def stability_rule(model, t):
         expr = 0
@@ -496,7 +496,7 @@ def usage_test(case_dict, oemof_results, experiment, e_flows_df):
             genset_generation[t]
             + storage_discharge[t] * experiment[INVERTER_DC_AC_EFFICIENCY]
             + pcc_feedin[t]
-            >= experiment["stability_limit"] * (demand_profile[t] - shortage[t])
+            >= experiment[SHORTAGE_LIMIT] * (demand_profile[t] - shortage[t])
             for t in range(0, len(demand_profile.index))
         ]
 
@@ -510,7 +510,7 @@ def usage_test(case_dict, oemof_results, experiment, e_flows_df):
                         + storage_discharge[t]
                         * experiment[INVERTER_DC_AC_EFFICIENCY]
                         + pcc_feedin[t]
-                        - experiment["stability_limit"]
+                        - experiment[SHORTAGE_LIMIT]
                         * (demand_profile[t] - shortage[t])
                     )
                     / (experiment["peak_demand"])
