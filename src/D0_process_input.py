@@ -57,7 +57,7 @@ def economic_values(experiment):
         {"crf": economics.crf(experiment["project_lifetime"], experiment["wacc"])}
     )
 
-    if "price_fuel" not in experiment:
+    if PRICE_FUEL not in experiment:
         present_value_changing_fuel_price = economics.present_value_of_changing_fuel_price(
             experiment["fuel_price"],
             experiment["project_lifetime"],
@@ -65,10 +65,10 @@ def economic_values(experiment):
             experiment["fuel_price_change_annual"],
             experiment["crf"],
         )
-        experiment.update({"price_fuel": present_value_changing_fuel_price})
+        experiment.update({PRICE_FUEL: present_value_changing_fuel_price})
     else:
         logging.warning(
-            'You used decrepated value "price_fuel" in your excel input file. \n '
+            'You used decrepated value PRICE_FUEL in your excel input file. \n '
             + "    "
             + "    "
             + "    "

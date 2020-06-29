@@ -31,7 +31,7 @@ def fuel(micro_grid_system, bus_fuel, experiment):
         label="source_fuel",
         outputs={
             bus_fuel: solph.Flow(
-                variable_costs=experiment["price_fuel"]
+                variable_costs=experiment[PRICE_FUEL]
                 / experiment[COMBUSTION_VALUE_FUEL]
             )
         },
