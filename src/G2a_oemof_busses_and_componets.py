@@ -512,7 +512,7 @@ def storage_fix(
         capacity_loss=experiment[
             STORAGE_LOSS_TIMESTEP
         ],  # from timestep to timestep
-        capacity_min=experiment["storage_soc_min"],
+        capacity_min=experiment[STORAGE_SOC_MIN],
         capacity_max=experiment[STORAGE_SOC_MAX],
         initial_capacity=experiment[STORAGE_SOC_INITIAL],  # in terms of SOC?
         inflow_conversion_factor=experiment[
@@ -570,7 +570,7 @@ def storage_oem(micro_grid_system, bus_electricity_dc, experiment):
         capacity_loss=experiment[
             STORAGE_LOSS_TIMESTEP
         ],  # from timestep to timestep
-        capacity_min=experiment["storage_soc_min"],
+        capacity_min=experiment[STORAGE_SOC_MIN],
         capacity_max=experiment[STORAGE_SOC_MAX],
         inflow_conversion_factor=experiment[
             STORAGE_EFFICIENCY_CHARGE

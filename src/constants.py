@@ -132,4 +132,5 @@ STORAGE_POWER_COST_INVESTMENT = "storage_power_cost_investment"
 STORAGE_POWER_COST_OPEX = "storage_power_cost_opex"
 STORAGE_POWER_LIFETIME = "storage_power_lifetime"
 STORAGE_SOC_MAX = "storage_soc_max"
+STORAGE_SOC_MIN = "storage_soc_min"
 
