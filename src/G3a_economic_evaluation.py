@@ -201,7 +201,7 @@ def annuities_365(case_dict, oemof_results, experiment):
     for item in component_list:
         if item == "storage":
             om += (
-                experiment["storage_capacity_cost_opex"]
+                experiment[SHORTAGE_CAPACITY_COST_OPEX]
                 * experiment["storage_capacity_lifetime"]
             )
             om += (
