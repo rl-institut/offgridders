@@ -638,7 +638,7 @@ def test_techno_economical_parameters_complete(experiment):
         COMBUSTION_VALUE_FUEL: 9.8,
         DEMAND_AC_SCALING_FACTOR: 1,
         DEMAND_DC_SCALING_FACTOR: 1,
-        "distribution_grid_cost_investment": 0,
+        DISTRIBUTION_GRID_COST_INVESTMENT: 0,
         "distribution_grid_cost_opex": 0,
         "distribution_grid_lifetime": 0,
         #'fuel_price': 0.76,
