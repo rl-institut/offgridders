@@ -52,3 +52,4 @@ SAVE_TO_PNG_FLOWS_ELECTRICITY_MG  = "save_to_png_flows_electricity_mg"
 
 #C_SENSITIVITY_EXPERIMENTS
 BLACKOUT_DURATION = "blackout_duration"
+BLACKOUT_DURATION_STD_DEVIATION = "blackout_duration_std_deviation"
