@@ -696,7 +696,7 @@ def test_techno_economical_parameters_complete(experiment):
         SHORTAGE_BATCH_POWER: 1,
         SHORTAGE_CAPACITY_COST_INVESTMENT: 0,
         SHORTAGE_CAPACITY_COST_OPEX: 0,
-        "storage_capacity_lifetime": 5,
+        STORAGE_CAPACITY_LIFETIME: 5,
         "storage_cost_var": 0,
         "storage_Crate_charge": 1,
         "storage_Crate_discharge": 1,
