@@ -401,7 +401,7 @@ def pointofcoupling_feedin_fix(
             )
         },
         outputs={bus_electricity_ng_feedin: solph.Flow()},
-        conversion_factors={bus_electricity_ac: experiment["pcoupling_efficiency"]},
+        conversion_factors={bus_electricity_ac: experiment[PCOUPLING_EFFIECIENCY]},
     )  # is efficiency of the generator?? Then this should later on be included as a function of the load factor
 
     micro_grid_system.add(pointofcoupling_feedin)
@@ -429,7 +429,7 @@ def pointofcoupling_feedin_oem(
             )
         },
         outputs={bus_electricity_ng_feedin: solph.Flow()},
-        conversion_factors={bus_electricity_ac: experiment["pcoupling_efficiency"]},
+        conversion_factors={bus_electricity_ac: experiment[PCOUPLING_EFFIECIENCY]},
     )
     micro_grid_system.add(pointofcoupling_feedin)
     return
@@ -453,7 +453,7 @@ def pointofcoupling_consumption_fix(
         },
         outputs={bus_electricity_ac: solph.Flow()},
         conversion_factors={
-            bus_electricity_ng_consumption: experiment["pcoupling_efficiency"]
+            bus_electricity_ng_consumption: experiment[PCOUPLING_EFFIECIENCY]
         },
     )  # is efficiency of the generator?? Then this should later on be included as a function of the load factor
 
@@ -481,7 +481,7 @@ def pointofcoupling_consumption_oem(
         },
         outputs={bus_electricity_ac: solph.Flow()},
         conversion_factors={
-            bus_electricity_ng_consumption: experiment["pcoupling_efficiency"]
+            bus_electricity_ng_consumption: experiment[PCOUPLING_EFFIECIENCY]
         },
     )
     micro_grid_system.add(pointofcoupling_consumption)

@@ -670,7 +670,7 @@ def test_techno_economical_parameters_complete(experiment):
         PCOUPLING_COST_INVESTMENT: 0,
         PCOUPLING_COST_OPEX: 0,
         PCOUPLING_COST_VAR: 0,
-        "pcoupling_efficiency": 1,
+        PCOUPLING_EFFIECIENCY: 1,
         "pcoupling_lifetime": 15,
         "pcoupling_oversize_factor": 1.05,
         "price_fuel": 0.76,
