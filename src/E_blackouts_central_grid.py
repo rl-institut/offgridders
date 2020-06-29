@@ -46,7 +46,7 @@ def get_blackouts(settings, blackout_experiment_s):
         )
 
         all_blackout_experiment_names = [
-            blackout_experiment_s[experiment]["experiment_name"]
+            blackout_experiment_s[experiment][EXPERIMENT_NAME]
             for experiment in blackout_experiment_s
         ]
 
@@ -61,14 +61,14 @@ def get_blackouts(settings, blackout_experiment_s):
             for experiment in blackout_experiment_s:
 
                 if (
-                    blackout_experiment_s[experiment]["experiment_name"]
+                    blackout_experiment_s[experiment][EXPERIMENT_NAME]
                     in grid_availability_df.columns
                 ):
                     count_of_red_data = count_of_red_data + 1
                     name_of_experiment_requested_from_file_dataset = blackout_experiment_s[
                         experiment
                     ][
-                        "experiment_name"
+                        EXPERIMENT_NAME
                     ]
                     blackout_result = oemof_extension_for_blackouts(
                         grid_availability_df[
@@ -77,7 +77,7 @@ def get_blackouts(settings, blackout_experiment_s):
                     )
                     logging.info(
                         'Blackout experiment "'
-                        + blackout_experiment_s[experiment]["experiment_name"]
+                        + blackout_experiment_s[experiment][EXPERIMENT_NAME]
                         + '": '
                         + "Total blackout duration "
                         + str(blackout_result["grid_total_blackout_duration"])
@@ -91,14 +91,14 @@ def get_blackouts(settings, blackout_experiment_s):
                     blackout_result_s.update(
                         {
                             blackout_experiment_s[experiment][
-                                "experiment_name"
+                                EXPERIMENT_NAME
                             ]: blackout_result.copy()
                         }
                     )
                     del blackout_experiments_left[experiment]
                     logging.info(
                         "Previous blackout timeseries restored: "
-                        + blackout_experiment_s[experiment]["experiment_name"]
+                        + blackout_experiment_s[experiment][EXPERIMENT_NAME]
                     )
 
                 # are all availability timeseries from file?
@@ -238,7 +238,7 @@ def availability(
             + " percent. \n"
         )
 
-        blackout_name = blackout_experiment_s[experiment]["experiment_name"]
+        blackout_name = blackout_experiment_s[experiment][EXPERIMENT_NAME]
         blackout_result_s.update(
             {
                 blackout_name: {

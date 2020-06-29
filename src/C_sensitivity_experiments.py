@@ -355,7 +355,7 @@ def blackout(sensitivity_array_dict, parameters_constants, settings):
             blackout_experiment_s[blackout_experiment]
         )
         blackout_experiment_s[blackout_experiment].update(
-            {"experiment_name": blackout_experiment_name}
+            {EXPERIMENT_NAME: blackout_experiment_name}
         )
 
     # delete all doubled entries -> could also be applied to experiments!
@@ -366,8 +366,8 @@ def blackout(sensitivity_array_dict, parameters_constants, settings):
 
             if (
                 i != e
-                and experiment_copy[i]["experiment_name"]
-                == experiment_copy[e]["experiment_name"]
+                and experiment_copy[i][EXPERIMENT_NAME]
+                == experiment_copy[e][EXPERIMENT_NAME]
             ):
                 if i in blackout_experiment_s and e in blackout_experiment_s:
                     del blackout_experiment_s[e]
