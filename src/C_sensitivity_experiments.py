@@ -668,7 +668,7 @@ def test_techno_economical_parameters_complete(experiment):
         MIN_RENEWABLE_SHARE: 0,
         PCOUPLING_BATCH : 1,
         PCOUPLING_COST_INVESTMENT: 0,
-        "pcoupling_cost_opex": 0,
+        PCOUPLING_COST_OPEX: 0,
         "pcoupling_cost_var": 0,
         "pcoupling_efficiency": 1,
         "pcoupling_lifetime": 15,
