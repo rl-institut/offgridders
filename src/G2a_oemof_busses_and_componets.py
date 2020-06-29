@@ -518,7 +518,7 @@ def storage_fix(
         inflow_conversion_factor=experiment[
             STORAGE_EFFICIENCY_CHARGE
         ],  # storing efficiency
-        outflow_conversion_factor=experiment["storage_efficiency_discharge"],
+        outflow_conversion_factor=experiment[STORAGE_EFFICIENCY_DISCHARGE],
     )  # efficiency of discharge
     micro_grid_system.add(generic_storage)
     return generic_storage
@@ -576,7 +576,7 @@ def storage_oem(micro_grid_system, bus_electricity_dc, experiment):
             STORAGE_EFFICIENCY_CHARGE
         ],  # storing efficiency
         outflow_conversion_factor=experiment[
-            "storage_efficiency_discharge"
+            STORAGE_EFFICIENCY_DISCHARGE
         ],  # efficiency of discharge
         invest_relation_input_capacity=experiment[
             STORAGE_CRATE_CHARGE

@@ -83,7 +83,7 @@ def backup(
             expr += (
                 stored_electricity
                 * experiment[STORAGE_CRATE_DISCHARGE]
-                * experiment["storage_efficiency_discharge"]
+                * experiment[STORAGE_EFFICIENCY_DISCHARGE]
                 * experiment[INVERTER_DC_AC_EFFICIENCY]
             )
         return expr >= 0
@@ -170,7 +170,7 @@ def backup_test(case_dict, oemof_results, experiment, e_flows_df):
                 * experiment["storage_capacity_min"]
             )
             * experiment[STORAGE_CRATE_DISCHARGE]
-            * experiment["storage_efficiency_discharge"]
+            * experiment[STORAGE_EFFICIENCY_DISCHARGE]
             * experiment[INVERTER_DC_AC_EFFICIENCY]
             + pcc_capacity[t]
             >= experiment[SHORTAGE_LIMIT] * (demand_profile[t] - shortage[t])
@@ -190,7 +190,7 @@ def backup_test(case_dict, oemof_results, experiment, e_flows_df):
                             * experiment["storage_capacity_min"]
                         )
                         * experiment[STORAGE_CRATE_DISCHARGE]
-                        * experiment["storage_efficiency_discharge"]
+                        * experiment[STORAGE_EFFICIENCY_DISCHARGE]
                         * experiment[INVERTER_DC_AC_EFFICIENCY]
                         + pcc_capacity[t]
                         - experiment[SHORTAGE_LIMIT]
@@ -271,7 +271,7 @@ def hybrid(
             expr += (
                 stored_electricity
                 * experiment[STORAGE_CRATE_DISCHARGE]
-                * experiment["storage_efficiency_discharge"]
+                * experiment[STORAGE_EFFICIENCY_DISCHARGE]
                 * experiment[INVERTER_DC_AC_EFFICIENCY]
             )
         return expr >= 0
@@ -366,7 +366,7 @@ def hybrid_test(case_dict, oemof_results, experiment, e_flows_df):
                 * experiment["storage_soc_min"]
             )
             * experiment[STORAGE_CRATE_DISCHARGE]
-            * experiment["storage_efficiency_discharge"]
+            * experiment[STORAGE_EFFICIENCY_DISCHARGE]
             * experiment[INVERTER_DC_AC_EFFICIENCY]
             + pcc_consumption[t]
             >= experiment[SHORTAGE_LIMIT] * (demand_profile[t] - shortage[t])
@@ -386,7 +386,7 @@ def hybrid_test(case_dict, oemof_results, experiment, e_flows_df):
                             * experiment["storage_soc_min"]
                         )
                         * experiment[STORAGE_CRATE_DISCHARGE]
-                        * experiment["storage_efficiency_discharge"]
+                        * experiment[STORAGE_EFFICIENCY_DISCHARGE]
                         * experiment[INVERTER_DC_AC_EFFICIENCY]
                         + pcc_consumption[t]
                         - experiment[SHORTAGE_LIMIT]
