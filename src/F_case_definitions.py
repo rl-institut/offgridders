@@ -112,7 +112,7 @@ def update_dict(capacities_oem, specific_case, experiment):
                 case_dict_capacity = round(
                     case_dict_capacity
                     / experiment[PCOUPLING_EFFIECIENCY]
-                    * experiment["pcoupling_oversize_factor"],
+                    * experiment[PCOUPLING_OVERSIZE_FACTOR],
                     3,
                 )
 

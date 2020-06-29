@@ -672,7 +672,7 @@ def test_techno_economical_parameters_complete(experiment):
         PCOUPLING_COST_VAR: 0,
         PCOUPLING_EFFIECIENCY: 1,
         PCOUPLING_LIFETIME: 15,
-        "pcoupling_oversize_factor": 1.05,
+        PCOUPLING_OVERSIZE_FACTOR: 1.05,
         "price_fuel": 0.76,
         "project_cost_investment": 0,
         "project_cost_opex": 0,
