@@ -94,3 +94,4 @@ MI_RENEWABLE_SHARE = "min_renewable_share"
 PCOUPLING_BATCH = "pcoupling_batch"
 PCOUPLING_COST_INVESTMENT = "pcoupling_cost_investment"
 PCOUPLING_COST_OPEX = "pcoupling_cost_opex"
+PCOUPLING_COST_VAR = "pcoupling_cost_var":
