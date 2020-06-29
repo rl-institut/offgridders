@@ -149,7 +149,7 @@ def wind_fix(micro_grid_system, bus_electricity_ac, experiment, capacity_wind):
                 actual_value=experiment[WIND_GENERATION_PER_KW],
                 fixed=True,
                 nominal_value=capacity_wind,
-                variable_costs=experiment["wind_cost_var"],
+                variable_costs=experiment[WIND_COST_VAR],
             )
         },
     )
@@ -176,7 +176,7 @@ def wind_oem(micro_grid_system, bus_electricity_ac, experiment):
                 investment=solph.Investment(
                     ep_costs=experiment["wind_cost_annuity"] / peak_wind_generation
                 ),
-                variable_costs=experiment["wind_cost_var"] / peak_wind_generation,
+                variable_costs=experiment[WIND_COST_VAR] / peak_wind_generation,
             )
         },
     )

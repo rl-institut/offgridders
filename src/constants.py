@@ -141,4 +141,5 @@ WHITE_NOISE_WIND = "white_noise_wind"
 WIND_BATCH = "wind_batch"
 WIND_COST_INVESTMENT = "wind_cost_investment"
 WIND_COST_OPEX = "wind_cost_opex"
+WIND_COST_VAR = "wind_cost_var"
 
