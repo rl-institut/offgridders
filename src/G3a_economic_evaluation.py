@@ -366,7 +366,7 @@ def expenditures_shortage(oemof_results, experiment):
             "expenditures_shortage_annual": oemof_results[
                 "total_demand_shortage_annual_kWh"
             ]
-            * experiment["shortage_penalty_costs"]
+            * experiment[SHORTAGE_PENALTY_COST]
         }
     )
 

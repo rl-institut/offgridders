@@ -47,13 +47,13 @@ def shortage(
         label="source_shortage",
         outputs={
             bus_electricity_ac: solph.Flow(
-                variable_costs=experiment["shortage_penalty_costs"],
+                variable_costs=experiment[SHORTAGE_PENALTY_COST],
                 nominal_value=case_dict[MAX_SHORTAGE]
                 * case_dict["total_demand_ac"],
                 summed_max=1,
             ),
             bus_electricity_dc: solph.Flow(
-                variable_costs=experiment["shortage_penalty_costs"],
+                variable_costs=experiment[SHORTAGE_PENALTY_COST],
                 nominal_value=case_dict[MAX_SHORTAGE]
                 * case_dict["total_demand_dc"],
                 summed_max=1,

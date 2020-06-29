@@ -690,7 +690,7 @@ def test_techno_economical_parameters_complete(experiment):
         RECTIFIER_AC_DC_LIFETIME: 15,
         SHORTAGE_MAX_ALLOWED: 0,
         SHORTAGE_MAX_TIMESTEP: 1,
-        "shortage_penalty_costs": 0.2,
+        SHORTAGE_PENALTY_COST: 0.2,
         "stability_limit": 0.4,
         "storage_batch_capacity": 1,
         "storage_batch_power": 1,
