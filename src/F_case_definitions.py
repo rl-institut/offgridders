@@ -58,7 +58,7 @@ def update_dict(capacities_oem, specific_case, experiment):
         CAPACITY_INVERTER_DC_AC_KW,
     ]
     list_of_batch_names = [
-        "storage_batch_capacity",
+        SHORTAGE_BATCH_CAPACITY,
         "storage_batch_power",
         GENSET_BATCH,
         PV_BATCH,
