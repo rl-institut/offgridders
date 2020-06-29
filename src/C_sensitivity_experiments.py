@@ -693,7 +693,7 @@ def test_techno_economical_parameters_complete(experiment):
         SHORTAGE_PENALTY_COST: 0.2,
         SHORTAGE_LIMIT: 0.4,
         SHORTAGE_BATCH_CAPACITY: 1,
-        "storage_batch_power": 1,
+        SHORTAGE_BATCH_POWER: 1,
         "storage_capacity_cost_investment": 0,
         "storage_capacity_cost_opex": 0,
         "storage_capacity_lifetime": 5,
