@@ -411,8 +411,8 @@ def get_dict_sensitivies_arrays(parameters_sensitivity, project_sites):
                     keys: np.arange(
                         parameters_sensitivity[keys][MIN],
                         parameters_sensitivity[keys][MAX]
-                        + parameters_sensitivity[keys]["Step"] / 2,
-                        parameters_sensitivity[keys]["Step"],
+                        + parameters_sensitivity[keys][STEP] / 2,
+                        parameters_sensitivity[keys][STEP],
                     )
                 }
             )
