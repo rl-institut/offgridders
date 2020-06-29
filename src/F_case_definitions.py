@@ -185,7 +185,7 @@ def update_dict(capacities_oem, specific_case, experiment):
     ###########################################
 
     if specific_case["renewable_constraint"] == "default":
-        if experiment["min_renewable_share"] == 0:
+        if experiment[MIN_RENEWABLE_SHARE] == 0:
             experiment_case_dict.update({"renewable_share_constraint": False})
         else:
             experiment_case_dict.update({"renewable_share_constraint": True})

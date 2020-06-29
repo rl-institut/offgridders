@@ -622,7 +622,7 @@ def share(
 
         expr = (
             fossil_generation
-            - (1 - experiment["min_renewable_share"]) * total_generation
+            - (1 - experiment[MIN_RENEWABLE_SHARE]) * total_generation
         )
         return expr <= 0
 
@@ -636,12 +636,12 @@ def share_test(case_dict, oemof_results, experiment):
     """
     if case_dict["renewable_share_constraint"] == True:
         boolean_test = (
-            oemof_results["res_share"] >= experiment["min_renewable_share"]
+            oemof_results["res_share"] >= experiment[MIN_RENEWABLE_SHARE]
         )
         if boolean_test == False:
             deviation = (
-                experiment["min_renewable_share"] - oemof_results["res_share"]
-            ) / experiment["min_renewable_share"]
+                experiment[MIN_RENEWABLE_SHARE] - oemof_results["res_share"]
+            ) / experiment[MIN_RENEWABLE_SHARE]
             if abs(deviation) < 10 ** (-6):
                 logging.warning(
                     "Minimal renewable share criterion strictly not fullfilled, but deviation is less then e6."

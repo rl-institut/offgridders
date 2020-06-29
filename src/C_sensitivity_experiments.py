@@ -665,7 +665,7 @@ def test_techno_economical_parameters_complete(experiment):
         MAINGRID_EXTENSION_LIFETIME: 40,
         MAINGRID_FEEDIN_TARIFF: 0,
         MAINGRID_RENEWABLE_SHARE : 0,
-        "min_renewable_share": 0,
+        MIN_RENEWABLE_SHARE: 0,
         "pcoupling_batch": 1,
         "pcoupling_cost_investment": 0,
         "pcoupling_cost_opex": 0,
