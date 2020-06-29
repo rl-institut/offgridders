@@ -644,7 +644,7 @@ def test_techno_economical_parameters_complete(experiment):
         #'fuel_price': 0.76,
         #'fuel_price_change_annual': 0,
         GENSET_BATCH: 1,
-        "genset_cost_investment": 0,
+        GENSET_COST_INVESTMENT: 0,
         "genset_cost_opex": 0,
         "genset_cost_var": 0,
         "genset_efficiency": 0.33,
