@@ -640,7 +640,7 @@ def test_techno_economical_parameters_complete(experiment):
         DEMAND_DC_SCALING_FACTOR: 1,
         DISTRIBUTION_GRID_COST_INVESTMENT: 0,
         DISTRIBUTION_GRID_COST_OPEX: 0,
-        "distribution_grid_lifetime": 0,
+        DISTRIBUTION_GRID_LIFETIME: 0,
         #'fuel_price': 0.76,
         #'fuel_price_change_annual': 0,
         "genset_batch": 1,
