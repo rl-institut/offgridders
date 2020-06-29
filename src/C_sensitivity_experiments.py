@@ -29,7 +29,7 @@ def get_blackout_experiment_name(blackout_experiment):
         + "_"
         + "freq"
         + "_"
-        + str(round(float(blackout_experiment["blackout_frequency"]), 3))
+        + str(round(float(blackout_experiment[BLACKOUT_FREQUENCY]), 3))
         + "_"
         + "freq_dev"
         + "_"
@@ -275,7 +275,7 @@ def blackout(sensitivity_array_dict, parameters_constants, settings):
     for parameter in sensitivity_array_dict:
         if (
             parameter != BLACKOUT_DURATION
-            and parameter != "blackout_frequency"
+            and parameter != BLACKOUT_FREQUENCY
             and parameter != BLACKOUT_DURATION_STD_DEVIATION
             and parameter != "blackout_frequency_std_deviation"
         ):
@@ -285,7 +285,7 @@ def blackout(sensitivity_array_dict, parameters_constants, settings):
     for parameter in parameters_constants:
         if (
             parameter != BLACKOUT_DURATION
-            and parameter != "blackout_frequency"
+            and parameter != BLACKOUT_FREQUENCY
             and parameter != BLACKOUT_DURATION_STD_DEVIATION
             and parameter != "blackout_frequency_std_deviation"
             and parameter not in sensitivity_array_dict
@@ -633,7 +633,7 @@ def test_techno_economical_parameters_complete(experiment):
     parameter_list = {
         BLACKOUT_DURATION: 0,
         BLACKOUT_DURATION_STD_DEVIATION: 0,
-        "blackout_frequency": 0,
+        BLACKOUT_FREQUENCY: 0,
         "blackout_frequency_std_deviation": 0,
         "combustion_value_fuel": 9.8,
         "demand_ac_scaling_factor": 1,

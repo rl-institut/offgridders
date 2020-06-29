@@ -177,7 +177,7 @@ def availability(
             + str(blackout_experiment_s[experiment][BLACKOUT_DURATION])
             + " hrs, "
             "blackout frequency "
-            + str(blackout_experiment_s[experiment]["blackout_frequency"])
+            + str(blackout_experiment_s[experiment][BLACKOUT_FREQUENCY])
             + " per month"
         )
 
@@ -262,9 +262,9 @@ def availability(
 def number_of_blackouts(evaluated_days, experiment):
     # Calculation of expected blackouts per analysed timeframe
     blackout_events_per_month = np.random.normal(
-        loc=experiment["blackout_frequency"],  # median value: blackout duration
+        loc=experiment[BLACKOUT_FREQUENCY],  # median value: blackout duration
         scale=experiment["blackout_frequency_std_deviation"]
-        * experiment["blackout_frequency"],  # Standard deviation
+        * experiment[BLACKOUT_FREQUENCY],  # Standard deviation
         size=12,
     )  # random values for number of blackouts
     blackout_events_per_timeframe = int(
