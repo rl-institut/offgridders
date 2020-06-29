@@ -94,7 +94,7 @@ def get(
         sensitivitiy_experiment_s[experiment].update(
             {
                 DEMAND_AC: sensitivitiy_experiment_s[experiment][DEMAND_AC]
-                * sensitivitiy_experiment_s[experiment]["demand_ac_scaling_factor"]
+                * sensitivitiy_experiment_s[experiment][DEMAND_AC_SCALING_FACTOR]
             }
         )
         sensitivitiy_experiment_s[experiment].update(
@@ -636,7 +636,7 @@ def test_techno_economical_parameters_complete(experiment):
         BLACKOUT_FREQUENCY: 0,
         BLACKOUT_FREQUENCY_STD_DEVIATION: 0,
         "combustion_value_fuel": 9.8,
-        "demand_ac_scaling_factor": 1,
+        DEMAND_AC_SCALING_FACTOR: 1,
         "demand_dc_scaling_factor": 1,
         "distribution_grid_cost_investment": 0,
         "distribution_grid_cost_opex": 0,
