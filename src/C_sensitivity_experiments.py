@@ -399,17 +399,17 @@ def get_dict_sensitivies_arrays(parameters_sensitivity, project_sites):
     sensitivity_array_dict = {}
     for keys in parameters_sensitivity:
         if (
-            parameters_sensitivity[keys]["Min"]
+            parameters_sensitivity[keys][MIN]
             == parameters_sensitivity[keys]["Max"]
         ):
             sensitivity_array_dict.update(
-                {keys: np.array([parameters_sensitivity[keys]["Min"]])}
+                {keys: np.array([parameters_sensitivity[keys][MIN]])}
             )
         else:
             sensitivity_array_dict.update(
                 {
                     keys: np.arange(
-                        parameters_sensitivity[keys]["Min"],
+                        parameters_sensitivity[keys][MIN],
                         parameters_sensitivity[keys]["Max"]
                         + parameters_sensitivity[keys]["Step"] / 2,
                         parameters_sensitivity[keys]["Step"],
