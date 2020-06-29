@@ -66,7 +66,7 @@ def update_dict(capacities_oem, specific_case, experiment):
         "pcoupling_batch",  # check entry
         "wind_batch",
         "rectifier_ac_dc_batch",
-        "inverter_dc_ac_batch",
+        INVERTER_DC_AC_BATCH,
     ]  # create entry
     list_build_oemof_names = [
         "storage_fixed_capacity",
