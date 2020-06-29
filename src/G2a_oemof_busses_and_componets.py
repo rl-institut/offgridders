@@ -501,7 +501,7 @@ def storage_fix(
         inputs={
             bus_electricity_dc: solph.Flow(
                 nominal_value=capacity_storage * experiment["storage_Crate_charge"],
-                variable_costs=experiment["storage_cost_var"],
+                variable_costs=experiment[STORAGE_COST_VAR],
             )
         },  # maximum charge possible in one timestep
         outputs={
@@ -557,7 +557,7 @@ def storage_oem(micro_grid_system, bus_electricity_dc, experiment):
         ),
         inputs={
             bus_electricity_dc: solph.Flow(
-                variable_costs=experiment["storage_cost_var"]
+                variable_costs=experiment[STORAGE_COST_VAR]
             )
         },
         outputs={
