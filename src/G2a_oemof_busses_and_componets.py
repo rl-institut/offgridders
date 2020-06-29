@@ -516,7 +516,7 @@ def storage_fix(
         capacity_max=experiment["storage_soc_max"],
         initial_capacity=experiment[STORAGE_SOC_INITIAL],  # in terms of SOC?
         inflow_conversion_factor=experiment[
-            "storage_efficiency_charge"
+            STORAGE_EFFICIENCY_CHARGE
         ],  # storing efficiency
         outflow_conversion_factor=experiment["storage_efficiency_discharge"],
     )  # efficiency of discharge
@@ -573,7 +573,7 @@ def storage_oem(micro_grid_system, bus_electricity_dc, experiment):
         capacity_min=experiment["storage_soc_min"],
         capacity_max=experiment["storage_soc_max"],
         inflow_conversion_factor=experiment[
-            "storage_efficiency_charge"
+            STORAGE_EFFICIENCY_CHARGE
         ],  # storing efficiency
         outflow_conversion_factor=experiment[
             "storage_efficiency_discharge"
