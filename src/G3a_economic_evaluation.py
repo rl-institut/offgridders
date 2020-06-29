@@ -145,7 +145,7 @@ def annuities_365(case_dict, oemof_results, experiment):
                 * oemof_results[CAPACITY_STORAGE_KWH]
             )
             investment += (
-                experiment["storage_power_cost_investment"]
+                experiment[STORAGE_POWER_COST_INVESTMENT ]
                 * oemof_results[CAPACITY_STORAGE_KWH]
             )
         elif item == "maingrid_extension":
