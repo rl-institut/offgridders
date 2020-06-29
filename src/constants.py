@@ -135,4 +135,5 @@ STORAGE_SOC_MAX = "storage_soc_max"
 STORAGE_SOC_MIN = "storage_soc_min"
 TAX = "tax"
 WACC = "wacc"
+WHITE_NOISE_DEMAND = "white_noise_demand"
 

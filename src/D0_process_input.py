@@ -465,8 +465,8 @@ def add_timeseries(experiment_s):
 
 def apply_noise(experiment_s):
     for experiment in experiment_s:
-        on_series(experiment_s[experiment], "white_noise_demand", DEMAND_AC)
-        on_series(experiment_s[experiment], "white_noise_demand", DEMAND_DC)
+        on_series(experiment_s[experiment], WHITE_NOISE_DEMAND, DEMAND_AC)
+        on_series(experiment_s[experiment], WHITE_NOISE_DEMAND, DEMAND_DC)
         on_series(
             experiment_s[experiment], "white_noise_pv", PV_GENERATION_PER_KWP
         )
