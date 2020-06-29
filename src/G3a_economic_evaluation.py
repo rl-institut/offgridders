@@ -137,7 +137,7 @@ def annuities_365(case_dict, oemof_results, experiment):
     for item in component_list:
         if item == "pv":
             investment += (
-                experiment["pv_cost_investment"] * oemof_results[CAPACITY_PV_KWP]
+                experiment[PV_COST_INVESTMENT] * oemof_results[CAPACITY_PV_KWP]
             )
         elif item == "storage":
             investment += (
