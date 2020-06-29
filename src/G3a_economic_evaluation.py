@@ -205,7 +205,7 @@ def annuities_365(case_dict, oemof_results, experiment):
                 * experiment[STORAGE_CAPACITY_LIFETIME]
             )
             om += (
-                experiment["storage_power_cost_opex"]
+                experiment[STORAGE_POWER_COST_OPEX]
                 * experiment["storage_power_lifetime"]
             )
         else:
