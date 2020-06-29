@@ -322,7 +322,7 @@ def genset_fix_minload(
                     nominal_value=capacity_fuel_gen / number_of_equal_generators,
                     variable_costs=experiment[GENSET_COST_VAR],
                     min=experiment["genset_min_loading"],
-                    max=experiment["genset_max_loading"],
+                    max=experiment[GENSET_MAX_LOADING],
                     nonconvex=solph.NonConvex(),
                 )
             },
