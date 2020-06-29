@@ -265,7 +265,7 @@ def get_multicriteria_data(file, sheet_multicriteria_analysis, case_definitions)
     parameters = parameters.to_dict(orient="index")
 
     multicriteria_data = {
-        DIMENSION: dimension_weights,
+        DIMENSIONS: dimension_weights,
         CRITERIA: criteria_weights,
         PARAMETERS: parameters,
     }
