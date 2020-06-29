@@ -82,7 +82,7 @@ def backup(
                 )
             expr += (
                 stored_electricity
-                * experiment["storage_Crate_discharge"]
+                * experiment[STORAGE_CRATE_DISCHARGE]
                 * experiment["storage_efficiency_discharge"]
                 * experiment[INVERTER_DC_AC_EFFICIENCY]
             )
@@ -169,7 +169,7 @@ def backup_test(case_dict, oemof_results, experiment, e_flows_df):
                 - oemof_results[CAPACITY_STORAGE_KWH]
                 * experiment["storage_capacity_min"]
             )
-            * experiment["storage_Crate_discharge"]
+            * experiment[STORAGE_CRATE_DISCHARGE]
             * experiment["storage_efficiency_discharge"]
             * experiment[INVERTER_DC_AC_EFFICIENCY]
             + pcc_capacity[t]
@@ -189,7 +189,7 @@ def backup_test(case_dict, oemof_results, experiment, e_flows_df):
                             - oemof_results[CAPACITY_STORAGE_KWH]
                             * experiment["storage_capacity_min"]
                         )
-                        * experiment["storage_Crate_discharge"]
+                        * experiment[STORAGE_CRATE_DISCHARGE]
                         * experiment["storage_efficiency_discharge"]
                         * experiment[INVERTER_DC_AC_EFFICIENCY]
                         + pcc_capacity[t]
@@ -270,7 +270,7 @@ def hybrid(
                 )
             expr += (
                 stored_electricity
-                * experiment["storage_Crate_discharge"]
+                * experiment[STORAGE_CRATE_DISCHARGE]
                 * experiment["storage_efficiency_discharge"]
                 * experiment[INVERTER_DC_AC_EFFICIENCY]
             )
@@ -365,7 +365,7 @@ def hybrid_test(case_dict, oemof_results, experiment, e_flows_df):
                 - oemof_results[CAPACITY_STORAGE_KWH]
                 * experiment["storage_soc_min"]
             )
-            * experiment["storage_Crate_discharge"]
+            * experiment[STORAGE_CRATE_DISCHARGE]
             * experiment["storage_efficiency_discharge"]
             * experiment[INVERTER_DC_AC_EFFICIENCY]
             + pcc_consumption[t]
@@ -385,7 +385,7 @@ def hybrid_test(case_dict, oemof_results, experiment, e_flows_df):
                             - oemof_results[CAPACITY_STORAGE_KWH]
                             * experiment["storage_soc_min"]
                         )
-                        * experiment["storage_Crate_discharge"]
+                        * experiment[STORAGE_CRATE_DISCHARGE]
                         * experiment["storage_efficiency_discharge"]
                         * experiment[INVERTER_DC_AC_EFFICIENCY]
                         + pcc_consumption[t]

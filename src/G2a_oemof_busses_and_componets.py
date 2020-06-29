@@ -582,7 +582,7 @@ def storage_oem(micro_grid_system, bus_electricity_dc, experiment):
             STORAGE_CRATE_CHARGE
         ],  # storage can be charged with invest_relation_output_capacity*capacity in one timeperiod
         invest_relation_output_capacity=experiment[
-            "storage_Crate_discharge"
+            STORAGE_CRATE_DISCHARGE
         ],  # storage can be emptied with invest_relation_output_capacity*capacity in one timeperiod
     )
     micro_grid_system.add(generic_storage)
