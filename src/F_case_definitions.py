@@ -128,7 +128,7 @@ def update_dict(capacities_oem, specific_case, experiment):
             {"allow_shortage": experiment["allow_shortage"]}
         )
         experiment_case_dict.update(
-            {MAX_SHORTAGE: experiment["shortage_max_allowed"]}
+            {MAX_SHORTAGE: experiment[SHORTAGE_MAX_ALLOWED]}
         )
 
     elif specific_case["allow_shortage"] == False:
@@ -141,7 +141,7 @@ def update_dict(capacities_oem, specific_case, experiment):
     ):
         experiment_case_dict.update({"allow_shortage": True})
         experiment_case_dict.update(
-            {MAX_SHORTAGE: experiment["shortage_max_allowed"]}
+            {MAX_SHORTAGE: experiment[SHORTAGE_MAX_ALLOWED]}
         )
 
     elif specific_case["allow_shortage"] == True:
