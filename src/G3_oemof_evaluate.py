@@ -49,7 +49,7 @@ def get_demand(
     if case_dict["evaluation_perspective"] == "AC_bus":
         e_flows_df["Demand"] += demand_ac
     else:
-        e_flows_df["Demand"] += demand_ac / experiment["inverter_dc_ac_efficiency"]
+        e_flows_df["Demand"] += demand_ac / experiment[INVERTER_DC_AC_EFFICIENCY]
 
     # if case_dict['pv_fixed_capacity'] != None \
     #        or case_dict['storage_fixed_capacity'] != None:
@@ -101,7 +101,7 @@ def get_shortage(
             if case_dict["evaluation_perspective"] == "AC_bus":
                 shortage += shortage_ac
             else:
-                shortage += shortage_ac / experiment["inverter_dc_ac_efficiency"]
+                shortage += shortage_ac / experiment[INVERTER_DC_AC_EFFICIENCY]
 
         if electricity_bus_dc != None:
 
@@ -498,7 +498,7 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
                 e_flows_df,
             )
             e_flows_df = join_e_flows_df(
-                storage_discharge / experiment["inverter_dc_ac_efficiency"],
+                storage_discharge / experiment[INVERTER_DC_AC_EFFICIENCY],
                 "Storage discharge AC",
                 e_flows_df,
             )

@@ -84,7 +84,7 @@ def backup(
                 stored_electricity
                 * experiment["storage_Crate_discharge"]
                 * experiment["storage_efficiency_discharge"]
-                * experiment["inverter_dc_ac_efficiency"]
+                * experiment[INVERTER_DC_AC_EFFICIENCY]
             )
         return expr >= 0
 
@@ -118,7 +118,7 @@ def backup(
                     "Error: 'storage_fixed_power' can only be None, False or float."
                 )
 
-            expr += storage_power * experiment["inverter_dc_ac_efficiency"]
+            expr += storage_power * experiment[INVERTER_DC_AC_EFFICIENCY]
         return expr >= 0
 
     model.stability_constraint = po.Constraint(
@@ -171,7 +171,7 @@ def backup_test(case_dict, oemof_results, experiment, e_flows_df):
             )
             * experiment["storage_Crate_discharge"]
             * experiment["storage_efficiency_discharge"]
-            * experiment["inverter_dc_ac_efficiency"]
+            * experiment[INVERTER_DC_AC_EFFICIENCY]
             + pcc_capacity[t]
             >= experiment["stability_limit"] * (demand_profile[t] - shortage[t])
             for t in range(0, len(demand_profile.index))
@@ -191,7 +191,7 @@ def backup_test(case_dict, oemof_results, experiment, e_flows_df):
                         )
                         * experiment["storage_Crate_discharge"]
                         * experiment["storage_efficiency_discharge"]
-                        * experiment["inverter_dc_ac_efficiency"]
+                        * experiment[INVERTER_DC_AC_EFFICIENCY]
                         + pcc_capacity[t]
                         - experiment["stability_limit"]
                         * (demand_profile[t] - shortage[t])
@@ -272,7 +272,7 @@ def hybrid(
                 stored_electricity
                 * experiment["storage_Crate_discharge"]
                 * experiment["storage_efficiency_discharge"]
-                * experiment["inverter_dc_ac_efficiency"]
+                * experiment[INVERTER_DC_AC_EFFICIENCY]
             )
         return expr >= 0
 
@@ -311,7 +311,7 @@ def hybrid(
                     "Error: 'storage_fixed_power' can only be None, False or float."
                 )
 
-            expr += storage_power * experiment["inverter_dc_ac_efficiency"]
+            expr += storage_power * experiment[INVERTER_DC_AC_EFFICIENCY]
         return expr >= 0
 
     model.stability_constraint_capacity = po.Constraint(
@@ -367,7 +367,7 @@ def hybrid_test(case_dict, oemof_results, experiment, e_flows_df):
             )
             * experiment["storage_Crate_discharge"]
             * experiment["storage_efficiency_discharge"]
-            * experiment["inverter_dc_ac_efficiency"]
+            * experiment[INVERTER_DC_AC_EFFICIENCY]
             + pcc_consumption[t]
             >= experiment["stability_limit"] * (demand_profile[t] - shortage[t])
             for t in range(0, len(demand_profile.index))
@@ -387,7 +387,7 @@ def hybrid_test(case_dict, oemof_results, experiment, e_flows_df):
                         )
                         * experiment["storage_Crate_discharge"]
                         * experiment["storage_efficiency_discharge"]
-                        * experiment["inverter_dc_ac_efficiency"]
+                        * experiment[INVERTER_DC_AC_EFFICIENCY]
                         + pcc_consumption[t]
                         - experiment["stability_limit"]
                         * (demand_profile[t] - shortage[t])
@@ -449,7 +449,7 @@ def usage(
         if case_dict["storage_fixed_capacity"] != None:
             expr += (
                 model.flow[storage, el_bus, t]
-                * experiment["inverter_dc_ac_efficiency"]
+                * experiment[INVERTER_DC_AC_EFFICIENCY]
             )
         return expr >= 0
 
@@ -494,7 +494,7 @@ def usage_test(case_dict, oemof_results, experiment, e_flows_df):
 
         boolean_test = [
             genset_generation[t]
-            + storage_discharge[t] * experiment["inverter_dc_ac_efficiency"]
+            + storage_discharge[t] * experiment[INVERTER_DC_AC_EFFICIENCY]
             + pcc_feedin[t]
             >= experiment["stability_limit"] * (demand_profile[t] - shortage[t])
             for t in range(0, len(demand_profile.index))
@@ -508,7 +508,7 @@ def usage_test(case_dict, oemof_results, experiment, e_flows_df):
                     (
                         genset_generation[t]
                         + storage_discharge[t]
-                        * experiment["inverter_dc_ac_efficiency"]
+                        * experiment[INVERTER_DC_AC_EFFICIENCY]
                         + pcc_feedin[t]
                         - experiment["stability_limit"]
                         * (demand_profile[t] - shortage[t])

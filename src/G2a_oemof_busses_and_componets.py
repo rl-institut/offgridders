@@ -247,7 +247,7 @@ def inverter_dc_ac_fix(
         },
         outputs={bus_electricity_ac: solph.Flow()},
         conversion_factors={
-            bus_electricity_ac: experiment["inverter_dc_ac_efficiency"]
+            bus_electricity_ac: experiment[INVERTER_DC_AC_EFFICIENCY]
         },
     )
     micro_grid_system.add(inverter_dc_ac)
@@ -269,7 +269,7 @@ def inverter_dc_ac_oem(
         },
         outputs={bus_electricity_ac: solph.Flow()},
         conversion_factors={
-            bus_electricity_ac: experiment["inverter_dc_ac_efficiency"]
+            bus_electricity_ac: experiment[INVERTER_DC_AC_EFFICIENCY]
         },
     )
     micro_grid_system.add(inverter_dc_ac)

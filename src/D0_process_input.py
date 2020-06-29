@@ -368,7 +368,7 @@ def add_timeseries(experiment_s):
                 "accumulated_profile_dc_side": experiment_s[experiment][
                     "demand_profile_ac"
                 ]
-                / experiment_s[experiment]["inverter_dc_ac_efficiency"]
+                / experiment_s[experiment][INVERTER_DC_AC_EFFICIENCY]
                 + experiment_s[experiment]["demand_profile_dc"]
             }
         )

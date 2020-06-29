@@ -656,7 +656,7 @@ def test_techno_economical_parameters_complete(experiment):
         INVERTER_DC_AC_COST_INVESTMENT: 0,
         INVERTER_DC_AC_COST_OPEX: 0,
         INVERTER_DC_AC_COST_VAR: 0,
-        "inverter_dc_ac_efficiency": 1,
+        INVERTER_DC_AC_EFFICIENCY: 1,
         "inverter_dc_ac_lifetime": 15,
         "maingrid_distance": 0,
         "maingrid_electricity_price": 0.15,
