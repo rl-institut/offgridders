@@ -653,7 +653,7 @@ def test_techno_economical_parameters_complete(experiment):
         GENSET_MIN_LOADING: 0,
         GENSET_OVERSIZE_FACTOR: 1.2,
         INVERTER_DC_AC_BATCH: 1,
-        "inverter_dc_ac_cost_investment": 0,
+        INVERTER_DC_AC_COST_INVESTMENT: 0,
         "inverter_dc_ac_cost_opex": 0,
         "inverter_dc_ac_cost_var": 0,
         "inverter_dc_ac_efficiency": 1,
