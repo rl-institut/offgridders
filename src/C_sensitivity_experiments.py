@@ -749,7 +749,7 @@ def overall_results_title(
     settings, number_of_project_sites, sensitivity_array_dict
 ):
     logging.debug("Generating header for results.csv")
-    title_overall_results = pd.DataFrame(columns=["case", PROJECT_SITE_NAME])
+    title_overall_results = pd.DataFrame(columns=[CASE, PROJECT_SITE_NAME])
 
     for keys in sensitivity_array_dict:
         title_overall_results = pd.concat(

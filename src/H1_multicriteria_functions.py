@@ -80,7 +80,7 @@ def evaluate_criteria(all_results, qualitative_punctuations, multicriteria_data)
             S1 = linear_evaluation(
                 qualitative_punctuations, generation_components, case, "S1"
             )
-            S2 = multicriteria_data[TARIFF][case["case"]]
+            S2 = multicriteria_data[TARIFF][case[CASE]]
             S3 = linear_evaluation(
                 qualitative_punctuations, generation_components, case, "S3"
             )
@@ -298,7 +298,7 @@ def linear_evaluation(qualitative_punctuations, components, case, criterion):
     if Den == 0:
         logging.debug(
             "No component included in this case has capacity over 0: "
-            + case["case"]
+            + case[CASE]
             + ". 1 is returned"
         )
         return 1

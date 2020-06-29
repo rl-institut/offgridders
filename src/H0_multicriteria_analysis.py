@@ -140,7 +140,7 @@ def presentation(overallresults, parameters):
     overallresults = overallresults.to_dict("list")
 
     cases = []
-    for case in overallresults["case"]:
+    for case in overallresults[CASE]:
         if case not in cases:
             cases.append(case)
 

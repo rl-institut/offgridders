@@ -93,7 +93,7 @@ def run(experiment, case_dict):
         meta = micro_grid_system.results["meta"]
 
         oemof_results = {
-            "case": case_dict[CASE_NAME],
+            CASE: case_dict[CASE_NAME],
             "filename": "results_" + case_dict[CASE_NAME] + experiment["filename"],
             "objective_value": meta["objective"],
             "simulation_time": meta["solver"]["Time"],
