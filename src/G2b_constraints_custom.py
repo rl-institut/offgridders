@@ -672,12 +672,12 @@ def forced_charge(model, case_dict, el_bus_dc, storage, experiment):
         elif isinstance(case_dict["storage_fixed_capacity"], float):
             CAP_storage += storage.nominal_capacity
 
-    m = -experiment["storage_Crate_charge"] / (
+    m = -experiment[STORAGE_CRATE_CHARGE] / (
         experiment["storage_soc_max"] - experiment["storage_soc_min"]
     )
 
     n = (
-        experiment["storage_Crate_charge"]
+        experiment[STORAGE_CRATE_CHARGE]
         * CAP_storage
         * (
             1
@@ -723,7 +723,7 @@ def forced_charge_test(case_dict, oemof_results, experiment, e_flows_df):
     if case_dict["force_charge_from_maingrid"] == True:
         boolean_test = [
             (
-                experiment["storage_Crate_charge"]
+                experiment[STORAGE_CRATE_CHARGE]
                 * oemof_results[CAPACITY_STORAGE_KWH]
                 * (
                     1
@@ -753,7 +753,7 @@ def forced_charge_test(case_dict, oemof_results, experiment, e_flows_df):
             deviation = pd.Series(
                 [
                     (
-                        experiment["storage_Crate_charge"]
+                        experiment[STORAGE_CRATE_CHARGE]
                         * oemof_results[CAPACITY_STORAGE_KWH]
                         * (
                             1
