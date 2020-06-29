@@ -715,8 +715,8 @@ def test_techno_economical_parameters_complete(experiment):
         WHITE_NOISE_PV: 0,
         WHITE_NOISE_WIND: 0,
         WIND_BATCH: 1,
-        "wind_cost_investment": 0,
-        "wind_cost_opex": 0,
+        WIND_COST_INVESTMENT: 0,
+        WIND_COST_OPEX: 0,
         "wind_cost_var": 0,
         "wind_lifetime": 15,
     }

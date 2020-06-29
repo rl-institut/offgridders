@@ -139,4 +139,6 @@ WHITE_NOISE_DEMAND = "white_noise_demand"
 WHITE_NOISE_PV = "white_noise_pv"
 WHITE_NOISE_WIND = "white_noise_wind"
 WIND_BATCH = "wind_batch"
+WIND_COST_INVESTMENT = "wind_cost_investment"
+WIND_COST_OPEX = "wind_cost_opex"
 
