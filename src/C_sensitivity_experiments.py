@@ -635,7 +635,7 @@ def test_techno_economical_parameters_complete(experiment):
         BLACKOUT_DURATION_STD_DEVIATION: 0,
         BLACKOUT_FREQUENCY: 0,
         BLACKOUT_FREQUENCY_STD_DEVIATION: 0,
-        "combustion_value_fuel": 9.8,
+        COMBUSTION_VALUE_FUEL: 9.8,
         DEMAND_AC_SCALING_FACTOR: 1,
         DEMAND_DC_SCALING_FACTOR: 1,
         "distribution_grid_cost_investment": 0,

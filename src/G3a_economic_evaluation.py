@@ -284,7 +284,7 @@ def expenditures_fuel(oemof_results, experiment):
             "consumption_fuel_annual_l": oemof_results[
                 "consumption_fuel_annual_kWh"
             ]
-            / experiment["combustion_value_fuel"]
+            / experiment[COMBUSTION_VALUE_FUEL]
         }
     )
     oemof_results.update(
