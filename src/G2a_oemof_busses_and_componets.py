@@ -514,7 +514,7 @@ def storage_fix(
         ],  # from timestep to timestep
         capacity_min=experiment["storage_soc_min"],
         capacity_max=experiment["storage_soc_max"],
-        initial_capacity=experiment["storage_soc_initial"],  # in terms of SOC?
+        initial_capacity=experiment[STORAGE_SOC_INITIAL],  # in terms of SOC?
         inflow_conversion_factor=experiment[
             "storage_efficiency_charge"
         ],  # storing efficiency

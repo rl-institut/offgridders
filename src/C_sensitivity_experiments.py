@@ -118,9 +118,9 @@ def get(
         if "comments" not in sensitivitiy_experiment_s[experiment]:
             sensitivitiy_experiment_s[experiment].update({"comments": ""})
 
-        if sensitivitiy_experiment_s[experiment]["storage_soc_initial"] == "None":
+        if sensitivitiy_experiment_s[experiment][STORAGE_SOC_INITIAL] == "None":
             sensitivitiy_experiment_s[experiment].update(
-                {"storage_soc_initial": None}
+                {STORAGE_SOC_INITIAL: None}
             )
     #######################################################
     # Get blackout_experiment_s for sensitvitiy           #
@@ -706,7 +706,7 @@ def test_techno_economical_parameters_complete(experiment):
         "storage_power_cost_investment": 0,
         "storage_power_cost_opex": 0,
         "storage_power_lifetime": 5,
-        "storage_soc_initial": None,
+        STORAGE_SOC_INITIAL: None,
         "storage_soc_max": 0.95,
         "storage_soc_min": 0.3,
         "tax": 0,
