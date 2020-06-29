@@ -155,7 +155,7 @@ def get(
 
     for item in experiments_dataframe.columns:
         if (item not in parameters_sensitivity.keys()) and (
-            item not in ["project_site_name"]
+            item not in [PROJECT_SITE_NAME]
         ):
             experiments_dataframe = experiments_dataframe.drop(columns=item)
 
@@ -216,7 +216,7 @@ def all_possible(
     )
 
     project_site_dict = {
-        "project_site_name": [key for key in project_site_s.keys()]
+        PROJECT_SITE_NAME: [key for key in project_site_s.keys()]
     }
     (
         sensitivity_experiment_s,
@@ -228,7 +228,7 @@ def all_possible(
         sensitivity_experiment_s[experiment].update(
             deepcopy(
                 project_site_s[
-                    sensitivity_experiment_s[experiment]["project_site_name"]
+                    sensitivity_experiment_s[experiment][PROJECT_SITE_NAME]
                 ]
             )
         )
@@ -459,7 +459,7 @@ def combinations_around_base(
                 {experiment_number: deepcopy(universal_parameters)}
             )
             sensitivity_experiment_s[experiment_number].update(
-                {"project_site_name": project_site}
+                {PROJECT_SITE_NAME: project_site}
             )
             sensitivity_experiment_s[experiment_number].update(
                 deepcopy(project_site_s[project_site])
@@ -487,7 +487,7 @@ def combinations_around_base(
                             {experiment_number: deepcopy(universal_parameters)}
                         )
                         sensitivity_experiment_s[experiment_number].update(
-                            {"project_site_name": project_site}
+                            {PROJECT_SITE_NAME: project_site}
                         )
                         sensitivity_experiment_s[experiment_number].update(
                             deepcopy(project_site_s[project_site])
@@ -510,7 +510,7 @@ def combinations_around_base(
                             {key: key_value}
                         )
                         sensitivity_experiment_s[experiment_number].update(
-                            {"project_site_name": project_site}
+                            {PROJECT_SITE_NAME: project_site}
                         )
                         sensitivity_experiment_s[experiment_number].update(
                             deepcopy(project_site_s[project_site])
@@ -534,7 +534,7 @@ def project_site_experiments(sensitivity_experiment_s, project_sites):
             {number_of_experiments: deepcopy(sensitivity_experiment_s[experiment])}
         )
         experiment_s[number_of_experiments].update(
-            deepcopy(project_sites[experiment_s[experiment]["project_site_name"]])
+            deepcopy(project_sites[experiment_s[experiment][PROJECT_SITE_NAME]])
         )
 
     return experiment_s, number_of_experiments
@@ -543,10 +543,10 @@ def experiment_name(experiment, sensitivity_array_dict, number_of_project_sites)
     # define file postfix to save simulation
     filename = "_s"
     if number_of_project_sites > 1:
-        if isinstance(experiment["project_site_name"], str):
-            filename = filename + "_" + experiment["project_site_name"]
+        if isinstance(experiment[PROJECT_SITE_NAME], str):
+            filename = filename + "_" + experiment[PROJECT_SITE_NAME]
         else:
-            filename = filename + "_" + str(experiment["project_site_name"])
+            filename = filename + "_" + str(experiment[PROJECT_SITE_NAME])
     else:
         filename = filename
 
@@ -749,7 +749,7 @@ def overall_results_title(
     settings, number_of_project_sites, sensitivity_array_dict
 ):
     logging.debug("Generating header for results.csv")
-    title_overall_results = pd.DataFrame(columns=["case", "project_site_name"])
+    title_overall_results = pd.DataFrame(columns=["case", PROJECT_SITE_NAME])
 
     for keys in sensitivity_array_dict:
         title_overall_results = pd.concat(

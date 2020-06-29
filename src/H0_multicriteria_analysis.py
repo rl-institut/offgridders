@@ -148,8 +148,8 @@ def presentation(overallresults, parameters):
     overallresults = {}
     previous_project = None
     projects_name = []
-    for i in range(len(results["project_site_name"])):
-        project = results["project_site_name"][i]
+    for i in range(len(results[PROJECT_SITE_NAME])):
+        project = results[PROJECT_SITE_NAME][i]
         if project not in overallresults:
             overallresults[project] = {}
             for element in results:

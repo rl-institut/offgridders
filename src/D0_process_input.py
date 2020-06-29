@@ -445,19 +445,19 @@ def add_timeseries(experiment_s):
         ):
             logging.warning(
                 "No demand in evaluated timesteps at project site "
-                + experiment_s[experiment]["project_site_name"]
+                + experiment_s[experiment][PROJECT_SITE_NAME]
                 + " - simulation will crash."
             )
         if experiment_s[experiment]["peak_pv_generation_per_kWp"] == 0:
             logging.info(
                 "No pv generation in evaluated timesteps at project site "
-                + experiment_s[experiment]["project_site_name"]
+                + experiment_s[experiment][PROJECT_SITE_NAME]
                 + "."
             )
         if experiment_s[experiment]["peak_wind_generation_per_kW"] == 0:
             logging.info(
                 "No wind generation in evaluated timesteps at project site "
-                + experiment_s[experiment]["project_site_name"]
+                + experiment_s[experiment][PROJECT_SITE_NAME]
                 + "."
             )
 

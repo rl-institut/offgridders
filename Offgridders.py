@@ -173,7 +173,7 @@ def main():
                 + specific_case
                 + ", "
                 + "project site "
-                + sensitivity_experiment_s[experiment]["project_site_name"]
+                + sensitivity_experiment_s[experiment][PROJECT_SITE_NAME]
                 + ", "
                 + "experiment no. "
                 + str(experiment_count)
@@ -243,7 +243,7 @@ def main():
             pp.pprint(sensitivity_experiment_s[experiment])
 
     # display all results
-    output_names = ["project_site_name", "case"]
+    output_names = [PROJECT_SITE_NAME, "case"]
     output_names.extend(names_sensitivities)
     output_names.extend(["lcoe", "res_share"])
     logging.info(

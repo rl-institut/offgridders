@@ -216,7 +216,7 @@ def plot_flows(case_dict, experiment, mg_flows, e_flows_df, number_of_subplots):
         title="MG Operation of case "
         + case_dict[CASE_NAME]
         + " in "
-        + experiment["project_site_name"],
+        + experiment[PROJECT_SITE_NAME],
         color=[color_dict.get(x, "#333333") for x in mg_flows.columns],
         ax=axes_mg,
         drawstyle="steps-mid",
@@ -303,7 +303,7 @@ def save_storage(experiment, case_dict, e_flows_df, filename):
                 title="Storage flows of case "
                 + case_dict[CASE_NAME]
                 + " in "
-                + experiment["project_site_name"]
+                + experiment[PROJECT_SITE_NAME]
             )
             fig.set(xlabel="Time", ylabel="Electricity flow/stored in kWh")
             fig.legend(loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
@@ -323,7 +323,7 @@ def save_storage(experiment, case_dict, e_flows_df, filename):
                     title="Storage flows of case "
                     + case_dict[CASE_NAME]
                     + " in "
-                    + experiment["project_site_name"]
+                    + experiment[PROJECT_SITE_NAME]
                 )
                 fig.set(xlabel="Time", ylabel="Electricity flow/stored in kWh")
                 fig.legend(
