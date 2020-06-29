@@ -681,7 +681,7 @@ def test_techno_economical_parameters_complete(experiment):
         PV_COST_INVESTMENT: 0,
         PV_COST_OPEX: 0,
         PV_COST_VAR: 0,
-        "pv_lifetime": 20,
+        PV_LIFETIME: 20,
         "rectifier_ac_dc_batch": 1,
         "rectifier_ac_dc_cost_investment": 0,
         "rectifier_ac_dc_cost_opex": 0,
