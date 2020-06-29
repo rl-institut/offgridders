@@ -101,7 +101,7 @@ def economic_values(experiment):
                     experiment[item + "_lifetime"],
                     experiment[PROJECT_LIFETIME],
                     experiment["wacc"],
-                    experiment["tax"],
+                    experiment[TAX],
                 )
             }
         )
