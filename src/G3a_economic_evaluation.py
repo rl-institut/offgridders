@@ -113,7 +113,7 @@ def annuities_365(case_dict, oemof_results, experiment):
                 "annuity_maingrid_extension": experiment[
                     "maingrid_extension_cost_annuity"
                 ]
-                * experiment["maingrid_distance"]
+                * experiment[MAINGRID_DISTANCE]
             }
         )
     else:
@@ -151,7 +151,7 @@ def annuities_365(case_dict, oemof_results, experiment):
         elif item == "maingrid_extension":
             investment += (
                 experiment["maingrid_extension_cost_investment"]
-                * experiment["maingrid_distance"]
+                * experiment[MAINGRID_DISTANCE]
             )
         elif item in ["distribution_grid", "project"]:
             investment += experiment[item + "_cost_investment"]
