@@ -718,7 +718,7 @@ def test_techno_economical_parameters_complete(experiment):
         WIND_COST_INVESTMENT: 0,
         WIND_COST_OPEX: 0,
         WIND_COST_VAR: 0,
-        "wind_lifetime": 15,
+        WIND_LIFETIME: 15,
     }
 
     for parameter in parameter_list:
