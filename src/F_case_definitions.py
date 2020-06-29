@@ -60,7 +60,7 @@ def update_dict(capacities_oem, specific_case, experiment):
     list_of_batch_names = [
         "storage_batch_capacity",
         "storage_batch_power",
-        "genset_batch",
+        GENSET_BATCH,
         "pv_batch",
         "pcoupling_batch",  # check entry
         "pcoupling_batch",  # check entry

@@ -643,7 +643,7 @@ def test_techno_economical_parameters_complete(experiment):
         DISTRIBUTION_GRID_LIFETIME: 0,
         #'fuel_price': 0.76,
         #'fuel_price_change_annual': 0,
-        "genset_batch": 1,
+        GENSET_BATCH: 1,
         "genset_cost_investment": 0,
         "genset_cost_opex": 0,
         "genset_cost_var": 0,
