@@ -471,7 +471,7 @@ def apply_noise(experiment_s):
             experiment_s[experiment], WHITE_NOISE_PV, PV_GENERATION_PER_KWP
         )
         on_series(
-            experiment_s[experiment], "white_noise_wind", WIND_GENERATION_PER_KW
+            experiment_s[experiment], WHITE_NOISE_WIND, WIND_GENERATION_PER_KW
         )
     return
 
