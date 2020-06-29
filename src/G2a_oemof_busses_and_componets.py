@@ -296,7 +296,7 @@ def genset_fix(
                 )
             },
             conversion_factors={
-                bus_electricity_ac: experiment["genset_efficiency"]
+                bus_electricity_ac: experiment[GENSET_EFFICIENCY]
             },
         )
         micro_grid_system.add(genset)
@@ -327,7 +327,7 @@ def genset_fix_minload(
                 )
             },
             conversion_factors={
-                bus_electricity_ac: experiment["genset_efficiency"]
+                bus_electricity_ac: experiment[GENSET_EFFICIENCY]
             },
         )
         micro_grid_system.add(genset)
@@ -357,7 +357,7 @@ def genset_oem(
                 )
             },
             conversion_factors={
-                bus_electricity_ac: experiment["genset_efficiency"]
+                bus_electricity_ac: experiment[GENSET_EFFICIENCY]
             },
         )
         micro_grid_system.add(genset)
