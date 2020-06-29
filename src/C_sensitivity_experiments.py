@@ -46,7 +46,7 @@ def get(
     #######################################################
     # Get sensitivity_experiment_s for sensitivity analysis            #
     #######################################################
-    if settings["sensitivity_all_combinations"] == True:
+    if settings[SENSITIVITY_ALL_COMBINATIONS] == True:
         (
             sensitivitiy_experiment_s,
             number_of_project_sites,
@@ -59,7 +59,7 @@ def get(
             project_sites,
         )
 
-    elif settings["sensitivity_all_combinations"] == False:
+    elif settings[SENSITIVITY_ALL_COMBINATIONS] == False:
         (
             sensitivitiy_experiment_s,
             number_of_project_sites,
@@ -74,7 +74,7 @@ def get(
 
     else:
         logging.warning(
-            'Setting "sensitivity_all_combinations" not valid! Has to be TRUE or FALSE.'
+            'Setting SENSITIVITY_ALL_COMBINATIONS not valid! Has to be TRUE or FALSE.'
         )
 
     names_sensitivities = [key for key in sensitivity_array_dict.keys()]
@@ -292,7 +292,7 @@ def blackout(sensitivity_array_dict, parameters_constants, settings):
         ):
             del blackout_constants[parameter]
 
-    if settings["sensitivity_all_combinations"] == True:
+    if settings[SENSITIVITY_ALL_COMBINATIONS] == True:
         (
             blackout_experiment_s,
             blackout_experiments_count,
@@ -302,7 +302,7 @@ def blackout(sensitivity_array_dict, parameters_constants, settings):
                 deepcopy(blackout_constants)
             )
 
-    elif settings["sensitivity_all_combinations"] == False:
+    elif settings[SENSITIVITY_ALL_COMBINATIONS] == False:
         blackout_experiment_s = {}
         blackout_experiments_count = 0
         defined_base = False
@@ -346,7 +346,7 @@ def blackout(sensitivity_array_dict, parameters_constants, settings):
 
     else:
         logging.warning(
-            'Setting "sensitivity_all_combinations" not valid! Has to be TRUE or FALSE.'
+            'Setting SENSITIVITY_ALL_COMBINATIONS not valid! Has to be TRUE or FALSE.'
         )
 
     # define file item to save simulation / get grid availabilities

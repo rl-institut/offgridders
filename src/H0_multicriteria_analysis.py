@@ -47,7 +47,7 @@ def main_analysis(overallresults, multicriteria_data, settings):
     ) = presentation(overallresults, parameters)
 
     # the multicriteria analysis with sensibility parameters can only be realised if all combinations have been calculated
-    if settings["sensitivity_all_combinations"] or not sensibility:
+    if settings[SENSITIVITY_ALL_COMBINATIONS] or not sensibility:
         # criteria are evaluated for all cases
         evaluations, capacities = multicriteria_functions.evaluate_criteria(
             all_results, qualitative_punctuations, multicriteria_data
