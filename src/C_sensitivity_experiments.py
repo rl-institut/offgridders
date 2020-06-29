@@ -685,7 +685,7 @@ def test_techno_economical_parameters_complete(experiment):
         RECTIFIER_AC_DC_BATCH: 1,
         RECTIFIER_AC_DC_COST_INVESTMENT: 0,
         RECTIFIER_AC_DC_COST_OPEX: 0,
-        "rectifier_ac_dc_cost_var": 0,
+        RECTIFIER_AC_DC_COST_VAR: 0,
         "rectifier_ac_dc_efficiency": 1,
         "rectifier_ac_dc_lifetime": 15,
         "shortage_max_allowed": 0,

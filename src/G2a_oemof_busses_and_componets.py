@@ -196,7 +196,7 @@ def rectifier_fix(
         inputs={
             bus_electricity_ac: solph.Flow(
                 nominal_value=capacity_rectifier,
-                variable_costs=experiment["rectifier_ac_dc_cost_var"],
+                variable_costs=experiment[RECTIFIER_AC_DC_COST_VAR],
             )
         },
         outputs={bus_electricity_dc: solph.Flow()},
@@ -218,7 +218,7 @@ def rectifier_oem(
                 investment=solph.Investment(
                     ep_costs=experiment["rectifier_ac_dc_cost_annuity"]
                 ),
-                variable_costs=experiment["rectifier_ac_dc_cost_var"],
+                variable_costs=experiment[RECTIFIER_AC_DC_COST_VAR],
             )
         },
         outputs={bus_electricity_dc: solph.Flow()},
