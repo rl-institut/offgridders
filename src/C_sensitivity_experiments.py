@@ -667,7 +667,7 @@ def test_techno_economical_parameters_complete(experiment):
         MAINGRID_RENEWABLE_SHARE : 0,
         MIN_RENEWABLE_SHARE: 0,
         PCOUPLING_BATCH : 1,
-        "pcoupling_cost_investment": 0,
+        PCOUPLING_COST_INVESTMENT: 0,
         "pcoupling_cost_opex": 0,
         "pcoupling_cost_var": 0,
         "pcoupling_efficiency": 1,
