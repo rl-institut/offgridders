@@ -660,7 +660,7 @@ def test_techno_economical_parameters_complete(experiment):
         INVERTER_DC_AC_LIFETIME: 15,
         MAINGRID_DISTANCE: 0,
         MAINGRID_ELECTRICITY_PRICE: 0.15,
-        "maingrid_extension_cost_investment": 0,
+        MAINGRID_ELECTRICITY_COST_INVESTMENT: 0,
         "maingrid_extension_cost_opex": 0,
         "maingrid_extension_lifetime": 40,
         "maingrid_feedin_tariff": 0,
