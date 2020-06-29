@@ -648,7 +648,7 @@ def test_techno_economical_parameters_complete(experiment):
         GENSET_COST_OPEX: 0,
         GENSET_COST_VAR: 0,
         GENSET_EFFICIENCY: 0.33,
-        "genset_lifetime": 15,
+        GENSET_LIFETIME: 15,
         "genset_max_loading": 1,
         "genset_min_loading": 0,
         "genset_oversize_factor": 1.2,
