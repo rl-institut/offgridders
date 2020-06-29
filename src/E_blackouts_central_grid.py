@@ -174,7 +174,7 @@ def availability(
             + str(experiment_count)
             + ": "
             + "Blackout duration "
-            + str(blackout_experiment_s[experiment]["blackout_duration"])
+            + str(blackout_experiment_s[experiment][BLACKOUT_DURATION])
             + " hrs, "
             "blackout frequency "
             + str(blackout_experiment_s[experiment]["blackout_frequency"])
@@ -303,9 +303,9 @@ def get_time_of_blackout_events(blackout_events_per_timeframe, date_time_index):
 def get_blackout_event_durations(experiment, timestep, number_of_blackouts):
     # Generating blackout durations for the number of events
     blackout_event_durations = np.random.normal(
-        loc=experiment["blackout_duration"],  # median value: blackout duration
+        loc=experiment[BLACKOUT_DURATION],  # median value: blackout duration
         scale=experiment["blackout_frequency_std_deviation"]
-        * experiment["blackout_duration"],  # Standard deviation
+        * experiment[BLACKOUT_DURATION],  # Standard deviation
         size=number_of_blackouts,
     )  # random values for number of blackouts
 

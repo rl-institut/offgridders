@@ -51,3 +51,4 @@ SAVE_TO_CSV_FLOWS_ELECTRICITY_MG = "save_to_csv_flows_electricity_mg"
 SAVE_TO_PNG_FLOWS_ELECTRICITY_MG  = "save_to_png_flows_electricity_mg"
 
 #C_SENSITIVITY_EXPERIMENTS
+BLACKOUT_DURATION = "blackout_duration"
