@@ -683,7 +683,7 @@ def test_techno_economical_parameters_complete(experiment):
         PV_COST_VAR: 0,
         PV_LIFETIME: 20,
         RECTIFIER_AC_DC_BATCH: 1,
-        "rectifier_ac_dc_cost_investment": 0,
+        RECTIFIER_AC_DC_COST_INVESTMENT: 0,
         "rectifier_ac_dc_cost_opex": 0,
         "rectifier_ac_dc_cost_var": 0,
         "rectifier_ac_dc_efficiency": 1,
