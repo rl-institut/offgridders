@@ -201,7 +201,7 @@ def rectifier_fix(
         },
         outputs={bus_electricity_dc: solph.Flow()},
         conversion_factors={
-            bus_electricity_dc: experiment["rectifier_ac_dc_efficiency"]
+            bus_electricity_dc: experiment[RECTIFIER_AC_DC_EFFICIENCY]
         },
     )
     micro_grid_system.add(rectifier)
@@ -223,7 +223,7 @@ def rectifier_oem(
         },
         outputs={bus_electricity_dc: solph.Flow()},
         conversion_factors={
-            bus_electricity_dc: experiment["rectifier_ac_dc_efficiency"]
+            bus_electricity_dc: experiment[RECTIFIER_AC_DC_EFFICIENCY]
         },
     )
     micro_grid_system.add(rectifier)

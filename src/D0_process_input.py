@@ -359,7 +359,7 @@ def add_timeseries(experiment_s):
                     "demand_profile_ac"
                 ]
                 + experiment_s[experiment]["demand_profile_dc"]
-                / experiment_s[experiment]["rectifier_ac_dc_efficiency"]
+                / experiment_s[experiment][RECTIFIER_AC_DC_EFFICIENCY]
             }
         )
 
