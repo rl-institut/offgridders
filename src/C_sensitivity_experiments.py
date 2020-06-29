@@ -702,7 +702,7 @@ def test_techno_economical_parameters_complete(experiment):
         STORAGE_CRATE_DISCHARGE: 1,
         STORAGE_EFFICIENCY_CHARGE: 0.8,
         STORAGE_EFFICIENCY_DISCHARGE: 1,
-        "storage_loss_timestep": 0,
+        STORAGE_LOSS_TIMESTEP: 0,
         "storage_power_cost_investment": 0,
         "storage_power_cost_opex": 0,
         "storage_power_lifetime": 5,

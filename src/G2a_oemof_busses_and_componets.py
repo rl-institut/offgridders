@@ -510,7 +510,7 @@ def storage_fix(
             )
         },  # maximum discharge possible in one timestep
         capacity_loss=experiment[
-            "storage_loss_timestep"
+            STORAGE_LOSS_TIMESTEP
         ],  # from timestep to timestep
         capacity_min=experiment["storage_soc_min"],
         capacity_max=experiment["storage_soc_max"],
@@ -568,7 +568,7 @@ def storage_oem(micro_grid_system, bus_electricity_dc, experiment):
             )
         },
         capacity_loss=experiment[
-            "storage_loss_timestep"
+            STORAGE_LOSS_TIMESTEP
         ],  # from timestep to timestep
         capacity_min=experiment["storage_soc_min"],
         capacity_max=experiment["storage_soc_max"],
