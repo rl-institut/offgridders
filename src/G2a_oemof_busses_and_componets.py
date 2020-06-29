@@ -292,7 +292,7 @@ def genset_fix(
             outputs={
                 bus_electricity_ac: solph.Flow(
                     nominal_value=capacity_fuel_gen / number_of_equal_generators,
-                    variable_costs=experiment["genset_cost_var"],
+                    variable_costs=experiment[GENSET_COST_VAR],
                 )
             },
             conversion_factors={
@@ -320,7 +320,7 @@ def genset_fix_minload(
             outputs={
                 bus_electricity_ac: solph.Flow(
                     nominal_value=capacity_fuel_gen / number_of_equal_generators,
-                    variable_costs=experiment["genset_cost_var"],
+                    variable_costs=experiment[GENSET_COST_VAR],
                     min=experiment["genset_min_loading"],
                     max=experiment["genset_max_loading"],
                     nonconvex=solph.NonConvex(),
@@ -353,7 +353,7 @@ def genset_oem(
                     investment=solph.Investment(
                         ep_costs=experiment["genset_cost_annuity"]
                     ),
-                    variable_costs=experiment["genset_cost_var"],
+                    variable_costs=experiment[GENSET_COST_VAR],
                 )
             },
             conversion_factors={
