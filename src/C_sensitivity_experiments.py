@@ -710,7 +710,7 @@ def test_techno_economical_parameters_complete(experiment):
         STORAGE_SOC_MAX: 0.95,
         STORAGE_SOC_MIN: 0.3,
         TAX: 0,
-        "wacc": 0.09,
+        WACC: 0.09,
         "white_noise_demand": 0,
         "white_noise_pv": 0,
         "white_noise_wind": 0,

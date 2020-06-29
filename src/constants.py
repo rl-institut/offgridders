@@ -134,4 +134,5 @@ STORAGE_POWER_LIFETIME = "storage_power_lifetime"
 STORAGE_SOC_MAX = "storage_soc_max"
 STORAGE_SOC_MIN = "storage_soc_min"
 TAX = "tax"
+WACC = "wacc"
 
