@@ -62,8 +62,8 @@ def update_dict(capacities_oem, specific_case, experiment):
         "storage_batch_power",
         GENSET_BATCH,
         "pv_batch",
-        "pcoupling_batch",  # check entry
-        "pcoupling_batch",  # check entry
+        PCOUPLING_BATCH ,  # check entry
+        PCOUPLING_BATCH ,  # check entry
         "wind_batch",
         "rectifier_ac_dc_batch",
         INVERTER_DC_AC_BATCH,
