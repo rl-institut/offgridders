@@ -20,7 +20,7 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
--
+- `total_excess_annual_kWh` to list of output parameters. Calculation: `total_excess_annual_kWh = total_excess_ac_annual_kWh + total_excess_dc_annual` (#73)
 
 ### Changed
 -
