@@ -768,6 +768,7 @@ def overall_results_title(
                     "res_share",
                     "autonomy_factor",
                     "co2_emissions_kgCO2eq",
+                    "total_excess_annual_kWh",
                 ]
             ),
         ],
