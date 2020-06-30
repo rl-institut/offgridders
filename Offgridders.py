@@ -245,7 +245,7 @@ def main():
     # display all results
     output_names = [PROJECT_SITE_NAME, CASE]
     output_names.extend(names_sensitivities)
-    output_names.extend([LCOE, "res_share"])
+    output_names.extend([LCOE, RES_SHARE])
     logging.info(
         '\n Simulation complete. Resulting parameters saved in "results.csv". \n Overview over results:'
     )

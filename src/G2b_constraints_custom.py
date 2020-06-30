@@ -636,11 +636,11 @@ def share_test(case_dict, oemof_results, experiment):
     """
     if case_dict["renewable_share_constraint"] == True:
         boolean_test = (
-            oemof_results["res_share"] >= experiment[MIN_RENEWABLE_SHARE]
+            oemof_results[RES_SHARE] >= experiment[MIN_RENEWABLE_SHARE]
         )
         if boolean_test == False:
             deviation = (
-                experiment[MIN_RENEWABLE_SHARE] - oemof_results["res_share"]
+                experiment[MIN_RENEWABLE_SHARE] - oemof_results[RES_SHARE]
             ) / experiment[MIN_RENEWABLE_SHARE]
             if abs(deviation) < 10 ** (-6):
                 logging.warning(

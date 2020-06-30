@@ -259,7 +259,7 @@ def run(experiment, case_dict):
             + str(round(oemof_results[LCOE], 3))
             + " currency/kWh, "
             + "at a renewable share of "
-            + str(round(oemof_results["res_share"] * 100, 2))
+            + str(round(oemof_results[RES_SHARE] * 100, 2))
             + " percent"
             + " with a reliability of "
             + str(round(oemof_results[SUPPLY_RELIABILITY_KWH] * 100, 2))
@@ -291,7 +291,7 @@ def run(experiment, case_dict):
             + str(round(oemof_results[CAPACITY_GENSET_KW], 3))
             + " kW genset "
             + "at a renewable share of "
-            + str(round(oemof_results["res_share"] * 100, 2))
+            + str(round(oemof_results[RES_SHARE] * 100, 2))
             + " percent"
             + " with a reliability of "
             + str(round(oemof_results[SUPPLY_RELIABILITY_KWH] * 100, 2))

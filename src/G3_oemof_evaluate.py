@@ -745,5 +745,5 @@ def get_res_share(case_dict, oemof_results, experiment):
             "Total generation is zero. Please check energy system - is the grid available in evaluated timeframe?"
         )
 
-    oemof_results.update({"res_share": res_share})
+    oemof_results.update({RES_SHARE: res_share})
     return

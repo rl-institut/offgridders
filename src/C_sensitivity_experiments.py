@@ -765,7 +765,7 @@ def overall_results_title(
                     ANNUITY,
                     NPV,
                     SUPPLY_RELIABILITY_KWH,
-                    "res_share",
+                    RES_SHARE,
                     "autonomy_factor",
                 ]
             ),
