@@ -46,12 +46,12 @@ def project_annuities(case_dict, oemof_results, experiment):
     if oemof_results["total_demand_supplied_annual_kWh"] > 0:
         oemof_results.update(
             {
-                "lcoe": oemof_results["annuity"]
+                LCOE: oemof_results["annuity"]
                 / oemof_results["total_demand_supplied_annual_kWh"]
             }
         )
     else:
-        oemof_results.update({"lcoe": 0})
+        oemof_results.update({LCOE: 0})
     return
 
 def annuities_365(case_dict, oemof_results, experiment):

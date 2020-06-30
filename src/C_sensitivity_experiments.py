@@ -761,7 +761,7 @@ def overall_results_title(
             title_overall_results,
             pd.DataFrame(
                 columns=[
-                    "lcoe",
+                    LCOE,
                     "annuity",
                     "npv",
                     "supply_reliability_kWh",

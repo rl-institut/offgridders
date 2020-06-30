@@ -256,7 +256,7 @@ def run(experiment, case_dict):
             + "    "
             + "    "
             + "    "
-            + str(round(oemof_results["lcoe"], 3))
+            + str(round(oemof_results[LCOE], 3))
             + " currency/kWh, "
             + "at a renewable share of "
             + str(round(oemof_results["res_share"] * 100, 2))
