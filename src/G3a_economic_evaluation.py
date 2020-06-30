@@ -289,7 +289,7 @@ def expenditures_fuel(oemof_results, experiment):
     )
     oemof_results.update(
         {
-            "expenditures_fuel_annual": oemof_results[CONSUMPTION_FUEL_ANNUAL_L]
+            EXPENDITURES_FUEL_ANNUAL: oemof_results[CONSUMPTION_FUEL_ANNUAL_L]
             * experiment[PRICE_FUEL]
         }
     )
@@ -299,13 +299,13 @@ def expenditures_fuel(oemof_results, experiment):
             "operation_mantainance_expenditures": oemof_results[
                 "operation_mantainance_expenditures"
             ]
-            + oemof_results["expenditures_fuel_annual"]
+            + oemof_results[EXPENDITURES_FUEL_ANNUAL]
         }
     )
 
     oemof_results.update(
         {
-            "expenditures_fuel_total": oemof_results["expenditures_fuel_annual"]
+            "expenditures_fuel_total": oemof_results[EXPENDITURES_FUEL_ANNUAL]
             * experiment["annuity_factor"]
         }
     )
@@ -313,7 +313,7 @@ def expenditures_fuel(oemof_results, experiment):
     oemof_results.update(
         {
             ANNUITY: oemof_results[ANNUITY]
-            + oemof_results["expenditures_fuel_annual"]
+            + oemof_results[EXPENDITURES_FUEL_ANNUAL]
         }
     )
     return

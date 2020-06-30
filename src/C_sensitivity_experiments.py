@@ -871,7 +871,7 @@ def overall_results_title(
             title_overall_results,
             pd.DataFrame(
                 columns=[
-                    "expenditures_fuel_annual",
+                    EXPENDITURES_FUEL_ANNUAL,
                     "expenditures_main_grid_consumption_annual",
                     "expenditures_shortage_annual",
                     "revenue_main_grid_feedin_annual",
