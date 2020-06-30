@@ -95,7 +95,7 @@ def run(experiment, case_dict):
         oemof_results = {
             CASE: case_dict[CASE_NAME],
             "filename": "results_" + case_dict[CASE_NAME] + experiment["filename"],
-            "objective_value": meta["objective"],
+            OBJECTIVE_VALUE: meta["objective"],
             "simulation_time": meta["solver"]["Time"],
             "comments": experiment["comments"],
         }

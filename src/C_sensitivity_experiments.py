@@ -918,7 +918,7 @@ def overall_results_title(
             title_overall_results,
             pd.DataFrame(
                 columns=[
-                    "objective_value",
+                    OBJECTIVE_VALUE,
                     "simulation_time",
                     "evaluation_time",
                     "filename",
