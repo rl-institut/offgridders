@@ -408,7 +408,7 @@ def revenue_main_grid_feedin(oemof_results, experiment):
     logging.debug("Economic evaluation. Calculating feeding and revenues.")
     oemof_results.update(
         {
-            "revenue_main_grid_feedin_annual": -oemof_results[
+            REVENUE_MAIN_GRID_FEEDIN_ANNUAL: -oemof_results[
                 FEEDIN_MAIN_GRID_MG_SIDE_ANNUAL_KWH
             ]
             * experiment[MAINGRID_FEEDIN_TARIFF]
@@ -418,7 +418,7 @@ def revenue_main_grid_feedin(oemof_results, experiment):
     oemof_results.update(
         {
             "revenue_main_grid_feedin_total": oemof_results[
-                "revenue_main_grid_feedin_annual"
+                REVENUE_MAIN_GRID_FEEDIN_ANNUAL
             ]
             * experiment["annuity_factor"]
         }
@@ -427,7 +427,7 @@ def revenue_main_grid_feedin(oemof_results, experiment):
     oemof_results.update(
         {
             ANNUITY: oemof_results[ANNUITY]
-            + oemof_results["revenue_main_grid_feedin_annual"]
+            + oemof_results[REVENUE_MAIN_GRID_FEEDIN_ANNUAL]
         }
     )
     return
