@@ -854,7 +854,7 @@ def overall_results_title(
                         ANNUITY_RECTIFIER_AC_DC,
                         ANNUITY_INVERTER_DC_AC,
                         ANNUITY_WIND,
-                        "annuity_genset",
+                        ANNUITY_GENSET,
                         "annuity_pcoupling",
                         "annuity_distribution_grid",
                         "annuity_project",
