@@ -364,7 +364,7 @@ def expenditures_shortage(oemof_results, experiment):
     oemof_results.update(
         {
             "expenditures_shortage_annual": oemof_results[
-                "total_demand_shortage_annual_kWh"
+                TOTAL_DEMAND_SHORTAGE_ANNUAL_KWH
             ]
             * experiment[SHORTAGE_PENALTY_COST]
         }

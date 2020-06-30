@@ -131,7 +131,7 @@ def get_shortage(
             case_dict,
         )
         annual_value(
-            "total_demand_shortage_annual_kWh", shortage, oemof_results, case_dict
+            TOTAL_DEMAND_SHORTAGE_ANNUAL_KWH, shortage, oemof_results, case_dict
         )
         e_flows_df = join_e_flows_df(
             shortage, "Demand shortage", e_flows_df
@@ -147,7 +147,7 @@ def get_shortage(
                 ]
             }
         )
-        oemof_results.update({"total_demand_shortage_annual_kWh": 0})
+        oemof_results.update({TOTAL_DEMAND_SHORTAGE_ANNUAL_KWH: 0})
     return e_flows_df
 
 def get_excess(

@@ -783,7 +783,7 @@ def overall_results_title(
                         TOTAL_DEMAND_ANNUAL_KWH,
                         DEMAND_PEAK_KW,
                         TOTAL_DEMAND_SUPPLIED_ANNUAL_KWH,
-                        "total_demand_shortage_annual_kWh",
+                        TOTAL_DEMAND_SHORTAGE_ANNUAL_KWH,
                     ]
                 ),
             ],
