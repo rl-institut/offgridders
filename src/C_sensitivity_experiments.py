@@ -893,7 +893,7 @@ def overall_results_title(
                         COSTS_PV,
                         COSTS_STORAGE,
                         COSTS_RECTIFIER_AC_DC,
-                        "costs_inverter_dc_ac",
+                        COSTS_INVERTER_DC_AC,
                         "costs_wind",
                         "costs_genset",
                         "costs_pcoupling",
