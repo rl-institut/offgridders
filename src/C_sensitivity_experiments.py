@@ -801,7 +801,7 @@ def overall_results_title(
         'peak/mean_demand_ratio_dc'
         """
 
-    if settings["results_blackout_characteristics"] == True:
+    if settings[RESULTS_BLACKOUT_CHARACTERISTICS] == True:
         title_overall_results = pd.concat(
             [
                 title_overall_results,
