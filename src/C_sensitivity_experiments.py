@@ -897,7 +897,7 @@ def overall_results_title(
                         COSTS_WIND,
                         COSTS_GENSET,
                         COSTS_PCOUPLING,
-                        "costs_distribution_grid",
+                        COSTS_DISTRIBUTION_GRID,
                         "costs_project",
                         "first_investment",
                         "operation_mantainance_expenditures",
