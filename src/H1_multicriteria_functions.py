@@ -28,7 +28,7 @@ def evaluate_criteria(all_results, qualitative_punctuations, multicriteria_data)
     generation_components = {
         "pv": TOTAL_PV_GENERATION_KWH,
         "wind": TOTAL_WIND_GENERATION_KWH,
-        "genset": "total_genset_generation_kWh",
+        "genset": TOTAL_GENSET_GENERATION_KWH,
         "maingrid": "consumption_main_grid_mg_side_annual_kWh",
     }
 

@@ -423,13 +423,13 @@ def get_genset(case_dict, oemof_results, electricity_bus_ac, e_flows_df):
             )
             total_genset += genset
         annual_value(
-            "total_genset_generation_kWh", total_genset, oemof_results, case_dict
+            TOTAL_GENSET_GENERATION_KWH, total_genset, oemof_results, case_dict
         )
         e_flows_df = join_e_flows_df(
             total_genset, "Genset generation", e_flows_df
         )
     else:
-        oemof_results.update({"total_genset_generation_kWh": 0})
+        oemof_results.update({TOTAL_GENSET_GENERATION_KWH: 0})
 
     # Get capacity
     if case_dict["genset_fixed_capacity"] == False:
@@ -727,12 +727,12 @@ def get_national_grid(
 
 def get_res_share(case_dict, oemof_results, experiment):
     logging.debug("Evaluate: res share")
-    total_generation = oemof_results["total_genset_generation_kWh"]
+    total_generation = oemof_results[TOTAL_GENSET_GENERATION_KWH]
     total_generation += oemof_results["consumption_main_grid_mg_side_annual_kWh"]
     total_generation += oemof_results[TOTAL_PV_GENERATION_KWH]
     total_generation += oemof_results[TOTAL_WIND_GENERATION_KWH]
 
-    total_fossil_generation = oemof_results["total_genset_generation_kWh"]
+    total_fossil_generation = oemof_results[TOTAL_GENSET_GENERATION_KWH]
     # attention: only effectively used electricity consumption counts for renewable share
     total_fossil_generation += oemof_results[
         "consumption_main_grid_mg_side_annual_kWh"
