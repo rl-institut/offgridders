@@ -767,6 +767,7 @@ def overall_results_title(
                     "supply_reliability_kWh",
                     "res_share",
                     "autonomy_factor",
+                    "co2_emissions_kgCO2eq",
                 ]
             ),
         ],
