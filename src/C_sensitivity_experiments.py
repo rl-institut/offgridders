@@ -774,7 +774,7 @@ def overall_results_title(
         sort=False,
     )
 
-    if settings["results_demand_characteristics"] == True:
+    if settings[RESULTS_DEMAND_CHARACTERISTICS] == True:
         title_overall_results = pd.concat(
             [
                 title_overall_results,
