@@ -168,3 +168,4 @@ CONSUMPTION_MAIN_GRID_MG_SIDE_ANNUAL_KWH = "consumption_main_grid_mg_side_annual
 FEEDIN_MAIN_GRID_MG_SIDE_ANNUAL_KWH = "feedin_main_grid_mg_side_annual_kWh"
 RESULTS_ANNUITIES = "results_annuities"
 ANNUITY_PV = "annuity_pv"
+ANNUITY_STORAGE = "annuity_storage"
