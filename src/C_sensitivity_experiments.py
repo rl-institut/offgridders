@@ -782,7 +782,7 @@ def overall_results_title(
                     columns=[
                         TOTAL_DEMAND_ANNUAL_KWH,
                         DEMAND_PEAK_KW,
-                        "total_demand_supplied_annual_kWh",
+                        TOTAL_DEMAND_SUPPLIED_ANNUAL_KWH,
                         "total_demand_shortage_annual_kWh",
                     ]
                 ),

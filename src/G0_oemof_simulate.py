@@ -125,7 +125,7 @@ def run(experiment, case_dict):
             oemof_results.update(
                 {
                     SUPPLY_RELIABILITY_KWH: oemof_results[
-                        "total_demand_supplied_annual_kWh"
+                        TOTAL_DEMAND_SUPPLIED_ANNUAL_KWH
                     ]
                     / oemof_results[TOTAL_DEMAND_ANNUAL_KWH]
                 }

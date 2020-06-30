@@ -125,7 +125,7 @@ def get_shortage(
 
         demand_supplied = e_flows_df["Demand"] - shortage
         annual_value(
-            "total_demand_supplied_annual_kWh",
+            TOTAL_DEMAND_SUPPLIED_ANNUAL_KWH,
             demand_supplied,
             oemof_results,
             case_dict,
@@ -142,7 +142,7 @@ def get_shortage(
     else:
         oemof_results.update(
             {
-                "total_demand_supplied_annual_kWh": oemof_results[
+                TOTAL_DEMAND_SUPPLIED_ANNUAL_KWH: oemof_results[
                     TOTAL_DEMAND_ANNUAL_KWH
                 ]
             }
@@ -628,14 +628,14 @@ def get_national_grid(
             }
         )
 
-    if oemof_results["total_demand_supplied_annual_kWh"] > 0:
+    if oemof_results[TOTAL_DEMAND_SUPPLIED_ANNUAL_KWH] > 0:
         oemof_results.update(
             {
                 AUTONOMY_FACTOR: (
-                    oemof_results["total_demand_supplied_annual_kWh"]
+                    oemof_results[TOTAL_DEMAND_SUPPLIED_ANNUAL_KWH]
                     - oemof_results["consumption_main_grid_mg_side_annual_kWh"]
                 )
-                / oemof_results["total_demand_supplied_annual_kWh"]
+                / oemof_results[TOTAL_DEMAND_SUPPLIED_ANNUAL_KWH]
             }
         )
     else:

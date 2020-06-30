@@ -43,11 +43,11 @@ def project_annuities(case_dict, oemof_results, experiment):
         {NPV: oemof_results[ANNUITY] * experiment["annuity_factor"]}
     )
 
-    if oemof_results["total_demand_supplied_annual_kWh"] > 0:
+    if oemof_results[TOTAL_DEMAND_SUPPLIED_ANNUAL_KWH] > 0:
         oemof_results.update(
             {
                 LCOE: oemof_results[ANNUITY]
-                / oemof_results["total_demand_supplied_annual_kWh"]
+                / oemof_results[TOTAL_DEMAND_SUPPLIED_ANNUAL_KWH]
             }
         )
     else:
