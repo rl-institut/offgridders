@@ -88,7 +88,7 @@ def main():
 
     logging.info(
         "With these cases, a total of "
-        + str(settings["total_number_of_experiments"] * len(case_list))
+        + str(settings[TOTAL_NUMBER_OF_EXPERIMENTS] * len(case_list))
         + " simulations will be performed. \n"
     )
 
@@ -122,7 +122,7 @@ def main():
     # -----------------------------------------------------------------------------#
     # import all scripts necessary for loop
     experiment_count = 0
-    total_number_of_simulations = settings["total_number_of_experiments"] * len(
+    total_number_of_simulations = settings[TOTAL_NUMBER_OF_EXPERIMENTS] * len(
         case_list
     )
 

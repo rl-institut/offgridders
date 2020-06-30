@@ -182,7 +182,7 @@ def get(
 
     logging.info(message)
 
-    settings.update({"total_number_of_experiments": total_number_of_experiments})
+    settings.update({TOTAL_NUMBER_OF_EXPERIMENTS: total_number_of_experiments})
 
     return (
         sensitivitiy_experiment_s,
