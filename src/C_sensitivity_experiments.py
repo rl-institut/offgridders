@@ -851,7 +851,7 @@ def overall_results_title(
                     columns=[
                         ANNUITY_PV,
                         ANNUITY_STORAGE,
-                        "annuity_rectifier_ac_dc",
+                        ANNUITY_RECTIFIER_AC_DC,
                         "annuity_inverter_dc_ac",
                         "annuity_wind",
                         "annuity_genset",
