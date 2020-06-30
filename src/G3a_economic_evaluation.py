@@ -326,7 +326,7 @@ def expenditures_main_grid_consumption(oemof_results, experiment):
     oemof_results.update(
         {
             "expenditures_main_grid_consumption_annual": oemof_results[
-                "consumption_main_grid_mg_side_annual_kWh"
+                CONSUMPTION_MAIN_GRID_MG_SIDE_ANNUAL_KWH
             ]
             * experiment["maingrid_electricity_price"]
         }

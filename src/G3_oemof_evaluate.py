@@ -594,7 +594,7 @@ def get_national_grid(
             consumption_mg_side, "Consumption from main grid (MG side)", e_flows_df
         )
         annual_value(
-            "consumption_main_grid_mg_side_annual_kWh",
+            CONSUMPTION_MAIN_GRID_MG_SIDE_ANNUAL_KWH,
             consumption_mg_side,
             oemof_results,
             case_dict,
@@ -623,7 +623,7 @@ def get_national_grid(
     else:
         oemof_results.update(
             {
-                "consumption_main_grid_mg_side_annual_kWh": 0,
+                CONSUMPTION_MAIN_GRID_MG_SIDE_ANNUAL_KWH: 0,
                 "consumption_main_grid_utility_side_annual_kWh": 0,
             }
         )
@@ -633,7 +633,7 @@ def get_national_grid(
             {
                 AUTONOMY_FACTOR: (
                     oemof_results[TOTAL_DEMAND_SUPPLIED_ANNUAL_KWH]
-                    - oemof_results["consumption_main_grid_mg_side_annual_kWh"]
+                    - oemof_results[CONSUMPTION_MAIN_GRID_MG_SIDE_ANNUAL_KWH]
                 )
                 / oemof_results[TOTAL_DEMAND_SUPPLIED_ANNUAL_KWH]
             }
@@ -712,7 +712,7 @@ def get_national_grid(
     ):
         if case_dict["pcc_consumption_fixed_capacity"] != None:
             total_pcoupling_throughput_kWh += oemof_results[
-                "consumption_main_grid_mg_side_annual_kWh"
+                CONSUMPTION_MAIN_GRID_MG_SIDE_ANNUAL_KWH
             ]  # payments also for inverter loss
         if case_dict["pcc_feedin_fixed_capacity"] != None:
             total_pcoupling_throughput_kWh += oemof_results[
@@ -728,14 +728,14 @@ def get_national_grid(
 def get_res_share(case_dict, oemof_results, experiment):
     logging.debug("Evaluate: res share")
     total_generation = oemof_results[TOTAL_GENSET_GENERATION_KWH]
-    total_generation += oemof_results["consumption_main_grid_mg_side_annual_kWh"]
+    total_generation += oemof_results[CONSUMPTION_MAIN_GRID_MG_SIDE_ANNUAL_KWH]
     total_generation += oemof_results[TOTAL_PV_GENERATION_KWH]
     total_generation += oemof_results[TOTAL_WIND_GENERATION_KWH]
 
     total_fossil_generation = oemof_results[TOTAL_GENSET_GENERATION_KWH]
     # attention: only effectively used electricity consumption counts for renewable share
     total_fossil_generation += oemof_results[
-        "consumption_main_grid_mg_side_annual_kWh"
+        CONSUMPTION_MAIN_GRID_MG_SIDE_ANNUAL_KWH
     ] * (1 - experiment[MAINGRID_RENEWABLE_SHARE])
     if total_generation > 0:
         res_share = abs(1 - total_fossil_generation / total_generation)

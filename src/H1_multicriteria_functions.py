@@ -29,7 +29,7 @@ def evaluate_criteria(all_results, qualitative_punctuations, multicriteria_data)
         "pv": TOTAL_PV_GENERATION_KWH,
         "wind": TOTAL_WIND_GENERATION_KWH,
         "genset": TOTAL_GENSET_GENERATION_KWH,
-        "maingrid": "consumption_main_grid_mg_side_annual_kWh",
+        "maingrid": CONSUMPTION_MAIN_GRID_MG_SIDE_ANNUAL_KWH,
     }
 
     evaluations = {}
