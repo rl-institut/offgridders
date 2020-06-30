@@ -892,7 +892,7 @@ def overall_results_title(
                     columns=[
                         COSTS_PV,
                         COSTS_STORAGE,
-                        "costs_rectifier_ac_dc",
+                        COSTS_RECTIFIER_AC_DC,
                         "costs_inverter_dc_ac",
                         "costs_wind",
                         "costs_genset",
