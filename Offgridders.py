@@ -31,8 +31,6 @@ def main():
     )
 
     logging.info(
-        "\n \n Offgridders 3.1"
-        "\n Version: 11.10.2019 "
         "\n Coded by: Martha M. Hoffmann "
         "\n Reiner Lemoine Institute (Berlin) \n \n "
     )
