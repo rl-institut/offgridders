@@ -366,7 +366,7 @@ def availability_series(
 def extend_oemof_results(oemof_results, blackout_results):
     oemof_results.update(
         {
-            "national_grid_reliability_h": blackout_results["grid_reliability"],
+            NATIONAL_GRID_RELIABILITY_H: blackout_results["grid_reliability"],
             "national_grid_total_blackout_duration": blackout_results[
                 "grid_total_blackout_duration"
             ],

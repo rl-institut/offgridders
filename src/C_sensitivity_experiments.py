@@ -807,7 +807,7 @@ def overall_results_title(
                 title_overall_results,
                 pd.DataFrame(
                     columns=[
-                        "national_grid_reliability_h",
+                        NATIONAL_GRID_RELIABILITY_H,
                         "national_grid_total_blackout_duration",
                         "national_grid_number_of_blackouts",
                     ]
