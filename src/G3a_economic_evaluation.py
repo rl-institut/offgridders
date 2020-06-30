@@ -417,7 +417,7 @@ def revenue_main_grid_feedin(oemof_results, experiment):
 
     oemof_results.update(
         {
-            "revenue_main_grid_feedin_total": oemof_results[
+            REVENUE_MAIN_GRID_FEEDIN_TOTAL: oemof_results[
                 REVENUE_MAIN_GRID_FEEDIN_ANNUAL
             ]
             * experiment["annuity_factor"]

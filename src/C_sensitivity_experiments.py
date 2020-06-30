@@ -905,7 +905,7 @@ def overall_results_title(
                         EXPENDITURES_FUEL_TOTAL,
                         EXPENDITURES_MAIN_GRID_CONSUMPTION_TOTAL,
                         EXPENDITURES_SHORTAGE_TOTAL,
-                        "revenue_main_grid_feedin_total",
+                        REVENUE_MAIN_GRID_FEEDIN_TOTAL,
                     ]
                 ),
             ],
