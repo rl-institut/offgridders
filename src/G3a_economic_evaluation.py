@@ -161,7 +161,7 @@ def annuities_365(case_dict, oemof_results, experiment):
                 * oemof_results["capacity_" + item + "_kW"]
             )
 
-    oemof_results.update({"first_investment": investment})
+    oemof_results.update({FIRST_INVESTMENT: investment})
 
     logging.debug(
         "Economic evaluation. Calculating O&M costs over analysed timeframe."

@@ -899,7 +899,7 @@ def overall_results_title(
                         COSTS_PCOUPLING,
                         COSTS_DISTRIBUTION_GRID,
                         COSTS_PROJECT,
-                        "first_investment",
+                        FIRST_INVESTMENT,
                         "operation_mantainance_expenditures",
                         "costs_maingrid_extension",
                         "expenditures_fuel_total",
