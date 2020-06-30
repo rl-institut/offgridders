@@ -343,7 +343,7 @@ def expenditures_main_grid_consumption(oemof_results, experiment):
 
     oemof_results.update(
         {
-            "expenditures_main_grid_consumption_total": oemof_results[
+            EXPENDITURES_MAIN_GRID_CONSUMPTION_TOTAL: oemof_results[
                 EXPENDITURES_MAIN_GRID_CONSUMPTION_ANNUAL
             ]
             * experiment["annuity_factor"]
