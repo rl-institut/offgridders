@@ -826,7 +826,7 @@ def overall_results_title(
                     "capacity_storage_kWh",
                     "power_storage_kW",
                     "capacity_rectifier_ac_dc_kW",
-                    "capacity_inverter_kW",
+                    "capacity_inverter_dc_ac_kW",
                     "capacity_wind_kW",
                     "capacity_genset_kW",
                     "capacity_pcoupling_kW",
