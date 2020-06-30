@@ -192,9 +192,6 @@ def run(experiment, case_dict):
             # determine renewable share of system - not of demand, but of total generation + consumption.
             timeseries.get_res_share(case_dict, oemof_results, experiment)
 
-            # determine co2 emission of the solution (national grid side and diesel generator)
-            economic_evaluation.calculate_co2_emissions(oemof_results, experiment)
-
         except (KeyError):
             logging.error(
                 "Optimized values for a component could not be found in simulation results. \n"
@@ -245,6 +242,9 @@ def run(experiment, case_dict):
 
         # Evaluate simulated systems regarding costs
         economic_evaluation.project_annuities(case_dict, oemof_results, experiment)
+
+        # determine co2 emission of the solution (national grid side and diesel generator)
+        economic_evaluation.calculate_co2_emissions(oemof_results, experiment)
 
         duration = timeit.default_timer() - start
         oemof_results.update({"evaluation_time": round(duration, 5)})
