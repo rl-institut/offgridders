@@ -66,7 +66,7 @@ def evaluate_criteria(all_results, qualitative_punctuations, multicriteria_data)
 
             # technical evaluation
             T1 = case["autonomy_factor"]
-            T2 = case["supply_reliability_kWh"]
+            T2 = case[SUPPLY_RELIABILITY_KWH]
             T3 = linear_evaluation(
                 qualitative_punctuations, generation_components, case, "T3"
             )

@@ -764,7 +764,7 @@ def overall_results_title(
                     LCOE,
                     ANNUITY,
                     NPV,
-                    "supply_reliability_kWh",
+                    SUPPLY_RELIABILITY_KWH,
                     "res_share",
                     "autonomy_factor",
                 ]

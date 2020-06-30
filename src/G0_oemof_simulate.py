@@ -124,7 +124,7 @@ def run(experiment, case_dict):
 
             oemof_results.update(
                 {
-                    "supply_reliability_kWh": oemof_results[
+                    SUPPLY_RELIABILITY_KWH: oemof_results[
                         "total_demand_supplied_annual_kWh"
                     ]
                     / oemof_results["total_demand_annual_kWh"]
@@ -262,7 +262,7 @@ def run(experiment, case_dict):
             + str(round(oemof_results["res_share"] * 100, 2))
             + " percent"
             + " with a reliability of "
-            + str(round(oemof_results["supply_reliability_kWh"] * 100, 2))
+            + str(round(oemof_results[SUPPLY_RELIABILITY_KWH] * 100, 2))
             + " percent"
         )
         logging.info(
@@ -294,7 +294,7 @@ def run(experiment, case_dict):
             + str(round(oemof_results["res_share"] * 100, 2))
             + " percent"
             + " with a reliability of "
-            + str(round(oemof_results["supply_reliability_kWh"] * 100, 2))
+            + str(round(oemof_results[SUPPLY_RELIABILITY_KWH] * 100, 2))
             + " percent"
         )
         logging.debug("    Simulation of case " + case_dict[CASE_NAME] + " complete.")
