@@ -896,7 +896,7 @@ def overall_results_title(
                         COSTS_INVERTER_DC_AC,
                         COSTS_WIND,
                         COSTS_GENSET,
-                        "costs_pcoupling",
+                        COSTS_PCOUPLING,
                         "costs_distribution_grid",
                         "costs_project",
                         "first_investment",
