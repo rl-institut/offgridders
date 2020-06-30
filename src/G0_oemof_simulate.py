@@ -243,6 +243,9 @@ def run(experiment, case_dict):
         # Evaluate simulated systems regarding costs
         economic_evaluation.project_annuities(case_dict, oemof_results, experiment)
 
+        # determine co2 emission of the solution (national grid side and diesel generator)
+        economic_evaluation.calculate_co2_emissions(oemof_results, experiment)
+
         duration = timeit.default_timer() - start
         oemof_results.update({"evaluation_time": round(duration, 5)})
 

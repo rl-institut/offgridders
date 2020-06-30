@@ -16,6 +16,23 @@ Here is a template for new release sections
 ### Removed
 -
 ```
+## [Offgridders V4.2] - 2020-06-30
+
+
+### Added
+- `total_excess_annual_kWh` to list of output parameters. Calculation: `total_excess_annual_kWh = total_excess_ac_annual_kWh + total_excess_dc_annual` (#73)
+- Optional parameters and their default values `fuel_co2_emission_factor` (2.68 kgCO2eq/l diesel) and `maingrid_co2_emission_factor` (0.9 kgCO2eq/kWh) to input template, sheet `input_constant` and module `B` (#77)
+- Calculation of C02 emissions and new output value: `co2_emissions_kgCO2eq`. It is based on the kWh consumption from the national grid (before transfromer station losses) and diesel consumption (#77)
+
+### Changed
+-
+
+### Removed
+-
+
+### Fixed
+- Typo when calling for the inverter capacity ('capacity_inverter_dc_ac_kW' and not 'capacity_inverter_kW'), (#75)
+- Typo for unit of `maingrid_extension_lifetime` (a)
 
 ## [Offgridders V4.1] - 2020-06-30
 
@@ -25,10 +42,7 @@ Here is a template for new release sections
 ### Changed
 - Moved Wiki to Readthedocs (#41)
 - Changed class structure to modules/functions (#53)
-- Script A0 was refactored to Offgridders. It runs now through python Offgridders.py YOUR_INPUT_EXCEL_SHEET_PATH
-
-### Removed
--
+- Script A0 was refactored to Offgridders. It runs now through python Offgridders.py YOUR_INPUT_EXCEL_SHEET_PATH (#53)
 
 ### Fixed
 - Compilation of readthedocs by changing advanced settings on readthedocs.io (#59)
