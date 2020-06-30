@@ -199,3 +199,4 @@ EXPENDITURES_MAIN_GRID_CONSUMPTION_TOTAL = "expenditures_main_grid_consumption_t
 EXPENDITURES_SHORTAGE_TOTAL = "expenditures_shortage_total"
 REVENUE_MAIN_GRID_FEEDIN_TOTAL = "revenue_main_grid_feedin_total"
 OBJECTIVE_VALUE = "objective_value"
+SIMULATION_TIME = "simulation_time"

@@ -96,7 +96,7 @@ def run(experiment, case_dict):
             CASE: case_dict[CASE_NAME],
             "filename": "results_" + case_dict[CASE_NAME] + experiment["filename"],
             OBJECTIVE_VALUE: meta["objective"],
-            "simulation_time": meta["solver"]["Time"],
+            SIMULATION_TIME: meta["solver"]["Time"],
             "comments": experiment["comments"],
         }
 
@@ -267,7 +267,7 @@ def run(experiment, case_dict):
         )
         logging.info(
             "    Initial simulation time (s): "
-            + str(round(oemof_results["simulation_time"], 2))
+            + str(round(oemof_results[SIMULATION_TIME], 2))
             + " / Actual evaluation time (s): "
             + str(round(duration, 2))
         )

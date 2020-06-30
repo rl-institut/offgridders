@@ -919,7 +919,7 @@ def overall_results_title(
             pd.DataFrame(
                 columns=[
                     OBJECTIVE_VALUE,
-                    "simulation_time",
+                    SIMULATION_TIME,
                     "evaluation_time",
                     "filename",
                     "comments",
