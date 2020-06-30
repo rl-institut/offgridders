@@ -843,7 +843,7 @@ def overall_results_title(
         sort=False,
     )
 
-    if settings["results_annuities"] == True:
+    if settings[RESULTS_ANNUITIES] == True:
         title_overall_results = pd.concat(
             [
                 title_overall_results,
