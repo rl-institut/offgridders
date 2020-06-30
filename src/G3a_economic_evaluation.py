@@ -40,7 +40,7 @@ def project_annuities(case_dict, oemof_results, experiment):
         revenue_main_grid_feedin(oemof_results, experiment)
 
     oemof_results.update(
-        {"npv": oemof_results[ANNUITY] * experiment["annuity_factor"]}
+        {NPV: oemof_results[ANNUITY] * experiment["annuity_factor"]}
     )
 
     if oemof_results["total_demand_supplied_annual_kWh"] > 0:

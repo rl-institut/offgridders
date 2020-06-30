@@ -763,7 +763,7 @@ def overall_results_title(
                 columns=[
                     LCOE,
                     ANNUITY,
-                    "npv",
+                    NPV,
                     "supply_reliability_kWh",
                     "res_share",
                     "autonomy_factor",
