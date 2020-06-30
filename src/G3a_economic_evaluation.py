@@ -90,7 +90,7 @@ def annuities_365(case_dict, oemof_results, experiment):
     ):
         interval_annuity.update(
             {
-                "annuity_pcoupling": 2
+                ANNUITY_PCOUPLING: 2
                 * experiment["pcoupling_cost_annuity"]
                 * oemof_results[CAPACITY_PCOUPLING_KW]
             }
@@ -98,7 +98,7 @@ def annuities_365(case_dict, oemof_results, experiment):
     else:
         interval_annuity.update(
             {
-                "annuity_pcoupling": experiment["pcoupling_cost_annuity"]
+                ANNUITY_PCOUPLING: experiment["pcoupling_cost_annuity"]
                 * oemof_results[CAPACITY_PCOUPLING_KW]
             }
         )
