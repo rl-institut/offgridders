@@ -766,7 +766,7 @@ def overall_results_title(
                     NPV,
                     SUPPLY_RELIABILITY_KWH,
                     RES_SHARE,
-                    "autonomy_factor",
+                    AUTONOMY_FACTOR,
                 ]
             ),
         ],

@@ -631,7 +631,7 @@ def get_national_grid(
     if oemof_results["total_demand_supplied_annual_kWh"] > 0:
         oemof_results.update(
             {
-                "autonomy_factor": (
+                AUTONOMY_FACTOR: (
                     oemof_results["total_demand_supplied_annual_kWh"]
                     - oemof_results["consumption_main_grid_mg_side_annual_kWh"]
                 )
@@ -639,7 +639,7 @@ def get_national_grid(
             }
         )
     else:
-        oemof_results.update({"autonomy_factor": 0})
+        oemof_results.update({AUTONOMY_FACTOR: 0})
 
     if case_dict["pcc_feedin_fixed_capacity"] != None:
         feedin_mg_side = micro_grid_bus["sequences"][
