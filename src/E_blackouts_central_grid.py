@@ -370,7 +370,7 @@ def extend_oemof_results(oemof_results, blackout_results):
             NATIONAL_GRID_TOTAL_BLACKOUT_DURATION: blackout_results[
                 "grid_total_blackout_duration"
             ],
-            "national_grid_number_of_blackouts": blackout_results[
+            NATIONAL_GRID_NUMBER_OF_BLACKOUTS: blackout_results[
                 "grid_number_of_blackouts"
             ],
         }

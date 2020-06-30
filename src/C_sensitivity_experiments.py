@@ -809,7 +809,7 @@ def overall_results_title(
                     columns=[
                         NATIONAL_GRID_RELIABILITY_H,
                         NATIONAL_GRID_TOTAL_BLACKOUT_DURATION,
-                        "national_grid_number_of_blackouts",
+                        NATIONAL_GRID_NUMBER_OF_BLACKOUTS,
                     ]
                 ),
             ],
