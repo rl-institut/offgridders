@@ -835,7 +835,7 @@ def overall_results_title(
                     TOTAL_GENSET_GENERATION_KWH,
                     CONSUMPTION_FUEL_ANNUAL_L,
                     CONSUMPTION_MAIN_GRID_MG_SIDE_ANNUAL_KWH,
-                    "feedin_main_grid_mg_side_annual_kWh",
+                    FEEDIN_MAIN_GRID_MG_SIDE_ANNUAL_KWH,
                 ]
             ),
         ],
