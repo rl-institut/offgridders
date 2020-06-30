@@ -127,7 +127,7 @@ def run(experiment, case_dict):
                     SUPPLY_RELIABILITY_KWH: oemof_results[
                         "total_demand_supplied_annual_kWh"
                     ]
-                    / oemof_results["total_demand_annual_kWh"]
+                    / oemof_results[TOTAL_DEMAND_ANNUAL_KWH]
                 }
             )
 
