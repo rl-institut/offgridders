@@ -16,8 +16,16 @@ Here is a template for new release sections
 ### Removed
 -
 ```
-## [Offgridders V4.2] - 2020-06-30
+## [Unreleased]
 
+### Added
+-
+### Changed
+-
+### Removed
+-
+
+## [Offgridders V4.2] - 2020-06-30
 
 ### Added
 - `total_excess_annual_kWh` to list of output parameters. Calculation: `total_excess_annual_kWh = total_excess_ac_annual_kWh + total_excess_dc_annual` (#73)
