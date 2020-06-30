@@ -884,7 +884,7 @@ def overall_results_title(
 
     # Called costs because they include the operation, while they are also not the present value because
     # the variable costs are included in the oem
-    if settings["results_costs"] == True:
+    if settings[RESULTS_COSTS] == True:
         title_overall_results = pd.concat(
             [
                 title_overall_results,
