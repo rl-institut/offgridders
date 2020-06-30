@@ -890,7 +890,7 @@ def overall_results_title(
                 title_overall_results,
                 pd.DataFrame(
                     columns=[
-                        "costs_pv",
+                        COSTS_PV,
                         "costs_storage",
                         "costs_rectifier_ac_dc",
                         "costs_inverter_dc_ac",

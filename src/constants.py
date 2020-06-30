@@ -182,3 +182,4 @@ EXPENDITURES_MAIN_GRID_CONSUMPTION_ANNUAL = "expenditures_main_grid_consumption_
 EXPENDITURES_SHORTAGE_ANNUAL = "expenditures_shortage_annual"
 REVENUE_MAIN_GRID_FEEDIN_ANNUAL = "revenue_main_grid_feedin_annual"
 RESULTS_COSTS = "results_costs"
+COSTS_PV = "costs_pv"
