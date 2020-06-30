@@ -325,7 +325,7 @@ def expenditures_main_grid_consumption(oemof_results, experiment):
     # Necessary in oemof_results: consumption_main_grid_annual
     oemof_results.update(
         {
-            "expenditures_main_grid_consumption_annual": oemof_results[
+            EXPENDITURES_MAIN_GRID_CONSUMPTION_ANNUAL: oemof_results[
                 CONSUMPTION_MAIN_GRID_MG_SIDE_ANNUAL_KWH
             ]
             * experiment["maingrid_electricity_price"]
@@ -337,14 +337,14 @@ def expenditures_main_grid_consumption(oemof_results, experiment):
             "operation_mantainance_expenditures": oemof_results[
                 "operation_mantainance_expenditures"
             ]
-            + oemof_results["expenditures_main_grid_consumption_annual"]
+            + oemof_results[EXPENDITURES_MAIN_GRID_CONSUMPTION_ANNUAL]
         }
     )
 
     oemof_results.update(
         {
             "expenditures_main_grid_consumption_total": oemof_results[
-                "expenditures_main_grid_consumption_annual"
+                EXPENDITURES_MAIN_GRID_CONSUMPTION_ANNUAL
             ]
             * experiment["annuity_factor"]
         }
@@ -353,7 +353,7 @@ def expenditures_main_grid_consumption(oemof_results, experiment):
     oemof_results.update(
         {
             ANNUITY: oemof_results[ANNUITY]
-            + oemof_results["expenditures_main_grid_consumption_annual"]
+            + oemof_results[EXPENDITURES_MAIN_GRID_CONSUMPTION_ANNUAL]
         }
     )
     return
