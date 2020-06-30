@@ -767,6 +767,7 @@ def overall_results_title(
                     "supply_reliability_kWh",
                     "res_share",
                     "autonomy_factor",
+                    "total_excess_annual_kWh",
                 ]
             ),
         ],
