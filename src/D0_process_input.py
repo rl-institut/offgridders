@@ -59,7 +59,7 @@ def economic_values(experiment):
 
     if PRICE_FUEL not in experiment:
         present_value_changing_fuel_price = economics.present_value_of_changing_fuel_price(
-            experiment["fuel_price"],
+            experiment[FUEL_PRICE],
             experiment[PROJECT_LIFETIME],
             experiment[WACC],
             experiment["fuel_price_change_annual"],
@@ -72,7 +72,7 @@ def economic_values(experiment):
             + "    "
             + "    "
             + "    "
-            + 'This still works, but with values "fuel_price" and "fuel_price_change_annual" you could take into account price changes.'
+            + 'This still works, but with values FUEL_PRICE and "fuel_price_change_annual" you could take into account price changes.'
         )
 
     component_list = [

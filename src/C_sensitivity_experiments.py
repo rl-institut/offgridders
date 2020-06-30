@@ -725,7 +725,7 @@ def test_techno_economical_parameters_complete(experiment):
         if parameter not in experiment:
             if (
                 (parameter == PRICE_FUEL)
-                and ("fuel_price" in experiment)
+                and (FUEL_PRICE in experiment)
                 and ("fuel_price_change_annual" in experiment)
             ):
                 pass
