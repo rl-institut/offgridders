@@ -305,7 +305,7 @@ def expenditures_fuel(oemof_results, experiment):
 
     oemof_results.update(
         {
-            "expenditures_fuel_total": oemof_results[EXPENDITURES_FUEL_ANNUAL]
+            EXPENDITURES_FUEL_TOTAL: oemof_results[EXPENDITURES_FUEL_ANNUAL]
             * experiment["annuity_factor"]
         }
     )
