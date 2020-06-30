@@ -830,7 +830,7 @@ def overall_results_title(
                     CAPACITY_WIND_KW,
                     CAPACITY_GENSET_KW,
                     CAPACITY_PCOUPLING_KW,
-                    "total_pv_generation_kWh",
+                    TOTAL_PV_GENERATION_KWH,
                     "total_wind_generation_kWh",
                     "total_genset_generation_kWh",
                     "consumption_fuel_annual_l",
