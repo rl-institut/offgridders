@@ -1,3 +1,4 @@
+#Test
 # Configuration file for the Sphinx documentation builder.
 #
 # This file only contains a selection of the most common options. For a full
@@ -18,9 +19,9 @@ sys.path.insert(0, os.path.abspath(".."))
 
 # -- Project information -----------------------------------------------------
 
-project = "rli_template"
-copyright = "2020, Reiner Lemoine Institut"
-author = "Reiner Lemoine Institut"
+project = "Offgridders"
+copyright = "2019, Martha M. Hoffmann and Reiner Lemoine Institut"
+author = "Martha M. Hoffmann and Reiner Lemoine Institut"
 
 # The full version, including alpha/beta/rc tags
 release = "0.0.1"

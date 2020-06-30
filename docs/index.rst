@@ -4,14 +4,33 @@
    contain the root `toctree` directive.
 
 ========================================================
-Welcome to Multi-Vector Simulator (MVS)'s documentation!
+Welcome to Offgridders's documentation!
 ========================================================
 
 .. toctree::
-   Overview
+   Home
    Installation
-   Developing
-   Code
+   Definition
+   Exemplary
+   Results
+   Configuration
+   Inputs
+   Evaluation
+   Cost
+   Blackouts
+   Stability
+   Sensitivity
+   Components
+   Validity
+   Solar
+   Load
+   Example
+   Constrains
+   Oesmot_Home
+   Installation_2
+   Multicriteria_Analysis
+
+
 
 ==================
 Indices and tables
