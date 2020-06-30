@@ -17,6 +17,20 @@ Here is a template for new release sections
 -
 ```
 
+## [Unreleased]
+
+### Added
+-
+
+### Changed
+-
+
+### Removed
+-
+
+### Fixed
+-
+
 ## [Offgridders V4.1] - 2020-05-01
 
 ### Added
@@ -25,9 +39,6 @@ Here is a template for new release sections
 ### Changed
 - Moved Wiki to Readthedocs (#41)
 - Changed class structure to modules/functions (#53)
-
-### Removed
--
 
 ### Fixed
 - Compilation of readthedocs by changing advanced settings on readthedocs.io (#59)
