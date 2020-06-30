@@ -34,7 +34,7 @@ Here is a template for new release sections
 - Typo when calling for the inverter capacity ('capacity_inverter_dc_ac_kW' and not 'capacity_inverter_kW'), (#75)
 - Typo for unit of `maingrid_extension_lifetime` (a)
 
-## [Offgridders V4.1] - 2020-05-01
+## [Offgridders V4.1] - 2020-06-30
 
 ### Added
 - readthedocs.yml file (#59)
