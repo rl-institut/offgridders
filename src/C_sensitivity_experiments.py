@@ -904,7 +904,7 @@ def overall_results_title(
                         COSTS_MAINGRID_EXTENSION,
                         EXPENDITURES_FUEL_TOTAL,
                         EXPENDITURES_MAIN_GRID_CONSUMPTION_TOTAL,
-                        "expenditures_shortage_total",
+                        EXPENDITURES_SHORTAGE_TOTAL,
                         "revenue_main_grid_feedin_total",
                     ]
                 ),

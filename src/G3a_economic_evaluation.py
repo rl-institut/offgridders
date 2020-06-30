@@ -381,7 +381,7 @@ def expenditures_shortage(oemof_results, experiment):
 
     oemof_results.update(
         {
-            "expenditures_shortage_total": oemof_results[
+            EXPENDITURES_SHORTAGE_TOTAL: oemof_results[
                 EXPENDITURES_SHORTAGE_ANNUAL
             ]
             * experiment["annuity_factor"]
