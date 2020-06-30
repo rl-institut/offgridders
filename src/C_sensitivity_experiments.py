@@ -901,7 +901,7 @@ def overall_results_title(
                         COSTS_PROJECT,
                         FIRST_INVESTMENT,
                         OPERATION_MAINTAINANCE_EXPENDITURES,
-                        "costs_maingrid_extension",
+                        COSTS_MAINGRID_EXTENSION,
                         "expenditures_fuel_total",
                         "expenditures_main_grid_consumption_total",
                         "expenditures_shortage_total",
