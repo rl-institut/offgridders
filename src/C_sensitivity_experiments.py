@@ -873,7 +873,7 @@ def overall_results_title(
                 columns=[
                     EXPENDITURES_FUEL_ANNUAL,
                     EXPENDITURES_MAIN_GRID_CONSUMPTION_ANNUAL,
-                    "expenditures_shortage_annual",
+                    EXPENDITURES_SHORTAGE_ANNUAL,
                     "revenue_main_grid_feedin_annual",
                 ]
             ),

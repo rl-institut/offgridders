@@ -363,7 +363,7 @@ def expenditures_shortage(oemof_results, experiment):
     # Necessary in oemof_results: consumption_main_grid_annual
     oemof_results.update(
         {
-            "expenditures_shortage_annual": oemof_results[
+            EXPENDITURES_SHORTAGE_ANNUAL: oemof_results[
                 TOTAL_DEMAND_SHORTAGE_ANNUAL_KWH
             ]
             * experiment[SHORTAGE_PENALTY_COST]
@@ -375,14 +375,14 @@ def expenditures_shortage(oemof_results, experiment):
             "operation_mantainance_expenditures": oemof_results[
                 "operation_mantainance_expenditures"
             ]
-            + oemof_results["expenditures_shortage_annual"]
+            + oemof_results[EXPENDITURES_SHORTAGE_ANNUAL]
         }
     )
 
     oemof_results.update(
         {
             "expenditures_shortage_total": oemof_results[
-                "expenditures_shortage_annual"
+                EXPENDITURES_SHORTAGE_ANNUAL
             ]
             * experiment["annuity_factor"]
         }
@@ -392,7 +392,7 @@ def expenditures_shortage(oemof_results, experiment):
         oemof_results.update(
             {
                 ANNUITY: oemof_results[ANNUITY]
-                + oemof_results["expenditures_shortage_annual"]
+                + oemof_results[EXPENDITURES_SHORTAGE_ANNUAL]
             }
         )
     else:
