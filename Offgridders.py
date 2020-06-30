@@ -227,7 +227,7 @@ def main():
                 "    Estimated simulation time left: "
                 + str(
                     round(
-                        sum(overall_results["evaluation_time"][:])
+                        sum(overall_results[EVALUATION_TIME][:])
                         * (total_number_of_simulations - experiment_count)
                         / experiment_count
                         / 60,

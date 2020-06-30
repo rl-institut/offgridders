@@ -920,7 +920,7 @@ def overall_results_title(
                 columns=[
                     OBJECTIVE_VALUE,
                     SIMULATION_TIME,
-                    "evaluation_time",
+                    EVALUATION_TIME,
                     "filename",
                     "comments",
                 ]

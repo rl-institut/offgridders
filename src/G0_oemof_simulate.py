@@ -244,7 +244,7 @@ def run(experiment, case_dict):
         economic_evaluation.project_annuities(case_dict, oemof_results, experiment)
 
         duration = timeit.default_timer() - start
-        oemof_results.update({"evaluation_time": round(duration, 5)})
+        oemof_results.update({EVALUATION_TIME: round(duration, 5)})
 
         # Infos on simulation
         logging.info(
