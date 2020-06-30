@@ -898,7 +898,7 @@ def overall_results_title(
                         COSTS_GENSET,
                         COSTS_PCOUPLING,
                         COSTS_DISTRIBUTION_GRID,
-                        "costs_project",
+                        COSTS_PROJECT,
                         "first_investment",
                         "operation_mantainance_expenditures",
                         "costs_maingrid_extension",
