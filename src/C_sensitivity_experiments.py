@@ -762,7 +762,7 @@ def overall_results_title(
             pd.DataFrame(
                 columns=[
                     LCOE,
-                    "annuity",
+                    ANNUITY,
                     "npv",
                     "supply_reliability_kWh",
                     "res_share",

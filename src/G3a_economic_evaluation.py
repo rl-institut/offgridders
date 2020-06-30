@@ -40,13 +40,13 @@ def project_annuities(case_dict, oemof_results, experiment):
         revenue_main_grid_feedin(oemof_results, experiment)
 
     oemof_results.update(
-        {"npv": oemof_results["annuity"] * experiment["annuity_factor"]}
+        {"npv": oemof_results[ANNUITY] * experiment["annuity_factor"]}
     )
 
     if oemof_results["total_demand_supplied_annual_kWh"] > 0:
         oemof_results.update(
             {
-                LCOE: oemof_results["annuity"]
+                LCOE: oemof_results[ANNUITY]
                 / oemof_results["total_demand_supplied_annual_kWh"]
             }
         )
@@ -239,11 +239,11 @@ def annuities_365(case_dict, oemof_results, experiment):
                 }
             )
 
-    oemof_results.update({"annuity": 0})
+    oemof_results.update({ANNUITY: 0})
 
     for item in component_list:
         oemof_results.update(
-            {"annuity": oemof_results["annuity"] + oemof_results["annuity_" + item]}
+            {ANNUITY: oemof_results[ANNUITY] + oemof_results["annuity_" + item]}
         )
 
     return
@@ -312,7 +312,7 @@ def expenditures_fuel(oemof_results, experiment):
 
     oemof_results.update(
         {
-            "annuity": oemof_results["annuity"]
+            ANNUITY: oemof_results[ANNUITY]
             + oemof_results["expenditures_fuel_annual"]
         }
     )
@@ -352,7 +352,7 @@ def expenditures_main_grid_consumption(oemof_results, experiment):
 
     oemof_results.update(
         {
-            "annuity": oemof_results["annuity"]
+            ANNUITY: oemof_results[ANNUITY]
             + oemof_results["expenditures_main_grid_consumption_annual"]
         }
     )
@@ -391,7 +391,7 @@ def expenditures_shortage(oemof_results, experiment):
     if experiment["include_shortage_penalty_costs_in_lcoe"] == True:
         oemof_results.update(
             {
-                "annuity": oemof_results["annuity"]
+                ANNUITY: oemof_results[ANNUITY]
                 + oemof_results["expenditures_shortage_annual"]
             }
         )
@@ -426,7 +426,7 @@ def revenue_main_grid_feedin(oemof_results, experiment):
 
     oemof_results.update(
         {
-            "annuity": oemof_results["annuity"]
+            ANNUITY: oemof_results[ANNUITY]
             + oemof_results["revenue_main_grid_feedin_annual"]
         }
     )
