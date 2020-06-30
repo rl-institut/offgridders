@@ -546,7 +546,7 @@ def test_warning(ratio_below_zero, oemof_results, boolean_test):
         )
         oemof_results.update(
             {
-                "comments": oemof_results["comments"]
+                COMMENTS: oemof_results[COMMENTS]
                 + "Stability criterion not fullfilled (max deviation "
                 + str(round(100 * ratio_below_zero.values.min(), 4))
                 + "%). "
@@ -652,7 +652,7 @@ def share_test(case_dict, oemof_results, experiment):
                 )
                 oemof_results.update(
                     {
-                        "comments": oemof_results["comments"]
+                        COMMENTS: oemof_results[COMMENTS]
                         + "Renewable share criterion not fullfilled. "
                     }
                 )
@@ -789,7 +789,7 @@ def forced_charge_test(case_dict, oemof_results, experiment, e_flows_df):
                 )
                 oemof_results.update(
                     {
-                        "comments": oemof_results["comments"]
+                        COMMENTS: oemof_results[COMMENTS]
                         + "Forced battery charge criterion not fullfilled. "
                     }
                 )
@@ -867,7 +867,7 @@ def discharge_only_at_blackout_test(case_dict, oemof_results, e_flows_df):
                 logging.warning("ATTENTION: Battery charge when grid available!")
                 oemof_results.update(
                     {
-                        "comments": oemof_results["comments"]
+                        COMMENTS: oemof_results[COMMENTS]
                         + "Limitation of battery discharge to blackout not fullfilled. "
                     }
                 )
@@ -939,7 +939,7 @@ def inverter_only_at_blackout_test(case_dict, oemof_results, e_flows_df):
                 logging.warning("ATTENTION: Inverter use when grid available!")
                 oemof_results.update(
                     {
-                        "comments": oemof_results["comments"]
+                        COMMENTS: oemof_results[COMMENTS]
                         + "Inverter use when grid available. "
                     }
                 )

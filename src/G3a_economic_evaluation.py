@@ -398,7 +398,7 @@ def expenditures_shortage(oemof_results, experiment):
     else:
         oemof_results.update(
             {
-                "comments": oemof_results["comments"]
+                COMMENTS: oemof_results[COMMENTS]
                 + "Shortage penalty costs used in OEM not included in LCOE. "
             }
         )

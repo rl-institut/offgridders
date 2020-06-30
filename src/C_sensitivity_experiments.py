@@ -115,8 +115,8 @@ def get(
             number_of_project_sites,
         )
 
-        if "comments" not in sensitivitiy_experiment_s[experiment]:
-            sensitivitiy_experiment_s[experiment].update({"comments": ""})
+        if COMMENTS not in sensitivitiy_experiment_s[experiment]:
+            sensitivitiy_experiment_s[experiment].update({COMMENTS: ""})
 
         if sensitivitiy_experiment_s[experiment][STORAGE_SOC_INITIAL] == "None":
             sensitivitiy_experiment_s[experiment].update(
@@ -517,7 +517,7 @@ def combinations_around_base(
                         )
                         defined_base = True
                         sensitivity_experiment_s[experiment_number].update(
-                            {"comments": "Base case, "}
+                            {COMMENTS: "Base case, "}
                         )
 
     total_number_of_experiments = experiment_number
@@ -568,7 +568,7 @@ def experiment_name(experiment, sensitivity_array_dict, number_of_project_sites)
     # is no sensitivity analysis performed, do not add filename
     if filename == "_s":
         filename = ""
-    experiment.update({"filename": filename})
+    experiment.update({FILENAME: filename})
     return
 
 def constants_project_sites(parameters_constant_values, project_sites):
@@ -921,8 +921,8 @@ def overall_results_title(
                     OBJECTIVE_VALUE,
                     SIMULATION_TIME,
                     EVALUATION_TIME,
-                    "filename",
-                    "comments",
+                    FILENAME,
+                    COMMENTS,
                 ]
             ),
         ],

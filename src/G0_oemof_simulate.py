@@ -55,7 +55,7 @@ def run(experiment, case_dict):
         """
         start = timeit.default_timer()
 
-        file_name = case_dict["filename"]
+        file_name = case_dict[FILENAME]
 
         # For restoring .oemof results if that is possible (speeding up computation time)
         if (
@@ -94,10 +94,10 @@ def run(experiment, case_dict):
 
         oemof_results = {
             CASE: case_dict[CASE_NAME],
-            "filename": "results_" + case_dict[CASE_NAME] + experiment["filename"],
+            FILENAME: "results_" + case_dict[CASE_NAME] + experiment[FILENAME],
             OBJECTIVE_VALUE: meta["objective"],
             SIMULATION_TIME: meta["solver"]["Time"],
-            "comments": experiment["comments"],
+            COMMENTS: experiment[COMMENTS],
         }
 
         electricity_bus_ac = outputlib.views.node(results, "bus_electricity_ac")
@@ -227,8 +227,8 @@ def run(experiment, case_dict):
         constraints_custom.inverter_only_at_blackout_test(case_dict, oemof_results, e_flows_df)
 
         # Generate output (csv, png) for energy/storage flows
-        output.save_mg_flows(experiment, case_dict, e_flows_df, experiment["filename"])
-        output.save_storage(experiment, case_dict, e_flows_df, experiment["filename"])
+        output.save_mg_flows(experiment, case_dict, e_flows_df, experiment[FILENAME])
+        output.save_storage(experiment, case_dict, e_flows_df, experiment[FILENAME])
 
         # print meta/main results in command window
         if electricity_bus_ac != None:

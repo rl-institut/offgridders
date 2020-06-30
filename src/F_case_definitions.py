@@ -24,9 +24,9 @@ def update_dict(capacities_oem, specific_case, experiment):
     experiment_case_dict.update(
         {
             CASE_NAME: specific_case[CASE_NAME],
-            "filename": specific_case[CASE_NAME]
+            FILENAME: specific_case[CASE_NAME]
             + experiment[
-                "filename"
+                FILENAME
             ],  # experiment['output_folder'] + "_" + specific_case['case_name'] + experiment['filename']
             "total_demand_ac": experiment["total_demand_ac"],
             "total_demand_dc": experiment["total_demand_dc"],

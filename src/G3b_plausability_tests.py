@@ -67,7 +67,7 @@ def charge_discharge(oemof_results, e_flows_df):
             )
             oemof_results.update(
                 {
-                    "comments": oemof_results["comments"]
+                    COMMENTS: oemof_results[COMMENTS]
                     + "Charge and discharge of batteries at the same time. "
                 }
             )
@@ -108,7 +108,7 @@ def demand_supply_shortage(oemof_results, e_flows_df):
             )
             oemof_results.update(
                 {
-                    "comments": oemof_results["comments"]
+                    COMMENTS: oemof_results[COMMENTS]
                     + "Demand not fully supplied but no shortage. "
                 }
             )
@@ -140,7 +140,7 @@ def feedin_consumption(oemof_results, e_flows_df):
             )
             oemof_results.update(
                 {
-                    "comments": oemof_results["comments"]
+                    COMMENTS: oemof_results[COMMENTS]
                     + "Feedin to and consumption from national grid at the same time. "
                 }
             )
@@ -172,7 +172,7 @@ def gridavailability_feedin(oemof_results, e_flows_df):
             )
             oemof_results.update(
                 {
-                    "comments": oemof_results["comments"]
+                    COMMENTS: oemof_results[COMMENTS]
                     + "Feedin to national grid during blackout. "
                 }
             )
@@ -204,7 +204,7 @@ def gridavailability_consumption(oemof_results, e_flows_df):
             )
             oemof_results.update(
                 {
-                    "comments": oemof_results["comments"]
+                    COMMENTS: oemof_results[COMMENTS]
                     + "Consumption from national grid during blackout. "
                 }
             )
@@ -236,7 +236,7 @@ def excess_shortage(oemof_results, e_flows_df):
             )
             oemof_results.update(
                 {
-                    "comments": oemof_results["comments"]
+                    COMMENTS: oemof_results[COMMENTS]
                     + "Excess and shortage at the same time. "
                 }
             )
@@ -279,7 +279,7 @@ def excess_feedin(oemof_results, e_flows_df):
             )
             oemof_results.update(
                 {
-                    "comments": oemof_results["comments"]
+                    COMMENTS: oemof_results[COMMENTS]
                     + "Excess while feedin not maximal."
                 }
             )

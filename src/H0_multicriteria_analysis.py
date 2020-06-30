@@ -210,7 +210,7 @@ def presentation(overallresults, parameters):
     for project in overallresults:
         all_results[project] = {}
         for experiment in experiments2analyse:
-            filename = overallresults[project]["filename"][experiment]
+            filename = overallresults[project][FILENAME][experiment]
             all_results[project][filename] = {}
             for element in overallresults[project]:
                 all_results[project][filename][element] = overallresults[project][

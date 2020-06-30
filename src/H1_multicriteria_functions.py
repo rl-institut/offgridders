@@ -100,7 +100,7 @@ def evaluate_criteria(all_results, qualitative_punctuations, multicriteria_data)
             environmental = {"EN1": EN1, "EN2": EN2, "EN3": EN3}
             case_evaluations["environmental"] = environmental
 
-            project_evaluations[case["filename"]] = case_evaluations
+            project_evaluations[case[FILENAME]] = case_evaluations
 
         evaluations[number] = project_evaluations
         capacities[number] = project_capacities
