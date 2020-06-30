@@ -849,7 +849,7 @@ def overall_results_title(
                 title_overall_results,
                 pd.DataFrame(
                     columns=[
-                        "annuity_pv",
+                        ANNUITY_PV,
                         "annuity_storage",
                         "annuity_rectifier_ac_dc",
                         "annuity_inverter_dc_ac",

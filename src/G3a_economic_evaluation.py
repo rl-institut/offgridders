@@ -62,7 +62,7 @@ def annuities_365(case_dict, oemof_results, experiment):
     )
 
     interval_annuity = {
-        "annuity_pv": experiment["pv_cost_annuity"]
+        ANNUITY_PV: experiment["pv_cost_annuity"]
         * oemof_results[CAPACITY_PV_KWP],
         "annuity_wind": experiment["wind_cost_annuity"]
         * oemof_results[CAPACITY_WIND_KW],
