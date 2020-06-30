@@ -17,7 +17,7 @@ Here is a template for new release sections
 -
 ```
 
-## [Offgridders V4.1] - 2020-05-01
+## [Offgridders V4.1] - 2020-06-30
 
 ### Added
 - readthedocs.yml file (#59)
