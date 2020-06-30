@@ -858,7 +858,7 @@ def overall_results_title(
                         ANNUITY_PCOUPLING,
                         ANNUITY_DISTRIBUTION_GRID,
                         ANNUITY_PROJECT,
-                        "annuity_maingrid_extension",
+                        ANNUITY_MAINGRID_EXTENSION,
                     ]
                 ),
             ],

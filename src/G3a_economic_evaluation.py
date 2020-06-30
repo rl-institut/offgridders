@@ -110,14 +110,14 @@ def annuities_365(case_dict, oemof_results, experiment):
     ):
         interval_annuity.update(
             {
-                "annuity_maingrid_extension": experiment[
+                ANNUITY_MAINGRID_EXTENSION: experiment[
                     "maingrid_extension_cost_annuity"
                 ]
                 * experiment[MAINGRID_DISTANCE]
             }
         )
     else:
-        interval_annuity.update({"annuity_maingrid_extension": 0})
+        interval_annuity.update({ANNUITY_MAINGRID_EXTENSION: 0})
 
     component_list = [
         "pv",
