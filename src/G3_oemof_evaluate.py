@@ -66,7 +66,7 @@ def get_demand(
     annual_value(
         TOTAL_DEMAND_ANNUAL_KWH, e_flows_df["Demand"], oemof_results, case_dict
     )
-    oemof_results.update({"demand_peak_kW": max(e_flows_df["Demand"])})
+    oemof_results.update({DEMAND_PEAK_KW: max(e_flows_df["Demand"])})
     return e_flows_df
 
 def get_shortage(

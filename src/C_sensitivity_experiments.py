@@ -781,7 +781,7 @@ def overall_results_title(
                 pd.DataFrame(
                     columns=[
                         TOTAL_DEMAND_ANNUAL_KWH,
-                        "demand_peak_kW",
+                        DEMAND_PEAK_KW,
                         "total_demand_supplied_annual_kWh",
                         "total_demand_shortage_annual_kWh",
                     ]
