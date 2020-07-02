@@ -16,20 +16,12 @@ Here is a template for new release sections
 ### Removed
 -
 ```
-## [Unreleased]
 
-### Added
--
-### Changed
--
-### Removed
--
+## [Offgridders V4.3] - 2020-07-02
 
 ### Fixed
 - Faulty function calls from module structure change: 'get_universal_parameters',
 'get_combinations_around_base', 'get_number_of_blackouts' (#86)
-
-()
 
 ## [Offgridders V4.2] - 2020-06-30
 
