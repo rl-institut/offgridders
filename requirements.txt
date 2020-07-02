@@ -15,7 +15,7 @@ oemof==0.2.2
 pandas==0.23.4
 pip==19.0.2
 ply==3.11
-Pyomo==5.7.0
+Pyomo==5.6.0
 pyparsing==2.2.2
 python-dateutil==2.7.3
 pytz==2018.5
