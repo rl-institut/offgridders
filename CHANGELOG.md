@@ -21,9 +21,12 @@ Here is a template for new release sections
 ### Added
 -
 ### Changed
--
+- Update `requirements.txt`: Pyomo version number (#84)
+
 ### Removed
 -
+
+### Fixed
 
 ## [Offgridders V4.2] - 2020-06-30
 
