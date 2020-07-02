@@ -247,7 +247,7 @@ def with_base_case(
         parameters_constant_values, project_site_s
     )
 
-    universal_parameters, number_of_project_sites = get.universal_parameters(
+    universal_parameters, number_of_project_sites = get_universal_parameters(
         settings, parameters_constant_values, parameters_sensitivity, project_site_s
     )
 
