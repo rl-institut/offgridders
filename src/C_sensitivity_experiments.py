@@ -247,7 +247,7 @@ def with_base_case(
         parameters_constant_values, project_site_s
     )
 
-    universal_parameters, number_of_project_sites = get.universal_parameters(
+    universal_parameters, number_of_project_sites = get_universal_parameters(
         settings, parameters_constant_values, parameters_sensitivity, project_site_s
     )
 
@@ -259,7 +259,7 @@ def with_base_case(
     (
         sensitivity_experiment_s,
         total_number_of_experiments,
-    ) = get.combinations_around_base(
+    ) = get_combinations_around_base(
         sensitivity_array_dict, universal_parameters, project_site_s
     )
 
@@ -444,7 +444,7 @@ def get_all_possible_combinations(sensitivity_array_dict, name_entry_dict):
 
     return sensitivity_experiment_s, total_number_of_experiments
 
-def combinations_around_base(
+def get_combinations_around_base(
     sensitivity_array_dict, universal_parameters, project_site_s
 ):
 
