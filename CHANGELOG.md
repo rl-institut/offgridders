@@ -56,7 +56,7 @@ Here is a template for new release sections
 ### Changed
 - Moved Wiki to Readthedocs (#41)
 - Changed class structure to modules/functions (#53)
-- Script A0 was refactored to Offgridders. It runs now through python Offgridders.py YOUR_INPUT_EXCEL_SHEET_PATH (#53)
+- Script A0 was refactored to Offgridders. It runs now through `python Offgridders.py YOUR_INPUT_EXCEL_SHEET_PATH` (#53)
 
 ### Fixed
 - Compilation of readthedocs by changing advanced settings on readthedocs.io (#59)
