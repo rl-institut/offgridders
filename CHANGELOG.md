@@ -15,7 +15,19 @@ Here is a template for new release sections
 -
 ### Removed
 -
+### Fixed
+-
 ```
+## [Unreleased]
+
+### Added
+-
+### Changed
+-
+### Removed
+-
+### Fixed
+-
 
 ## [Offgridders V4.3] - 2020-07-02
 
