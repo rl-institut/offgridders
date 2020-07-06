@@ -169,7 +169,7 @@ def add_timeseries(experiment_s):
 
     for experiment in experiment_s:
         index = experiment_s[experiment][DATE_TIME_INDEX]
-        if experiment_s[experiment]["file_index"] != None:
+        if experiment_s[experiment][FILE_INDEX] != None:
             if DEMAND_AC in experiment_s[experiment]:
                 year_timeseries_in_file = (
                     experiment_s[experiment][DEMAND_AC].index[0].year
@@ -190,19 +190,19 @@ def add_timeseries(experiment_s):
                 # shift to fileindex of data sets to analysed year
                 demand_ac = pd.Series(
                     experiment_s[experiment][DEMAND_AC].values,
-                    index=experiment_s[experiment]["file_index"],
+                    index=experiment_s[experiment][FILE_INDEX],
                 )
                 demand_dc = pd.Series(
                     experiment_s[experiment][DEMAND_DC].values,
-                    index=experiment_s[experiment]["file_index"],
+                    index=experiment_s[experiment][FILE_INDEX],
                 )
                 pv_generation_per_kWp = pd.Series(
                     experiment_s[experiment][PV_GENERATION_PER_KWP].values,
-                    index=experiment_s[experiment]["file_index"],
+                    index=experiment_s[experiment][FILE_INDEX],
                 )
                 wind_generation_per_kW = pd.Series(
                     experiment_s[experiment][WIND_GENERATION_PER_KW].values,
-                    index=experiment_s[experiment]["file_index"],
+                    index=experiment_s[experiment][FILE_INDEX],
                 )
                 # from provided data use only analysed timeframe
                 experiment_s[experiment].update(
@@ -221,7 +221,7 @@ def add_timeseries(experiment_s):
                 if GRID_AVAILABILITY in experiment_s[experiment].keys():
                     grid_availability = pd.Series(
                         experiment_s[experiment][GRID_AVAILABILITY].values,
-                        index=experiment_s[experiment]["file_index"],
+                        index=experiment_s[experiment][FILE_INDEX],
                     )
                     experiment_s[experiment].update(
                         {GRID_AVAILABILITY: grid_availability[index]}
@@ -231,7 +231,7 @@ def add_timeseries(experiment_s):
                 # file index is date time index, no change necessary
                 pass
 
-        elif experiment_s[experiment]["file_index"] == None:
+        elif experiment_s[experiment][FILE_INDEX] == None:
             # limit based on index
             experiment_s[experiment].update(
                 {
@@ -288,7 +288,7 @@ def add_timeseries(experiment_s):
 
         else:
             logging.warning(
-                'Project site value "file_index" neither None not non-None.'
+                'Project site value FILE_INDEX neither None not non-None.'
             )
 
         # Used for generation of lp file with only 3-timesteps = Useful to verify optimized equations

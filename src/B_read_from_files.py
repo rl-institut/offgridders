@@ -331,7 +331,7 @@ def from_file(project_site, path_from):
                     column_not_existant(
                         column_item, project_site[column_item], path_from
                     )
-            project_site.update({"file_index": file_index})
+            project_site.update({FILE_INDEX: file_index})
 
         else:
             if column_item ==TITLE_DEMAND_AC:
