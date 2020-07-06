@@ -22,11 +22,11 @@ def backup(
     stability_limit = experiment[SHORTAGE_LIMIT]
     ## ------- Get CAP genset ------- #
     CAP_genset = 0
-    if case_dict["genset_fixed_capacity"] != None:
-        if case_dict["genset_fixed_capacity"] == False:
+    if case_dict[GENSET_FIXED_CAPACITY] != None:
+        if case_dict[GENSET_FIXED_CAPACITY] == False:
             for number in range(1, case_dict[NUMBER_OF_EQUAL_GENERATORS] + 1):
                 CAP_genset += model.InvestmentFlow.invest[genset[number], el_bus_ac]
-        elif isinstance(case_dict["genset_fixed_capacity"], float):
+        elif isinstance(case_dict[GENSET_FIXED_CAPACITY], float):
             for number in range(1, case_dict[NUMBER_OF_EQUAL_GENERATORS] + 1):
                 CAP_genset += model.flows[genset[number], el_bus_ac].nominal_value
 
@@ -238,7 +238,7 @@ def hybrid(
             expr += +stability_limit * shortage
 
         ## ------- Generation Diesel ------- #
-        if case_dict["genset_fixed_capacity"] != None:
+        if case_dict[GENSET_FIXED_CAPACITY] != None:
             for number in range(1, case_dict[NUMBER_OF_EQUAL_GENERATORS] + 1):
                 expr += model.flow[genset[number], el_bus_ac, t]
 
@@ -291,7 +291,7 @@ def hybrid(
             expr += +stability_limit * shortage
 
         ## ------- Generation Diesel ------- #
-        if case_dict["genset_fixed_capacity"] != None:
+        if case_dict[GENSET_FIXED_CAPACITY] != None:
             for number in range(1, case_dict[NUMBER_OF_EQUAL_GENERATORS] + 1):
                 expr += model.flow[genset[number], el_bus_ac, t]
 
@@ -437,7 +437,7 @@ def usage(
             expr += stability_limit * shortage
 
         ## ------- Generation Diesel ------- #
-        if case_dict["genset_fixed_capacity"] != None:
+        if case_dict[GENSET_FIXED_CAPACITY] != None:
             for number in range(1, case_dict[NUMBER_OF_EQUAL_GENERATORS] + 1):
                 expr += model.flow[genset[number], el_bus, t]
 

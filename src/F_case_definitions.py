@@ -71,7 +71,7 @@ def update_dict(capacities_oem, specific_case, experiment):
     list_build_oemof_names = [
         STORAGE_FIXED_CAPACITY,
         STORAGE_FIXED_POWER,
-        "genset_fixed_capacity",
+        GENSET_FIXED_CAPACITY,
         "pv_fixed_capacity",
         "pcc_consumption_fixed_capacity",
         "pcc_feedin_fixed_capacity",

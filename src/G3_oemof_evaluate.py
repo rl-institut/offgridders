@@ -403,7 +403,7 @@ def get_wind(
 def get_genset(case_dict, oemof_results, electricity_bus_ac, e_flows_df):
     logging.debug("Evaluate flow: genset")
     # Get flow
-    if case_dict["genset_fixed_capacity"] != None:
+    if case_dict[GENSET_FIXED_CAPACITY] != None:
         genset = electricity_bus_ac["sequences"][
             (("transformer_genset_1", "bus_electricity_ac"), "flow")
         ]
@@ -432,7 +432,7 @@ def get_genset(case_dict, oemof_results, electricity_bus_ac, e_flows_df):
         oemof_results.update({TOTAL_GENSET_GENERATION_KWH: 0})
 
     # Get capacity
-    if case_dict["genset_fixed_capacity"] == False:
+    if case_dict[GENSET_FIXED_CAPACITY] == False:
         # Optimized generator capacity (sum)
         genset_capacity = 0
         for number in range(1, case_dict[NUMBER_OF_EQUAL_GENERATORS] + 1):
@@ -443,17 +443,17 @@ def get_genset(case_dict, oemof_results, electricity_bus_ac, e_flows_df):
                 )
             ]
         oemof_results.update({CAPACITY_GENSET_KW: genset_capacity})
-    elif isinstance(case_dict["genset_fixed_capacity"], float):
+    elif isinstance(case_dict[GENSET_FIXED_CAPACITY], float):
         oemof_results.update(
-            {CAPACITY_GENSET_KW: case_dict["genset_fixed_capacity"]}
+            {CAPACITY_GENSET_KW: case_dict[GENSET_FIXED_CAPACITY]}
         )
-    elif case_dict["genset_fixed_capacity"] == None:
+    elif case_dict[GENSET_FIXED_CAPACITY] == None:
         oemof_results.update({CAPACITY_GENSET_KW: 0})
     return e_flows_df
 
 def get_fuel(case_dict, oemof_results, results):
     logging.debug("Evaluate flow: fuel")
-    if case_dict["genset_fixed_capacity"] != None:
+    if case_dict[GENSET_FIXED_CAPACITY] != None:
         fuel_bus = outputlib.views.node(results, "bus_fuel")
         fuel = fuel_bus["sequences"][(("source_fuel", "bus_fuel"), "flow")]
         annual_value(

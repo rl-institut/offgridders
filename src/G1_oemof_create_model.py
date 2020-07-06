@@ -47,16 +47,16 @@ def build(experiment, case_dict):
     )
 
     # ------------fuel source------------#
-    if case_dict["genset_fixed_capacity"] != None:
+    if case_dict[GENSET_FIXED_CAPACITY] != None:
         logging.debug("Added to oemof model: Fuel bus")
         bus_fuel = solph.Bus(label="bus_fuel")
         micro_grid_system.add(bus_fuel)
         generate.fuel(micro_grid_system, bus_fuel, experiment)
 
     # ------------genset------------#
-    if case_dict["genset_fixed_capacity"] == None:
+    if case_dict[GENSET_FIXED_CAPACITY] == None:
         genset = None
-    elif case_dict["genset_fixed_capacity"] == False:
+    elif case_dict[GENSET_FIXED_CAPACITY] == False:
         if case_dict[GENSET_WITH_MINIMAL_LOADING] == True:
             # not possible with oemof
             logging.error(
@@ -77,14 +77,14 @@ def build(experiment, case_dict):
                 case_dict[NUMBER_OF_EQUAL_GENERATORS],
             )
 
-    elif isinstance(case_dict["genset_fixed_capacity"], float):
+    elif isinstance(case_dict[GENSET_FIXED_CAPACITY], float):
         if case_dict[GENSET_WITH_MINIMAL_LOADING] == True:
             genset = generate.genset_fix_minload(
                 micro_grid_system,
                 bus_fuel,
                 bus_electricity_ac,
                 experiment,
-                capacity_fuel_gen=case_dict["genset_fixed_capacity"],
+                capacity_fuel_gen=case_dict[GENSET_FIXED_CAPACITY],
                 number_of_equal_generators=case_dict[NUMBER_OF_EQUAL_GENERATORS],
             )
         else:
@@ -93,7 +93,7 @@ def build(experiment, case_dict):
                 bus_fuel,
                 bus_electricity_ac,
                 experiment,
-                capacity_fuel_gen=case_dict["genset_fixed_capacity"],
+                capacity_fuel_gen=case_dict[GENSET_FIXED_CAPACITY],
                 number_of_equal_generators=case_dict[NUMBER_OF_EQUAL_GENERATORS],
             )
     else:
