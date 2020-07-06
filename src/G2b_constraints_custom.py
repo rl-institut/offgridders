@@ -906,7 +906,7 @@ def inverter_only_at_blackout_test(case_dict, oemof_results, e_flows_df):
     """
 
     if (
-        case_dict["enable_inverter_only_at_backout"] == True
+        case_dict[ENABLE_INVERTER_ONLY_AT_BLACKOUT] == True
         and case_dict[INVERTER_DC_AC_FIXED_CAPACITY] != None
     ):
         boolean_test = [

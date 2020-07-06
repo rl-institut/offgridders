@@ -433,9 +433,9 @@ def build(experiment, case_dict):
         )
 
     # ------------Allow inverter use only at maingrid blackout------------#
-    if case_dict["enable_inverter_only_at_backout"] == False:
+    if case_dict[ENABLE_INVERTER_ONLY_AT_BLACKOUT] == False:
         pass
-    elif case_dict["enable_inverter_only_at_backout"] == True:
+    elif case_dict[ENABLE_INVERTER_ONLY_AT_BLACKOUT] == True:
         logging.info(
             "Added constraint: Allowing inverter use only at blackout times."
         )
