@@ -466,7 +466,7 @@ def get_fuel(case_dict, oemof_results, results):
 def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
     logging.debug("Evaluate flow: storage")
     # Get flow
-    if case_dict["storage_fixed_capacity"] != None:
+    if case_dict[STORAGE_FIXED_CAPACITY] != None:
         storage = outputlib.views.node(results, "generic_storage")
         storage_discharge = storage["sequences"][
             (("generic_storage", "bus_electricity_dc"), "flow")
@@ -519,7 +519,7 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
         oemof_results.update({"total_storage_throughput_kWh": 0})
 
     # Get capacity
-    if case_dict["storage_fixed_capacity"] == False:
+    if case_dict[STORAGE_FIXED_CAPACITY] == False:
         # Optimized storage capacity
         storage = outputlib.views.node(results, "generic_storage")
         storage_capacity = storage["scalars"][
@@ -538,15 +538,15 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
             }
         )
 
-    elif isinstance(case_dict["storage_fixed_capacity"], float):
+    elif isinstance(case_dict[STORAGE_FIXED_CAPACITY], float):
         oemof_results.update(
             {
-                CAPACITY_STORAGE_KWH: case_dict["storage_fixed_capacity"],
+                CAPACITY_STORAGE_KWH: case_dict[STORAGE_FIXED_CAPACITY],
                 POWER_STORAGE_KW: case_dict["storage_fixed_power"],
             }
         )
 
-    elif case_dict["storage_fixed_capacity"] == None:
+    elif case_dict[STORAGE_FIXED_CAPACITY] == None:
         oemof_results.update({CAPACITY_STORAGE_KWH: 0, POWER_STORAGE_KW: 0})
 
     # calculate SOC of battery:

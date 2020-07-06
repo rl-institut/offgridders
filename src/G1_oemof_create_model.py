@@ -231,19 +231,19 @@ def build(experiment, case_dict):
         )
 
     # ------------storage------------#
-    if case_dict["storage_fixed_capacity"] == None:
+    if case_dict[STORAGE_FIXED_CAPACITY] == None:
         storage = None
-    elif case_dict["storage_fixed_capacity"] == False:
+    elif case_dict[STORAGE_FIXED_CAPACITY] == False:
         storage = generate.storage_oem(
             micro_grid_system, bus_electricity_dc, experiment
         )
 
-    elif isinstance(case_dict["storage_fixed_capacity"], float):
+    elif isinstance(case_dict[STORAGE_FIXED_CAPACITY], float):
         storage = generate.storage_fix(
             micro_grid_system,
             bus_electricity_dc,
             experiment,
-            capacity_storage=case_dict["storage_fixed_capacity"],
+            capacity_storage=case_dict[STORAGE_FIXED_CAPACITY],
             power_storage=case_dict["storage_fixed_power"],
         )  # changed order
 

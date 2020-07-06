@@ -69,7 +69,7 @@ def update_dict(capacities_oem, specific_case, experiment):
         INVERTER_DC_AC_BATCH,
     ]  # create entry
     list_build_oemof_names = [
-        "storage_fixed_capacity",
+        STORAGE_FIXED_CAPACITY,
         "storage_fixed_power",
         "genset_fixed_capacity",
         "pv_fixed_capacity",

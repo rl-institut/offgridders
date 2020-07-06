@@ -142,7 +142,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
 
         if "Storage SOC" in mg_flows.columns:
             mg_flows = mg_flows.drop(["Storage SOC"], axis=1)
-            if case_dict["storage_fixed_capacity"] != None:
+            if case_dict[STORAGE_FIXED_CAPACITY] != None:
                 number_of_subplots += 1
         if "Grid availability" in mg_flows.columns:
             mg_flows = mg_flows.drop(["Grid availability"], axis=1)
@@ -240,7 +240,7 @@ def plot_flows(case_dict, experiment, mg_flows, e_flows_df, number_of_subplots):
         if number_of_subplots > 1:
             ylabel += ",\n "
 
-        if (case_dict["storage_fixed_capacity"] != None) and (
+        if (case_dict[STORAGE_FIXED_CAPACITY] != None) and (
             "Storage SOC" in e_flows_df.columns
         ):
             e_flows_df["Storage SOC"].plot(
@@ -260,7 +260,7 @@ def plot_flows(case_dict, experiment, mg_flows, e_flows_df, number_of_subplots):
 
 def save_storage(experiment, case_dict, e_flows_df, filename):
     logging.debug("Saving flows storage.")
-    if case_dict["storage_fixed_capacity"] != None:
+    if case_dict[STORAGE_FIXED_CAPACITY] != None:
 
         flows_connected_to_electricity_mg_bus = [
             "Storage discharge",
