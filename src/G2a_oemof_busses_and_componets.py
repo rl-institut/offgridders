@@ -75,8 +75,7 @@ def maingrid_consumption(micro_grid_system, experiment):
         label="source_maingrid_consumption",
         outputs={
             bus_electricity_ng_consumption: solph.Flow(
-                actual_value=experiment["grid_availability"],
-                fixed=True,
+                fix=experiment["grid_availability"],
                 investment=solph.Investment(ep_costs=0),
             )
         },
@@ -101,8 +100,7 @@ def pv_fix(micro_grid_system, bus_electricity_dc, experiment, capacity_pv):
         outputs={
             bus_electricity_dc: solph.Flow(
                 label="PV generation",
-                actual_value=experiment["pv_generation_per_kWp"],
-                fixed=True,
+                fix=experiment["pv_generation_per_kWp"],
                 nominal_value=capacity_pv,
                 variable_costs=experiment["pv_cost_var"],
             )
@@ -126,8 +124,7 @@ def pv_oem(micro_grid_system, bus_electricity_dc, experiment):
         outputs={
             bus_electricity_dc: solph.Flow(
                 label="PV generation",
-                actual_value=pv_norm,
-                fixed=True,
+                fix=pv_norm,
                 investment=solph.Investment(
                     ep_costs=experiment["pv_cost_annuity"] / peak_pv_generation
                 ),
@@ -146,8 +143,7 @@ def wind_fix(micro_grid_system, bus_electricity_ac, experiment, capacity_wind):
         outputs={
             bus_electricity_ac: solph.Flow(
                 label="Wind generation",
-                actual_value=experiment["wind_generation_per_kW"],
-                fixed=True,
+                fix=experiment["wind_generation_per_kW"],
                 nominal_value=capacity_wind,
                 variable_costs=experiment["wind_cost_var"],
             )
@@ -171,8 +167,7 @@ def wind_oem(micro_grid_system, bus_electricity_ac, experiment):
         outputs={
             bus_electricity_ac: solph.Flow(
                 label="Wind generation",
-                actual_value=wind_norm,
-                fixed=True,
+                fix=wind_norm,
                 investment=solph.Investment(
                     ep_costs=experiment["wind_cost_annuity"] / peak_wind_generation
                 ),
@@ -625,7 +620,7 @@ def distribution_grid_ac(
         label="sink_demand_ac",
         inputs={
             bus_electricity_ac: solph.Flow(
-                actual_value=demand_profile, nominal_value=1, fixed=True
+                fix=demand_profile, nominal_value=1
             )
         },
     )
@@ -641,7 +636,7 @@ def demand_ac(micro_grid_system, bus_electricity_ac, demand_profile):
         label="sink_demand_ac",
         inputs={
             bus_electricity_ac: solph.Flow(
-                actual_value=demand_profile, nominal_value=1, fixed=True
+                fix=demand_profile, nominal_value=1
             )
         },
     )
@@ -656,7 +651,7 @@ def demand_dc(micro_grid_system, bus_electricity_dc, demand_profile):
         label="sink_demand_dc",
         inputs={
             bus_electricity_dc: solph.Flow(
-                actual_value=demand_profile, nominal_value=1, fixed=True
+                fix=demand_profile, nominal_value=1
             )
         },
     )
@@ -673,8 +668,7 @@ def maingrid_feedin(micro_grid_system, experiment):
         label="sink_maingrid_feedin",
         inputs={
             bus_electricity_ng_feedin: solph.Flow(
-                actual_value=experiment["grid_availability"],
-                fixed=True,
+                fix=experiment["grid_availability"],
                 investment=solph.Investment(ep_costs=0),
             )
         },
