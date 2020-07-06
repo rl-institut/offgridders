@@ -377,7 +377,7 @@ def add_timeseries(experiment_s):
                 TOTAL_DEMAND_AC: sum(
                     experiment_s[experiment][DEMAND_PROFILE_AC]
                 ),
-                "peak_demand_ac": max(
+                PEAK_DEMAND_AC: max(
                     experiment_s[experiment][DEMAND_PROFILE_AC]
                 ),
                 "total_demand_dc": sum(
@@ -408,7 +408,7 @@ def add_timeseries(experiment_s):
             experiment_s[experiment].update(
                 {
                     "peak/mean_demand_ratio_ac": experiment_s[experiment][
-                        "peak_demand_ac"
+                        PEAK_DEMAND_AC
                     ]
                     / experiment_s[experiment]["mean_demand_ac"]
                 }
