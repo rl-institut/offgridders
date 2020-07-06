@@ -504,7 +504,7 @@ def storage_fix(
                 nominal_value=power_storage  # capacity_storage*experiment['storage_Crate_discharge']
             )
         },  # maximum discharge possible in one timestep
-        capacity_loss=experiment[
+        loss_rate=experiment[
             "storage_loss_timestep"
         ],  # from timestep to timestep
         capacity_min=experiment["storage_soc_min"],
@@ -533,7 +533,7 @@ def storage_fix_secondary(micro_grid_system, bus_electricity_dc, experiment, cap
         outputs={bus_electricity_dc: solph.Flow(
             nominal_value= capacity_storage*experiment['storage_Crate_discharge']
             )},  # maximum discharge possible in one timestep
-        capacity_loss               = experiment['storage_loss_timestep'],  # from timestep to timestep
+        loss_rate               = experiment['storage_loss_timestep'],  # from timestep to timestep
         capacity_min                = experiment['storage_soc_min'],
         capacity_max                = experiment['storage_soc_max'],
         initial_capacity            = experiment['storage_soc_initial'],  # in terms of SOC?
@@ -562,7 +562,7 @@ def storage_oem(micro_grid_system, bus_electricity_dc, experiment):
                 )
             )
         },
-        capacity_loss=experiment[
+        loss_rate=experiment[
             "storage_loss_timestep"
         ],  # from timestep to timestep
         capacity_min=experiment["storage_soc_min"],
