@@ -419,14 +419,14 @@ def add_timeseries(experiment_s):
         if experiment_s[experiment][MEAN_DEMAND_DC] > 0:
             experiment_s[experiment].update(
                 {
-                    "peak/mean_demand_ratio_dc": experiment_s[experiment][
+                    PEAK_MEAN_DEMAND_RATIO_DC: experiment_s[experiment][
                         PEAK_DEMAND_DC
                     ]
                     / experiment_s[experiment][MEAN_DEMAND_DC]
                 }
             )
         else:
-            experiment_s[experiment].update({"peak/mean_demand_ratio_dc": 0})
+            experiment_s[experiment].update({PEAK_MEAN_DEMAND_RATIO_DC: 0})
 
         # Used for estimation of capacities using "peak demand"
         experiment_s[experiment].update(
