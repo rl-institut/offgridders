@@ -64,7 +64,7 @@ def backup(
                 case_dict["storage_fixed_capacity"] == False
             ):  # Storage subject to OEM
                 stored_electricity += (
-                    model.GenericInvestmentStorageBlock.capacity[storage, t]
+                    model.GenericInvestmentStorageBlock.storage_content[storage, t]
                     - experiment["storage_capacity_min"]
                     * model.GenericInvestmentStorageBlock.invest[storage]
                 )
@@ -72,7 +72,7 @@ def backup(
                 case_dict["storage_fixed_capacity"], float
             ):  # Fixed storage subject to dispatch
                 stored_electricity += (
-                    model.GenericStorageBlock.capacity[storage, t]
+                    model.GenericStorageBlock.storage_content[storage, t]
                     - experiment["storage_capacity_min"] * storage.nominal_capacity
                 )
             else:
@@ -250,7 +250,7 @@ def hybrid(
                 case_dict["storage_fixed_capacity"] == False
             ):  # Storage subject to OEM
                 stored_electricity += (
-                    model.GenericInvestmentStorageBlock.capacity[storage, t]
+                    model.GenericInvestmentStorageBlock.storage_content[storage, t]
                     - experiment["storage_soc_min"]
                     * model.GenericInvestmentStorageBlock.invest[storage]
                 )
@@ -258,7 +258,7 @@ def hybrid(
                 case_dict["storage_fixed_capacity"], float
             ):  # Fixed storage subject to dispatch
                 stored_electricity += (
-                    model.GenericStorageBlock.capacity[storage, t]
+                    model.GenericStorageBlock.storage_content[storage, t]
                     - experiment["storage_soc_min"] * storage.nominal_capacity
                 )
             else:
@@ -689,13 +689,13 @@ def forced_charge(model, case_dict, el_bus_dc, storage, experiment):
             if (
                 case_dict["storage_fixed_capacity"] == False
             ):  # Storage subject to OEM
-                stored_electricity += model.GenericInvestmentStorageBlock.capacity[
+                stored_electricity += model.GenericInvestmentStorageBlock.storage_content[
                     storage, t
                 ]
             elif isinstance(
                 case_dict["storage_fixed_capacity"], float
             ):  # Fixed storage subject to dispatch
-                stored_electricity += model.GenericStorageBlock.capacity[storage, t]
+                stored_electricity += model.GenericStorageBlock.storage_content[storage, t]
 
             # Linearization
             expr = m * stored_electricity + n  # * 0.99
@@ -805,13 +805,13 @@ def discharge_only_at_blackout(model, case_dict, el_bus, storage, experiment):
             if (
                 case_dict["storage_fixed_capacity"] == False
             ):  # Storage subject to OEM
-                stored_electricity += model.GenericInvestmentStorageBlock.capacity[
+                stored_electricity += model.GenericInvestmentStorageBlock.storage_content[
                     storage, t
                 ]
             elif isinstance(
                 case_dict["storage_fixed_capacity"], float
             ):  # Fixed storage subject to dispatch
-                stored_electricity += model.GenericStorageBlock.capacity[storage, t]
+                stored_electricity += model.GenericStorageBlock.storage_content[storage, t]
 
             # force discharge to zero when grid available
             expr += -stored_electricity * grid_inavailability[t]
