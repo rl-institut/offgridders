@@ -204,8 +204,8 @@ def update_dict(capacities_oem, specific_case, experiment):
     experiment_case_dict[NUMBER_OF_EQUAL_GENERATORS] = specific_case[
         NUMBER_OF_EQUAL_GENERATORS
     ]
-    experiment_case_dict["evaluation_perspective"] = specific_case[
-        "evaluation_perspective"
+    experiment_case_dict[EVALUATION_PERSPECTIVE] = specific_case[
+        EVALUATION_PERSPECTIVE
     ]
     experiment_case_dict["force_charge_from_maingrid"] = specific_case[
         "force_charge_from_maingrid"
