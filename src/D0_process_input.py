@@ -383,7 +383,7 @@ def add_timeseries(experiment_s):
                 TOTAL_DEMAND_DC: sum(
                     experiment_s[experiment][DEMAND_PROFILE_DC]
                 ),
-                "peak_demand_dc": max(
+                PEAK_DEMAND_DC: max(
                     experiment_s[experiment][DEMAND_PROFILE_DC]
                 ),
                 "peak_pv_generation_per_kWp": max(
@@ -420,7 +420,7 @@ def add_timeseries(experiment_s):
             experiment_s[experiment].update(
                 {
                     "peak/mean_demand_ratio_dc": experiment_s[experiment][
-                        "peak_demand_dc"
+                        PEAK_DEMAND_DC
                     ]
                     / experiment_s[experiment]["mean_demand_dc"]
                 }
