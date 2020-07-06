@@ -74,7 +74,7 @@ def run(experiment, case_dict):
         # Processing
         ######################
         results = micro_grid_system.results[MAIN]
-        meta = micro_grid_system.results["meta"]
+        meta = micro_grid_system.results[META]
 
         oemof_results = {
             CASE: case_dict[CASE_NAME],
