@@ -86,8 +86,7 @@ def backup(
         expr = CAP_genset
         ## ------- Get demand at t ------- #
         demand = (
-            model.flows[el_bus_ac, sink_demand].actual_value[t]
-            * model.flows[el_bus_ac, sink_demand].nominal_value
+            model.flow[el_bus_ac, sink_demand, t]
         )
         expr += -stability_limit * demand
         ## ------- Get shortage at t------- #
@@ -132,8 +131,7 @@ def backup(
         expr = CAP_genset
         ## ------- Get demand at t ------- #
         demand = (
-            model.flows[el_bus_ac, sink_demand].actual_value[t]
-            * model.flows[el_bus_ac, sink_demand].nominal_value
+            model.flow[el_bus_ac, sink_demand, t]
         )
         expr += -stability_limit * demand
         ## ------- Get shortage at t------- #
@@ -264,8 +262,7 @@ def hybrid(
         expr = 0
         ## ------- Get demand at t ------- #
         demand = (
-            model.flows[el_bus_ac, sink_demand].actual_value[t]
-            * model.flows[el_bus_ac, sink_demand].nominal_value
+            model.flow[el_bus_ac, sink_demand, t]
         )
         expr += -stability_limit * demand
 
@@ -315,8 +312,7 @@ def hybrid(
         expr = 0
         ## ------- Get demand at t ------- #
         demand = (
-            model.flows[el_bus_ac, sink_demand].actual_value[t]
-            * model.flows[el_bus_ac, sink_demand].nominal_value
+            model.flow[el_bus_ac, sink_demand, t]
         )
         expr += -stability_limit * demand
 
@@ -458,8 +454,7 @@ def usage(
         expr = 0
         ## ------- Get demand at t ------- #
         demand = (
-            model.flows[el_bus, sink_demand].actual_value[t]
-            * model.flows[el_bus, sink_demand].nominal_value
+            model.flow[el_bus, sink_demand, t]
         )
 
         expr += -stability_limit * demand
@@ -972,8 +967,7 @@ def timestep(model, case_dict, experiment, el_bus, sink_demand, source_shortage)
         expr = 0
         ## ------- Get demand at t ------- #
         demand = (
-            model.flows[el_bus, sink_demand].actual_value[t]
-            * model.flows[el_bus, sink_demand].nominal_value
+            model.flow[el_bus, sink_demand, t]
         )
         expr += experiment[SHORTAGE_MAX_TIMESTEP] * demand
         ## ------- Get shortage at t------- #
