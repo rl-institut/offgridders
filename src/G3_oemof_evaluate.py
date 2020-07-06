@@ -5,7 +5,7 @@ tables, tkinter
 """
 
 import pandas as pd
-import oemof.outputlib as outputlib
+from oemof.solph import processing
 
 import logging
 
@@ -502,7 +502,7 @@ def get_genset(case_dict, oemof_results, electricity_bus_ac, e_flows_df):
 def get_fuel(case_dict, oemof_results, results):
     logging.debug("Evaluate flow: fuel")
     if case_dict[GENSET_FIXED_CAPACITY] != None:
-        fuel_bus = outputlib.views.node(results, BUS_FUEL)
+        fuel_bus = processing.views.node(results, BUS_FUEL)
         fuel = fuel_bus[SEQUENCES][((SOURCE_FUEL, BUS_FUEL), FLOW)]
         annual_value(CONSUMPTION_FUEL_ANNUAL_KWH, fuel, oemof_results, case_dict)
     else:
@@ -514,7 +514,7 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
     logging.debug("Evaluate flow: storage")
     # Get flow
     if case_dict[STORAGE_FIXED_CAPACITY] != None:
-        storage = outputlib.views.node(results, GENERIC_STORAGE)
+        storage = processing.views.node(results, GENERIC_STORAGE)
         storage_discharge = storage[SEQUENCES][
             ((GENERIC_STORAGE, BUS_ELECTRICITY_DC), FLOW)
         ]
@@ -562,10 +562,10 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
     # Get capacity
     if case_dict[STORAGE_FIXED_CAPACITY] == False:
         # Optimized storage capacity
-        storage = outputlib.views.node(results, GENERIC_STORAGE)
+        storage = processing.views.node(results, GENERIC_STORAGE)
         storage_capacity = storage[SCALARS][((GENERIC_STORAGE, "None"), INVEST)]
 
-        electricity_bus_dc = outputlib.views.node(results, BUS_ELECTRICITY_DC)
+        electricity_bus_dc = processing.views.node(results, BUS_ELECTRICITY_DC)
         storage_power = electricity_bus_dc[SCALARS][
             ((GENERIC_STORAGE, BUS_ELECTRICITY_DC), INVEST)
         ]
@@ -604,7 +604,7 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
 
 def get_national_grid(case_dict, oemof_results, results, e_flows_df, grid_availability):
     logging.debug("Evaluate flow: main grid")
-    micro_grid_bus = outputlib.views.node(results, BUS_ELECTRICITY_AC)
+    micro_grid_bus = processing.views.node(results, BUS_ELECTRICITY_AC)
     # define grid availability
     if (
         case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] != None
@@ -632,7 +632,7 @@ def get_national_grid(case_dict, oemof_results, results, e_flows_df, grid_availa
             oemof_results,
             case_dict,
         )
-        bus_electricity_ng_consumption = outputlib.views.node(
+        bus_electricity_ng_consumption = processing.views.node(
             results, BUS_ELECTRICITY_NG_CONSUMPTION
         )
         consumption_utility_side = bus_electricity_ng_consumption[SEQUENCES][
@@ -685,7 +685,7 @@ def get_national_grid(case_dict, oemof_results, results, e_flows_df, grid_availa
             case_dict,
         )
 
-        bus_electricity_ng_feedin = outputlib.views.node(
+        bus_electricity_ng_feedin = processing.views.node(
             results, BUS_ELECTRICITY_NG_FEEDIN
         )
         feedin_utility_side = bus_electricity_ng_feedin[SEQUENCES][

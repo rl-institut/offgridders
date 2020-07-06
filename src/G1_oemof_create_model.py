@@ -1,9 +1,11 @@
 import logging
 import sys
 import oemof.solph as solph
-import oemof.outputlib as outputlib
+from oemof.solph import processing
+
 import src.G2a_oemof_busses_and_componets as generate
 import src.G2b_constraints_custom as constraints_custom
+
 from src.constants import (
     BUS_FUEL,
     DATE_TIME_INDEX,
@@ -507,8 +509,8 @@ def simulate(experiment, micro_grid_system, model, file_name):
         )
 
     # add results to the energy system to make it possible to store them.
-    micro_grid_system.results[MAIN] = outputlib.processing.results(model)
-    micro_grid_system.results[META] = outputlib.processing.meta_results(model)
+    micro_grid_system.results[MAIN] = processing.results(model)
+    micro_grid_system.results[META] = processing.meta_results(model)
     return micro_grid_system
 
 
