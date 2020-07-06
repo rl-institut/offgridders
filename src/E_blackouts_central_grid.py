@@ -35,12 +35,12 @@ def get_blackouts(settings, blackout_experiment_s):
                 settings[INPUT_FOLDER_TIMESERIES] + "/grid_availability.csv"
             )
 
-        index = pd.DatetimeIndex(data_set["timestep"].values)
+        index = pd.DatetimeIndex(data_set[TIMESTEP].values)
         index = [
             item + pd.DateOffset(year=settings["max_date_time_index"][0].year)
             for item in index
         ]
-        data_set = data_set.drop(columns=["timestep"])
+        data_set = data_set.drop(columns=[TIMESTEP])
         grid_availability_df = pd.DataFrame(
             data_set.values, index=index, columns=data_set.columns.values
         )
@@ -120,7 +120,7 @@ def get_blackouts(settings, blackout_experiment_s):
         )
         logging.info("Missing blackout timeseries added through auto-generation.")
 
-    grid_availability_df.index.name = "timestep"
+    grid_availability_df.index.name = TIMESTEP
     grid_availability_df.to_csv(
         settings[OUTPUT_FOLDER] + "/grid_availability.csv"
     )
