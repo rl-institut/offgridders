@@ -13,18 +13,18 @@ import networkx as nx
 
 
 def print_oemof_meta_main_invest(experiment, meta, electricity_bus, case_name):
-    if experiment["display_meta"] == True:
+    if experiment["display_meta"] is True:
         logging.info("********* Meta results *********")
         pp.pprint(meta)
 
     # print the sums of the flows around the electricity bus
-    if experiment["display_main"] == True:
+    if experiment["display_main"] is True:
         logging.info("********* Main results *********")
         pp.pprint(electricity_bus["sequences"].sum(axis=0))
 
     # print the scalars of investment optimization (not equal to capacities!)
     if case_name == "base_oem" or case_name == "base_oem_with_min_loading":
-        if experiment["display_invest"] == True:
+        if experiment["display_invest"] is True:
             logging.info("********* Invest results *********")
             pp.pprint(electricity_bus["scalars"])
     return
@@ -124,7 +124,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
 
                 mg_flows = mg_flows.join(new_column)
 
-    if experiment["save_to_csv_flows_electricity_mg"] == True:
+    if experiment["save_to_csv_flows_electricity_mg"] is True:
         mg_flows.to_csv(
             experiment["output_folder"]
             + "/electricity_mg/"
@@ -133,7 +133,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
             + "_electricity_mg.csv"
         )
 
-    if experiment["save_to_png_flows_electricity_mg"] == True:
+    if experiment["save_to_png_flows_electricity_mg"] is True:
         number_of_subplots = 0
 
         for item in droplist:
@@ -289,7 +289,7 @@ def save_storage(experiment, case_dict, e_flows_df, filename):
                     )
                 storage_flows = storage_flows.join(new_column)
 
-        if experiment["save_to_csv_flows_storage"] == True:
+        if experiment["save_to_csv_flows_storage"] is True:
             storage_flows.to_csv(
                 experiment["output_folder"]
                 + "/storage/"
@@ -298,7 +298,7 @@ def save_storage(experiment, case_dict, e_flows_df, filename):
                 + "_storage.csv"
             )
 
-        if experiment["save_to_png_flows_storage"] == True:
+        if experiment["save_to_png_flows_storage"] is True:
             fig = storage_flows.plot(
                 title="Storage flows of case "
                 + case_dict["case_name"]

@@ -136,7 +136,7 @@ def update_dict(capacities_oem, specific_case, experiment):
         experiment_case_dict.update({"max_shortage": 0})
 
     elif (
-        specific_case["allow_shortage"] == True
+        specific_case["allow_shortage"] is True
         and specific_case["max_shortage"] == "default"
     ):
         experiment_case_dict.update({"allow_shortage": True})
@@ -144,7 +144,7 @@ def update_dict(capacities_oem, specific_case, experiment):
             {"max_shortage": experiment["shortage_max_allowed"]}
         )
 
-    elif specific_case["allow_shortage"] == True:
+    elif specific_case["allow_shortage"] is True:
         if isinstance(specific_case["max_shortage"], float) or isinstance(
             specific_case["max_shortage"], int
         ):
@@ -193,7 +193,7 @@ def update_dict(capacities_oem, specific_case, experiment):
     elif specific_case["renewable_constraint"] is False:
         experiment_case_dict.update({"renewable_share_constraint": False})
 
-    elif specific_case["renewable_constraint"] == True:
+    elif specific_case["renewable_constraint"] is True:
         experiment_case_dict.update({"renewable_share_constraint": True})
     else:
         logging.warning(

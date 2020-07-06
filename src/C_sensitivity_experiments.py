@@ -46,7 +46,7 @@ def get(
     #######################################################
     # Get sensitivity_experiment_s for sensitivity analysis            #
     #######################################################
-    if settings["sensitivity_all_combinations"] == True:
+    if settings["sensitivity_all_combinations"] is True:
         (
             sensitivitiy_experiment_s,
             number_of_project_sites,
@@ -292,7 +292,7 @@ def blackout(sensitivity_array_dict, parameters_constants, settings):
         ):
             del blackout_constants[parameter]
 
-    if settings["sensitivity_all_combinations"] == True:
+    if settings["sensitivity_all_combinations"] is True:
         (
             blackout_experiment_s,
             blackout_experiments_count,
@@ -336,7 +336,7 @@ def blackout(sensitivity_array_dict, parameters_constants, settings):
                     blackout_experiment_s[blackout_experiments_count].update(
                         {key: key_value}
                     )
-                    defined_base == True
+                    defined_base is True
 
         if len(blackout_experiment_s) == 0:
             blackout_experiments_count += 1
@@ -776,7 +776,7 @@ def overall_results_title(
         sort=False,
     )
 
-    if settings["results_demand_characteristics"] == True:
+    if settings["results_demand_characteristics"] is True:
         title_overall_results = pd.concat(
             [
                 title_overall_results,
@@ -803,7 +803,7 @@ def overall_results_title(
         'peak/mean_demand_ratio_dc'
         """
 
-    if settings["results_blackout_characteristics"] == True:
+    if settings["results_blackout_characteristics"] is True:
         title_overall_results = pd.concat(
             [
                 title_overall_results,
@@ -845,7 +845,7 @@ def overall_results_title(
         sort=False,
     )
 
-    if settings["results_annuities"] == True:
+    if settings["results_annuities"] is True:
         title_overall_results = pd.concat(
             [
                 title_overall_results,
@@ -886,7 +886,7 @@ def overall_results_title(
 
     # Called costs because they include the operation, while they are also not the present value because
     # the variable costs are included in the oem
-    if settings["results_costs"] == True:
+    if settings["results_costs"] is True:
         title_overall_results = pd.concat(
             [
                 title_overall_results,

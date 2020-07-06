@@ -354,13 +354,13 @@ def check_output_directory(settings, input_excel_file):
     output_folder = settings["output_folder"]
     folder_list = ["/lp_files", "/storage", "/electricity_mg", "/inputs", "/oemof"]
 
-    if os.path.isdir(output_folder) == True:
+    if os.path.isdir(output_folder) is True:
         # Empty folders with previous result, except oemof results if simulation restart
         for folder in folder_list:
             # Delete all folders. Special case: oemof folder
-            if folder == "/oemof" and os.path.isdir(output_folder + folder) == True:
+            if folder == "/oemof" and os.path.isdir(output_folder + folder) is True:
                 # dont delete oemof folder if necessary for restoring results
-                if settings["restore_oemof_if_existant"] == True:
+                if settings["restore_oemof_if_existant"] is True:
                     pass
                 # delete oemof folder if no restoring necessary
                 else:
@@ -399,20 +399,20 @@ def check_output_directory(settings, input_excel_file):
     shutil.copy(path_from, path_to)
 
     if (
-        settings["save_lp_file"] == True
-        or settings["lp_file_for_only_3_timesteps"] == True
+        settings["save_lp_file"] is True
+        or settings["lp_file_for_only_3_timesteps"] is True
     ):
         os.mkdir(output_folder + "/lp_files")
 
     if (
-        settings["save_to_csv_flows_storage"] == True
-        or settings["save_to_png_flows_storage"] == True
+        settings["save_to_csv_flows_storage"] is True
+        or settings["save_to_png_flows_storage"] is True
     ):
         os.mkdir(output_folder + "/storage")
 
     if (
-        settings["save_to_csv_flows_electricity_mg"] == True
-        or settings["save_to_png_flows_electricity_mg"] == True
+        settings["save_to_csv_flows_electricity_mg"] is True
+        or settings["save_to_png_flows_electricity_mg"] is True
     ):
         os.mkdir(output_folder + "/electricity_mg")
     return

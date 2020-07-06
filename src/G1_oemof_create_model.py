@@ -57,7 +57,7 @@ def build(experiment, case_dict):
     if case_dict["genset_fixed_capacity"] == None:
         genset = None
     elif case_dict["genset_fixed_capacity"] is False:
-        if case_dict["genset_with_minimal_loading"] == True:
+        if case_dict["genset_with_minimal_loading"] is True:
             # not possible with oemof
             logging.error(
                 "It is not possible to optimize a generator with minimal loading in oemof. \n "
@@ -78,7 +78,7 @@ def build(experiment, case_dict):
             )
 
     elif isinstance(case_dict["genset_fixed_capacity"], float):
-        if case_dict["genset_with_minimal_loading"] == True:
+        if case_dict["genset_with_minimal_loading"] is True:
             genset = generate.genset_fix_minload(
                 micro_grid_system,
                 bus_fuel,
@@ -312,7 +312,7 @@ def build(experiment, case_dict):
     generate.excess(micro_grid_system, bus_electricity_ac, bus_electricity_dc)
 
     # ------------Optional: Shortage source------------#
-    if case_dict["allow_shortage"] == True:
+    if case_dict["allow_shortage"] is True:
         source_shortage = generate.shortage(
             micro_grid_system,
             bus_electricity_ac,
@@ -382,7 +382,7 @@ def build(experiment, case_dict):
     # ------------Renewable share constraint------------#
     if case_dict["renewable_share_constraint"] is False:
         pass
-    elif case_dict["renewable_share_constraint"] == True:
+    elif case_dict["renewable_share_constraint"] is True:
         logging.info("Adding constraint: Renewable share.")
         constraints_custom.share(
             model,
@@ -405,7 +405,7 @@ def build(experiment, case_dict):
     # ------------Force charge from maingrid------------#
     if case_dict["force_charge_from_maingrid"] is False:
         pass
-    elif case_dict["force_charge_from_maingrid"] == True:
+    elif case_dict["force_charge_from_maingrid"] is True:
         logging.info("Added constraint: Forcing charge from main grid.")
         constraints_custom.forced_charge(
             model, case_dict, bus_electricity_dc, storage, experiment
@@ -420,7 +420,7 @@ def build(experiment, case_dict):
     # ------------Allow discharge only at maingrid blackout------------#
     if case_dict["discharge_only_when_blackout"] is False:
         pass
-    elif case_dict["discharge_only_when_blackout"] == True:
+    elif case_dict["discharge_only_when_blackout"] is True:
         logging.info("Added constraint: Allowing discharge only at blackout times.")
         constraints_custom.discharge_only_at_blackout(
             model, case_dict, bus_electricity_dc, storage, experiment
@@ -435,7 +435,7 @@ def build(experiment, case_dict):
     # ------------Allow inverter use only at maingrid blackout------------#
     if case_dict["enable_inverter_only_at_backout"] is False:
         pass
-    elif case_dict["enable_inverter_only_at_backout"] == True:
+    elif case_dict["enable_inverter_only_at_backout"] is True:
         logging.info(
             "Added constraint: Allowing inverter use only at blackout times."
         )
@@ -451,7 +451,7 @@ def build(experiment, case_dict):
 
     """
     # ------------Allow shortage only for certain percentage of demand in a timestep------------#
-    if case_dict['allow_shortage'] == True:
+    if case_dict['allow_shortage'] is True:
         if bus_electricity_ac != None:
             shortage_constraints.timestep(model, case_dict, experiment, sink_demand_ac, 
                                           source_shortage, bus_electricity_ac)
@@ -474,7 +474,7 @@ def simulate(experiment, micro_grid_system, model, file_name):
     )  # ratioGap allowedGap mipgap
     logging.debug("Problem solved")
 
-    if experiment["save_lp_file"] == True:
+    if experiment["save_lp_file"] is True:
         logging.debug("Saving lp-file to folder.")
         model.write(
             experiment["output_folder"] + "/lp_files/model_" + file_name + ".lp",

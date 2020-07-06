@@ -18,7 +18,7 @@ def list_of_cases(case_definitions):
     # Certain ORDER of simulation: First base capacities are optimized
     for case in case_definitions:
         if (
-            case_definitions[case]["perform_simulation"] == True
+            case_definitions[case]["perform_simulation"] is True
             and case_definitions[case]["based_on_case"] is False
         ):
             case_list.append(case)
@@ -28,8 +28,8 @@ def list_of_cases(case_definitions):
 
     for case in case_definitions:
         if (
-            case_definitions[case]["perform_simulation"] == True
-            and case_definitions[case]["based_on_case"] == True
+            case_definitions[case]["perform_simulation"] is True
+            and case_definitions[case]["based_on_case"] is True
         ):
             case_list.append(case)
             str_cases_simulated += case + ", "
@@ -292,7 +292,7 @@ def add_timeseries(experiment_s):
             )
 
         # Used for generation of lp file with only 3-timesteps = Useful to verify optimized equations
-        if experiment_s[experiment]["lp_file_for_only_3_timesteps"] == True:
+        if experiment_s[experiment]["lp_file_for_only_3_timesteps"] is True:
             experiment_s[experiment].update(
                 {
                     "time_start": experiment_s[experiment]["time_start"]

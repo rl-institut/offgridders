@@ -21,7 +21,7 @@ def get_blackouts(settings, blackout_experiment_s):
         or os.path.isfile(
             settings["input_folder_timeseries"] + "/grid_availability.csv"
         )
-    ) and settings["restore_blackouts_if_existant"] == True:
+    ) and settings["restore_blackouts_if_existant"] is True:
 
         # ? read to csv: timestamp as first row -> not equal column number, date time without index
         if os.path.isfile(settings["output_folder"] + "/grid_availability.csv"):
