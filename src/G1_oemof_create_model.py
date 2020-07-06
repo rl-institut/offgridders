@@ -255,21 +255,21 @@ def build(experiment, case_dict):
         )
 
     # ------------Rectifier AC DC------------#
-    if case_dict["rectifier_ac_dc_fixed_capacity"] == None:
+    if case_dict[RECTIFIER_AC_DC_FIXED_CAPACITY] == None:
         rectifier = None
 
-    elif case_dict["rectifier_ac_dc_fixed_capacity"] == False:
+    elif case_dict[RECTIFIER_AC_DC_FIXED_CAPACITY] == False:
         rectifier = generate.rectifier_oem(
             micro_grid_system, bus_electricity_ac, bus_electricity_dc, experiment
         )
 
-    elif isinstance(case_dict["rectifier_ac_dc_fixed_capacity"], float):
+    elif isinstance(case_dict[RECTIFIER_AC_DC_FIXED_CAPACITY], float):
         rectifier = generate.rectifier_fix(
             micro_grid_system,
             bus_electricity_ac,
             bus_electricity_dc,
             experiment,
-            case_dict["rectifier_ac_dc_fixed_capacity"],
+            case_dict[RECTIFIER_AC_DC_FIXED_CAPACITY],
         )
 
     else:

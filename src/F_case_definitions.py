@@ -76,7 +76,7 @@ def update_dict(capacities_oem, specific_case, experiment):
         PCC_CONSUMPTION_FIXED_CAPACITY,
         PCC_FEEDIN_FIXED_CAPACITY,
         WIND_FIXED_CAPACITY,
-        "rectifier_ac_dc_fixed_capacity",
+        RECTIFIER_AC_DC_FIXED_CAPACITY,
         "inverter_dc_ac_fixed_capacity",
     ]
 
