@@ -359,7 +359,7 @@ def get_wind(
 ):
     logging.debug("Evaluate flow: wind")
     # Get flow
-    if case_dict["wind_fixed_capacity"] != None:
+    if case_dict[WIND_FIXED_CAPACITY] != None:
         wind_gen = electricity_bus_ac["sequences"][
             (("source_wind", "bus_electricity_ac"), "flow")
         ]
@@ -373,7 +373,7 @@ def get_wind(
         oemof_results.update({TOTAL_WIND_GENERATION_KWH: 0})
 
     # Get capacity
-    if case_dict["wind_fixed_capacity"] == False:
+    if case_dict[WIND_FIXED_CAPACITY] == False:
         if wind_generation_max > 1:
             oemof_results.update(
                 {
@@ -394,9 +394,9 @@ def get_wind(
             )
         else:
             logging.warning("Error, Strange Wind behaviour (Wind gen < 0)")
-    elif isinstance(case_dict["wind_fixed_capacity"], float):
-        oemof_results.update({CAPACITY_WIND_KW: case_dict["wind_fixed_capacity"]})
-    elif case_dict["wind_fixed_capacity"] == None:
+    elif isinstance(case_dict[WIND_FIXED_CAPACITY], float):
+        oemof_results.update({CAPACITY_WIND_KW: case_dict[WIND_FIXED_CAPACITY]})
+    elif case_dict[WIND_FIXED_CAPACITY] == None:
         oemof_results.update({CAPACITY_WIND_KW: 0})
     return e_flows_df
 

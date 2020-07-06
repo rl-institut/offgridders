@@ -104,19 +104,19 @@ def build(experiment, case_dict):
         )
 
     # ------------wind------------#
-    if case_dict["wind_fixed_capacity"] == None:
+    if case_dict[WIND_FIXED_CAPACITY] == None:
         wind_plant = None
-    elif case_dict["wind_fixed_capacity"] == False:
+    elif case_dict[WIND_FIXED_CAPACITY] == False:
         wind_plant = generate.wind_oem(
             micro_grid_system, bus_electricity_ac, experiment
         )
 
-    elif isinstance(case_dict["wind_fixed_capacity"], float):
+    elif isinstance(case_dict[WIND_FIXED_CAPACITY], float):
         wind_plant = generate.wind_fix(
             micro_grid_system,
             bus_electricity_ac,
             experiment,
-            capacity_wind=case_dict["wind_fixed_capacity"],
+            capacity_wind=case_dict[WIND_FIXED_CAPACITY],
         )
 
     else:
