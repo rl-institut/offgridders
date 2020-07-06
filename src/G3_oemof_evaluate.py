@@ -200,7 +200,7 @@ def get_pv(
 ):
     logging.debug("Evaluate flow: pv")
     # Get flow
-    if case_dict["pv_fixed_capacity"] != None:
+    if case_dict[PV_FIXED_CAPACITY] != None:
         pv_gen = electricity_bus_dc["sequences"][
             (("source_pv", "bus_electricity_dc"), "flow")
         ]
@@ -229,7 +229,7 @@ def get_pv(
         oemof_results.update({TOTAL_PV_GENERATION_KWH: 0})
 
     # Get capacity
-    if case_dict["pv_fixed_capacity"] == False:
+    if case_dict[PV_FIXED_CAPACITY] == False:
         if pv_generation_max > 1:
             oemof_results.update(
                 {
@@ -250,9 +250,9 @@ def get_pv(
             )
         else:
             logging.warning("Error, Strange PV behaviour (PV gen < 0)")
-    elif isinstance(case_dict["pv_fixed_capacity"], float):
-        oemof_results.update({CAPACITY_PV_KWP: case_dict["pv_fixed_capacity"]})
-    elif case_dict["pv_fixed_capacity"] == None:
+    elif isinstance(case_dict[PV_FIXED_CAPACITY], float):
+        oemof_results.update({CAPACITY_PV_KWP: case_dict[PV_FIXED_CAPACITY]})
+    elif case_dict[PV_FIXED_CAPACITY] == None:
         oemof_results.update({CAPACITY_PV_KWP: 0})
     return e_flows_df
 

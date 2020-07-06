@@ -208,19 +208,19 @@ def build(experiment, case_dict):
     )
 
     # ------------PV------------#
-    if case_dict["pv_fixed_capacity"] == None:
+    if case_dict[PV_FIXED_CAPACITY] == None:
         solar_plant = None
-    elif case_dict["pv_fixed_capacity"] == False:
+    elif case_dict[PV_FIXED_CAPACITY] == False:
         solar_plant = generate.pv_oem(
             micro_grid_system, bus_electricity_dc, experiment
         )
 
-    elif isinstance(case_dict["pv_fixed_capacity"], float):
+    elif isinstance(case_dict[PV_FIXED_CAPACITY], float):
         solar_plant = generate.pv_fix(
             micro_grid_system,
             bus_electricity_dc,
             experiment,
-            capacity_pv=case_dict["pv_fixed_capacity"],
+            capacity_pv=case_dict[PV_FIXED_CAPACITY],
         )
 
     else:
