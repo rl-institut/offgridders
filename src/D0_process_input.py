@@ -155,7 +155,7 @@ def add_timeseries(experiment_s):
                 DATE_TIME_INDEX: pd.date_range(
                     start=experiment_s[experiment][TIME_START],
                     end=experiment_s[experiment][TIME_END],
-                    freq=experiment_s[experiment]["time_frequency"],
+                    freq=experiment_s[experiment][TIME_FREQUENCY],
                 )
             }
         )
@@ -310,7 +310,7 @@ def add_timeseries(experiment_s):
                     DATE_TIME_INDEX: pd.date_range(
                         start=experiment_s[experiment][TIME_START],
                         end=experiment_s[experiment][TIME_END],
-                        freq=experiment_s[experiment]["time_frequency"],
+                        freq=experiment_s[experiment][TIME_FREQUENCY],
                     )
                 }
             )
