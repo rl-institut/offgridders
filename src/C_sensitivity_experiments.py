@@ -488,7 +488,7 @@ def blackout(sensitivity_array_dict, parameters_constants, settings):
                     blackout_experiment_s[blackout_experiments_count].update(
                         {key: key_value}
                     )
-                    defined_base == True
+                    defined_base is True
 
         if len(blackout_experiment_s) == 0:
             blackout_experiments_count += 1

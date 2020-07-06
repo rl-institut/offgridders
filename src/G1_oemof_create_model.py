@@ -477,7 +477,7 @@ def build(experiment, case_dict):
 
     """
     # ------------Allow shortage only for certain percentage of demand in a timestep------------#
-    if case_dict['allow_shortage'] == True:
+    if case_dict['allow_shortage'] is True:
         if bus_electricity_ac != None:
             shortage_constraints.timestep(model, case_dict, experiment, sink_demand_ac, 
                                           source_shortage, bus_electricity_ac)

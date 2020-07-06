@@ -317,7 +317,7 @@ def hybrid(
         expr += -stability_limit * demand
 
         ## ------- Get shortage at t------- #
-        if case_dict[ALLOW_SHORTAGE] == True:
+        if case_dict["allow_shortage"] == True:
             shortage = model.flow[source_shortage, el_bus_ac, t]
             expr += +stability_limit * shortage
 
@@ -404,7 +404,7 @@ def hybrid_test(case_dict, oemof_results, experiment, e_flows_df):
             for t in range(0, len(demand_profile.index))
         ]
 
-        if all(boolean_test) == True:
+        if all(boolean_test) is True:
             logging.debug("Stability criterion is fullfilled.")
         else:
             ratio = pd.Series(
@@ -528,7 +528,7 @@ def usage_test(case_dict, oemof_results, experiment, e_flows_df):
             for t in range(0, len(demand_profile.index))
         ]
 
-        if all(boolean_test) == True:
+        if all(boolean_test) is True:
             logging.debug("Stability criterion is fullfilled.")
         else:
             ratio = pd.Series(
@@ -658,9 +658,9 @@ def share_test(case_dict, oemof_results, experiment):
     """
     Testing simulation results for adherance to above defined stability criterion
     """
-    if case_dict[RENEWABLE_SHARE_CONSTRAINT] == True:
+    if case_dict[RENEWABLE_SHARE_CONSTRAINT] is True:
         boolean_test = oemof_results[RES_SHARE] >= experiment[MIN_RENEWABLE_SHARE]
-        if boolean_test == False:
+        if boolean_test is False:
             deviation = (
                 experiment[MIN_RENEWABLE_SHARE] - oemof_results[RES_SHARE]
             ) / experiment[MIN_RENEWABLE_SHARE]
@@ -742,7 +742,7 @@ def forced_charge_test(case_dict, oemof_results, experiment, e_flows_df):
     """
     Testing simulation results for adherance to above defined criterion
     """
-    if case_dict[FORCE_CHARGE_FROM_MAINGRID] == True:
+    if case_dict[FORCE_CHARGE_FROM_MAINGRID] is True:
         boolean_test = [
             (
                 experiment[STORAGE_CRATE_CHARGE]
@@ -760,7 +760,7 @@ def forced_charge_test(case_dict, oemof_results, experiment, e_flows_df):
             for t in range(0, len(e_flows_df.index))
         ]
 
-        if all(boolean_test) == True:
+        if all(boolean_test) is True:
             logging.debug(
                 "Battery is always charged when grid availabile (linearized)."
             )
@@ -856,7 +856,7 @@ def discharge_only_at_blackout_test(case_dict, oemof_results, e_flows_df):
             for t in range(0, len(e_flows_df.index))
         ]
 
-        if all(boolean_test) == True:
+        if all(boolean_test) is True:
             logging.debug("Battery only discharged when grid unavailable.")
         else:
             ratio = pd.Series(
@@ -930,7 +930,7 @@ def inverter_only_at_blackout_test(case_dict, oemof_results, e_flows_df):
             for t in range(0, len(e_flows_df.index))
         ]
 
-        if all(boolean_test) == True:
+        if all(boolean_test) is True:
             logging.debug("Battery only discharged when grid unavailable.")
         else:
             ratio = pd.Series(
