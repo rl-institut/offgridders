@@ -43,7 +43,7 @@ def build(experiment, case_dict):
 
     # ------------demand sink ac------------#
     sink_demand_ac = generate.demand_ac(
-        micro_grid_system, bus_electricity_ac, experiment["demand_profile_ac"]
+        micro_grid_system, bus_electricity_ac, experiment[DEMAND_PROFILE_AC]
     )
 
     # ------------fuel source------------#

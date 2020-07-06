@@ -206,7 +206,7 @@ def add_timeseries(experiment_s):
                 )
                 # from provided data use only analysed timeframe
                 experiment_s[experiment].update(
-                    {"demand_profile_ac": demand_ac[index]}
+                    {DEMAND_PROFILE_AC: demand_ac[index]}
                 )
                 experiment_s[experiment].update(
                     {"demand_profile_dc": demand_dc[index]}
@@ -235,7 +235,7 @@ def add_timeseries(experiment_s):
             # limit based on index
             experiment_s[experiment].update(
                 {
-                    "demand_profile_ac": pd.Series(
+                    DEMAND_PROFILE_AC: pd.Series(
                         experiment_s[experiment][DEMAND_AC][
                             0 : len(index)
                         ].values,
@@ -318,8 +318,8 @@ def add_timeseries(experiment_s):
             index = experiment_s[experiment][DATE_TIME_INDEX]
             experiment_s[experiment].update(
                 {
-                    "demand_profile_ac": experiment_s[experiment][
-                        "demand_profile_ac"
+                    DEMAND_PROFILE_AC: experiment_s[experiment][
+                        DEMAND_PROFILE_AC
                     ][index]
                 }
             )
@@ -356,7 +356,7 @@ def add_timeseries(experiment_s):
         experiment_s[experiment].update(
             {
                 "accumulated_profile_ac_side": experiment_s[experiment][
-                    "demand_profile_ac"
+                    DEMAND_PROFILE_AC
                 ]
                 + experiment_s[experiment]["demand_profile_dc"]
                 / experiment_s[experiment][RECTIFIER_AC_DC_EFFICIENCY]
@@ -366,7 +366,7 @@ def add_timeseries(experiment_s):
         experiment_s[experiment].update(
             {
                 "accumulated_profile_dc_side": experiment_s[experiment][
-                    "demand_profile_ac"
+                    DEMAND_PROFILE_AC
                 ]
                 / experiment_s[experiment][INVERTER_DC_AC_EFFICIENCY]
                 + experiment_s[experiment]["demand_profile_dc"]
@@ -375,10 +375,10 @@ def add_timeseries(experiment_s):
         experiment_s[experiment].update(
             {
                 "total_demand_ac": sum(
-                    experiment_s[experiment]["demand_profile_ac"]
+                    experiment_s[experiment][DEMAND_PROFILE_AC]
                 ),
                 "peak_demand_ac": max(
-                    experiment_s[experiment]["demand_profile_ac"]
+                    experiment_s[experiment][DEMAND_PROFILE_AC]
                 ),
                 "total_demand_dc": sum(
                     experiment_s[experiment]["demand_profile_dc"]
