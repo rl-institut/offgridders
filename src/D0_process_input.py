@@ -6,11 +6,62 @@ import pandas as pd
 import sys
 import logging
 
-try:
-    import src.D1_economic_functions as economics
-except ModuleNotFoundError:
-    print("Module error at D0")
-    import src.D1_economic_functions as economics
+import src.D1_economic_functions as economics
+
+from src.constants import ( PERFORM_SIMULATION,
+                            BASED_ON_CASE,
+                            ANNUITY_FACTOR,
+                            CRF,
+                            PV ,
+                            WIND,
+                            GENSET,
+                            STORAGE_CAPACITY,
+                            STORAGE_POWER,
+                            PCOUPLING,
+                            MAINGRID_EXTENSION,
+                            DISTRIBUTION_GRID,
+                            RECTIFIER_AC_DC,
+                            INVERTER_DC_AC,
+                            PROJECT,
+                            EVALUATED_DAYS,
+                            TIME_END,
+                            TIME_START,
+                            DATE_TIME_INDEX,
+                            TIME_FREQUENCY,
+                            FILE_INDEX,
+                            DEMAND_PROFILE_AC,
+                            DEMAND_PROFILE_DC,
+                            ACCUMULATED_PROFILE_AC_SIDE,
+                            ACCUMULATED_PROFILE_DC_SIDE,
+                            TOTAL_DEMAND_AC,
+                            PEAK_DEMAND_AC,
+                            TOTAL_DEMAND_DC,
+                            PEAK_DEMAND_DC,
+                            PEAK_PV_GENERATION_PER_KWP,
+                            PEAK_WIND_GENERATION_PER_KW,
+                            MEAN_DEMAND_AC,
+                            MEAN_DEMAND_DC,
+                            PEAK_MEAN_DEMAND_RATIO_AC,
+                            PEAK_MEAN_DEMAND_RATIO_DC,
+                            ABS_PEAK_DEMAND_AC_SIDE,
+                            PROJECT_LIFETIME,
+                            WACC,
+                            PRICE_FUEL,
+                            FUEL_PRICE,
+                            FUEL_PRICE_CHANGE_ANNUAL,
+                            TAX,
+                            DEMAND_AC,
+                            PV_GENERATION_PER_KWP,
+                            WIND_GENERATION_PER_KW,
+                            GRID_AVAILABILITY,
+                            DEMAND_DC,
+                            LP_FILE_FOR_ONLY_3_TIMESTEPS,
+                            RECTIFIER_AC_DC_EFFICIENCY,
+                            INVERTER_DC_AC_EFFICIENCY,
+                            PROJECT_SITE_NAME,
+                            WHITE_NOISE_DEMAND,
+                            WHITE_NOISE_PV,
+                            WHITE_NOISE_WIND)
 
 def list_of_cases(case_definitions):
     case_list = []
