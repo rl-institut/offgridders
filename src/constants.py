@@ -252,3 +252,6 @@ GRID_TOTAL_BLACKOUT_DURATION = "grid_total_blackout_duration"
 GRID_NUMBER_OF_BLACKOUTS = "grid_number_of_blackouts"
 GRID_RELIABILITY = "grid_reliability"
 MAX_EVALUATED_DAYS = "max_evaluated_days"
+
+#F_case_definitions
+PEAK_DEMAND = "peak_demand"

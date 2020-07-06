@@ -30,7 +30,7 @@ def update_dict(capacities_oem, specific_case, experiment):
             ],  # experiment['output_folder'] + "_" + specific_case['case_name'] + experiment['filename']
             TOTAL_DEMAND_AC: experiment[TOTAL_DEMAND_AC],
             TOTAL_DEMAND_DC: experiment[TOTAL_DEMAND_DC],
-            "peak_demand": experiment[ABS_PEAK_DEMAND_AC_SIDE],
+            PEAK_DEMAND: experiment[ABS_PEAK_DEMAND_AC_SIDE],
             EVALUATED_DAYS: experiment[EVALUATED_DAYS],
             "genset_with_minimal_loading": specific_case[
                 "genset_with_minimal_loading"
@@ -100,7 +100,7 @@ def update_dict(capacities_oem, specific_case, experiment):
             experiment[list_of_batch_names[item]],
         )
         # Correction factor for oversizing generator and pcc by factor (and include inefficiency of transformer)
-        if case_dict_entry == "peak_demand":
+        if case_dict_entry == PEAK_DEMAND:
             if component_name == CAPACITY_GENSET_KW:
                 case_dict_capacity = (
                     case_dict_capacity * experiment[GENSET_OVERSIZE_FACTOR]
@@ -227,8 +227,8 @@ def get_base_capacity(
         case_dict_capacity = None
     elif isinstance(case_dict_entry, float) or isinstance(case_dict_entry, int):
         case_dict_capacity = case_dict_entry
-    elif case_dict_entry == "peak_demand":
-        case_dict_capacity = round(experiment_case_dict["peak_demand"], 3)
+    elif case_dict_entry == PEAK_DEMAND:
+        case_dict_capacity = round(experiment_case_dict[PEAK_DEMAND], 3)
         case_dict_capacity = float(case_dict_capacity)
     elif case_dict_entry in capacities:
         case_dict_capacity = capacities[case_dict_entry][component_name]

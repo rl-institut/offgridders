@@ -196,7 +196,7 @@ def backup_test(case_dict, oemof_results, experiment, e_flows_df):
                         - experiment[SHORTAGE_LIMIT]
                         * (demand_profile[t] - shortage[t])
                     )
-                    / (experiment["peak_demand"])
+                    / (experiment[PEAK_DEMAND])
                     for t in range(0, len(demand_profile.index))
                 ],
                 index=demand_profile.index,
@@ -513,7 +513,7 @@ def usage_test(case_dict, oemof_results, experiment, e_flows_df):
                         - experiment[SHORTAGE_LIMIT]
                         * (demand_profile[t] - shortage[t])
                     )
-                    / (experiment["peak_demand"])
+                    / (experiment[PEAK_DEMAND])
                     for t in range(0, len(demand_profile.index))
                 ],
                 index=demand_profile.index,

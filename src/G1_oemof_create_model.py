@@ -148,7 +148,7 @@ def build(experiment, case_dict):
             bus_electricity_ac,
             bus_electricity_ng_consumption,
             experiment,
-            min_cap_pointofcoupling=case_dict["peak_demand"],
+            min_cap_pointofcoupling=case_dict[PEAK_DEMAND],
         )
     elif isinstance(case_dict["pcc_consumption_fixed_capacity"], float):
         pointofcoupling_consumption = generate.pointofcoupling_consumption_fix(
@@ -175,7 +175,7 @@ def build(experiment, case_dict):
             bus_electricity_ac,
             bus_electricity_ng_feedin,
             experiment,
-            min_cap_pointofcoupling=case_dict["peak_demand"],
+            min_cap_pointofcoupling=case_dict[PEAK_DEMAND],
         )
 
     elif isinstance(case_dict["pcc_feedin_fixed_capacity"], float):
