@@ -79,7 +79,7 @@ def run(experiment, case_dict):
         oemof_results = {
             CASE: case_dict[CASE_NAME],
             FILENAME: "results_" + case_dict[CASE_NAME] + experiment[FILENAME],
-            OBJECTIVE_VALUE: meta["objective"],
+            OBJECTIVE_VALUE: meta[OBJECTIVE],
             SIMULATION_TIME: meta["solver"]["Time"],
             COMMENTS: experiment[COMMENTS],
         }
