@@ -509,8 +509,8 @@ def simulate(experiment, micro_grid_system, model, file_name):
         )
 
     # add results to the energy system to make it possible to store them.
-    micro_grid_system.results[MAIN] = processing.results(model)
-    micro_grid_system.results[META] = processing.meta_results(model)
+    micro_grid_system.results["main"] = processing.results(model)
+    micro_grid_system.results["meta"] = processing.meta_results(model)
     return micro_grid_system
 
 

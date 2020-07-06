@@ -14,7 +14,7 @@ import timeit
 
 # Logging of info
 import logging
-from oemof.solph import processing
+import oemof.solph as solph
 
 # For speeding up lp_files and bus/component definition in oemof as well as processing
 import src.G1_oemof_create_model as oemof_model
@@ -120,9 +120,9 @@ def run(experiment, case_dict):
         COMMENTS: experiment[COMMENTS],
     }
 
-    electricity_bus_ac = processing.views.node(results, BUS_ELECTRICITY_AC)
+    electricity_bus_ac = solph.views.node(results, BUS_ELECTRICITY_AC)
 
-    electricity_bus_dc = processing.views.node(results, BUS_ELECTRICITY_DC)
+    electricity_bus_dc = solph.views.node(results, BUS_ELECTRICITY_DC)
 
     try:
 
