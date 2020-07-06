@@ -355,7 +355,7 @@ def add_timeseries(experiment_s):
 
         experiment_s[experiment].update(
             {
-                "accumulated_profile_ac_side": experiment_s[experiment][
+                ACCUMULATED_PROFILE_AC_SIDE: experiment_s[experiment][
                     DEMAND_PROFILE_AC
                 ]
                 + experiment_s[experiment][DEMAND_PROFILE_DC]
@@ -432,7 +432,7 @@ def add_timeseries(experiment_s):
         experiment_s[experiment].update(
             {
                 "abs_peak_demand_ac_side": max(
-                    experiment_s[experiment]["accumulated_profile_ac_side"]
+                    experiment_s[experiment][ACCUMULATED_PROFILE_AC_SIDE]
                 )
             }
         )
