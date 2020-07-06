@@ -131,7 +131,7 @@ def update_dict(capacities_oem, specific_case, experiment):
             {"max_shortage": experiment["shortage_max_allowed"]}
         )
 
-    elif specific_case["allow_shortage"] == False:
+    elif specific_case["allow_shortage"] is False:
         experiment_case_dict.update({"allow_shortage": False})
         experiment_case_dict.update({"max_shortage": 0})
 
@@ -166,7 +166,7 @@ def update_dict(capacities_oem, specific_case, experiment):
     ###########################################
 
     if (
-        specific_case["stability_constraint"] == False
+        specific_case["stability_constraint"] is False
         or specific_case["stability_constraint"] == "share_backup"
         or specific_case["stability_constraint"] == "share_usage"
         or specific_case["stability_constraint"] == "share_hybrid"
@@ -190,7 +190,7 @@ def update_dict(capacities_oem, specific_case, experiment):
         else:
             experiment_case_dict.update({"renewable_share_constraint": True})
 
-    elif specific_case["renewable_constraint"] == False:
+    elif specific_case["renewable_constraint"] is False:
         experiment_case_dict.update({"renewable_share_constraint": False})
 
     elif specific_case["renewable_constraint"] == True:

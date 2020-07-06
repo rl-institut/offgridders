@@ -370,7 +370,7 @@ def check_output_directory(settings, input_excel_file):
 
             elif (
                 folder == "/oemof"
-                and os.path.isdir(output_folder + folder) == False
+                and os.path.isdir(output_folder + folder) is False
             ):
                 os.mkdir(output_folder + "/oemof")
 
@@ -383,7 +383,7 @@ def check_output_directory(settings, input_excel_file):
             for file in files:
                 if (
                     file == "grid_availability.csv"
-                    and settings["restore_blackouts_if_existant"] == False
+                    and settings["restore_blackouts_if_existant"] is False
                 ):
                     os.remove(root + "/" + file)
                 else:

@@ -19,7 +19,7 @@ def list_of_cases(case_definitions):
     for case in case_definitions:
         if (
             case_definitions[case]["perform_simulation"] == True
-            and case_definitions[case]["based_on_case"] == False
+            and case_definitions[case]["based_on_case"] is False
         ):
             case_list.append(case)
             str_cases_simulated += case + ", "

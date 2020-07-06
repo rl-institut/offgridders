@@ -229,7 +229,7 @@ def get_pv(
         oemof_results.update({"total_pv_generation_kWh": 0})
 
     # Get capacity
-    if case_dict["pv_fixed_capacity"] == False:
+    if case_dict["pv_fixed_capacity"] is False:
         if pv_generation_max > 1:
             oemof_results.update(
                 {
@@ -286,7 +286,7 @@ def get_rectifier(
         oemof_results.update({"total_rectifier_ac_dc_throughput_kWh": 0})
 
     # Get capacity
-    if case_dict["rectifier_ac_dc_fixed_capacity"] == False:
+    if case_dict["rectifier_ac_dc_fixed_capacity"] is False:
         rectifier_capacity = electricity_bus_ac["scalars"][
             (("bus_electricity_ac", "transformer_rectifier"), "invest")
         ]
@@ -335,7 +335,7 @@ def get_inverter(
         oemof_results.update({"total_inverter_dc_ac_throughput_kWh": 0})
 
     # Get capacity
-    if case_dict["inverter_dc_ac_fixed_capacity"] == False:
+    if case_dict["inverter_dc_ac_fixed_capacity"] is False:
         inverter_capacity = electricity_bus_dc["scalars"][
             (("bus_electricity_dc", "transformer_inverter_dc_ac"), "invest")
         ]
@@ -373,7 +373,7 @@ def get_wind(
         oemof_results.update({"total_wind_generation_kWh": 0})
 
     # Get capacity
-    if case_dict["wind_fixed_capacity"] == False:
+    if case_dict["wind_fixed_capacity"] is False:
         if wind_generation_max > 1:
             oemof_results.update(
                 {
@@ -432,7 +432,7 @@ def get_genset(case_dict, oemof_results, electricity_bus_ac, e_flows_df):
         oemof_results.update({"total_genset_generation_kWh": 0})
 
     # Get capacity
-    if case_dict["genset_fixed_capacity"] == False:
+    if case_dict["genset_fixed_capacity"] is False:
         # Optimized generator capacity (sum)
         genset_capacity = 0
         for number in range(1, case_dict["number_of_equal_generators"] + 1):
@@ -466,6 +466,7 @@ def get_fuel(case_dict, oemof_results, results):
 def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
     logging.debug("Evaluate flow: storage")
     # Get flow
+    print(case_dict["storage_fixed_capacity"] )
     if case_dict["storage_fixed_capacity"] != None:
         storage = solph.views.node(results, "generic_storage")
         storage_discharge = storage["sequences"][
@@ -519,13 +520,14 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
         oemof_results.update({"total_storage_throughput_kWh": 0})
 
     # Get capacity
-    if case_dict["storage_fixed_capacity"] == False:
+    if case_dict["storage_fixed_capacity"] is False:
         # Optimized storage capacity
         storage = solph.views.node(results, "generic_storage")
         storage_capacity = storage["scalars"][
             (("generic_storage", "None"), "invest")
         ]
-
+        print("here cap")
+        print(storage_capacity)
         electricity_bus_dc = solph.views.node(results, "bus_electricity_dc")
         storage_power = electricity_bus_dc["scalars"][
             (("generic_storage", "bus_electricity_dc"), "invest")
@@ -684,12 +686,12 @@ def get_national_grid(
         or case_dict["pcc_feedin_fixed_capacity"] != None
     ):
         pcc_cap = []
-        if case_dict["pcc_consumption_fixed_capacity"] == False:
+        if case_dict["pcc_consumption_fixed_capacity"] is False:
             pcc_cap.append(consumption_utility_side.max())
         elif isinstance(case_dict["pcc_consumption_fixed_capacity"], float):
             pcc_cap.append(case_dict["pcc_consumption_fixed_capacity"])
 
-        if case_dict["pcc_feedin_fixed_capacity"] == False:
+        if case_dict["pcc_feedin_fixed_capacity"] is False:
             pcc_cap.append(feedin_utility_side.max())
         elif isinstance(case_dict["pcc_feedin_fixed_capacity"], float):
             pcc_cap.append(case_dict["pcc_feedin_fixed_capacity"])

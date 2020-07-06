@@ -59,7 +59,7 @@ def get(
             project_sites,
         )
 
-    elif settings["sensitivity_all_combinations"] == False:
+    elif settings["sensitivity_all_combinations"] is False:
         (
             sensitivitiy_experiment_s,
             number_of_project_sites,
@@ -302,7 +302,7 @@ def blackout(sensitivity_array_dict, parameters_constants, settings):
                 deepcopy(blackout_constants)
             )
 
-    elif settings["sensitivity_all_combinations"] == False:
+    elif settings["sensitivity_all_combinations"] is False:
         blackout_experiment_s = {}
         blackout_experiments_count = 0
         defined_base = False
@@ -326,7 +326,7 @@ def blackout(sensitivity_array_dict, parameters_constants, settings):
                     )
                 elif (
                     sensitivity_array_dict[key][interval_entry] == key_value
-                    and defined_base == False
+                    and defined_base is False
                 ):
                     # Defining scenario only with base case values for universal parameter / specific to project site (once!)
                     blackout_experiments_count += 1
@@ -499,7 +499,7 @@ def get_combinations_around_base(
 
                     elif (
                         sensitivity_array_dict[key][interval_entry] == key_value
-                        and defined_base == False
+                        and defined_base is False
                     ):
                         # Defining scenario only with base case values for universal parameter / specific to project site (once!)
                         experiment_number += 1

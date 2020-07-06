@@ -56,7 +56,7 @@ def build(experiment, case_dict):
     # ------------genset------------#
     if case_dict["genset_fixed_capacity"] == None:
         genset = None
-    elif case_dict["genset_fixed_capacity"] == False:
+    elif case_dict["genset_fixed_capacity"] is False:
         if case_dict["genset_with_minimal_loading"] == True:
             # not possible with oemof
             logging.error(
@@ -106,7 +106,7 @@ def build(experiment, case_dict):
     # ------------wind------------#
     if case_dict["wind_fixed_capacity"] == None:
         wind_plant = None
-    elif case_dict["wind_fixed_capacity"] == False:
+    elif case_dict["wind_fixed_capacity"] is False:
         wind_plant = generate.wind_oem(
             micro_grid_system, bus_electricity_ac, experiment
         )
@@ -142,7 +142,7 @@ def build(experiment, case_dict):
     # ------------point of coupling (consumption)------------#
     if case_dict["pcc_consumption_fixed_capacity"] == None:
         pointofcoupling_consumption = None
-    elif case_dict["pcc_consumption_fixed_capacity"] == False:
+    elif case_dict["pcc_consumption_fixed_capacity"] is False:
         pointofcoupling_consumption = generate.pointofcoupling_consumption_oem(
             micro_grid_system,
             bus_electricity_ac,
@@ -169,7 +169,7 @@ def build(experiment, case_dict):
     if case_dict["pcc_feedin_fixed_capacity"] == None:
         pass
         # pointofcoupling_feedin = None
-    elif case_dict["pcc_feedin_fixed_capacity"] == False:
+    elif case_dict["pcc_feedin_fixed_capacity"] is False:
         generate.pointofcoupling_feedin_oem(
             micro_grid_system,
             bus_electricity_ac,
@@ -210,7 +210,7 @@ def build(experiment, case_dict):
     # ------------PV------------#
     if case_dict["pv_fixed_capacity"] == None:
         solar_plant = None
-    elif case_dict["pv_fixed_capacity"] == False:
+    elif case_dict["pv_fixed_capacity"] is False:
         solar_plant = generate.pv_oem(
             micro_grid_system, bus_electricity_dc, experiment
         )
@@ -233,7 +233,7 @@ def build(experiment, case_dict):
     # ------------storage------------#
     if case_dict["storage_fixed_capacity"] == None:
         storage = None
-    elif case_dict["storage_fixed_capacity"] == False:
+    elif case_dict["storage_fixed_capacity"] is False:
         storage = generate.storage_oem(
             micro_grid_system, bus_electricity_dc, experiment
         )
@@ -258,7 +258,7 @@ def build(experiment, case_dict):
     if case_dict["rectifier_ac_dc_fixed_capacity"] == None:
         rectifier = None
 
-    elif case_dict["rectifier_ac_dc_fixed_capacity"] == False:
+    elif case_dict["rectifier_ac_dc_fixed_capacity"] is False:
         rectifier = generate.rectifier_oem(
             micro_grid_system, bus_electricity_ac, bus_electricity_dc, experiment
         )
@@ -283,7 +283,7 @@ def build(experiment, case_dict):
     if case_dict["inverter_dc_ac_fixed_capacity"] == None:
         inverter = None
 
-    elif case_dict["inverter_dc_ac_fixed_capacity"] == False:
+    elif case_dict["inverter_dc_ac_fixed_capacity"] is False:
         inverter = generate.inverter_dc_ac_oem(
             micro_grid_system, bus_electricity_ac, bus_electricity_dc, experiment
         )
@@ -327,7 +327,7 @@ def build(experiment, case_dict):
     model = solph.Model(micro_grid_system)
 
     # ------------Stability constraint------------#
-    if case_dict["stability_constraint"] == False:
+    if case_dict["stability_constraint"] is False:
         pass
     elif case_dict["stability_constraint"] == "share_backup":
         logging.info("Added constraint: Stability through backup.")
@@ -380,7 +380,7 @@ def build(experiment, case_dict):
         )
 
     # ------------Renewable share constraint------------#
-    if case_dict["renewable_share_constraint"] == False:
+    if case_dict["renewable_share_constraint"] is False:
         pass
     elif case_dict["renewable_share_constraint"] == True:
         logging.info("Adding constraint: Renewable share.")
@@ -403,7 +403,7 @@ def build(experiment, case_dict):
         )
 
     # ------------Force charge from maingrid------------#
-    if case_dict["force_charge_from_maingrid"] == False:
+    if case_dict["force_charge_from_maingrid"] is False:
         pass
     elif case_dict["force_charge_from_maingrid"] == True:
         logging.info("Added constraint: Forcing charge from main grid.")
@@ -418,7 +418,7 @@ def build(experiment, case_dict):
         )
 
     # ------------Allow discharge only at maingrid blackout------------#
-    if case_dict["discharge_only_when_blackout"] == False:
+    if case_dict["discharge_only_when_blackout"] is False:
         pass
     elif case_dict["discharge_only_when_blackout"] == True:
         logging.info("Added constraint: Allowing discharge only at blackout times.")
@@ -433,7 +433,7 @@ def build(experiment, case_dict):
         )
 
     # ------------Allow inverter use only at maingrid blackout------------#
-    if case_dict["enable_inverter_only_at_backout"] == False:
+    if case_dict["enable_inverter_only_at_backout"] is False:
         pass
     elif case_dict["enable_inverter_only_at_backout"] == True:
         logging.info(

@@ -202,7 +202,7 @@ def run(experiment, case_dict):
         plausability_tests.run(oemof_results, e_flows_df)
 
         # Run test on oemof constraints
-        if case_dict["stability_constraint"] == False:
+        if case_dict["stability_constraint"] is False:
             pass
         elif case_dict["stability_constraint"] == "share_backup":
             constraints_custom.backup_test(
@@ -303,7 +303,7 @@ def run(experiment, case_dict):
         logging.debug("    Simulation of case " + case_dict["case_name"] + " complete.")
         logging.debug("\n")
 
-        if experiment["save_oemofresults"] == False:
+        if experiment["save_oemofresults"] is False:
             os.remove(experiment["output_folder"] + "/oemof/" + file_name + ".oemof")
 
         return oemof_results

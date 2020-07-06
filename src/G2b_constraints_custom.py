@@ -23,7 +23,7 @@ def backup(
     ## ------- Get CAP genset ------- #
     CAP_genset = 0
     if case_dict["genset_fixed_capacity"] != None:
-        if case_dict["genset_fixed_capacity"] == False:
+        if case_dict["genset_fixed_capacity"] is False:
             for number in range(1, case_dict["number_of_equal_generators"] + 1):
                 CAP_genset += model.InvestmentFlow.invest[genset[number], el_bus_ac]
         elif isinstance(case_dict["genset_fixed_capacity"], float):
@@ -33,7 +33,7 @@ def backup(
     ## ------- Get CAP PCC ------- #
     CAP_pcc = 0
     if case_dict["pcc_consumption_fixed_capacity"] != None:
-        if case_dict["pcc_consumption_fixed_capacity"] == False:
+        if case_dict["pcc_consumption_fixed_capacity"] is False:
             CAP_pcc += model.InvestmentFlow.invest[pcc_consumption, el_bus_ac]
         elif isinstance(case_dict["pcc_consumption_fixed_capacity"], float):
             CAP_pcc += case_dict[
@@ -61,7 +61,7 @@ def backup(
         if case_dict["storage_fixed_capacity"] != None:
             stored_electricity = 0
             if (
-                case_dict["storage_fixed_capacity"] == False
+                case_dict["storage_fixed_capacity"] is False
             ):  # Storage subject to OEM
                 stored_electricity += (
                     model.GenericInvestmentStorageBlock.storage_content[storage, t]
@@ -107,7 +107,7 @@ def backup(
         ## ------- Get power of storage ------- #
         if case_dict["storage_fixed_power"] != None:
             storage_power = 0
-            if case_dict["storage_fixed_capacity"] == False:
+            if case_dict["storage_fixed_capacity"] is False:
                 storage_power += model.InvestmentFlow.invest[storage, el_bus_dc]
             elif isinstance(case_dict["storage_fixed_capacity"], float):
                 storage_power += case_dict["storage_fixed_power"]
@@ -247,7 +247,7 @@ def hybrid(
         if case_dict["storage_fixed_capacity"] != None:
             stored_electricity = 0
             if (
-                case_dict["storage_fixed_capacity"] == False
+                case_dict["storage_fixed_capacity"] is False
             ):  # Storage subject to OEM
                 stored_electricity += (
                     model.GenericInvestmentStorageBlock.storage_content[storage, t]
@@ -298,7 +298,7 @@ def hybrid(
         ## ------- Get power of storage ------- #
         if case_dict["storage_fixed_power"] != None:
             storage_power = 0
-            if case_dict["storage_fixed_capacity"] == False:
+            if case_dict["storage_fixed_capacity"] is False:
                 storage_power += model.InvestmentFlow.invest[storage, el_bus_dc]
             elif isinstance(case_dict["storage_fixed_capacity"], float):
                 storage_power += case_dict["storage_fixed_power"]
@@ -354,6 +354,7 @@ def hybrid_test(case_dict, oemof_results, experiment, e_flows_df):
                 [0 for t in demand_profile.index], index=demand_profile.index
             )
 
+        print(oemof_results.keys())
         boolean_test = [
             genset_generation[t]
             + (
@@ -633,7 +634,7 @@ def share_test(case_dict, oemof_results, experiment):
         boolean_test = (
             oemof_results["res_share"] >= experiment["min_renewable_share"]
         )
-        if boolean_test == False:
+        if boolean_test is False:
             deviation = (
                 experiment["min_renewable_share"] - oemof_results["res_share"]
             ) / experiment["min_renewable_share"]
@@ -662,7 +663,7 @@ def forced_charge(model, case_dict, el_bus_dc, storage, experiment):
     ## ------- Get CAP Storage ------- #
     CAP_storage = 0
     if case_dict["storage_fixed_capacity"] != None:
-        if case_dict["storage_fixed_capacity"] == False:
+        if case_dict["storage_fixed_capacity"] is False:
             CAP_storage += model.GenericInvestmentStorageBlock.invest[storage]
         elif isinstance(case_dict["storage_fixed_capacity"], float):
             CAP_storage += storage.nominal_capacity
@@ -687,7 +688,7 @@ def forced_charge(model, case_dict, el_bus_dc, storage, experiment):
         expr = 0
         if case_dict["storage_fixed_capacity"] != None:
             if (
-                case_dict["storage_fixed_capacity"] == False
+                case_dict["storage_fixed_capacity"] is False
             ):  # Storage subject to OEM
                 stored_electricity += model.GenericInvestmentStorageBlock.storage_content[
                     storage, t
@@ -803,7 +804,7 @@ def discharge_only_at_blackout(model, case_dict, el_bus, storage, experiment):
             expr += model.flow[storage, el_bus, t]
             # Get stored electricity at t
             if (
-                case_dict["storage_fixed_capacity"] == False
+                case_dict["storage_fixed_capacity"] is False
             ):  # Storage subject to OEM
                 stored_electricity += model.GenericInvestmentStorageBlock.storage_content[
                     storage, t
@@ -875,7 +876,7 @@ def inverter_only_at_blackout(model, case_dict, el_bus, inverter, experiment):
     ## ------- Get CAP inverter ------- #
     CAP_inverter = 0
     if case_dict["inverter_dc_ac_fixed_capacity"] != None:
-        if case_dict["inverter_dc_ac_fixed_capacity"] == False:
+        if case_dict["inverter_dc_ac_fixed_capacity"] is False:
             CAP_inverter += model.InvestmentFlow.invest[el_bus, inverter]
         elif isinstance(case_dict["inverter_dc_ac_fixed_capacity"], float):
             CAP_inverter += model.flows[el_bus, inverter].nominal_value
