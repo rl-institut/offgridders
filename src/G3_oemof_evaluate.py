@@ -43,7 +43,7 @@ def get_demand(
         index=experiment[DATE_TIME_INDEX],
     )
     demand_ac = electricity_bus_ac["sequences"][
-        (("bus_electricity_ac", "sink_demand_ac"), "flow")
+        ((BUS_ELECTRICITY_AC, "sink_demand_ac"), "flow")
     ]
     e_flows_df = join_e_flows_df(demand_ac, "Demand AC", e_flows_df)
     if case_dict[EVALUATION_PERSPECTIVE] == "AC_bus":
@@ -86,7 +86,7 @@ def get_shortage(
         if electricity_bus_ac != None:
 
             shortage_ac = electricity_bus_ac["sequences"][
-                (("source_shortage", "bus_electricity_ac"), "flow")
+                (("source_shortage", BUS_ELECTRICITY_AC), "flow")
             ]
             annual_value(
                 "total_demand_shortage_ac_annual_kWh",
@@ -160,7 +160,7 @@ def get_excess(
     if electricity_bus_ac != None:
 
         excess_ac = electricity_bus_ac["sequences"][
-            (("bus_electricity_ac", "sink_excess"), "flow")
+            ((BUS_ELECTRICITY_AC, "sink_excess"), "flow")
         ]
         excess += excess_ac
         annual_value(
@@ -270,7 +270,7 @@ def get_rectifier(
         )
 
         rectifier_in = electricity_bus_ac["sequences"][
-            (("bus_electricity_ac", "transformer_rectifier"), "flow")
+            ((BUS_ELECTRICITY_AC, "transformer_rectifier"), "flow")
         ]
         e_flows_df = join_e_flows_df(
             rectifier_in, "Rectifier input", e_flows_df
@@ -288,7 +288,7 @@ def get_rectifier(
     # Get capacity
     if case_dict[RECTIFIER_AC_DC_FIXED_CAPACITY] == False:
         rectifier_capacity = electricity_bus_ac["scalars"][
-            (("bus_electricity_ac", "transformer_rectifier"), "invest")
+            ((BUS_ELECTRICITY_AC, "transformer_rectifier"), "invest")
         ]
         oemof_results.update({CAPACITY_RECTIFIER_AC_DC_KW: rectifier_capacity})
 
@@ -312,7 +312,7 @@ def get_inverter(
     # Get flow
     if case_dict[INVERTER_DC_AC_FIXED_CAPACITY] != None:
         inverter_out = electricity_bus_ac["sequences"][
-            (("transformer_inverter_dc_ac", "bus_electricity_ac"), "flow")
+            (("transformer_inverter_dc_ac", BUS_ELECTRICITY_AC), "flow")
         ]
         e_flows_df =join_e_flows_df(
             inverter_out, "Inverter output", e_flows_df
@@ -361,7 +361,7 @@ def get_wind(
     # Get flow
     if case_dict[WIND_FIXED_CAPACITY] != None:
         wind_gen = electricity_bus_ac["sequences"][
-            (("source_wind", "bus_electricity_ac"), "flow")
+            (("source_wind", BUS_ELECTRICITY_AC), "flow")
         ]
         annual_value(
             TOTAL_WIND_GENERATION_KWH, wind_gen, oemof_results, case_dict
@@ -378,7 +378,7 @@ def get_wind(
             oemof_results.update(
                 {
                     CAPACITY_WIND_KW: electricity_bus_ac["scalars"][
-                        (("source_wind", "bus_electricity_ac"), "invest")
+                        (("source_wind", BUS_ELECTRICITY_AC), "invest")
                     ]
                     * wind_generation_max
                 }
@@ -387,7 +387,7 @@ def get_wind(
             oemof_results.update(
                 {
                     CAPACITY_WIND_KW: electricity_bus_ac["scalars"][
-                        (("source_wind", "bus_electricity_ac"), "invest")
+                        (("source_wind", BUS_ELECTRICITY_AC), "invest")
                     ]
                     / wind_generation_max
                 }
@@ -405,7 +405,7 @@ def get_genset(case_dict, oemof_results, electricity_bus_ac, e_flows_df):
     # Get flow
     if case_dict[GENSET_FIXED_CAPACITY] != None:
         genset = electricity_bus_ac["sequences"][
-            (("transformer_genset_1", "bus_electricity_ac"), "flow")
+            (("transformer_genset_1", BUS_ELECTRICITY_AC), "flow")
         ]
         e_flows_df = join_e_flows_df(
             genset, "Genset 1 generation", e_flows_df
@@ -414,7 +414,7 @@ def get_genset(case_dict, oemof_results, electricity_bus_ac, e_flows_df):
         for number in range(2, case_dict[NUMBER_OF_EQUAL_GENERATORS] + 1):
             genset = electricity_bus_ac["sequences"][
                 (
-                    ("transformer_genset_" + str(number), "bus_electricity_ac"),
+                    ("transformer_genset_" + str(number), BUS_ELECTRICITY_AC),
                     "flow",
                 )
             ]
@@ -438,7 +438,7 @@ def get_genset(case_dict, oemof_results, electricity_bus_ac, e_flows_df):
         for number in range(1, case_dict[NUMBER_OF_EQUAL_GENERATORS] + 1):
             genset_capacity += electricity_bus_ac["scalars"][
                 (
-                    ("transformer_genset_" + str(number), "bus_electricity_ac"),
+                    ("transformer_genset_" + str(number), BUS_ELECTRICITY_AC),
                     "invest",
                 )
             ]
@@ -569,7 +569,7 @@ def get_national_grid(
     case_dict, oemof_results, results, e_flows_df, grid_availability
 ):
     logging.debug("Evaluate flow: main grid")
-    micro_grid_bus = outputlib.views.node(results, "bus_electricity_ac")
+    micro_grid_bus = outputlib.views.node(results, BUS_ELECTRICITY_AC)
     # define grid availability
     if (
         case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] != None
@@ -588,7 +588,7 @@ def get_national_grid(
 
     if case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] != None:
         consumption_mg_side = micro_grid_bus["sequences"][
-            (("transformer_pcc_consumption", "bus_electricity_ac"), "flow")
+            (("transformer_pcc_consumption", BUS_ELECTRICITY_AC), "flow")
         ]
         e_flows_df = join_e_flows_df(
             consumption_mg_side, "Consumption from main grid (MG side)", e_flows_df
@@ -643,7 +643,7 @@ def get_national_grid(
 
     if case_dict[PCC_FEEDIN_FIXED_CAPACITY] != None:
         feedin_mg_side = micro_grid_bus["sequences"][
-            (("bus_electricity_ac", "transformer_pcc_feedin"), "flow")
+            ((BUS_ELECTRICITY_AC, "transformer_pcc_feedin"), "flow")
         ]
         e_flows_df = join_e_flows_df(
             feedin_mg_side, "Feed into main grid (MG side)", e_flows_df

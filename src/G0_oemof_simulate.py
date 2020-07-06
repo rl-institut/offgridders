@@ -84,7 +84,7 @@ def run(experiment, case_dict):
             COMMENTS: experiment[COMMENTS],
         }
 
-        electricity_bus_ac = outputlib.views.node(results, "bus_electricity_ac")
+        electricity_bus_ac = outputlib.views.node(results, BUS_ELECTRICITY_AC)
 
         electricity_bus_dc = outputlib.views.node(results, "bus_electricity_dc")
 
