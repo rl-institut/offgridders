@@ -28,7 +28,7 @@ def update_dict(capacities_oem, specific_case, experiment):
             + experiment[
                 FILENAME
             ],  # experiment['output_folder'] + "_" + specific_case['case_name'] + experiment['filename']
-            "total_demand_ac": experiment["total_demand_ac"],
+            TOTAL_DEMAND_AC: experiment[TOTAL_DEMAND_AC],
             "total_demand_dc": experiment["total_demand_dc"],
             "peak_demand": experiment["abs_peak_demand_ac_side"],
             EVALUATED_DAYS: experiment[EVALUATED_DAYS],
