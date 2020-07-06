@@ -29,7 +29,7 @@ def project_annuities(case_dict, oemof_results, experiment):
     # Expenditures for shortage
     expenditures_shortage(oemof_results, experiment)
 
-    if case_dict["pcc_consumption_fixed_capacity"] != None:
+    if case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] != None:
         # ---------Expenditures from electricity consumption from main grid ----------#
         expenditures_main_grid_consumption(
             oemof_results, experiment
@@ -85,7 +85,7 @@ def annuities_365(case_dict, oemof_results, experiment):
         )
 
     if (
-        case_dict["pcc_consumption_fixed_capacity"] != None
+        case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] != None
         and case_dict["pcc_feedin_fixed_capacity"] != None
     ):
         interval_annuity.update(
@@ -105,7 +105,7 @@ def annuities_365(case_dict, oemof_results, experiment):
 
     # Main grid extension
     if (
-        case_dict["pcc_consumption_fixed_capacity"] != None
+        case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] != None
         or case_dict["pcc_feedin_fixed_capacity"] != None
     ):
         interval_annuity.update(

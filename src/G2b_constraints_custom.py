@@ -32,12 +32,12 @@ def backup(
 
     ## ------- Get CAP PCC ------- #
     CAP_pcc = 0
-    if case_dict["pcc_consumption_fixed_capacity"] != None:
-        if case_dict["pcc_consumption_fixed_capacity"] == False:
+    if case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] != None:
+        if case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] == False:
             CAP_pcc += model.InvestmentFlow.invest[pcc_consumption, el_bus_ac]
-        elif isinstance(case_dict["pcc_consumption_fixed_capacity"], float):
+        elif isinstance(case_dict[PCC_CONSUMPTION_FIXED_CAPACITY], float):
             CAP_pcc += case_dict[
-                "pcc_consumption_fixed_capacity"
+                PCC_CONSUMPTION_FIXED_CAPACITY
             ]  # this didnt work - model.flows[pcc_consumption, el_bus_ac].nominal_value
 
     def stability_rule_capacity(model, t):
@@ -55,7 +55,7 @@ def backup(
             expr += +stability_limit * shortage
         ##---------Grid consumption t-------#
         # this should not be actual consumption but possible one  - like grid_availability[t]*pcc_consumption_cap
-        if case_dict["pcc_consumption_fixed_capacity"] != None:
+        if case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] != None:
             expr += CAP_pcc * experiment[GRID_AVAILABILITY][t]
 
         ## ------- Get stored capacity storage at t------- #
@@ -103,7 +103,7 @@ def backup(
             expr += +stability_limit * shortage
         ##---------Grid consumption t-------#
         # this should not be actual consumption but possible one  - like grid_availability[t]*pcc_consumption_cap
-        if case_dict["pcc_consumption_fixed_capacity"] != None:
+        if case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] != None:
             expr += CAP_pcc * experiment[GRID_AVAILABILITY][t]
 
         ## ------- Get power of storage ------- #
@@ -243,7 +243,7 @@ def hybrid(
                 expr += model.flow[genset[number], el_bus_ac, t]
 
         ##---------Grid consumption t-------#
-        if case_dict["pcc_consumption_fixed_capacity"] != None:
+        if case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] != None:
             expr += model.flow[pcc_consumption, el_bus_ac, t]
 
         ## ------- Get stored capacity storage at t------- #
@@ -296,7 +296,7 @@ def hybrid(
                 expr += model.flow[genset[number], el_bus_ac, t]
 
         ##---------Grid consumption t-------#
-        if case_dict["pcc_consumption_fixed_capacity"] != None:
+        if case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] != None:
             expr += model.flow[pcc_consumption, el_bus_ac, t]
 
         ## ------- Get power of storage ------- #
@@ -442,7 +442,7 @@ def usage(
                 expr += model.flow[genset[number], el_bus, t]
 
         ##---------Grid consumption t-------#
-        if case_dict["pcc_consumption_fixed_capacity"] != None:
+        if case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] != None:
             expr += model.flow[pcc_consumption, el_bus, t]
 
         ## ------- Get discharge storage at t------- #

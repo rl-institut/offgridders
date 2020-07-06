@@ -572,7 +572,7 @@ def get_national_grid(
     micro_grid_bus = outputlib.views.node(results, "bus_electricity_ac")
     # define grid availability
     if (
-        case_dict["pcc_consumption_fixed_capacity"] != None
+        case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] != None
         or case_dict["pcc_feedin_fixed_capacity"] != None
     ):
         e_flows_df = join_e_flows_df(
@@ -586,7 +586,7 @@ def get_national_grid(
             grid_availability_symbolic, "Grid availability", e_flows_df
         )
 
-    if case_dict["pcc_consumption_fixed_capacity"] != None:
+    if case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] != None:
         consumption_mg_side = micro_grid_bus["sequences"][
             (("transformer_pcc_consumption", "bus_electricity_ac"), "flow")
         ]
@@ -680,14 +680,14 @@ def get_national_grid(
 
     # get capacities
     if (
-        case_dict["pcc_consumption_fixed_capacity"] != None
+        case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] != None
         or case_dict["pcc_feedin_fixed_capacity"] != None
     ):
         pcc_cap = []
-        if case_dict["pcc_consumption_fixed_capacity"] == False:
+        if case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] == False:
             pcc_cap.append(consumption_utility_side.max())
-        elif isinstance(case_dict["pcc_consumption_fixed_capacity"], float):
-            pcc_cap.append(case_dict["pcc_consumption_fixed_capacity"])
+        elif isinstance(case_dict[PCC_CONSUMPTION_FIXED_CAPACITY], float):
+            pcc_cap.append(case_dict[PCC_CONSUMPTION_FIXED_CAPACITY])
 
         if case_dict["pcc_feedin_fixed_capacity"] == False:
             pcc_cap.append(feedin_utility_side.max())
@@ -696,7 +696,7 @@ def get_national_grid(
 
         oemof_results.update({CAPACITY_PCOUPLING_KW: max(pcc_cap)})
     elif (
-        case_dict["pcc_consumption_fixed_capacity"] == None
+        case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] == None
         and case_dict["pcc_feedin_fixed_capacity"] == None
     ):
         oemof_results.update({CAPACITY_PCOUPLING_KW: 0})
@@ -707,10 +707,10 @@ def get_national_grid(
 
     total_pcoupling_throughput_kWh = 0
     if (
-        case_dict["pcc_consumption_fixed_capacity"] != None
+        case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] != None
         or case_dict["pcc_feedin_fixed_capacity"] != None
     ):
-        if case_dict["pcc_consumption_fixed_capacity"] != None:
+        if case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] != None:
             total_pcoupling_throughput_kWh += oemof_results[
                 CONSUMPTION_MAIN_GRID_MG_SIDE_ANNUAL_KWH
             ]  # payments also for inverter loss
