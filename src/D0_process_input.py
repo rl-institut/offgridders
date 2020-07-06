@@ -397,20 +397,20 @@ def add_timeseries(experiment_s):
 
         experiment_s[experiment].update(
             {
-                "mean_demand_ac": experiment_s[experiment][TOTAL_DEMAND_AC]
+                MEAN_DEMAND_AC: experiment_s[experiment][TOTAL_DEMAND_AC]
                 / len(experiment_s[experiment][DATE_TIME_INDEX]),
                 "mean_demand_dc": experiment_s[experiment][TOTAL_DEMAND_DC]
                 / len(experiment_s[experiment][DATE_TIME_INDEX]),
             }
         )
 
-        if experiment_s[experiment]["mean_demand_ac"] > 0:
+        if experiment_s[experiment][MEAN_DEMAND_AC] > 0:
             experiment_s[experiment].update(
                 {
                     "peak/mean_demand_ratio_ac": experiment_s[experiment][
                         PEAK_DEMAND_AC
                     ]
-                    / experiment_s[experiment]["mean_demand_ac"]
+                    / experiment_s[experiment][MEAN_DEMAND_AC]
                 }
             )
         else:
