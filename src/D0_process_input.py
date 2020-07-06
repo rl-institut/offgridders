@@ -365,7 +365,7 @@ def add_timeseries(experiment_s):
 
         experiment_s[experiment].update(
             {
-                "accumulated_profile_dc_side": experiment_s[experiment][
+                ACCUMULATED_PROFILE_DC_SIDE: experiment_s[experiment][
                     DEMAND_PROFILE_AC
                 ]
                 / experiment_s[experiment][INVERTER_DC_AC_EFFICIENCY]
