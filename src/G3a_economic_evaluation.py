@@ -124,7 +124,7 @@ def annuities_365(case_dict, oemof_results, experiment):
         WIND,
         GENSET,
         "storage",
-        "pcoupling",
+        PCOUPLING,
         "maingrid_extension",
         "distribution_grid",
         "rectifier_ac_dc",
@@ -184,7 +184,7 @@ def annuities_365(case_dict, oemof_results, experiment):
             * experiment[item + "_cost_var"]
         )
 
-    for item in ["pcoupling", "storage", "rectifier_ac_dc", "inverter_dc_ac"]:
+    for item in [PCOUPLING, "storage", "rectifier_ac_dc", "inverter_dc_ac"]:
         om_var_interval.update(
             {
                 "om_var_"
@@ -256,7 +256,7 @@ def costs(oemof_results, experiment):
         WIND,
         GENSET,
         "storage",
-        "pcoupling",
+        PCOUPLING,
         "maingrid_extension",
         "distribution_grid",
         "rectifier_ac_dc",

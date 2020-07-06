@@ -81,7 +81,7 @@ def economic_values(experiment):
         GENSET,
         STORAGE_CAPACITY,
         STORAGE_POWER,
-        "pcoupling",
+        PCOUPLING,
         "maingrid_extension",
         "distribution_grid",
         "rectifier_ac_dc",
