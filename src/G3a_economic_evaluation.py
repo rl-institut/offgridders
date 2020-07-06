@@ -55,7 +55,7 @@ def project_annuities(case_dict, oemof_results, experiment):
     return
 
 def annuities_365(case_dict, oemof_results, experiment):
-    evaluated_days = case_dict["evaluated_days"]
+    evaluated_days = case_dict[EVALUATED_DAYS]
 
     logging.debug(
         "Economic evaluation. Calculating investment costs over analysed timeframe."

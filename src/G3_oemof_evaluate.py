@@ -26,7 +26,7 @@ def join_e_flows_df(timeseries, name, e_flows_df):
 
 def annual_value(name, timeseries, oemof_results, case_dict):
     value = sum(timeseries)
-    value = value * 365 / case_dict["evaluated_days"]
+    value = value * 365 / case_dict[EVALUATED_DAYS]
     oemof_results.update({name: value})
     return
 

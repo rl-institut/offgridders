@@ -130,7 +130,7 @@ def economic_values(experiment):
                 item
                 + "_cost_annuity": experiment[item + "_cost_annuity"]
                 / 365
-                * experiment["evaluated_days"]
+                * experiment[EVALUATED_DAYS]
             }
         )
 
@@ -145,7 +145,7 @@ def add_timeseries(experiment_s):
         experiment_s[experiment].update(
             {
                 "time_end": experiment_s[experiment]["time_start"]
-                + pd.DateOffset(days=experiment_s[experiment]["evaluated_days"])
+                + pd.DateOffset(days=experiment_s[experiment][EVALUATED_DAYS])
                 - pd.DateOffset(hours=1)
             }
         )
@@ -165,7 +165,7 @@ def add_timeseries(experiment_s):
             longest = experiment
 
     max_date_time_index = experiment_s[longest]["date_time_index"]
-    max_evaluated_days = experiment_s[longest]["evaluated_days"]
+    max_evaluated_days = experiment_s[longest][EVALUATED_DAYS]
 
     for experiment in experiment_s:
         index = experiment_s[experiment]["date_time_index"]
