@@ -82,7 +82,7 @@ def economic_values(experiment):
         STORAGE_CAPACITY,
         STORAGE_POWER,
         PCOUPLING,
-        "maingrid_extension",
+        MAINGRID_EXTENSION,
         "distribution_grid",
         "rectifier_ac_dc",
         "inverter_dc_ac",

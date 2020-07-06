@@ -125,7 +125,7 @@ def annuities_365(case_dict, oemof_results, experiment):
         GENSET,
         "storage",
         PCOUPLING,
-        "maingrid_extension",
+        MAINGRID_EXTENSION,
         "distribution_grid",
         "rectifier_ac_dc",
         "inverter_dc_ac",
@@ -148,7 +148,7 @@ def annuities_365(case_dict, oemof_results, experiment):
                 experiment[STORAGE_POWER_COST_INVESTMENT ]
                 * oemof_results[CAPACITY_STORAGE_KWH]
             )
-        elif item == "maingrid_extension":
+        elif item == MAINGRID_EXTENSION:
             investment += (
                 experiment[MAINGRID_ELECTRICITY_COST_INVESTMENT]
                 * experiment[MAINGRID_DISTANCE]
@@ -217,7 +217,7 @@ def annuities_365(case_dict, oemof_results, experiment):
 
     for item in component_list:
 
-        if item in ["project", "maingrid_extension", "distribution_grid"]:
+        if item in ["project", MAINGRID_EXTENSION, "distribution_grid"]:
             oemof_results.update(
                 {
                     "annuity_"
@@ -257,7 +257,7 @@ def costs(oemof_results, experiment):
         GENSET,
         "storage",
         PCOUPLING,
-        "maingrid_extension",
+        MAINGRID_EXTENSION,
         "distribution_grid",
         "rectifier_ac_dc",
         "inverter_dc_ac",
