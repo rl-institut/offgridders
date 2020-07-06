@@ -144,7 +144,7 @@ def add_timeseries(experiment_s):
     for experiment in experiment_s:
         experiment_s[experiment].update(
             {
-                TIME_END: experiment_s[experiment]["time_start"]
+                TIME_END: experiment_s[experiment][TIME_START]
                 + pd.DateOffset(days=experiment_s[experiment][EVALUATED_DAYS])
                 - pd.DateOffset(hours=1)
             }
@@ -153,7 +153,7 @@ def add_timeseries(experiment_s):
         experiment_s[experiment].update(
             {
                 "date_time_index": pd.date_range(
-                    start=experiment_s[experiment]["time_start"],
+                    start=experiment_s[experiment][TIME_START],
                     end=experiment_s[experiment][TIME_END],
                     freq=experiment_s[experiment]["time_frequency"],
                 )
@@ -295,20 +295,20 @@ def add_timeseries(experiment_s):
         if experiment_s[experiment][LP_FILE_FOR_ONLY_3_TIMESTEPS] == True:
             experiment_s[experiment].update(
                 {
-                    "time_start": experiment_s[experiment]["time_start"]
+                    TIME_START: experiment_s[experiment][TIME_START]
                     + pd.DateOffset(hours=15)
                 }
             )
             experiment_s[experiment].update(
                 {
-                    TIME_END: experiment_s[experiment]["time_start"]
+                    TIME_END: experiment_s[experiment][TIME_START]
                     + pd.DateOffset(hours=2)
                 }
             )
             experiment_s[experiment].update(
                 {
                     "date_time_index": pd.date_range(
-                        start=experiment_s[experiment]["time_start"],
+                        start=experiment_s[experiment][TIME_START],
                         end=experiment_s[experiment][TIME_END],
                         freq=experiment_s[experiment]["time_frequency"],
                     )
