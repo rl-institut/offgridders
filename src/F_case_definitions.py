@@ -123,32 +123,32 @@ def update_dict(capacities_oem, specific_case, experiment):
     ###########################################
     # Allowing shortage, define max. shortage #
     ###########################################
-    if specific_case["allow_shortage"] == "default":
+    if specific_case[ALLOW_SHORTAGE] == "default":
         experiment_case_dict.update(
-            {"allow_shortage": experiment["allow_shortage"]}
+            {ALLOW_SHORTAGE: experiment[ALLOW_SHORTAGE]}
         )
         experiment_case_dict.update(
             {MAX_SHORTAGE: experiment[SHORTAGE_MAX_ALLOWED]}
         )
 
-    elif specific_case["allow_shortage"] == False:
-        experiment_case_dict.update({"allow_shortage": False})
+    elif specific_case[ALLOW_SHORTAGE] == False:
+        experiment_case_dict.update({ALLOW_SHORTAGE: False})
         experiment_case_dict.update({MAX_SHORTAGE: 0})
 
     elif (
-        specific_case["allow_shortage"] == True
+        specific_case[ALLOW_SHORTAGE] == True
         and specific_case[MAX_SHORTAGE] == "default"
     ):
-        experiment_case_dict.update({"allow_shortage": True})
+        experiment_case_dict.update({ALLOW_SHORTAGE: True})
         experiment_case_dict.update(
             {MAX_SHORTAGE: experiment[SHORTAGE_MAX_ALLOWED]}
         )
 
-    elif specific_case["allow_shortage"] == True:
+    elif specific_case[ALLOW_SHORTAGE] == True:
         if isinstance(specific_case[MAX_SHORTAGE], float) or isinstance(
             specific_case[MAX_SHORTAGE], int
         ):
-            experiment_case_dict.update({"allow_shortage": True})
+            experiment_case_dict.update({ALLOW_SHORTAGE: True})
             experiment_case_dict.update(
                 {MAX_SHORTAGE: specific_case[MAX_SHORTAGE]}
             )
@@ -156,9 +156,9 @@ def update_dict(capacities_oem, specific_case, experiment):
     else:
         logging.warning(
             warning_string
-            + ' values "allow_shortage" (True/False/default) and MAX_SHORTAGE (float/default) not defined properly: '
-            + str(specific_case["allow_shortage"])
-            + str(isinstance(specific_case["allow_shortage"], str))
+            + ' values ALLOW_SHORTAGE (True/False/default) and MAX_SHORTAGE (float/default) not defined properly: '
+            + str(specific_case[ALLOW_SHORTAGE])
+            + str(isinstance(specific_case[ALLOW_SHORTAGE], str))
         )
 
     ###########################################

@@ -312,7 +312,7 @@ def build(experiment, case_dict):
     generate.excess(micro_grid_system, bus_electricity_ac, bus_electricity_dc)
 
     # ------------Optional: Shortage source------------#
-    if case_dict["allow_shortage"] == True:
+    if case_dict[ALLOW_SHORTAGE] == True:
         source_shortage = generate.shortage(
             micro_grid_system,
             bus_electricity_ac,
