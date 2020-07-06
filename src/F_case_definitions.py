@@ -221,8 +221,8 @@ def update_dict(capacities_oem, specific_case, experiment):
 def get_base_capacity(
     experiment_case_dict, case_dict_entry, capacities, component_name, batch_size
 ):
-    if case_dict_entry == "oem":
-        case_dict_capacity = "oem"
+    if case_dict_entry ==OEM:
+        case_dict_capacity =OEM
     elif case_dict_entry == None or case_dict_entry == "None":
         case_dict_capacity = None
     elif isinstance(case_dict_entry, float) or isinstance(case_dict_entry, int):
@@ -245,7 +245,7 @@ def get_base_capacity(
 
 def define_capacity(experiment_case_dict, case_dict_capacity, oemof_name):
 
-    if case_dict_capacity == "oem":
+    if case_dict_capacity ==OEM:
         experiment_case_dict.update({oemof_name: False})
     elif case_dict_capacity == None or case_dict_capacity == 0:
         experiment_case_dict.update({oemof_name: None})
