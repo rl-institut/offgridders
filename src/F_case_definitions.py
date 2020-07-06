@@ -186,19 +186,19 @@ def update_dict(capacities_oem, specific_case, experiment):
 
     if specific_case[RENEWABLE_CONSTRAINT] == "default":
         if experiment[MIN_RENEWABLE_SHARE] == 0:
-            experiment_case_dict.update({"renewable_share_constraint": False})
+            experiment_case_dict.update({RENEWABLE_SHARE_CONSTRAINT: False})
         else:
-            experiment_case_dict.update({"renewable_share_constraint": True})
+            experiment_case_dict.update({RENEWABLE_SHARE_CONSTRAINT: True})
 
     elif specific_case[RENEWABLE_CONSTRAINT] == False:
-        experiment_case_dict.update({"renewable_share_constraint": False})
+        experiment_case_dict.update({RENEWABLE_SHARE_CONSTRAINT: False})
 
     elif specific_case[RENEWABLE_CONSTRAINT] == True:
-        experiment_case_dict.update({"renewable_share_constraint": True})
+        experiment_case_dict.update({RENEWABLE_SHARE_CONSTRAINT: True})
     else:
         logging.warning(
             warning_string
-            + ' value "renewable_share_constraint" (True/False/default) not defined properly'
+            + ' value RENEWABLE_SHARE_CONSTRAINT (True/False/default) not defined properly'
         )
 
     experiment_case_dict[NUMBER_OF_EQUAL_GENERATORS] = specific_case[

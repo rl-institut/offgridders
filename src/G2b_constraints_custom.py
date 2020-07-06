@@ -634,7 +634,7 @@ def share_test(case_dict, oemof_results, experiment):
     """
     Testing simulation results for adherance to above defined stability criterion
     """
-    if case_dict["renewable_share_constraint"] == True:
+    if case_dict[RENEWABLE_SHARE_CONSTRAINT] == True:
         boolean_test = (
             oemof_results[RES_SHARE] >= experiment[MIN_RENEWABLE_SHARE]
         )

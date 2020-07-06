@@ -380,9 +380,9 @@ def build(experiment, case_dict):
         )
 
     # ------------Renewable share constraint------------#
-    if case_dict["renewable_share_constraint"] == False:
+    if case_dict[RENEWABLE_SHARE_CONSTRAINT] == False:
         pass
-    elif case_dict["renewable_share_constraint"] == True:
+    elif case_dict[RENEWABLE_SHARE_CONSTRAINT] == True:
         logging.info("Adding constraint: Renewable share.")
         constraints_custom.share(
             model,
