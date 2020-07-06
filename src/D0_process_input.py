@@ -86,7 +86,7 @@ def economic_values(experiment):
         DISTRIBUTION_GRID,
         RECTIFIER_AC_DC,
         INVERTER_DC_AC,
-        "project",
+        PROJECT,
     ]
 
     for item in component_list:

@@ -78,7 +78,7 @@ def annuities_365(case_dict, oemof_results, experiment):
         * oemof_results[CAPACITY_INVERTER_DC_AC_KW],
     }
 
-    list_fix = ["project", DISTRIBUTION_GRID]
+    list_fix = [PROJECT, DISTRIBUTION_GRID]
     for item in list_fix:
         interval_annuity.update(
             {"annuity_" + item: experiment[item + "_cost_annuity"]}
@@ -129,7 +129,7 @@ def annuities_365(case_dict, oemof_results, experiment):
         DISTRIBUTION_GRID,
         RECTIFIER_AC_DC,
         INVERTER_DC_AC,
-        "project",
+        PROJECT,
     ]
 
     # include in oemof_results just first investment costs
@@ -153,7 +153,7 @@ def annuities_365(case_dict, oemof_results, experiment):
                 experiment[MAINGRID_ELECTRICITY_COST_INVESTMENT]
                 * experiment[MAINGRID_DISTANCE]
             )
-        elif item in [DISTRIBUTION_GRID, "project"]:
+        elif item in [DISTRIBUTION_GRID, PROJECT]:
             investment += experiment[item + "_cost_investment"]
         else:
             investment += (
@@ -217,7 +217,7 @@ def annuities_365(case_dict, oemof_results, experiment):
 
     for item in component_list:
 
-        if item in ["project", MAINGRID_EXTENSION, DISTRIBUTION_GRID]:
+        if item in [PROJECT, MAINGRID_EXTENSION, DISTRIBUTION_GRID]:
             oemof_results.update(
                 {
                     "annuity_"
@@ -261,7 +261,7 @@ def costs(oemof_results, experiment):
         DISTRIBUTION_GRID,
         RECTIFIER_AC_DC,
         INVERTER_DC_AC,
-        "project",
+        PROJECT,
     ]
 
     for item in component_list:
