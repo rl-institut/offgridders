@@ -4,7 +4,23 @@ import logging
 import os.path
 from copy import deepcopy
 
-
+from src.constants import ( OUTPUT_FOLDER,
+                            INPUT_FOLDER_TIMESERIES,
+                            RESTORE_BLACKOUTS_IF_EXISTENT,
+                            TIMESTEP,
+                            MAX_DATE_TIME_INDEX,
+                            EXPERIMENT_NAME,
+                            GRID_TOTAL_BLACKOUT_DURATION,
+                            GRID_NUMBER_OF_BLACKOUTS,
+                            GRID_RELIABILITY,
+                            BLACKOUT_DURATION,
+                            BLACKOUT_FREQUENCY,
+                            MAX_EVALUATED_DAYS,
+                            BLACKOUT_FREQUENCY_STD_DEVIATION,
+                            NATIONAL_GRID_RELIABILITY_H,
+                            NATIONAL_GRID_TOTAL_BLACKOUT_DURATION,
+                            NATIONAL_GRID_NUMBER_OF_BLACKOUTS
+)
 
 # Check for saved blackout scenarios/grid availability, else continue randomization of backout events
 def get_blackouts(settings, blackout_experiment_s):
