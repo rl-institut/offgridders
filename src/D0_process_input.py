@@ -76,7 +76,7 @@ def economic_values(experiment):
         )
 
     component_list = [
-        "pv",
+        PV,
         "wind",
         "genset",
         "storage_capacity",

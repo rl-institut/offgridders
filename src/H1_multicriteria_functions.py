@@ -19,14 +19,14 @@ def evaluate_criteria(all_results, qualitative_punctuations, multicriteria_data)
     """
 
     capacities_components = {
-        "pv": CAPACITY_PV_KWP,
+        PV: CAPACITY_PV_KWP,
         "wind": CAPACITY_WIND_KW,
         "genset": CAPACITY_GENSET_KW,
         "storage": CAPACITY_STORAGE_KWH,
         "maingrid": CAPACITY_PCOUPLING_KW,
     }
     generation_components = {
-        "pv": TOTAL_PV_GENERATION_KWH,
+        PV: TOTAL_PV_GENERATION_KWH,
         "wind": TOTAL_WIND_GENERATION_KWH,
         "genset": TOTAL_GENSET_GENERATION_KWH,
         "maingrid": CONSUMPTION_MAIN_GRID_MG_SIDE_ANNUAL_KWH,
@@ -279,7 +279,7 @@ def linear_evaluation(qualitative_punctuations, components, case, criterion):
     if criterion == "EN3":
         for component in components:
             if component == "storage":
-                punc = punctuations["pv"]
+                punc = punctuations[PV]
             else:
                 punc = punctuations[component]
             if punc == "None":

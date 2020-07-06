@@ -363,7 +363,7 @@ def save_network_graph(energysystem, case_name):
             "bel": "#9a9da1",
             "bth": "#cd3333",
             "wind": "#4ca7c3",
-            "pv": "#ffde32",
+            PV: "#ffde32",
             "demand_el": "#9a9da1",
             "excess_el": "#9a9da1",
             "demand_th": "#cd3333",

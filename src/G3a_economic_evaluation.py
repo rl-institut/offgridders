@@ -120,7 +120,7 @@ def annuities_365(case_dict, oemof_results, experiment):
         interval_annuity.update({ANNUITY_MAINGRID_EXTENSION: 0})
 
     component_list = [
-        "pv",
+        PV,
         "wind",
         "genset",
         "storage",
@@ -135,7 +135,7 @@ def annuities_365(case_dict, oemof_results, experiment):
     # include in oemof_results just first investment costs
     investment = 0
     for item in component_list:
-        if item == "pv":
+        if item == PV:
             investment += (
                 experiment[PV_COST_INVESTMENT] * oemof_results[CAPACITY_PV_KWP]
             )
@@ -171,7 +171,7 @@ def annuities_365(case_dict, oemof_results, experiment):
     om = (
         0  # first, var costs are included, then opex costs and finally expenditures
     )
-    for item in ["pv", "wind", "genset"]:
+    for item in [PV, "wind", "genset"]:
         om_var_interval.update(
             {
                 "om_var_"
@@ -252,7 +252,7 @@ def costs(oemof_results, experiment):
     logging.debug("Economic evaluation. Calculating present costs.")
 
     component_list = [
-        "pv",
+        PV,
         "wind",
         "genset",
         "storage",
