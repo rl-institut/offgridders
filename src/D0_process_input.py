@@ -84,7 +84,7 @@ def economic_values(experiment):
         PCOUPLING,
         MAINGRID_EXTENSION,
         DISTRIBUTION_GRID,
-        "rectifier_ac_dc",
+        RECTIFIER_AC_DC,
         "inverter_dc_ac",
         "project",
     ]
