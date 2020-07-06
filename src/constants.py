@@ -276,3 +276,6 @@ FORCE_CHARGE_FROM_MAINGRID = "force_charge_from_maingrid"
 DISCHARGE_ONLY_WHEN_BLACKOUT = "discharge_only_when_blackout"
 ENABLE_INVERTER_ONLY_AT_BLACKOUT = "enable_inverter_only_at_backout"
 OEM = "oem"
+
+#G0_oemof_simulate
+MAIN = "main"
