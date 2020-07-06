@@ -255,3 +255,4 @@ MAX_EVALUATED_DAYS = "max_evaluated_days"
 
 #F_case_definitions
 PEAK_DEMAND = "peak_demand"
+GENSET_WITH_MINIMAL_LOADING = "genset_with_minimal_loading"

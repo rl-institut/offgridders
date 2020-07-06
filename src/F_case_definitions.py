@@ -32,8 +32,8 @@ def update_dict(capacities_oem, specific_case, experiment):
             TOTAL_DEMAND_DC: experiment[TOTAL_DEMAND_DC],
             PEAK_DEMAND: experiment[ABS_PEAK_DEMAND_AC_SIDE],
             EVALUATED_DAYS: experiment[EVALUATED_DAYS],
-            "genset_with_minimal_loading": specific_case[
-                "genset_with_minimal_loading"
+            GENSET_WITH_MINIMAL_LOADING: specific_case[
+                GENSET_WITH_MINIMAL_LOADING
             ],
         }
     )
