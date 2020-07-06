@@ -343,7 +343,7 @@ def build(experiment, case_dict):
             el_bus_ac=bus_electricity_ac,
             el_bus_dc=bus_electricity_dc,
         )
-    elif case_dict[STABILITY_CONSTRAINT] == "share_usage":
+    elif case_dict[STABILITY_CONSTRAINT] == SHARE_USAGE:
         logging.info("Added constraint: Stability though actual generation.")
         constraints_custom.usage(
             model,

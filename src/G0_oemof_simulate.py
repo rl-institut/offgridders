@@ -192,7 +192,7 @@ def run(experiment, case_dict):
             constraints_custom.backup_test(
                 case_dict, oemof_results, experiment, e_flows_df
             )
-        elif case_dict[STABILITY_CONSTRAINT] == "share_usage":
+        elif case_dict[STABILITY_CONSTRAINT] == SHARE_USAGE:
             constraints_custom.usage_test(
                 case_dict, oemof_results, experiment, e_flows_df
             )
