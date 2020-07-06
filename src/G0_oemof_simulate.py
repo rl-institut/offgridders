@@ -166,7 +166,7 @@ def run(experiment, case_dict):
                 electricity_bus_dc,
                 experiment,
                 e_flows_df,
-                experiment["peak_pv_generation_per_kWp"],
+                experiment[PEAK_PV_GENERATION_PER_KWP],
             )
 
             e_flows_df = timeseries.get_storage(

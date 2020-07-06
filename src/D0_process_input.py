@@ -386,7 +386,7 @@ def add_timeseries(experiment_s):
                 PEAK_DEMAND_DC: max(
                     experiment_s[experiment][DEMAND_PROFILE_DC]
                 ),
-                "peak_pv_generation_per_kWp": max(
+                PEAK_PV_GENERATION_PER_KWP: max(
                     experiment_s[experiment][PV_GENERATION_PER_KWP]
                 ),
                 "peak_wind_generation_per_kW": max(
@@ -448,7 +448,7 @@ def add_timeseries(experiment_s):
                 + experiment_s[experiment][PROJECT_SITE_NAME]
                 + " - simulation will crash."
             )
-        if experiment_s[experiment]["peak_pv_generation_per_kWp"] == 0:
+        if experiment_s[experiment][PEAK_PV_GENERATION_PER_KWP] == 0:
             logging.info(
                 "No pv generation in evaluated timesteps at project site "
                 + experiment_s[experiment][PROJECT_SITE_NAME]
