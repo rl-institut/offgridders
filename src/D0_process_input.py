@@ -152,7 +152,7 @@ def add_timeseries(experiment_s):
         # experiment_s[experiment].update({'time_end': experiment_s[experiment]['time_start']+ pd.DateOffset(hours=2)})
         experiment_s[experiment].update(
             {
-                "date_time_index": pd.date_range(
+                DATE_TIME_INDEX: pd.date_range(
                     start=experiment_s[experiment][TIME_START],
                     end=experiment_s[experiment][TIME_END],
                     freq=experiment_s[experiment]["time_frequency"],
@@ -160,15 +160,15 @@ def add_timeseries(experiment_s):
             }
         )
 
-        if len(experiment_s[experiment]["date_time_index"]) > entries:
-            entries = len(experiment_s[experiment]["date_time_index"])
+        if len(experiment_s[experiment][DATE_TIME_INDEX]) > entries:
+            entries = len(experiment_s[experiment][DATE_TIME_INDEX])
             longest = experiment
 
-    max_date_time_index = experiment_s[longest]["date_time_index"]
+    max_date_time_index = experiment_s[longest][DATE_TIME_INDEX]
     max_evaluated_days = experiment_s[longest][EVALUATED_DAYS]
 
     for experiment in experiment_s:
-        index = experiment_s[experiment]["date_time_index"]
+        index = experiment_s[experiment][DATE_TIME_INDEX]
         if experiment_s[experiment]["file_index"] != None:
             if DEMAND_AC in experiment_s[experiment]:
                 year_timeseries_in_file = (
@@ -180,7 +180,7 @@ def add_timeseries(experiment_s):
                 )
 
             if (
-                experiment_s[experiment]["date_time_index"][0].year
+                experiment_s[experiment][DATE_TIME_INDEX][0].year
                 != year_timeseries_in_file
             ):
                 file_index = [
@@ -307,7 +307,7 @@ def add_timeseries(experiment_s):
             )
             experiment_s[experiment].update(
                 {
-                    "date_time_index": pd.date_range(
+                    DATE_TIME_INDEX: pd.date_range(
                         start=experiment_s[experiment][TIME_START],
                         end=experiment_s[experiment][TIME_END],
                         freq=experiment_s[experiment]["time_frequency"],
@@ -315,7 +315,7 @@ def add_timeseries(experiment_s):
                 }
             )
 
-            index = experiment_s[experiment]["date_time_index"]
+            index = experiment_s[experiment][DATE_TIME_INDEX]
             experiment_s[experiment].update(
                 {
                     "demand_profile_ac": experiment_s[experiment][
@@ -398,9 +398,9 @@ def add_timeseries(experiment_s):
         experiment_s[experiment].update(
             {
                 "mean_demand_ac": experiment_s[experiment]["total_demand_ac"]
-                / len(experiment_s[experiment]["date_time_index"]),
+                / len(experiment_s[experiment][DATE_TIME_INDEX]),
                 "mean_demand_dc": experiment_s[experiment]["total_demand_dc"]
-                / len(experiment_s[experiment]["date_time_index"]),
+                / len(experiment_s[experiment][DATE_TIME_INDEX]),
             }
         )
 

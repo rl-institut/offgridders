@@ -38,9 +38,9 @@ def get_demand(
     # Get flow
 
     e_flows_df = pd.DataFrame(
-        [0 for i in experiment["date_time_index"]],
+        [0 for i in experiment[DATE_TIME_INDEX]],
         columns=["Demand"],
-        index=experiment["date_time_index"],
+        index=experiment[DATE_TIME_INDEX],
     )
     demand_ac = electricity_bus_ac["sequences"][
         (("bus_electricity_ac", "sink_demand_ac"), "flow")

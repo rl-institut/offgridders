@@ -31,7 +31,7 @@ def build(experiment, case_dict):
     )
 
     # create energy system
-    micro_grid_system = solph.EnergySystem(timeindex=experiment["date_time_index"])
+    micro_grid_system = solph.EnergySystem(timeindex=experiment[DATE_TIME_INDEX])
 
     ###################################
     ## AC side of the energy system   #
