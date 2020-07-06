@@ -85,7 +85,7 @@ def economic_values(experiment):
         MAINGRID_EXTENSION,
         DISTRIBUTION_GRID,
         RECTIFIER_AC_DC,
-        "inverter_dc_ac",
+        INVERTER_DC_AC,
         "project",
     ]
 

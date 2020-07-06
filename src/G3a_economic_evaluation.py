@@ -128,7 +128,7 @@ def annuities_365(case_dict, oemof_results, experiment):
         MAINGRID_EXTENSION,
         DISTRIBUTION_GRID,
         RECTIFIER_AC_DC,
-        "inverter_dc_ac",
+        INVERTER_DC_AC,
         "project",
     ]
 
@@ -184,7 +184,7 @@ def annuities_365(case_dict, oemof_results, experiment):
             * experiment[item + "_cost_var"]
         )
 
-    for item in [PCOUPLING, "storage", RECTIFIER_AC_DC, "inverter_dc_ac"]:
+    for item in [PCOUPLING, "storage", RECTIFIER_AC_DC, INVERTER_DC_AC]:
         om_var_interval.update(
             {
                 "om_var_"
@@ -260,7 +260,7 @@ def costs(oemof_results, experiment):
         MAINGRID_EXTENSION,
         DISTRIBUTION_GRID,
         RECTIFIER_AC_DC,
-        "inverter_dc_ac",
+        INVERTER_DC_AC,
         "project",
     ]
 
