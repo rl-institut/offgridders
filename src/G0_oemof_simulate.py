@@ -24,6 +24,38 @@ import src.G3a_economic_evaluation as economic_evaluation
 import src.G3b_plausability_tests as plausability_tests
 import src.G4_output_functions as output
 
+from src.constants import ( FILENAME,
+                            OUTPUT_FOLDER,
+                            RESTORE_OEMOF_IF_EXISTENT,
+                            MAIN,
+                            META,
+                            CASE,
+                            OBJECTIVE_VALUE,
+                            OBJECTIVE,
+                            SIMULATION_TIME,
+                            SOLVER,
+                            TIME,
+                            COMMENTS,
+                            BUS_ELECTRICITY_AC,
+                            BUS_ELECTRICITY_DC,
+                            TOTAL_DEMAND_SUPPLIED_ANNUAL_KWH,
+                            TOTAL_DEMAND_ANNUAL_KWH,
+                            GRID_AVAILABILITY,
+                            PEAK_WIND_GENERATION_PER_KW,
+                            PEAK_PV_GENERATION_PER_KWP,
+                            STABILITY_CONSTRAINT,
+                            SHARE_BACKUP,
+                            SHARE_USAGE,
+                            SHARE_HYBRID,
+                            EVALUATION_TIME,
+                            LCOE,
+                            CASE_NAME,
+                            CAPACITY_STORAGE_KWH,
+                            CAPACITY_PV_KWP,
+                            CAPACITY_WIND_KW,
+                            CAPACITY_GENSET_KW,
+                            RES_SHARE,
+                            SUPPLY_RELIABILITY_KWH)
 # This is not really a necessary class, as the whole experiement could be given to the function, but it ensures, that
 # only correct input data is included
 
