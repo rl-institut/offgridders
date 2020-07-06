@@ -431,7 +431,7 @@ def add_timeseries(experiment_s):
         # Used for estimation of capacities using "peak demand"
         experiment_s[experiment].update(
             {
-                "abs_peak_demand_ac_side": max(
+                ABS_PEAK_DEMAND_AC_SIDE: max(
                     experiment_s[experiment][ACCUMULATED_PROFILE_AC_SIDE]
                 )
             }
