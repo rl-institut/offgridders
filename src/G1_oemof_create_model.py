@@ -1,22 +1,10 @@
+
 import logging
 import sys
 import oemof.solph as solph
 import oemof.outputlib as outputlib
-
-# todo this is called both from G0 and here
-try:
-   import src.G2a_oemof_busses_and_componets as generate
-   import src.G2b_constraints_custom as constraints_custom
-
-except ModuleNotFoundError:
-    print("Module error at G1")
-    from src.G2a_oemof_busses_and_componets import generate
-    from src.G2b_constraints_custom import (
-        stability_criterion,
-        renewable_criterion,
-        battery_management,
-        ac_dc_bus,
-    )
+import src.G2a_oemof_busses_and_componets as generate
+import src.G2b_constraints_custom as constraints_custom
 
 def load_energysystem_lp():
     # based on lp file
@@ -49,7 +37,7 @@ def build(experiment, case_dict):
     # ------------fuel source------------#
     if case_dict[GENSET_FIXED_CAPACITY] != None:
         logging.debug("Added to oemof model: Fuel bus")
-        bus_fuel = solph.Bus(label="bus_fuel")
+        bus_fuel = solph.Bus(label=BUS_FUEL)
         micro_grid_system.add(bus_fuel)
         generate.fuel(micro_grid_system, bus_fuel, experiment)
 
