@@ -83,7 +83,7 @@ def get_blackouts(settings, blackout_experiment_s):
                         + str(blackout_result[GRID_TOTAL_BLACKOUT_DURATION])
                         + " hrs,"
                         + " total number of blackouts "
-                        + str(blackout_result["grid_number_of_blackouts"])
+                        + str(blackout_result[GRID_NUMBER_OF_BLACKOUTS])
                         + " with grid reliability of "
                         + str(blackout_result["grid_reliability"])
                     )
@@ -151,7 +151,7 @@ def oemof_extension_for_blackouts(grid_availability):
     blackout_result = {
         "grid_reliability": grid_reliability,
         GRID_TOTAL_BLACKOUT_DURATION: total_grid_blackout_duration,
-        "grid_number_of_blackouts": number_of_blackouts,
+        GRID_NUMBER_OF_BLACKOUTS: number_of_blackouts,
     }
 
     return blackout_result
@@ -244,7 +244,7 @@ def availability(
                 blackout_name: {
                     "grid_reliability": grid_reliability,
                     GRID_TOTAL_BLACKOUT_DURATION: total_grid_blackout_duration,
-                    "grid_number_of_blackouts": actual_number_of_blackouts,
+                    GRID_NUMBER_OF_BLACKOUTS: actual_number_of_blackouts,
                 }
             }
         )
@@ -371,7 +371,7 @@ def extend_oemof_results(oemof_results, blackout_results):
                 GRID_TOTAL_BLACKOUT_DURATION
             ],
             NATIONAL_GRID_NUMBER_OF_BLACKOUTS: blackout_results[
-                "grid_number_of_blackouts"
+                GRID_NUMBER_OF_BLACKOUTS
             ],
         }
     )
