@@ -196,7 +196,7 @@ def run(experiment, case_dict):
             constraints_custom.usage_test(
                 case_dict, oemof_results, experiment, e_flows_df
             )
-        elif case_dict[STABILITY_CONSTRAINT] == "share_hybrid":
+        elif case_dict[STABILITY_CONSTRAINT] == SHARE_HYBRID:
             constraints_custom.hybrid_test(
                 case_dict, oemof_results, experiment, e_flows_df
             )

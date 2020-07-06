@@ -356,7 +356,7 @@ def build(experiment, case_dict):
             source_shortage=source_shortage,
             el_bus=bus_electricity_ac,
         )
-    elif case_dict[STABILITY_CONSTRAINT] == "share_hybrid":
+    elif case_dict[STABILITY_CONSTRAINT] == SHARE_HYBRID:
         logging.info(
             "Added constraint: Stability though actual generation of diesel generators and backup through batteries."
         )

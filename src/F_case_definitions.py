@@ -220,7 +220,7 @@ def update_dict(capacities_oem, specific_case, experiment):
         specific_case[STABILITY_CONSTRAINT] == False
         or specific_case[STABILITY_CONSTRAINT] == SHARE_BACKUP
         or specific_case[STABILITY_CONSTRAINT] == SHARE_USAGE
-        or specific_case[STABILITY_CONSTRAINT] == "share_hybrid"
+        or specific_case[STABILITY_CONSTRAINT] == SHARE_HYBRID
     ):
         experiment_case_dict.update(
             {STABILITY_CONSTRAINT: specific_case[STABILITY_CONSTRAINT]}
