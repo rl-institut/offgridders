@@ -478,7 +478,7 @@ def blackout(sensitivity_array_dict, parameters_constants, settings):
                     )
                 elif (
                     sensitivity_array_dict[key][interval_entry] == key_value
-                    and defined_base == False
+                    and defined_base is False
                 ):
                     # Defining scenario only with base case values for universal parameter / specific to project site (once!)
                     blackout_experiments_count += 1
@@ -648,7 +648,7 @@ def get_combinations_around_base(
 
                     elif (
                         sensitivity_array_dict[key][interval_entry] == key_value
-                        and defined_base == False
+                        and defined_base is False
                     ):
                         # Defining scenario only with base case values for universal parameter / specific to project site (once!)
                         experiment_number += 1

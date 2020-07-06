@@ -132,7 +132,7 @@ def get_blackouts(settings, blackout_experiment_s):
         grid_availability_df = pd.DataFrame(index=settings[MAX_DATE_TIME_INDEX])
 
     # if data not saved, generate blackouts
-    if data_complete == False:
+    if data_complete is False:
         # from E_blackouts_central_grid import central_grid
         grid_availability_df = availability(
             settings,
