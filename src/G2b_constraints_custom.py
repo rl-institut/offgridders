@@ -107,12 +107,12 @@ def backup(
             expr += CAP_pcc * experiment[GRID_AVAILABILITY][t]
 
         ## ------- Get power of storage ------- #
-        if case_dict["storage_fixed_power"] != None:
+        if case_dict[STORAGE_FIXED_POWER] != None:
             storage_power = 0
             if case_dict[STORAGE_FIXED_CAPACITY] == False:
                 storage_power += model.InvestmentFlow.invest[storage, el_bus_dc]
             elif isinstance(case_dict[STORAGE_FIXED_CAPACITY], float):
-                storage_power += case_dict["storage_fixed_power"]
+                storage_power += case_dict[STORAGE_FIXED_POWER]
             else:
                 logging.warning(
                     "Error: 'storage_fixed_power' can only be None, False or float."
@@ -300,12 +300,12 @@ def hybrid(
             expr += model.flow[pcc_consumption, el_bus_ac, t]
 
         ## ------- Get power of storage ------- #
-        if case_dict["storage_fixed_power"] != None:
+        if case_dict[STORAGE_FIXED_POWER] != None:
             storage_power = 0
             if case_dict[STORAGE_FIXED_CAPACITY] == False:
                 storage_power += model.InvestmentFlow.invest[storage, el_bus_dc]
             elif isinstance(case_dict[STORAGE_FIXED_CAPACITY], float):
-                storage_power += case_dict["storage_fixed_power"]
+                storage_power += case_dict[STORAGE_FIXED_POWER]
             else:
                 logging.warning(
                     "Error: 'storage_fixed_power' can only be None, False or float."

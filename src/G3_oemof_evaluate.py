@@ -542,7 +542,7 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
         oemof_results.update(
             {
                 CAPACITY_STORAGE_KWH: case_dict[STORAGE_FIXED_CAPACITY],
-                POWER_STORAGE_KW: case_dict["storage_fixed_power"],
+                POWER_STORAGE_KW: case_dict[STORAGE_FIXED_POWER],
             }
         )
 

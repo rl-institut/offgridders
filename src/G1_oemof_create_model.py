@@ -244,7 +244,7 @@ def build(experiment, case_dict):
             bus_electricity_dc,
             experiment,
             capacity_storage=case_dict[STORAGE_FIXED_CAPACITY],
-            power_storage=case_dict["storage_fixed_power"],
+            power_storage=case_dict[STORAGE_FIXED_POWER],
         )  # changed order
 
     else:
