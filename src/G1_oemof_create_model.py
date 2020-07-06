@@ -327,9 +327,9 @@ def build(experiment, case_dict):
     model = solph.Model(micro_grid_system)
 
     # ------------Stability constraint------------#
-    if case_dict["stability_constraint"] == False:
+    if case_dict[STABILITY_CONSTRAINT] == False:
         pass
-    elif case_dict["stability_constraint"] == "share_backup":
+    elif case_dict[STABILITY_CONSTRAINT] == "share_backup":
         logging.info("Added constraint: Stability through backup.")
         constraints_custom.backup(
             model,
@@ -343,7 +343,7 @@ def build(experiment, case_dict):
             el_bus_ac=bus_electricity_ac,
             el_bus_dc=bus_electricity_dc,
         )
-    elif case_dict["stability_constraint"] == "share_usage":
+    elif case_dict[STABILITY_CONSTRAINT] == "share_usage":
         logging.info("Added constraint: Stability though actual generation.")
         constraints_custom.usage(
             model,
@@ -356,7 +356,7 @@ def build(experiment, case_dict):
             source_shortage=source_shortage,
             el_bus=bus_electricity_ac,
         )
-    elif case_dict["stability_constraint"] == "share_hybrid":
+    elif case_dict[STABILITY_CONSTRAINT] == "share_hybrid":
         logging.info(
             "Added constraint: Stability though actual generation of diesel generators and backup through batteries."
         )

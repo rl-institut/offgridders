@@ -202,17 +202,17 @@ def run(experiment, case_dict):
         plausability_tests.run(oemof_results, e_flows_df)
 
         # Run test on oemof constraints
-        if case_dict["stability_constraint"] == False:
+        if case_dict[STABILITY_CONSTRAINT] == False:
             pass
-        elif case_dict["stability_constraint"] == "share_backup":
+        elif case_dict[STABILITY_CONSTRAINT] == "share_backup":
             constraints_custom.backup_test(
                 case_dict, oemof_results, experiment, e_flows_df
             )
-        elif case_dict["stability_constraint"] == "share_usage":
+        elif case_dict[STABILITY_CONSTRAINT] == "share_usage":
             constraints_custom.usage_test(
                 case_dict, oemof_results, experiment, e_flows_df
             )
-        elif case_dict["stability_constraint"] == "share_hybrid":
+        elif case_dict[STABILITY_CONSTRAINT] == "share_hybrid":
             constraints_custom.hybrid_test(
                 case_dict, oemof_results, experiment, e_flows_df
             )

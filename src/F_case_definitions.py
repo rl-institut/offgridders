@@ -166,18 +166,18 @@ def update_dict(capacities_oem, specific_case, experiment):
     ###########################################
 
     if (
-        specific_case["stability_constraint"] == False
-        or specific_case["stability_constraint"] == "share_backup"
-        or specific_case["stability_constraint"] == "share_usage"
-        or specific_case["stability_constraint"] == "share_hybrid"
+        specific_case[STABILITY_CONSTRAINT] == False
+        or specific_case[STABILITY_CONSTRAINT] == "share_backup"
+        or specific_case[STABILITY_CONSTRAINT] == "share_usage"
+        or specific_case[STABILITY_CONSTRAINT] == "share_hybrid"
     ):
         experiment_case_dict.update(
-            {"stability_constraint": specific_case["stability_constraint"]}
+            {STABILITY_CONSTRAINT: specific_case[STABILITY_CONSTRAINT]}
         )
     else:
         logging.warning(
             warning_string
-            + ' value "stability_constraint" (False/share_backup/share_usage) not defined properly'
+            + ' value STABILITY_CONSTRAINT (False/share_backup/share_usage) not defined properly'
         )
 
     ###########################################
