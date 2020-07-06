@@ -77,7 +77,7 @@ def update_dict(capacities_oem, specific_case, experiment):
         PCC_FEEDIN_FIXED_CAPACITY,
         WIND_FIXED_CAPACITY,
         RECTIFIER_AC_DC_FIXED_CAPACITY,
-        "inverter_dc_ac_fixed_capacity",
+        INVERTER_DC_AC_FIXED_CAPACITY,
     ]
 
     if len(list_base_capacities) != len(list_build_oemof_names):

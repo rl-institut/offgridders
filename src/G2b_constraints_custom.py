@@ -879,16 +879,16 @@ def inverter_only_at_blackout(model, case_dict, el_bus, inverter, experiment):
 
     ## ------- Get CAP inverter ------- #
     CAP_inverter = 0
-    if case_dict["inverter_dc_ac_fixed_capacity"] != None:
-        if case_dict["inverter_dc_ac_fixed_capacity"] == False:
+    if case_dict[INVERTER_DC_AC_FIXED_CAPACITY] != None:
+        if case_dict[INVERTER_DC_AC_FIXED_CAPACITY] == False:
             CAP_inverter += model.InvestmentFlow.invest[el_bus, inverter]
-        elif isinstance(case_dict["inverter_dc_ac_fixed_capacity"], float):
+        elif isinstance(case_dict[INVERTER_DC_AC_FIXED_CAPACITY], float):
             CAP_inverter += model.flows[el_bus, inverter].nominal_value
 
     def inverter_rule_upper(model, t):
         # Inverter flow
         expr = 0
-        if case_dict["inverter_dc_ac_fixed_capacity"] != None:
+        if case_dict[INVERTER_DC_AC_FIXED_CAPACITY] != None:
             expr += model.flow[el_bus, inverter, t]
         # force discharge to zero when grid available
         expr += -CAP_inverter * grid_inavailability[t]
@@ -907,7 +907,7 @@ def inverter_only_at_blackout_test(case_dict, oemof_results, e_flows_df):
 
     if (
         case_dict["enable_inverter_only_at_backout"] == True
-        and case_dict["inverter_dc_ac_fixed_capacity"] != None
+        and case_dict[INVERTER_DC_AC_FIXED_CAPACITY] != None
     ):
         boolean_test = [
             e_flows_df["Inverter input"][t]

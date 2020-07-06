@@ -280,21 +280,21 @@ def build(experiment, case_dict):
         )
 
     # ------------Inverter DC AC------------#
-    if case_dict["inverter_dc_ac_fixed_capacity"] == None:
+    if case_dict[INVERTER_DC_AC_FIXED_CAPACITY] == None:
         inverter = None
 
-    elif case_dict["inverter_dc_ac_fixed_capacity"] == False:
+    elif case_dict[INVERTER_DC_AC_FIXED_CAPACITY] == False:
         inverter = generate.inverter_dc_ac_oem(
             micro_grid_system, bus_electricity_ac, bus_electricity_dc, experiment
         )
 
-    elif isinstance(case_dict["inverter_dc_ac_fixed_capacity"], float):
+    elif isinstance(case_dict[INVERTER_DC_AC_FIXED_CAPACITY], float):
         inverter = generate.inverter_dc_ac_fix(
             micro_grid_system,
             bus_electricity_ac,
             bus_electricity_dc,
             experiment,
-            case_dict["inverter_dc_ac_fixed_capacity"],
+            case_dict[INVERTER_DC_AC_FIXED_CAPACITY],
         )
 
     else:
