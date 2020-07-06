@@ -5,6 +5,39 @@ import oemof.solph as solph
 import oemof.outputlib as outputlib
 import src.G2a_oemof_busses_and_componets as generate
 import src.G2b_constraints_custom as constraints_custom
+from src.constants import ( BUS_FUEL,
+                            DATE_TIME_INDEX,
+                            BUS_ELECTRICITY_AC,
+                            DEMAND_PROFILE_AC,
+                            GENSET_FIXED_CAPACITY,
+                            GENSET_WITH_MINIMAL_LOADING,
+                            NUMBER_OF_EQUAL_GENERATORS,
+                            CASE_NAME,
+                            WIND_FIXED_CAPACITY,
+                            PCC_CONSUMPTION_FIXED_CAPACITY,
+                            PCC_FEEDIN_FIXED_CAPACITY,
+                            PEAK_DEMAND,
+                            BUS_ELECTRICITY_DC,
+                            DEMAND_PROFILE_DC,
+                            PV_FIXED_CAPACITY,
+                            STORAGE_FIXED_CAPACITY,
+                            STORAGE_FIXED_POWER,
+                            RECTIFIER_AC_DC_FIXED_CAPACITY,
+                            INVERTER_DC_AC_FIXED_CAPACITY,
+                            ALLOW_SHORTAGE,
+                            STABILITY_CONSTRAINT,
+                            SHARE_BACKUP,
+                            SHARE_USAGE,
+                            SHARE_HYBRID,
+                            RENEWABLE_SHARE_CONSTRAINT,
+                            FORCE_CHARGE_FROM_MAINGRID,
+                            DISCHARGE_ONLY_WHEN_BLACKOUT,
+                            ENABLE_INVERTER_ONLY_AT_BLACKOUT,
+                            SOLVER,
+                            SAVE_LP_FILE,
+                            OUTPUT_FOLDER,
+                            MAIN,
+                            META)
 
 def load_energysystem_lp():
     # based on lp file
