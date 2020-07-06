@@ -40,7 +40,7 @@ def project_annuities(case_dict, oemof_results, experiment):
         revenue_main_grid_feedin(oemof_results, experiment)
 
     oemof_results.update(
-        {NPV: oemof_results[ANNUITY] * experiment["annuity_factor"]}
+        {NPV: oemof_results[ANNUITY] * experiment[ANNUITY_FACTOR]}
     )
 
     if oemof_results[TOTAL_DEMAND_SUPPLIED_ANNUAL_KWH] > 0:
@@ -269,7 +269,7 @@ def costs(oemof_results, experiment):
             {
                 "costs_"
                 + item: oemof_results["annuity_" + item]
-                * experiment["annuity_factor"]
+                * experiment[ANNUITY_FACTOR]
             }
         )
 
@@ -306,7 +306,7 @@ def expenditures_fuel(oemof_results, experiment):
     oemof_results.update(
         {
             EXPENDITURES_FUEL_TOTAL: oemof_results[EXPENDITURES_FUEL_ANNUAL]
-            * experiment["annuity_factor"]
+            * experiment[ANNUITY_FACTOR]
         }
     )
 
@@ -346,7 +346,7 @@ def expenditures_main_grid_consumption(oemof_results, experiment):
             EXPENDITURES_MAIN_GRID_CONSUMPTION_TOTAL: oemof_results[
                 EXPENDITURES_MAIN_GRID_CONSUMPTION_ANNUAL
             ]
-            * experiment["annuity_factor"]
+            * experiment[ANNUITY_FACTOR]
         }
     )
 
@@ -384,7 +384,7 @@ def expenditures_shortage(oemof_results, experiment):
             EXPENDITURES_SHORTAGE_TOTAL: oemof_results[
                 EXPENDITURES_SHORTAGE_ANNUAL
             ]
-            * experiment["annuity_factor"]
+            * experiment[ANNUITY_FACTOR]
         }
     )
 
@@ -420,7 +420,7 @@ def revenue_main_grid_feedin(oemof_results, experiment):
             REVENUE_MAIN_GRID_FEEDIN_TOTAL: oemof_results[
                 REVENUE_MAIN_GRID_FEEDIN_ANNUAL
             ]
-            * experiment["annuity_factor"]
+            * experiment[ANNUITY_FACTOR]
         }
     )
 

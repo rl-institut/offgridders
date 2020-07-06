@@ -210,3 +210,4 @@ COMMENTS = "comments"
 #D0_process_input
 PERFORM_SIMULATION = "perform_simulation"
 BASED_ON_CASE = "based_on_case"
+ANNUITY_FACTOR = "annuity_factor"

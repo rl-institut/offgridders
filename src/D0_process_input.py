@@ -48,7 +48,7 @@ def economic_values(experiment):
     """Pre-processing of input data (calculation of economic values)"""
     experiment.update(
         {
-            "annuity_factor": economics.annuity_factor(
+            ANNUITY_FACTOR: economics.annuity_factor(
                 experiment[PROJECT_LIFETIME], experiment[WACC]
             )
         }
