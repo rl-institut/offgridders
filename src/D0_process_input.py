@@ -209,7 +209,7 @@ def add_timeseries(experiment_s):
                     {DEMAND_PROFILE_AC: demand_ac[index]}
                 )
                 experiment_s[experiment].update(
-                    {"demand_profile_dc": demand_dc[index]}
+                    {DEMAND_PROFILE_DC: demand_dc[index]}
                 )
                 experiment_s[experiment].update(
                     {PV_GENERATION_PER_KWP: pv_generation_per_kWp[index]}
@@ -245,7 +245,7 @@ def add_timeseries(experiment_s):
             )
             experiment_s[experiment].update(
                 {
-                    "demand_profile_dc": pd.Series(
+                    DEMAND_PROFILE_DC: pd.Series(
                         experiment_s[experiment][DEMAND_DC][
                             0 : len(index)
                         ].values,
@@ -325,8 +325,8 @@ def add_timeseries(experiment_s):
             )
             experiment_s[experiment].update(
                 {
-                    "demand_profile_dc": experiment_s[experiment][
-                        "demand_profile_dc"
+                    DEMAND_PROFILE_DC: experiment_s[experiment][
+                        DEMAND_PROFILE_DC
                     ][index]
                 }
             )
@@ -358,7 +358,7 @@ def add_timeseries(experiment_s):
                 "accumulated_profile_ac_side": experiment_s[experiment][
                     DEMAND_PROFILE_AC
                 ]
-                + experiment_s[experiment]["demand_profile_dc"]
+                + experiment_s[experiment][DEMAND_PROFILE_DC]
                 / experiment_s[experiment][RECTIFIER_AC_DC_EFFICIENCY]
             }
         )
@@ -369,7 +369,7 @@ def add_timeseries(experiment_s):
                     DEMAND_PROFILE_AC
                 ]
                 / experiment_s[experiment][INVERTER_DC_AC_EFFICIENCY]
-                + experiment_s[experiment]["demand_profile_dc"]
+                + experiment_s[experiment][DEMAND_PROFILE_DC]
             }
         )
         experiment_s[experiment].update(
@@ -381,10 +381,10 @@ def add_timeseries(experiment_s):
                     experiment_s[experiment][DEMAND_PROFILE_AC]
                 ),
                 "total_demand_dc": sum(
-                    experiment_s[experiment]["demand_profile_dc"]
+                    experiment_s[experiment][DEMAND_PROFILE_DC]
                 ),
                 "peak_demand_dc": max(
-                    experiment_s[experiment]["demand_profile_dc"]
+                    experiment_s[experiment][DEMAND_PROFILE_DC]
                 ),
                 "peak_pv_generation_per_kWp": max(
                     experiment_s[experiment][PV_GENERATION_PER_KWP]

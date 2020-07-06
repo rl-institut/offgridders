@@ -204,7 +204,7 @@ def build(experiment, case_dict):
 
     # ------------demand sink dc------------#
     sink_demand_dc = generate.demand_dc(
-        micro_grid_system, bus_electricity_dc, experiment["demand_profile_dc"]
+        micro_grid_system, bus_electricity_dc, experiment[DEMAND_PROFILE_DC]
     )
 
     # ------------PV------------#
