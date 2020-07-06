@@ -248,3 +248,4 @@ ABS_PEAK_DEMAND_AC_SIDE = "abs_peak_demand_ac_side"
 #E_blackouts_central_grid
 TIMESTEP = "timestep"
 MAX_DATE_TIME_INDEX = "max_date_time_index"
+GRID_TOTAL_BLACKOUT_DURATION = "grid_total_blackout_duration"
