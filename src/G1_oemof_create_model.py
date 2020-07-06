@@ -1,7 +1,7 @@
 import logging
 import sys
 import oemof.solph as solph
-import oemof.outputlib as outputlib
+from oemof.solph import  processing
 
 # todo this is called both from G0 and here
 try:
@@ -482,8 +482,8 @@ def simulate(experiment, micro_grid_system, model, file_name):
         )
 
     # add results to the energy system to make it possible to store them.
-    micro_grid_system.results["main"] = outputlib.processing.results(model)
-    micro_grid_system.results["meta"] = outputlib.processing.meta_results(model)
+    micro_grid_system.results["main"] = processing.processing.results(model)
+    micro_grid_system.results["meta"] = processing.processing.meta_results(model)
     return micro_grid_system
 
 def store_results(micro_grid_system, file_name, output_folder):
