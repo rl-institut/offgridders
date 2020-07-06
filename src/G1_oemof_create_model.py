@@ -464,7 +464,7 @@ def build(experiment, case_dict):
 def simulate(experiment, micro_grid_system, model, file_name):
     logging.info("Simulating...")
     model.solve(
-        solver=experiment["solver"],
+        solver=experiment[SOLVER],
         solve_kwargs={
             "tee": experiment["solver_verbose"]
         },  # if tee_switch is true solver messages will be displayed
