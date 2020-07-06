@@ -121,7 +121,7 @@ def annuities_365(case_dict, oemof_results, experiment):
 
     component_list = [
         PV,
-        "wind",
+        WIND,
         "genset",
         "storage",
         "pcoupling",
@@ -171,7 +171,7 @@ def annuities_365(case_dict, oemof_results, experiment):
     om = (
         0  # first, var costs are included, then opex costs and finally expenditures
     )
-    for item in [PV, "wind", "genset"]:
+    for item in [PV, WIND, "genset"]:
         om_var_interval.update(
             {
                 "om_var_"
@@ -253,7 +253,7 @@ def costs(oemof_results, experiment):
 
     component_list = [
         PV,
-        "wind",
+        WIND,
         "genset",
         "storage",
         "pcoupling",

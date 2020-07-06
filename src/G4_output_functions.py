@@ -362,7 +362,7 @@ def save_network_graph(energysystem, case_name):
             "lignite": "#56201d",
             "bel": "#9a9da1",
             "bth": "#cd3333",
-            "wind": "#4ca7c3",
+            WIND: "#4ca7c3",
             PV: "#ffde32",
             "demand_el": "#9a9da1",
             "excess_el": "#9a9da1",

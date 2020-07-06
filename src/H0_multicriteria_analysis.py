@@ -240,7 +240,7 @@ def format_punctuations(multicriteria_data):
         weights_criteria[assessment["Abrev"]] = assessment["weight"]
         punctuations[assessment["Abrev"]] = {
             PV: assessment[PV],
-            "wind": assessment["wind"],
+            WIND: assessment[WIND],
             "genset": assessment["diesel"],
             "maingrid": assessment["maingrid"],
         }
