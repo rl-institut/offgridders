@@ -403,9 +403,9 @@ def build(experiment, case_dict):
         )
 
     # ------------Force charge from maingrid------------#
-    if case_dict["force_charge_from_maingrid"] == False:
+    if case_dict[FORCE_CHARGE_FROM_MAINGRID] == False:
         pass
-    elif case_dict["force_charge_from_maingrid"] == True:
+    elif case_dict[FORCE_CHARGE_FROM_MAINGRID] == True:
         logging.info("Added constraint: Forcing charge from main grid.")
         constraints_custom.forced_charge(
             model, case_dict, bus_electricity_dc, storage, experiment

@@ -720,7 +720,7 @@ def forced_charge_test(case_dict, oemof_results, experiment, e_flows_df):
     """
     Testing simulation results for adherance to above defined criterion
     """
-    if case_dict["force_charge_from_maingrid"] == True:
+    if case_dict[FORCE_CHARGE_FROM_MAINGRID] == True:
         boolean_test = [
             (
                 experiment[STORAGE_CRATE_CHARGE]
