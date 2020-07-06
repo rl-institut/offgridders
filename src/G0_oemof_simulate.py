@@ -188,7 +188,7 @@ def run(experiment, case_dict):
         # Run test on oemof constraints
         if case_dict[STABILITY_CONSTRAINT] == False:
             pass
-        elif case_dict[STABILITY_CONSTRAINT] == "share_backup":
+        elif case_dict[STABILITY_CONSTRAINT] == SHARE_BACKUP:
             constraints_custom.backup_test(
                 case_dict, oemof_results, experiment, e_flows_df
             )

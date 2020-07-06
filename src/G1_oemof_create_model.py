@@ -329,7 +329,7 @@ def build(experiment, case_dict):
     # ------------Stability constraint------------#
     if case_dict[STABILITY_CONSTRAINT] == False:
         pass
-    elif case_dict[STABILITY_CONSTRAINT] == "share_backup":
+    elif case_dict[STABILITY_CONSTRAINT] == SHARE_BACKUP:
         logging.info("Added constraint: Stability through backup.")
         constraints_custom.backup(
             model,

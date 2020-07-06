@@ -218,7 +218,7 @@ def update_dict(capacities_oem, specific_case, experiment):
 
     if (
         specific_case[STABILITY_CONSTRAINT] == False
-        or specific_case[STABILITY_CONSTRAINT] == "share_backup"
+        or specific_case[STABILITY_CONSTRAINT] == SHARE_BACKUP
         or specific_case[STABILITY_CONSTRAINT] == "share_usage"
         or specific_case[STABILITY_CONSTRAINT] == "share_hybrid"
     ):
