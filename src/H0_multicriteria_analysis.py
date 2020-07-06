@@ -241,7 +241,7 @@ def format_punctuations(multicriteria_data):
         punctuations[assessment["Abrev"]] = {
             PV: assessment[PV],
             WIND: assessment[WIND],
-            "genset": assessment["diesel"],
+            GENSET: assessment["diesel"],
             "maingrid": assessment["maingrid"],
         }
         if assessment["plot"] == "Yes":
