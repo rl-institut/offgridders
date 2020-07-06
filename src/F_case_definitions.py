@@ -52,7 +52,7 @@ def update_dict(capacities_oem, specific_case, experiment):
         CAPACITY_GENSET_KW,
         CAPACITY_PV_KWP,
         CAPACITY_PCC_CONSUMPTION_KW,
-        "capacity_pcc_feedin_kW",
+        CAPACITY_PCC_FEEDING_KW,
         CAPACITY_WIND_KW,
         CAPACITY_RECTIFIER_AC_DC_KW,
         CAPACITY_INVERTER_DC_AC_KW,
@@ -107,7 +107,7 @@ def update_dict(capacities_oem, specific_case, experiment):
                 )
             elif (
                 component_name == CAPACITY_PCC_CONSUMPTION_KW
-                or component_name == "capacity_pcc_feedin_kW"
+                or component_name == CAPACITY_PCC_FEEDING_KW
             ):
                 case_dict_capacity = round(
                     case_dict_capacity
