@@ -159,7 +159,7 @@ def wind_fix(micro_grid_system, bus_electricity_ac, experiment, capacity_wind):
 
 def wind_oem(micro_grid_system, bus_electricity_ac, experiment):
     logging.debug("Added to oemof model: wind")
-    peak_wind_generation = experiment["peak_wind_generation_per_kW"]
+    peak_wind_generation = experiment[PEAK_WIND_GENERATION_PER_KW]
     wind_norm = experiment[WIND_GENERATION_PER_KW] / peak_wind_generation
     if wind_norm.any() > 1:
         logging.warning("Error, Wind generation not normalized, greater than 1")

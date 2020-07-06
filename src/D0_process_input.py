@@ -389,7 +389,7 @@ def add_timeseries(experiment_s):
                 PEAK_PV_GENERATION_PER_KWP: max(
                     experiment_s[experiment][PV_GENERATION_PER_KWP]
                 ),
-                "peak_wind_generation_per_kW": max(
+                PEAK_WIND_GENERATION_PER_KW: max(
                     experiment_s[experiment][WIND_GENERATION_PER_KW]
                 ),
             }
@@ -454,7 +454,7 @@ def add_timeseries(experiment_s):
                 + experiment_s[experiment][PROJECT_SITE_NAME]
                 + "."
             )
-        if experiment_s[experiment]["peak_wind_generation_per_kW"] == 0:
+        if experiment_s[experiment][PEAK_WIND_GENERATION_PER_KW] == 0:
             logging.info(
                 "No wind generation in evaluated timesteps at project site "
                 + experiment_s[experiment][PROJECT_SITE_NAME]

@@ -157,7 +157,7 @@ def run(experiment, case_dict):
                 oemof_results,
                 electricity_bus_ac,
                 e_flows_df,
-                experiment["peak_wind_generation_per_kW"],
+                experiment[PEAK_WIND_GENERATION_PER_KW],
             )
 
             e_flows_df = timeseries.get_pv(
