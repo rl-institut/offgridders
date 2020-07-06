@@ -182,7 +182,7 @@ def availability(
         )
 
         number_of_blackouts = number_of_blackouts(
-            settings["max_evaluated_days"], blackout_experiment_s[experiment]
+            settings[MAX_EVALUATED_DAYS], blackout_experiment_s[experiment]
         )
 
         # 0-1-Series for grid availability

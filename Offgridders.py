@@ -100,7 +100,7 @@ def main():
         sensitivity_experiment_s
     )
     settings.update({MAX_DATE_TIME_INDEX: max_date_time_index})
-    settings.update({"max_evaluated_days": max_evaluated_days})
+    settings.update({MAX_EVALUATED_DAYS: max_evaluated_days})
 
     # -----------Apply noise to timeseries of each experiment --------------------#
     # This results in unique timeseries for each experiment! For comparability    #
