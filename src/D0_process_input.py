@@ -80,7 +80,7 @@ def economic_values(experiment):
         WIND,
         GENSET,
         STORAGE_CAPACITY,
-        "storage_power",
+        STORAGE_POWER,
         "pcoupling",
         "maingrid_extension",
         "distribution_grid",
