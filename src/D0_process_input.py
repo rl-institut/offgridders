@@ -18,7 +18,7 @@ def list_of_cases(case_definitions):
     # Certain ORDER of simulation: First base capacities are optimized
     for case in case_definitions:
         if (
-            case_definitions[case]["perform_simulation"] == True
+            case_definitions[case][PERFORM_SIMULATION] == True
             and case_definitions[case]["based_on_case"] == False
         ):
             case_list.append(case)
@@ -28,7 +28,7 @@ def list_of_cases(case_definitions):
 
     for case in case_definitions:
         if (
-            case_definitions[case]["perform_simulation"] == True
+            case_definitions[case][PERFORM_SIMULATION] == True
             and case_definitions[case]["based_on_case"] == True
         ):
             case_list.append(case)
@@ -37,7 +37,7 @@ def list_of_cases(case_definitions):
         if len(case_list) == 0:
             logging.error(
                 "No cases defined to be simulated. \n "
-                'Did you set any "perform_simulation"=True in excel template, tab CASE_DEFINITIONS?'
+                'Did you set any PERFORM_SIMULATION=True in excel template, tab CASE_DEFINITIONS?'
             )
             sys.exit()
 

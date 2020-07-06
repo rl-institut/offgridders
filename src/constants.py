@@ -206,3 +206,6 @@ SIMULATION_TIME = "simulation_time"
 EVALUATION_TIME = "evaluation_time"
 FILENAME = "filename"
 COMMENTS = "comments"
+
+#D0_process_input
+PERFORM_SIMULATION = "perform_simulation"
