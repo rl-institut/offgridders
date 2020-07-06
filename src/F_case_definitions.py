@@ -184,16 +184,16 @@ def update_dict(capacities_oem, specific_case, experiment):
     # Include renewable constraint            #
     ###########################################
 
-    if specific_case["renewable_constraint"] == "default":
+    if specific_case[RENEWABLE_CONSTRAINT] == "default":
         if experiment[MIN_RENEWABLE_SHARE] == 0:
             experiment_case_dict.update({"renewable_share_constraint": False})
         else:
             experiment_case_dict.update({"renewable_share_constraint": True})
 
-    elif specific_case["renewable_constraint"] == False:
+    elif specific_case[RENEWABLE_CONSTRAINT] == False:
         experiment_case_dict.update({"renewable_share_constraint": False})
 
-    elif specific_case["renewable_constraint"] == True:
+    elif specific_case[RENEWABLE_CONSTRAINT] == True:
         experiment_case_dict.update({"renewable_share_constraint": True})
     else:
         logging.warning(
