@@ -188,7 +188,7 @@ def main():
             )
 
             # Extend base capacities for cases utilizing these values, only valid for specific experiment
-            if case_definitions[specific_case]["based_on_case"] == False:
+            if case_definitions[specific_case][BASED_ON_CASE] == False:
                 capacities_oem.update(
                     {
                         experiment_case_dict[
