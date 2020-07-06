@@ -210,8 +210,8 @@ def update_dict(capacities_oem, specific_case, experiment):
     experiment_case_dict[FORCE_CHARGE_FROM_MAINGRID] = specific_case[
         FORCE_CHARGE_FROM_MAINGRID
     ]
-    experiment_case_dict["discharge_only_when_blackout"] = specific_case[
-        "discharge_only_when_blackout"
+    experiment_case_dict[DISCHARGE_ONLY_WHEN_BLACKOUT] = specific_case[
+        DISCHARGE_ONLY_WHEN_BLACKOUT
     ]
     experiment_case_dict["enable_inverter_only_at_backout"] = specific_case[
         "enable_inverter_only_at_backout"

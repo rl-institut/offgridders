@@ -834,7 +834,7 @@ def discharge_only_at_blackout_test(case_dict, oemof_results, e_flows_df):
     Testing simulation results for adherance to above defined criterion
     """
     if (
-        case_dict["discharge_only_when_blackout"] == True
+        case_dict[DISCHARGE_ONLY_WHEN_BLACKOUT] == True
         and case_dict[STORAGE_FIXED_CAPACITY] != None
     ):
         boolean_test = [

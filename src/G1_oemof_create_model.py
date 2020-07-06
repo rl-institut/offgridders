@@ -418,9 +418,9 @@ def build(experiment, case_dict):
         )
 
     # ------------Allow discharge only at maingrid blackout------------#
-    if case_dict["discharge_only_when_blackout"] == False:
+    if case_dict[DISCHARGE_ONLY_WHEN_BLACKOUT] == False:
         pass
-    elif case_dict["discharge_only_when_blackout"] == True:
+    elif case_dict[DISCHARGE_ONLY_WHEN_BLACKOUT] == True:
         logging.info("Added constraint: Allowing discharge only at blackout times.")
         constraints_custom.discharge_only_at_blackout(
             model, case_dict, bus_electricity_dc, storage, experiment
