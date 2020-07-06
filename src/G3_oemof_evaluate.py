@@ -5,7 +5,7 @@ tables, tkinter
 """
 
 import pandas as pd
-from oemof.solph import processing
+import oemof.solph as solph
 
 import logging
 
@@ -454,7 +454,7 @@ def get_genset(case_dict, oemof_results, electricity_bus_ac, e_flows_df):
 def get_fuel(case_dict, oemof_results, results):
     logging.debug("Evaluate flow: fuel")
     if case_dict["genset_fixed_capacity"] != None:
-        fuel_bus = processing.views.node(results, "bus_fuel")
+        fuel_bus = solph.views.node(results, "bus_fuel")
         fuel = fuel_bus["sequences"][(("source_fuel", "bus_fuel"), "flow")]
         annual_value(
             "consumption_fuel_annual_kWh", fuel, oemof_results, case_dict
@@ -467,7 +467,7 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
     logging.debug("Evaluate flow: storage")
     # Get flow
     if case_dict["storage_fixed_capacity"] != None:
-        storage = processing.views.node(results, "generic_storage")
+        storage = solph.views.node(results, "generic_storage")
         storage_discharge = storage["sequences"][
             (("generic_storage", "bus_electricity_dc"), "flow")
         ]
@@ -521,12 +521,12 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
     # Get capacity
     if case_dict["storage_fixed_capacity"] == False:
         # Optimized storage capacity
-        storage = processing.views.node(results, "generic_storage")
+        storage = solph.views.node(results, "generic_storage")
         storage_capacity = storage["scalars"][
             (("generic_storage", "None"), "invest")
         ]
 
-        electricity_bus_dc = processing.views.node(results, "bus_electricity_dc")
+        electricity_bus_dc = solph.views.node(results, "bus_electricity_dc")
         storage_power = electricity_bus_dc["scalars"][
             (("generic_storage", "bus_electricity_dc"), "invest")
         ]
@@ -569,7 +569,7 @@ def get_national_grid(
     case_dict, oemof_results, results, e_flows_df, grid_availability
 ):
     logging.debug("Evaluate flow: main grid")
-    micro_grid_bus = processing.views.node(results, "bus_electricity_ac")
+    micro_grid_bus = solph.views.node(results, "bus_electricity_ac")
     # define grid availability
     if (
         case_dict["pcc_consumption_fixed_capacity"] != None
@@ -599,7 +599,7 @@ def get_national_grid(
             oemof_results,
             case_dict,
         )
-        bus_electricity_ng_consumption = processing.views.node(
+        bus_electricity_ng_consumption = solph.views.node(
             results, "bus_electricity_ng_consumption"
         )
         consumption_utility_side = bus_electricity_ng_consumption["sequences"][
@@ -655,7 +655,7 @@ def get_national_grid(
             case_dict,
         )
 
-        bus_electricity_ng_feedin = processing.views.node(
+        bus_electricity_ng_feedin = solph.views.node(
             results, "bus_electricity_ng_feedin"
         )
         feedin_utility_side = bus_electricity_ng_feedin["sequences"][
