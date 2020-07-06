@@ -35,7 +35,7 @@ def project_annuities(case_dict, oemof_results, experiment):
             oemof_results, experiment
         )
 
-    if case_dict["pcc_feedin_fixed_capacity"] != None:
+    if case_dict[PCC_FEEDIN_FIXED_CAPACITY] != None:
         # ---------Revenues from electricity feed-in to main grid ----------#
         revenue_main_grid_feedin(oemof_results, experiment)
 
@@ -86,7 +86,7 @@ def annuities_365(case_dict, oemof_results, experiment):
 
     if (
         case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] != None
-        and case_dict["pcc_feedin_fixed_capacity"] != None
+        and case_dict[PCC_FEEDIN_FIXED_CAPACITY] != None
     ):
         interval_annuity.update(
             {
@@ -106,7 +106,7 @@ def annuities_365(case_dict, oemof_results, experiment):
     # Main grid extension
     if (
         case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] != None
-        or case_dict["pcc_feedin_fixed_capacity"] != None
+        or case_dict[PCC_FEEDIN_FIXED_CAPACITY] != None
     ):
         interval_annuity.update(
             {

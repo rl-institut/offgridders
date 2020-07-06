@@ -147,7 +147,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
         if "Grid availability" in mg_flows.columns:
             mg_flows = mg_flows.drop(["Grid availability"], axis=1)
             if (case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] != None) or (
-                case_dict["pcc_feedin_fixed_capacity"] != None
+                case_dict[PCC_FEEDIN_FIXED_CAPACITY] != None
             ):
                 number_of_subplots += 1
 
@@ -228,7 +228,7 @@ def plot_flows(case_dict, experiment, mg_flows, e_flows_df, number_of_subplots):
         ylabel = ""
         if (
             (case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] != None)
-            or (case_dict["pcc_feedin_fixed_capacity"] != None)
+            or (case_dict[PCC_FEEDIN_FIXED_CAPACITY] != None)
         ) and ("Grid availability" in e_flows_df.columns):
             e_flows_df["Grid availability"].plot(
                 ax=axes[1],

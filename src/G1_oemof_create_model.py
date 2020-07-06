@@ -133,7 +133,7 @@ def build(experiment, case_dict):
             micro_grid_system, experiment
         )
 
-    if case_dict["pcc_feedin_fixed_capacity"] != None:
+    if case_dict[PCC_FEEDIN_FIXED_CAPACITY] != None:
         # sink + source for feed-in
         bus_electricity_ng_feedin = generate.maingrid_feedin(
             micro_grid_system, experiment
@@ -166,10 +166,10 @@ def build(experiment, case_dict):
         )
 
     # ------------point of coupling (feedin)------------#
-    if case_dict["pcc_feedin_fixed_capacity"] == None:
+    if case_dict[PCC_FEEDIN_FIXED_CAPACITY] == None:
         pass
         # pointofcoupling_feedin = None
-    elif case_dict["pcc_feedin_fixed_capacity"] == False:
+    elif case_dict[PCC_FEEDIN_FIXED_CAPACITY] == False:
         generate.pointofcoupling_feedin_oem(
             micro_grid_system,
             bus_electricity_ac,
@@ -178,13 +178,13 @@ def build(experiment, case_dict):
             min_cap_pointofcoupling=case_dict[PEAK_DEMAND],
         )
 
-    elif isinstance(case_dict["pcc_feedin_fixed_capacity"], float):
+    elif isinstance(case_dict[PCC_FEEDIN_FIXED_CAPACITY], float):
         generate.pointofcoupling_feedin_fix(
             micro_grid_system,
             bus_electricity_ac,
             bus_electricity_ng_feedin,
             experiment,
-            capacity_pointofcoupling=case_dict["pcc_feedin_fixed_capacity"],
+            capacity_pointofcoupling=case_dict[PCC_FEEDIN_FIXED_CAPACITY],
         )
     else:
         logging.warning(
