@@ -99,7 +99,7 @@ def main():
     max_date_time_index, max_evaluated_days = process_input.add_timeseries(
         sensitivity_experiment_s
     )
-    settings.update({"max_date_time_index": max_date_time_index})
+    settings.update({MAX_DATE_TIME_INDEX: max_date_time_index})
     settings.update({"max_evaluated_days": max_evaluated_days})
 
     # -----------Apply noise to timeseries of each experiment --------------------#

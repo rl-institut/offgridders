@@ -37,7 +37,7 @@ def get_blackouts(settings, blackout_experiment_s):
 
         index = pd.DatetimeIndex(data_set[TIMESTEP].values)
         index = [
-            item + pd.DateOffset(year=settings["max_date_time_index"][0].year)
+            item + pd.DateOffset(year=settings[MAX_DATE_TIME_INDEX][0].year)
             for item in index
         ]
         data_set = data_set.drop(columns=[TIMESTEP])
@@ -50,7 +50,7 @@ def get_blackouts(settings, blackout_experiment_s):
             for experiment in blackout_experiment_s
         ]
 
-        if len(settings["max_date_time_index"]) > len(grid_availability_df.index):
+        if len(settings[MAX_DATE_TIME_INDEX]) > len(grid_availability_df.index):
             data_complete = False
             logging.WARNING(
                 "Saved blackout series can not be used (timestamps not compatible). Auto-generated timeseries will be used."
@@ -107,7 +107,7 @@ def get_blackouts(settings, blackout_experiment_s):
                     logging.info("All necessary blackout timeseries restored.\n \n")
 
     else:
-        grid_availability_df = pd.DataFrame(index=settings["max_date_time_index"])
+        grid_availability_df = pd.DataFrame(index=settings[MAX_DATE_TIME_INDEX])
 
     # if data not saved, generate blackouts
     if data_complete == False:
@@ -160,7 +160,7 @@ def availability(
     settings, blackout_experiment_s, blackout_result_s, grid_availability_df
 ):
 
-    date_time_index = settings["max_date_time_index"]
+    date_time_index = settings[MAX_DATE_TIME_INDEX]
 
     # get timestep frequency: timestep = date_time_index.freq()
     timestep = 1
