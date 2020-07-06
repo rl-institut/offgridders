@@ -199,7 +199,7 @@ def build(experiment, case_dict):
 
     # ------------DC electricity bus------------#
     logging.debug("Added to oemof model: Electricity bus of energy system, DC")
-    bus_electricity_dc = solph.Bus(label="bus_electricity_dc")
+    bus_electricity_dc = solph.Bus(label=BUS_ELECTRICITY_DC)
     micro_grid_system.add(bus_electricity_dc)
 
     # ------------demand sink dc------------#

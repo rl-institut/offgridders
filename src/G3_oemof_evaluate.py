@@ -55,7 +55,7 @@ def get_demand(
     #        or case_dict['storage_fixed_capacity'] != None:
 
     demand_dc = electricity_bus_dc["sequences"][
-        (("bus_electricity_dc", "sink_demand_dc"), "flow")
+        ((BUS_ELECTRICITY_DC, "sink_demand_dc"), "flow")
     ]
     e_flows_df = join_e_flows_df(demand_dc, "Demand DC", e_flows_df)
     if case_dict[EVALUATION_PERSPECTIVE] == "AC_bus":
@@ -106,7 +106,7 @@ def get_shortage(
         if electricity_bus_dc != None:
 
             shortage_dc = electricity_bus_dc["sequences"][
-                (("source_shortage", "bus_electricity_dc"), "flow")
+                (("source_shortage", BUS_ELECTRICITY_DC), "flow")
             ]
             annual_value(
                 "total_demand_shortage_dc_annual_kWh",
@@ -173,7 +173,7 @@ def get_excess(
     if electricity_bus_dc != None:
 
         excess_dc = electricity_bus_dc["sequences"][
-            (("bus_electricity_dc", "sink_excess"), "flow")
+            ((BUS_ELECTRICITY_DC, "sink_excess"), "flow")
         ]
         excess += excess_dc
         annual_value(
@@ -202,7 +202,7 @@ def get_pv(
     # Get flow
     if case_dict[PV_FIXED_CAPACITY] != None:
         pv_gen = electricity_bus_dc["sequences"][
-            (("source_pv", "bus_electricity_dc"), "flow")
+            (("source_pv", BUS_ELECTRICITY_DC), "flow")
         ]
         annual_value(
             TOTAL_PV_GENERATION_KWH, pv_gen, oemof_results, case_dict
@@ -234,7 +234,7 @@ def get_pv(
             oemof_results.update(
                 {
                     CAPACITY_PV_KWP: electricity_bus_dc["scalars"][
-                        (("source_pv", "bus_electricity_dc"), "invest")
+                        (("source_pv", BUS_ELECTRICITY_DC), "invest")
                     ]
                     * pv_generation_max
                 }
@@ -243,7 +243,7 @@ def get_pv(
             oemof_results.update(
                 {
                     CAPACITY_PV_KWP: electricity_bus_dc["scalars"][
-                        (("source_pv", "bus_electricity_dc"), "invest")
+                        (("source_pv", BUS_ELECTRICITY_DC), "invest")
                     ]
                     / pv_generation_max
                 }
@@ -263,7 +263,7 @@ def get_rectifier(
     # Get flow
     if case_dict[RECTIFIER_AC_DC_FIXED_CAPACITY] != None:
         rectifier_out = electricity_bus_dc["sequences"][
-            (("transformer_rectifier", "bus_electricity_dc"), "flow")
+            (("transformer_rectifier", BUS_ELECTRICITY_DC), "flow")
         ]
         e_flows_df = join_e_flows_df(
             rectifier_out, "Rectifier output", e_flows_df
@@ -319,7 +319,7 @@ def get_inverter(
         )
 
         inverter_in = electricity_bus_dc["sequences"][
-            (("bus_electricity_dc", "transformer_inverter_dc_ac"), "flow")
+            ((BUS_ELECTRICITY_DC, "transformer_inverter_dc_ac"), "flow")
         ]
         e_flows_df = join_e_flows_df(
             inverter_in, "Inverter input", e_flows_df
@@ -337,7 +337,7 @@ def get_inverter(
     # Get capacity
     if case_dict[INVERTER_DC_AC_FIXED_CAPACITY] == False:
         inverter_capacity = electricity_bus_dc["scalars"][
-            (("bus_electricity_dc", "transformer_inverter_dc_ac"), "invest")
+            ((BUS_ELECTRICITY_DC, "transformer_inverter_dc_ac"), "invest")
         ]
         oemof_results.update({CAPACITY_INVERTER_DC_AC_KW: inverter_capacity})
 
@@ -469,10 +469,10 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
     if case_dict[STORAGE_FIXED_CAPACITY] != None:
         storage = outputlib.views.node(results, "generic_storage")
         storage_discharge = storage["sequences"][
-            (("generic_storage", "bus_electricity_dc"), "flow")
+            (("generic_storage", BUS_ELECTRICITY_DC), "flow")
         ]
         storage_charge = storage["sequences"][
-            (("bus_electricity_dc", "generic_storage"), "flow")
+            ((BUS_ELECTRICITY_DC, "generic_storage"), "flow")
         ]
         stored_capacity = storage["sequences"][
             (("generic_storage", "None"), "capacity")
@@ -526,9 +526,9 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
             (("generic_storage", "None"), "invest")
         ]
 
-        electricity_bus_dc = outputlib.views.node(results, "bus_electricity_dc")
+        electricity_bus_dc = outputlib.views.node(results, BUS_ELECTRICITY_DC)
         storage_power = electricity_bus_dc["scalars"][
-            (("generic_storage", "bus_electricity_dc"), "invest")
+            (("generic_storage", BUS_ELECTRICITY_DC), "invest")
         ]
 
         oemof_results.update(
