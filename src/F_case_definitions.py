@@ -51,7 +51,7 @@ def update_dict(capacities_oem, specific_case, experiment):
         POWER_STORAGE_KW,
         CAPACITY_GENSET_KW,
         CAPACITY_PV_KWP,
-        "capacity_pcc_consumption_kW",
+        CAPACITY_PCC_CONSUMPTION_KW,
         "capacity_pcc_feedin_kW",
         CAPACITY_WIND_KW,
         CAPACITY_RECTIFIER_AC_DC_KW,
@@ -106,7 +106,7 @@ def update_dict(capacities_oem, specific_case, experiment):
                     case_dict_capacity * experiment[GENSET_OVERSIZE_FACTOR]
                 )
             elif (
-                component_name == "capacity_pcc_consumption_kW"
+                component_name == CAPACITY_PCC_CONSUMPTION_KW
                 or component_name == "capacity_pcc_feedin_kW"
             ):
                 case_dict_capacity = round(
