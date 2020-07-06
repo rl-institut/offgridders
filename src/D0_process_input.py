@@ -54,7 +54,7 @@ def economic_values(experiment):
         }
     )
     experiment.update(
-        {"crf": economics.crf(experiment[PROJECT_LIFETIME], experiment[WACC])}
+        {CRF: economics.crf(experiment[PROJECT_LIFETIME], experiment[WACC])}
     )
 
     if PRICE_FUEL not in experiment:
@@ -63,7 +63,7 @@ def economic_values(experiment):
             experiment[PROJECT_LIFETIME],
             experiment[WACC],
             experiment[FUEL_PRICE_CHANGE_ANNUAL],
-            experiment["crf"],
+            experiment[CRF],
         )
         experiment.update({PRICE_FUEL: present_value_changing_fuel_price})
     else:
@@ -113,7 +113,7 @@ def economic_values(experiment):
             {
                 item
                 + "_cost_annuity": economics.annuity(
-                    experiment[item + "_cost_capex"], experiment["crf"]
+                    experiment[item + "_cost_capex"], experiment[CRF]
                 )
                 + experiment[item + "_cost_opex"]
             }
