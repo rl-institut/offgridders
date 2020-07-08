@@ -521,7 +521,7 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
         storage_charge = storage[SEQUENCES][
             ((BUS_ELECTRICITY_DC, GENERIC_STORAGE), FLOW)
         ]
-        stored_capacity = storage[SEQUENCES][((GENERIC_STORAGE, "None"), CAPACITY)]
+        stored_capacity = storage[SEQUENCES][((GENERIC_STORAGE, "None"), "storage_content")]
         annual_value(
             TOTAL_STORAGE_THOUGHPUT_KWH, storage_charge, oemof_results, case_dict
         )
