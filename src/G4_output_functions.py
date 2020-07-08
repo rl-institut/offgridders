@@ -29,6 +29,7 @@ def print_oemof_meta_main_invest(experiment, meta, electricity_bus, case_name):
             pp.pprint(electricity_bus["scalars"])
     return
 
+
 def save_mg_flows(experiment, case_dict, e_flows_df, filename):
     logging.debug("Saving flows MG.")
     flows_connected_to_electricity_mg_bus = [
@@ -187,6 +188,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
 
     return
 
+
 def plot_flows(case_dict, experiment, mg_flows, e_flows_df, number_of_subplots):
     if number_of_subplots < 1:
         fig, axes = plt.subplots(nrows=1, figsize=(16 / 2.54, 10 / 2.54 / 2))
@@ -252,11 +254,10 @@ def plot_flows(case_dict, experiment, mg_flows, e_flows_df, number_of_subplots):
 
         axes[1].set(xlabel="Time", ylabel=ylabel)
         if number_of_subplots > 1:
-            axes[1].legend(
-                loc="center left", bbox_to_anchor=(1, 0.5), frameon=False
-            )
+            axes[1].legend(loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
 
     return
+
 
 def save_storage(experiment, case_dict, e_flows_df, filename):
     logging.debug("Saving flows storage.")
@@ -326,9 +327,7 @@ def save_storage(experiment, case_dict, e_flows_df, filename):
                     + experiment["project_site_name"]
                 )
                 fig.set(xlabel="Time", ylabel="Electricity flow/stored in kWh")
-                fig.legend(
-                    loc="center left", bbox_to_anchor=(1, 0.5), frameon=False
-                )
+                fig.legend(loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
                 plt.savefig(
                     experiment["output_folder"]
                     + "/storage/"
@@ -341,6 +340,7 @@ def save_storage(experiment, case_dict, e_flows_df, filename):
                 plt.clf()
                 plt.cla()
     return
+
 
 def save_network_graph(energysystem, case_name):
     logging.debug("Generate networkx diagram")
@@ -378,6 +378,7 @@ def save_network_graph(energysystem, case_name):
         },
         edge_color="#eeac7e",
     )
+
 
 def draw_graph(
     grph,

@@ -18,6 +18,7 @@ import logging
 # This is not really a necessary class, as the whole experiement could be given to the function, but it ensures, that
 # only correct input data is included
 
+
 def update_dict(capacities_oem, specific_case, experiment):
     experiment_case_dict = {}
 
@@ -32,15 +33,11 @@ def update_dict(capacities_oem, specific_case, experiment):
             "total_demand_dc": experiment["total_demand_dc"],
             "peak_demand": experiment["abs_peak_demand_ac_side"],
             "evaluated_days": experiment["evaluated_days"],
-            "genset_with_minimal_loading": specific_case[
-                "genset_with_minimal_loading"
-            ],
+            "genset_with_minimal_loading": specific_case["genset_with_minimal_loading"],
         }
     )
 
-    warning_string = (
-        "Invalid case definitions. For case " + specific_case["case_name"]
-    )
+    warning_string = "Invalid case definitions. For case " + specific_case["case_name"]
 
     ###########################################
     # Define capacities                       #
@@ -124,9 +121,7 @@ def update_dict(capacities_oem, specific_case, experiment):
     # Allowing shortage, define max. shortage #
     ###########################################
     if specific_case["allow_shortage"] == "default":
-        experiment_case_dict.update(
-            {"allow_shortage": experiment["allow_shortage"]}
-        )
+        experiment_case_dict.update({"allow_shortage": experiment["allow_shortage"]})
         experiment_case_dict.update(
             {"max_shortage": experiment["shortage_max_allowed"]}
         )
@@ -149,9 +144,7 @@ def update_dict(capacities_oem, specific_case, experiment):
             specific_case["max_shortage"], int
         ):
             experiment_case_dict.update({"allow_shortage": True})
-            experiment_case_dict.update(
-                {"max_shortage": specific_case["max_shortage"]}
-            )
+            experiment_case_dict.update({"max_shortage": specific_case["max_shortage"]})
 
     else:
         logging.warning(
@@ -218,6 +211,7 @@ def update_dict(capacities_oem, specific_case, experiment):
     ]
     return experiment_case_dict
 
+
 def get_base_capacity(
     experiment_case_dict, case_dict_entry, capacities, component_name, batch_size
 ):
@@ -232,9 +226,7 @@ def get_base_capacity(
         case_dict_capacity = float(case_dict_capacity)
     elif case_dict_entry in capacities:
         case_dict_capacity = capacities[case_dict_entry][component_name]
-        case_dict_capacity = (
-            round(0.5 + case_dict_capacity / batch_size) * batch_size
-        )
+        case_dict_capacity = round(0.5 + case_dict_capacity / batch_size) * batch_size
         case_dict_capacity = float(case_dict_capacity)
     else:
         logging.warning(
@@ -243,15 +235,14 @@ def get_base_capacity(
 
     return case_dict_capacity
 
+
 def define_capacity(experiment_case_dict, case_dict_capacity, oemof_name):
 
     if case_dict_capacity == "oem":
         experiment_case_dict.update({oemof_name: False})
     elif case_dict_capacity == None or case_dict_capacity == 0:
         experiment_case_dict.update({oemof_name: None})
-    elif isinstance(case_dict_capacity, float) or isinstance(
-        case_dict_capacity, int
-    ):
+    elif isinstance(case_dict_capacity, float) or isinstance(case_dict_capacity, int):
         experiment_case_dict.update({oemof_name: case_dict_capacity})
     else:
         logging.warning(

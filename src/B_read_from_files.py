@@ -6,6 +6,7 @@ import shutil
 
 # requires xlrd
 
+
 def process_excel_file(input_excel_file):
     #######################################
     # Reads all input from excel template #
@@ -24,19 +25,14 @@ def process_excel_file(input_excel_file):
     # -------- Check for, create or empty results directory -----------------------#
     check_output_directory(settings, input_excel_file)
 
-    (
-        parameters_constant_units,
-        parameters_constant_values,
-    ) = get_parameters_constant(
+    (parameters_constant_units, parameters_constant_values,) = get_parameters_constant(
         input_excel_file, sheet_input_constant
     )
     parameters_sensitivity = get_parameters_sensitivity(
         input_excel_file, sheet_input_sensitivity
     )
 
-    project_site_s = get_project_sites(
-        input_excel_file, sheet_project_sites
-    )
+    project_site_s = get_project_sites(input_excel_file, sheet_project_sites)
 
     necessity_for_blackout_timeseries_generation = False
     # extend by timeseries
@@ -63,9 +59,7 @@ def process_excel_file(input_excel_file):
             "necessity_for_blackout_timeseries_generation": necessity_for_blackout_timeseries_generation
         }
     )
-    case_definitions = get_case_definitions(
-        input_excel_file, sheet_case_definitions
-    )
+    case_definitions = get_case_definitions(input_excel_file, sheet_case_definitions)
     multicriteria_data = get_multicriteria_data(
         input_excel_file, sheet_multicriteria_data, case_definitions
     )
@@ -79,12 +73,11 @@ def process_excel_file(input_excel_file):
         multicriteria_data,
     )
 
+
 def get_data(file, sheet, header_row, index_column, last_column):
     # Gets data from excel template
     if index_column == None and last_column == None:
-        data = pd.read_excel(
-            file, sheet_name=sheet, header=header_row - 1, index_col=0
-        )
+        data = pd.read_excel(file, sheet_name=sheet, header=header_row - 1, index_col=0)
         data = data.dropna(axis=1)
     else:
         data = pd.read_excel(
@@ -97,6 +90,7 @@ def get_data(file, sheet, header_row, index_column, last_column):
         data = data.dropna()
     return data
 
+
 def identify_true_false(entry):
     # Translates strings True/False to boolean
     if entry == "True":
@@ -107,6 +101,7 @@ def identify_true_false(entry):
         pass
 
     return entry
+
 
 def get_settings(file, sheet_settings):
     # defines dictionary connected to settings
@@ -119,11 +114,10 @@ def get_settings(file, sheet_settings):
         settings[key] = identify_true_false(settings[key])
     return settings
 
+
 def get_parameters_constant(file, sheet_input_constant):
     # defines dictionary connected to parameters
-    parameters_constant = get_data(
-        file, sheet_input_constant, 6, "A", "C"
-    )
+    parameters_constant = get_data(file, sheet_input_constant, 6, "A", "C")
     parameters_constant = parameters_constant.to_dict(orient="dict")
     parameters_constant_units = parameters_constant["Unit"]
     parameters_constant_values = parameters_constant["Value"]
@@ -131,32 +125,34 @@ def get_parameters_constant(file, sheet_input_constant):
     if "fuel_co2_emission_factor" not in parameters_constant_values.keys():
         parameters_constant_values.update({"fuel_co2_emission_factor": 2.68})
         parameters_constant_units.update({"fuel_co2_emission_factor": "kgCO2/l"})
-        logging.warning("Optional parameter `fuel_co2_emission_factor` was not included in the input parameters."
-                        "The CO2 emissions will be calculated with the default value of 2.68 kgCO2/l diesel")
+        logging.warning(
+            "Optional parameter `fuel_co2_emission_factor` was not included in the input parameters."
+            "The CO2 emissions will be calculated with the default value of 2.68 kgCO2/l diesel"
+        )
 
     if "maingrid_co2_emission_factor" not in parameters_constant_values.keys():
         parameters_constant_values.update({"maingrid_co2_emission_factor": 0.9})
         parameters_constant_units.update({"maingrid_co2_emission_factor": "kgCO2/kWh"})
-        logging.warning("Optional parameter `maingrid_co2_emission_factor` was not included in the input parameters."
-                        "The CO2 emissions will be calculated with the default value of 0.9 kgCO2/ kWh "
-                        "consumed from the (fully coal-based) maingrid.")
+        logging.warning(
+            "Optional parameter `maingrid_co2_emission_factor` was not included in the input parameters."
+            "The CO2 emissions will be calculated with the default value of 0.9 kgCO2/ kWh "
+            "consumed from the (fully coal-based) maingrid."
+        )
 
-    #print(parameters_constant_values)
+    # print(parameters_constant_values)
     return parameters_constant_units, parameters_constant_values
+
 
 def get_parameters_sensitivity(file, sheet_input_sensitivity):
     # defines dictionary connected to senstivity analysis
-    parameters_sensitivity = get_data(
-        file, sheet_input_sensitivity, 10, "A", "D"
-    )
+    parameters_sensitivity = get_data(file, sheet_input_sensitivity, 10, "A", "D")
     parameters_sensitivity = parameters_sensitivity.to_dict(orient="index")
     return parameters_sensitivity
 
+
 def get_project_sites(file, sheet_project_sites):
     # defines dictionary connected to project sites
-    project_sites = get_data(
-        file, sheet_project_sites, 14, None, None
-    )
+    project_sites = get_data(file, sheet_project_sites, 14, None, None)
     project_sites = project_sites.to_dict(orient="index")
 
     # Print all evaluated locations in terminal
@@ -164,23 +160,19 @@ def get_project_sites(file, sheet_project_sites):
     for project_site_name in project_sites.keys():
         project_site_name_string += project_site_name + ", "
     logging.info(
-        "Following project locations are evaluated: "
-        + project_site_name_string[:-2]
+        "Following project locations are evaluated: " + project_site_name_string[:-2]
     )
 
     # Translate strings 'True' and 'False' from excel sheet to True and False
     for site in project_sites:
         for key in project_sites[site]:
-            project_sites[site][key] = identify_true_false(
-                project_sites[site][key]
-            )
+            project_sites[site][key] = identify_true_false(project_sites[site][key])
     return project_sites
+
 
 def get_case_definitions(file, sheet_project_sites):
     # defines dictionary connected to project sites
-    case_definitions = get_data(
-        file, sheet_project_sites, 17, None, None
-    )
+    case_definitions = get_data(file, sheet_project_sites, 17, None, None)
     # if any(case_definitions.columns.str.contains('unnamed', case=False)):
     #    logging.warning('Input template: Tab "case_definitions" might have unnamed columns, which will be dropped. Check if all your cases are simulated.')
     #    case_definitions.drop(case_definitions.columns[case_definitions.columns.str.contains('unnamed', case=False)], axis=1, inplace=True)
@@ -208,6 +200,7 @@ def get_case_definitions(file, sheet_project_sites):
             }
         )
     return case_definitions
+
 
 def get_multicriteria_data(file, sheet_multicriteria_analysis, case_definitions):
     # gets weights of the dimensions
@@ -259,6 +252,7 @@ def get_multicriteria_data(file, sheet_multicriteria_analysis, case_definitions)
 
     return multicriteria_data
 
+
 def column_not_existant(column_item, column_title, path_from):
     logging.error(
         'A column with the header "'
@@ -271,6 +265,7 @@ def column_not_existant(column_item, column_title, path_from):
         + "\n        Check whether column exists, spelling is correct and for correct seperator of .csv file."
     )
     sys.exit(1)  # Shutting down programm
+
 
 def from_file(project_site, path_from):
     ##########################################################
@@ -344,6 +339,7 @@ def from_file(project_site, path_from):
 
     return
 
+
 def check_output_directory(settings, input_excel_file):
 
     logging.debug("Checking for folders and files")
@@ -368,10 +364,7 @@ def check_output_directory(settings, input_excel_file):
                     shutil.rmtree(path_removed, ignore_errors=True)
                     os.mkdir(output_folder + "/oemof")
 
-            elif (
-                folder == "/oemof"
-                and os.path.isdir(output_folder + folder) is False
-            ):
+            elif folder == "/oemof" and os.path.isdir(output_folder + folder) is False:
                 os.mkdir(output_folder + "/oemof")
 
             elif os.path.isdir(output_folder + folder):

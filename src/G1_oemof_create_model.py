@@ -1,12 +1,12 @@
 import logging
 import sys
 import oemof.solph as solph
-from oemof.solph import  processing
+from oemof.solph import processing
 
 # todo this is called both from G0 and here
 try:
-   import src.G2a_oemof_busses_and_componets as generate
-   import src.G2b_constraints_custom as constraints_custom
+    import src.G2a_oemof_busses_and_componets as generate
+    import src.G2b_constraints_custom as constraints_custom
 
 except ModuleNotFoundError:
     print("Module error at G1")
@@ -18,17 +18,17 @@ except ModuleNotFoundError:
         ac_dc_bus,
     )
 
+
 def load_energysystem_lp():
     # based on lp file
     return
+
 
 def build(experiment, case_dict):
     logging.debug("Complete case dictionary:")
     logging.debug(case_dict)
 
-    logging.debug(
-        "Create oemof model by adding case-specific busses and components."
-    )
+    logging.debug("Create oemof model by adding case-specific busses and components.")
 
     # create energy system
     micro_grid_system = solph.EnergySystem(timeindex=experiment["date_time_index"])
@@ -211,9 +211,7 @@ def build(experiment, case_dict):
     if case_dict["pv_fixed_capacity"] == None:
         solar_plant = None
     elif case_dict["pv_fixed_capacity"] is False:
-        solar_plant = generate.pv_oem(
-            micro_grid_system, bus_electricity_dc, experiment
-        )
+        solar_plant = generate.pv_oem(micro_grid_system, bus_electricity_dc, experiment)
 
     elif isinstance(case_dict["pv_fixed_capacity"], float):
         solar_plant = generate.pv_fix(
@@ -436,9 +434,7 @@ def build(experiment, case_dict):
     if case_dict["enable_inverter_only_at_backout"] is False:
         pass
     elif case_dict["enable_inverter_only_at_backout"] is True:
-        logging.info(
-            "Added constraint: Allowing inverter use only at blackout times."
-        )
+        logging.info("Added constraint: Allowing inverter use only at blackout times.")
         constraints_custom.inverter_only_at_blackout(
             model, case_dict, bus_electricity_dc, inverter, experiment
         )
@@ -460,6 +456,7 @@ def build(experiment, case_dict):
                                           source_shortage, bus_electricity_dc)
     """
     return micro_grid_system, model
+
 
 def simulate(experiment, micro_grid_system, model, file_name):
     logging.info("Simulating...")
@@ -486,6 +483,7 @@ def simulate(experiment, micro_grid_system, model, file_name):
     micro_grid_system.results["meta"] = processing.meta_results(model)
     return micro_grid_system
 
+
 def store_results(micro_grid_system, file_name, output_folder):
     # store energy system with results
     micro_grid_system.dump(
@@ -495,6 +493,7 @@ def store_results(micro_grid_system, file_name, output_folder):
         "Stored results in " + output_folder + "/oemof" + "/" + file_name + ".oemof"
     )
     return micro_grid_system
+
 
 def load_oemof_results(output_folder, file_name):
     logging.debug("Restore the energy system and the results.")
