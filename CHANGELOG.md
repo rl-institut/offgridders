@@ -23,7 +23,9 @@ Here is a template for new release sections
 ### Added
 -
 ### Changed
--
+- Replaced `== False` with `is False` and `== True` with `is True`
+- Facilitated upgrade to `oemof == 0.3.3` and `oemof.solph == 0.4.0`, update `requirements.txt`
+
 ### Removed
 -
 ### Fixed

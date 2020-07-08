@@ -26,7 +26,7 @@ def main():
         logpath="./",
         logfile="micro_grid_design_logfile.log",
         screen_level=logging.INFO,
-        # screen_level=logging.DEBUG,
+        #screen_level=logging.DEBUG,
         file_level=logging.DEBUG,
     )
 
