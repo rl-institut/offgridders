@@ -40,13 +40,14 @@ from src.constants import (
 )
 
 
+
 def main():
     # Logging
     logger.define_logging(
         logpath="./",
         logfile=MICRO_GRID_DESIGN_LOGFILE_LOG,
         screen_level=logging.INFO,
-        #screen_level=logging.DEBUG,
+        # screen_level=logging.DEBUG,
         file_level=logging.DEBUG,
     )
 

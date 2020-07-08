@@ -85,9 +85,7 @@ def backup(
     def stability_rule_capacity(model, t):
         expr = CAP_genset
         ## ------- Get demand at t ------- #
-        demand = (
-            model.flow[el_bus_ac, sink_demand, t]
-        )
+        demand = model.flow[el_bus_ac, sink_demand, t]
         expr += -stability_limit * demand
         ## ------- Get shortage at t------- #
         if case_dict[ALLOW_SHORTAGE] == True:
@@ -261,9 +259,7 @@ def hybrid(
     def stability_rule_capacity(model, t):
         expr = 0
         ## ------- Get demand at t ------- #
-        demand = (
-            model.flow[el_bus_ac, sink_demand, t]
-        )
+        demand = model.flow[el_bus_ac, sink_demand, t]
         expr += -stability_limit * demand
 
         ## ------- Get shortage at t------- #
@@ -311,9 +307,7 @@ def hybrid(
     def stability_rule_power(model, t):
         expr = 0
         ## ------- Get demand at t ------- #
-        demand = (
-            model.flow[el_bus_ac, sink_demand, t]
-        )
+        demand = model.flow[el_bus_ac, sink_demand, t]
         expr += -stability_limit * demand
 
         ## ------- Get shortage at t------- #
@@ -453,9 +447,7 @@ def usage(
     def stability_rule(model, t):
         expr = 0
         ## ------- Get demand at t ------- #
-        demand = (
-            model.flow[el_bus, sink_demand, t]
-        )
+        demand = model.flow[el_bus, sink_demand, t]
 
         expr += -stability_limit * demand
 
@@ -721,7 +713,9 @@ def forced_charge(model, case_dict, el_bus_dc, storage, experiment):
             elif isinstance(
                 case_dict[STORAGE_FIXED_CAPACITY], float
             ):  # Fixed storage subject to dispatch
-                stored_electricity += model.GenericStorageBlock.storage_content[storage, t]
+                stored_electricity += model.GenericStorageBlock.storage_content[
+                    storage, t
+                ]
 
             # Linearization
             expr = m * stored_electricity + n  # * 0.99
@@ -828,7 +822,9 @@ def discharge_only_at_blackout(model, case_dict, el_bus, storage, experiment):
             elif isinstance(
                 case_dict[STORAGE_FIXED_CAPACITY], float
             ):  # Fixed storage subject to dispatch
-                stored_electricity += model.GenericStorageBlock.storage_content[storage, t]
+                stored_electricity += model.GenericStorageBlock.storage_content[
+                    storage, t
+                ]
 
             # force discharge to zero when grid available
             expr += -stored_electricity * grid_inavailability[t]

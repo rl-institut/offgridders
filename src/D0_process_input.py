@@ -72,6 +72,7 @@ from src.constants import (
 )
 
 
+
 def list_of_cases(case_definitions):
     case_list = []
     str_cases_simulated = ""
