@@ -466,7 +466,6 @@ def get_fuel(case_dict, oemof_results, results):
 def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
     logging.debug("Evaluate flow: storage")
     # Get flow
-    print(case_dict["storage_fixed_capacity"] )
     if case_dict["storage_fixed_capacity"] != None:
         storage = solph.views.node(results, "generic_storage")
         storage_discharge = storage["sequences"][
@@ -476,7 +475,7 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
             (("bus_electricity_dc", "generic_storage"), "flow")
         ]
         stored_capacity = storage["sequences"][
-            (("generic_storage", "None"), "capacity")
+            (("generic_storage", "None"), "storage_content")
         ]
         annual_value(
             "total_storage_throughput_kWh", storage_charge, oemof_results, case_dict
@@ -526,8 +525,6 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
         storage_capacity = storage["scalars"][
             (("generic_storage", "None"), "invest")
         ]
-        print("here cap")
-        print(storage_capacity)
         electricity_bus_dc = solph.views.node(results, "bus_electricity_dc")
         storage_power = electricity_bus_dc["scalars"][
             (("generic_storage", "bus_electricity_dc"), "invest")
