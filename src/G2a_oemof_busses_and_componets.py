@@ -493,7 +493,7 @@ def storage_fix(
     logging.debug("Added to oemof model: storage fix")
     generic_storage = solph.components.GenericStorage(
         label="generic_storage",
-        nominal_capacity=capacity_storage,
+        nominal_storage_capacity=capacity_storage,
         inputs={
             bus_electricity_dc: solph.Flow(
                 nominal_value=capacity_storage * experiment["storage_Crate_charge"],
