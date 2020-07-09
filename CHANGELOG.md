@@ -21,13 +21,17 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
--
+- Error message if parameter `evaluation_perspective` is not chosen correctly (#97)
+
 ### Changed
--
+- Added parameter `consumption_fuel_annual_kWh` to simulation outputs (#97)
+- Input template file so that it runs MCA and gives options of `evaluation_perspective` (#97)
+
 ### Removed
 -
+
 ### Fixed
--
+- Miscalculation of `total_demand_supplied_annual_kWh` due to wrong `evaluation_perspective` on tab `case_definitions`  (#97)
 
 ## [Offgridders V4.3] - 2020-07-02
 
