@@ -200,6 +200,10 @@ def get_case_definitions(file, sheet_project_sites):
                 {"max_shortage": float(case_definitions[case]["max_shortage"])}
             )
 
+        if case_definitions[case]["evaluation_perspective"] not in ["AC_system", "DC_system"]:
+            logging.error("Parameter evaluation_perspective has to be either 'AC_system' or 'DC_system', "
+                            "but is ", case_definitions[case]["evaluation_perspective"])
+
         case_definitions[case].update(
             {
                 "number_of_equal_generators": int(
