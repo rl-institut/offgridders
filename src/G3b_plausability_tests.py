@@ -20,6 +20,7 @@ e_flows_df can include columns with titles...
 'Grid availability'
 """
 
+
 def run(oemof_results, e_flows_df):
     """
     Checking oemof calculations for plausability. The most obvious errors should be identified this way.
@@ -41,6 +42,7 @@ def run(oemof_results, e_flows_df):
     excess_shortage(oemof_results, e_flows_df)
     excess_feedin(oemof_results, e_flows_df)
     return
+
 
 def charge_discharge(oemof_results, e_flows_df):
     logging.debug("Plausibility test: Charge/Discharge")
@@ -72,6 +74,7 @@ def charge_discharge(oemof_results, e_flows_df):
                 }
             )
     return
+
 
 def demand_supply_shortage(oemof_results, e_flows_df):
     logging.debug("Plausibility test: Demand/Supply/Shortage")
@@ -115,6 +118,7 @@ def demand_supply_shortage(oemof_results, e_flows_df):
 
     return
 
+
 def feedin_consumption(oemof_results, e_flows_df):
     logging.debug("Plausibility test: Feedin/Consumption")
     if ("Consumption from main grid" in e_flows_df.columns) and (
@@ -146,6 +150,7 @@ def feedin_consumption(oemof_results, e_flows_df):
             )
 
     return
+
 
 def gridavailability_feedin(oemof_results, e_flows_df):
     logging.debug("Plausibility test: Grid availability/Feedin")
@@ -179,6 +184,7 @@ def gridavailability_feedin(oemof_results, e_flows_df):
 
     return
 
+
 def gridavailability_consumption(oemof_results, e_flows_df):
     logging.debug("Plausibility test: Grid availability consumption")
     if ("Consumption from main grid" in e_flows_df.columns) and (
@@ -211,6 +217,7 @@ def gridavailability_consumption(oemof_results, e_flows_df):
 
     return
 
+
 def excess_shortage(oemof_results, e_flows_df):
     logging.debug("Plausibility test: Excess/shortage")
     if ("Excess electricity" in e_flows_df.columns) and (
@@ -242,6 +249,7 @@ def excess_shortage(oemof_results, e_flows_df):
             )
 
     return
+
 
 def excess_feedin(oemof_results, e_flows_df):
     logging.debug("Plausibility test: Excess/Feedin")

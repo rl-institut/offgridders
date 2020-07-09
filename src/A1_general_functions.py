@@ -14,7 +14,6 @@ except ImportError:
     plt = None
 
 
-
 def plot_results(pandas_dataframe, title, xaxis, yaxis):
     """ general function for plots"""
     if plt is not None:
@@ -25,6 +24,7 @@ def plot_results(pandas_dataframe, title, xaxis, yaxis):
         ax.set_ylabel(yaxis)
         plt.show()
     return
+
 
 def define_base_capacities(oemof_results):
     capacities_base = {
@@ -38,6 +38,7 @@ def define_base_capacities(oemof_results):
         "capacity_inverter_dc_ac_kW": oemof_results["capacity_inverter_dc_ac_kW"],
     }
     return capacities_base
+
 
 def store_result_matrix(overall_results, experiment, oemof_results):
     """
@@ -55,9 +56,7 @@ def store_result_matrix(overall_results, experiment, oemof_results):
                 )
             else:
                 result_series = result_series.append(
-                    pd.Series(
-                        [round(oemof_results[key], round_to_comma)], index=[key]
-                    )
+                    pd.Series([round(oemof_results[key], round_to_comma)], index=[key])
                 )
         # extend by item of demand profile
         elif key == "demand_profile":

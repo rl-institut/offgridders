@@ -21,13 +21,24 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
--
+- Error message if parameter `evaluation_perspective` is not chosen correctly (#97)
+- Warning message if `fuel_price_change_annual` != 0, as calculation may be faulty (#97)
+
 ### Changed
--
+- Added parameter `consumption_fuel_annual_kWh` to simulation outputs (#97)
+- Input template file so that it runs MCA and gives options of `evaluation_perspective` (#97)
+- If `fuel_price_change_annual` == 0, function `present_value_changing_fuel_price` is not executed and returns fuel price (#97)
+- Order of cost results in simulation outputs, as `first_investment_cost`, `operation_mantainance_expenditures` as these are not to be added to costs, expenditures and revenues to calculate the NPC (#97)
+- Formula calculating the residual value of an asset. Now, the sales revenue is translated into a present value: 
+`linear_depreciation_last_investment = last_investment / lifetime` and `capex = capex - linear_depreciation_last_investment * (number_of_investments * lifetime - project_life) / (1 + wacc) ** (project_life)` (#97)
+                )`
 ### Removed
--
+- Removed unused function call in G2a (`genset_oem_minload`) (#97)
+
 ### Fixed
--
+- Miscalculation of `total_demand_supplied_annual_kWh` due to wrong `evaluation_perspective` on tab `case_definitions`  (#97)
+- Function call of `present_value_changing_fuel_price` (#97)
+- Typo: Replace `operation_mantainance_expenditures` by `operation_maintenance_expenditures` (#97)
 
 ## [Offgridders V4.3] - 2020-07-02
 

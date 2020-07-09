@@ -15,6 +15,7 @@ except ImportError:
 #
 ###############################################################################
 
+
 def project_annuities(case_dict, oemof_results, experiment):
     # Define all annuities based on component capacities (Capex+Opex), add var. operational costs
     # Extrapolate to costs of whole year
@@ -31,9 +32,7 @@ def project_annuities(case_dict, oemof_results, experiment):
 
     if case_dict["pcc_consumption_fixed_capacity"] != None:
         # ---------Expenditures from electricity consumption from main grid ----------#
-        expenditures_main_grid_consumption(
-            oemof_results, experiment
-        )
+        expenditures_main_grid_consumption(oemof_results, experiment)
 
     if case_dict["pcc_feedin_fixed_capacity"] != None:
         # ---------Revenues from electricity feed-in to main grid ----------#
@@ -54,6 +53,7 @@ def project_annuities(case_dict, oemof_results, experiment):
         oemof_results.update({"lcoe": 0})
     return
 
+
 def annuities_365(case_dict, oemof_results, experiment):
     evaluated_days = case_dict["evaluated_days"]
 
@@ -62,14 +62,12 @@ def annuities_365(case_dict, oemof_results, experiment):
     )
 
     interval_annuity = {
-        "annuity_pv": experiment["pv_cost_annuity"]
-        * oemof_results["capacity_pv_kWp"],
+        "annuity_pv": experiment["pv_cost_annuity"] * oemof_results["capacity_pv_kWp"],
         "annuity_wind": experiment["wind_cost_annuity"]
         * oemof_results["capacity_wind_kW"],
         "annuity_storage": experiment["storage_capacity_cost_annuity"]
         * oemof_results["capacity_storage_kWh"]
-        + experiment["storage_power_cost_annuity"]
-        * oemof_results["power_storage_kW"],
+        + experiment["storage_power_cost_annuity"] * oemof_results["power_storage_kW"],
         "annuity_genset": experiment["genset_cost_annuity"]
         * oemof_results["capacity_genset_kW"],
         "annuity_rectifier_ac_dc": experiment["rectifier_ac_dc_cost_annuity"]
@@ -80,9 +78,7 @@ def annuities_365(case_dict, oemof_results, experiment):
 
     list_fix = ["project", "distribution_grid"]
     for item in list_fix:
-        interval_annuity.update(
-            {"annuity_" + item: experiment[item + "_cost_annuity"]}
-        )
+        interval_annuity.update({"annuity_" + item: experiment[item + "_cost_annuity"]})
 
     if (
         case_dict["pcc_consumption_fixed_capacity"] != None
@@ -163,14 +159,10 @@ def annuities_365(case_dict, oemof_results, experiment):
 
     oemof_results.update({"first_investment": investment})
 
-    logging.debug(
-        "Economic evaluation. Calculating O&M costs over analysed timeframe."
-    )
+    logging.debug("Economic evaluation. Calculating O&M costs over analysed timeframe.")
 
     om_var_interval = {}
-    om = (
-        0  # first, var costs are included, then opex costs and finally expenditures
-    )
+    om = 0  # first, var costs are included, then opex costs and finally expenditures
     for item in ["pv", "wind", "genset"]:
         om_var_interval.update(
             {
@@ -211,7 +203,7 @@ def annuities_365(case_dict, oemof_results, experiment):
         else:
             om += experiment[item + "_cost_opex"] * experiment[item + "_lifetime"]
 
-    oemof_results.update({"operation_mantainance_expenditures": om})
+    oemof_results.update({"operation_maintenance_expenditures": om})
 
     logging.debug("Economic evaluation. Scaling investment costs and O&M to year.")
 
@@ -221,9 +213,7 @@ def annuities_365(case_dict, oemof_results, experiment):
             oemof_results.update(
                 {
                     "annuity_"
-                    + item: (interval_annuity["annuity_" + item])
-                    * 365
-                    / evaluated_days
+                    + item: (interval_annuity["annuity_" + item]) * 365 / evaluated_days
                 }
             )
         else:
@@ -248,6 +238,7 @@ def annuities_365(case_dict, oemof_results, experiment):
 
     return
 
+
 def costs(oemof_results, experiment):
     logging.debug("Economic evaluation. Calculating present costs.")
 
@@ -268,35 +259,39 @@ def costs(oemof_results, experiment):
         oemof_results.update(
             {
                 "costs_"
-                + item: oemof_results["annuity_" + item]
-                * experiment["annuity_factor"]
+                + item: oemof_results["annuity_" + item] * experiment["annuity_factor"]
             }
         )
 
     return
 
+
 def calculate_co2_emissions(oemof_results, experiment):
     co2_emissions = 0
     if "consumption_fuel_annual_l" in oemof_results:
-        co2_emissions += oemof_results["consumption_fuel_annual_l"] * experiment["fuel_co2_emission_factor"]
+        co2_emissions += (
+            oemof_results["consumption_fuel_annual_l"]
+            * experiment["fuel_co2_emission_factor"]
+        )
     if "consumption_main_grid_utility_side_annual_kWh" in oemof_results:
-        co2_emissions += oemof_results["consumption_main_grid_utility_side_annual_kWh"] * experiment["maingrid_co2_emission_factor"]
+        co2_emissions += (
+            oemof_results["consumption_main_grid_utility_side_annual_kWh"]
+            * experiment["maingrid_co2_emission_factor"]
+        )
     oemof_results.update({"co2_emissions_kgCO2eq": co2_emissions})
     logging.debug("Calculated CO2 emissions.")
     return
 
+
 def expenditures_fuel(oemof_results, experiment):
-    logging.debug(
-        "Economic evaluation. Calculating fuel consumption and expenditures."
-    )
+    logging.debug("Economic evaluation. Calculating fuel consumption and expenditures.")
     oemof_results.update(
         {
-            "consumption_fuel_annual_l": oemof_results[
-                "consumption_fuel_annual_kWh"
-            ]
+            "consumption_fuel_annual_l": oemof_results["consumption_fuel_annual_kWh"]
             / experiment["combustion_value_fuel"]
         }
     )
+
     oemof_results.update(
         {
             "expenditures_fuel_annual": oemof_results["consumption_fuel_annual_l"]
@@ -306,8 +301,8 @@ def expenditures_fuel(oemof_results, experiment):
 
     oemof_results.update(
         {
-            "operation_mantainance_expenditures": oemof_results[
-                "operation_mantainance_expenditures"
+            "operation_maintenance_expenditures": oemof_results[
+                "operation_maintenance_expenditures"
             ]
             + oemof_results["expenditures_fuel_annual"]
         }
@@ -328,6 +323,7 @@ def expenditures_fuel(oemof_results, experiment):
     )
     return
 
+
 def expenditures_main_grid_consumption(oemof_results, experiment):
     logging.debug(
         "Economic evaluation. Calculating main grid consumption and expenditures."
@@ -344,8 +340,8 @@ def expenditures_main_grid_consumption(oemof_results, experiment):
 
     oemof_results.update(
         {
-            "operation_mantainance_expenditures": oemof_results[
-                "operation_mantainance_expenditures"
+            "operation_maintenance_expenditures": oemof_results[
+                "operation_maintenance_expenditures"
             ]
             + oemof_results["expenditures_main_grid_consumption_annual"]
         }
@@ -368,6 +364,7 @@ def expenditures_main_grid_consumption(oemof_results, experiment):
     )
     return
 
+
 def expenditures_shortage(oemof_results, experiment):
     logging.debug("Economic evaluation. Calculating shortage and expenditures.")
     # Necessary in oemof_results: consumption_main_grid_annual
@@ -382,8 +379,8 @@ def expenditures_shortage(oemof_results, experiment):
 
     oemof_results.update(
         {
-            "operation_mantainance_expenditures": oemof_results[
-                "operation_mantainance_expenditures"
+            "operation_maintenance_expenditures": oemof_results[
+                "operation_maintenance_expenditures"
             ]
             + oemof_results["expenditures_shortage_annual"]
         }
@@ -391,9 +388,7 @@ def expenditures_shortage(oemof_results, experiment):
 
     oemof_results.update(
         {
-            "expenditures_shortage_total": oemof_results[
-                "expenditures_shortage_annual"
-            ]
+            "expenditures_shortage_total": oemof_results["expenditures_shortage_annual"]
             * experiment["annuity_factor"]
         }
     )
@@ -413,6 +408,7 @@ def expenditures_shortage(oemof_results, experiment):
             }
         )
     return
+
 
 def revenue_main_grid_feedin(oemof_results, experiment):
     logging.debug("Economic evaluation. Calculating feeding and revenues.")
@@ -441,6 +437,7 @@ def revenue_main_grid_feedin(oemof_results, experiment):
         }
     )
     return
+
 
 def annual_value(value, evaluated_days):
     value = value * 365 / evaluated_days
