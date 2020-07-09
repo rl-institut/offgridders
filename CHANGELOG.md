@@ -21,6 +21,17 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
+-
+### Changed
+-
+### Removed
+-
+### Fixed
+-
+
+## [Offgridders V4.4] - 2020-07-09
+
+### Added
 - Error message if parameter `evaluation_perspective` is not chosen correctly (#97)
 - Warning message if `fuel_price_change_annual` != 0, as calculation may be faulty (#97)
 
