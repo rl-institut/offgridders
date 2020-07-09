@@ -25,10 +25,10 @@ def present_value_of_changing_fuel_price(
             cash_flow_fuel_l += fuel_price_i / (1 + wacc) ** (i)
             fuel_price_i = fuel_price_i * (1 + fuel_price_change_annual)
         present_value_changing_fuel_price = cash_flow_fuel_l * crf
-        logging.info(" The resulting fuel price is: ", str(present_value_changing_fuel_price))
+        logging.info(" The resulting fuel price is: " + str(present_value_changing_fuel_price))
     else:
         present_value_changing_fuel_price = fuel_price
-        logging.info("Simulation will run with a fuel price of ", str(present_value_changing_fuel_price))
+        logging.info("Simulation will run with a fuel price of " + str(present_value_changing_fuel_price))
     return present_value_changing_fuel_price
 
 def capex_from_investment(investment_t0, lifetime, project_life, wacc, tax):
