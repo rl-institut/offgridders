@@ -18,7 +18,7 @@ Here is a template for new release sections
 ### Fixed
 -
 ```
-## [Unreleased]
+## [Offgridders V4.4] - 2020-07-09
 
 ### Added
 - Error message if parameter `evaluation_perspective` is not chosen correctly (#97)
