@@ -835,6 +835,7 @@ def overall_results_title(
                     "total_pv_generation_kWh",
                     "total_wind_generation_kWh",
                     "total_genset_generation_kWh",
+                    "consumption_fuel_annual_kWh",
                     "consumption_fuel_annual_l",
                     "consumption_main_grid_mg_side_annual_kWh",
                     "feedin_main_grid_mg_side_annual_kWh",
