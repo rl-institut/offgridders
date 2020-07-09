@@ -23,9 +23,7 @@ def get_blackout_experiment_name(blackout_experiment):
         + "_"
         + "dur_dev"
         + "_"
-        + str(
-            round(float(blackout_experiment["blackout_duration_std_deviation"]), 3)
-        )
+        + str(round(float(blackout_experiment["blackout_duration_std_deviation"]), 3))
         + "_"
         + "freq"
         + "_"
@@ -33,16 +31,13 @@ def get_blackout_experiment_name(blackout_experiment):
         + "_"
         + "freq_dev"
         + "_"
-        + str(
-            round(float(blackout_experiment["blackout_frequency_std_deviation"]), 3)
-        )
+        + str(round(float(blackout_experiment["blackout_frequency_std_deviation"]), 3))
     )
     return blackout_experiment_name
 
-#Sensitivy
-def get(
-    settings, parameters_constant_values, parameters_sensitivity, project_sites
-):
+
+# Sensitivy
+def get(settings, parameters_constant_values, parameters_sensitivity, project_sites):
     #######################################################
     # Get sensitivity_experiment_s for sensitivity analysis            #
     #######################################################
@@ -53,10 +48,7 @@ def get(
             sensitivity_array_dict,
             total_number_of_experiments,
         ) = all_possible(
-            settings,
-            parameters_constant_values,
-            parameters_sensitivity,
-            project_sites,
+            settings, parameters_constant_values, parameters_sensitivity, project_sites,
         )
 
     elif settings["sensitivity_all_combinations"] == False:
@@ -66,10 +58,7 @@ def get(
             sensitivity_array_dict,
             total_number_of_experiments,
         ) = with_base_case(
-            settings,
-            parameters_constant_values,
-            parameters_sensitivity,
-            project_sites,
+            settings, parameters_constant_values, parameters_sensitivity, project_sites,
         )
 
     else:
@@ -105,9 +94,7 @@ def get(
         )
 
         #  Add economic values to sensitivity sensitivity_experiment_s
-        process_input_parameters.economic_values(
-            sensitivitiy_experiment_s[experiment]
-        )
+        process_input_parameters.economic_values(sensitivitiy_experiment_s[experiment])
         # Give a file item to the sensitivity_experiment_s
         experiment_name(
             sensitivitiy_experiment_s[experiment],
@@ -119,17 +106,12 @@ def get(
             sensitivitiy_experiment_s[experiment].update({"comments": ""})
 
         if sensitivitiy_experiment_s[experiment]["storage_soc_initial"] == "None":
-            sensitivitiy_experiment_s[experiment].update(
-                {"storage_soc_initial": None}
-            )
+            sensitivitiy_experiment_s[experiment].update({"storage_soc_initial": None})
     #######################################################
     # Get blackout_experiment_s for sensitvitiy           #
     #######################################################
     # Creating dict of possible blackout scenarios (combinations of durations  frequencies
-    (
-        blackout_experiment_s,
-        blackout_experiments_count,
-    ) = blackout(
+    (blackout_experiment_s, blackout_experiments_count,) = blackout(
         sensitivity_array_dict, parameters_constant_values, settings
     )
 
@@ -191,18 +173,15 @@ def get(
         names_sensitivities,
     )
 
-#Generate Exp
+
+# Generate Exp
 def all_possible(
     settings, parameters_constant_values, parameters_sensitivity, project_site_s
 ):
     # Deletes constants from parameters_constant_values depending on values defined in sensitivity
-    constants_senstivity(
-        parameters_constant_values, parameters_sensitivity
-    )
+    constants_senstivity(parameters_constant_values, parameters_sensitivity)
     # Deletes constants from parameters_constant_values depending on values defined in project sites
-    constants_project_sites(
-        parameters_constant_values, project_site_s
-    )
+    constants_project_sites(parameters_constant_values, project_site_s)
     # Deletes project site parameter that is also included in sensitivity analysis
     project_sites_sensitivity(parameters_sensitivity, project_site_s)
 
@@ -215,9 +194,7 @@ def all_possible(
         parameters_sensitivity, project_site_s
     )
 
-    project_site_dict = {
-        "project_site_name": [key for key in project_site_s.keys()]
-    }
+    project_site_dict = {"project_site_name": [key for key in project_site_s.keys()]}
     (
         sensitivity_experiment_s,
         total_number_of_experiments,
@@ -240,12 +217,11 @@ def all_possible(
         total_number_of_experiments,
     )
 
+
 def with_base_case(
     settings, parameters_constant_values, parameters_sensitivity, project_site_s
 ):
-    constants_project_sites(
-        parameters_constant_values, project_site_s
-    )
+    constants_project_sites(parameters_constant_values, project_site_s)
 
     universal_parameters, number_of_project_sites = get_universal_parameters(
         settings, parameters_constant_values, parameters_sensitivity, project_site_s
@@ -269,6 +245,7 @@ def with_base_case(
         sensitivity_array_dict,
         total_number_of_experiments,
     )
+
 
 def blackout(sensitivity_array_dict, parameters_constants, settings):
     blackout_parameters = deepcopy(sensitivity_array_dict)
@@ -380,6 +357,7 @@ def blackout(sensitivity_array_dict, parameters_constants, settings):
 
     return blackout_experiment_s, blackout_experiments_count
 
+
 def get_universal_parameters(
     settings, parameters_constant_values, parameters_sensitivity, project_site_s
 ):
@@ -393,15 +371,13 @@ def get_universal_parameters(
 
     return universal_parameters, number_of_project_sites
 
+
 def get_dict_sensitivies_arrays(parameters_sensitivity, project_sites):
     # fill dictionary with all sensitivity ranges defining the different simulations of the sensitivity analysis
     # ! do not use a key two times, as it will be overwritten by new information
     sensitivity_array_dict = {}
     for keys in parameters_sensitivity:
-        if (
-            parameters_sensitivity[keys]["Min"]
-            == parameters_sensitivity[keys]["Max"]
-        ):
+        if parameters_sensitivity[keys]["Min"] == parameters_sensitivity[keys]["Max"]:
             sensitivity_array_dict.update(
                 {keys: np.array([parameters_sensitivity[keys]["Min"]])}
             )
@@ -418,13 +394,12 @@ def get_dict_sensitivies_arrays(parameters_sensitivity, project_sites):
             )
     return sensitivity_array_dict
 
+
 def get_all_possible_combinations(sensitivity_array_dict, name_entry_dict):
     # create all possible combinations of sensitive parameters
     all_parameters = {}
     for key in sensitivity_array_dict:
-        all_parameters.update(
-            {key: [value for value in sensitivity_array_dict[key]]}
-        )
+        all_parameters.update({key: [value for value in sensitivity_array_dict[key]]})
 
     all_parameters.update(deepcopy(name_entry_dict))
     # create all possible combinations of sensitive parameters
@@ -436,13 +411,12 @@ def get_all_possible_combinations(sensitivity_array_dict, name_entry_dict):
     sensitivity_experiment_s = {}
     for experiment in all_experiments:
         number_of_experiment += 1
-        sensitivity_experiment_s.update(
-            {number_of_experiment: deepcopy(experiment)}
-        )
+        sensitivity_experiment_s.update({number_of_experiment: deepcopy(experiment)})
 
     total_number_of_experiments = number_of_experiment
 
     return sensitivity_experiment_s, total_number_of_experiments
+
 
 def get_combinations_around_base(
     sensitivity_array_dict, universal_parameters, project_site_s
@@ -523,6 +497,7 @@ def get_combinations_around_base(
     total_number_of_experiments = experiment_number
     return sensitivity_experiment_s, total_number_of_experiments
 
+
 def project_site_experiments(sensitivity_experiment_s, project_sites):
     experiment_s = {}
     number_of_experiments = 0
@@ -538,6 +513,7 @@ def project_site_experiments(sensitivity_experiment_s, project_sites):
         )
 
     return experiment_s, number_of_experiments
+
 
 def experiment_name(experiment, sensitivity_array_dict, number_of_project_sites):
     # define file postfix to save simulation
@@ -571,6 +547,7 @@ def experiment_name(experiment, sensitivity_array_dict, number_of_project_sites)
     experiment.update({"filename": filename})
     return
 
+
 def constants_project_sites(parameters_constant_values, project_sites):
     # remove all entries that are doubled in parameters_constant_values, settings & project_site_s from parameters_constant_values
     str = 'Attributes "'
@@ -590,6 +567,7 @@ def constants_project_sites(parameters_constant_values, project_sites):
         )
         logging.warning(str)
     return
+
 
 def project_sites_sensitivity(parameters_sensitivity, project_sites):
     # remove all entries that are doubled in sensitivity_bounds/project_site_s from project site
@@ -613,6 +591,7 @@ def project_sites_sensitivity(parameters_sensitivity, project_sites):
 
     return
 
+
 def constants_senstivity(parameters_constant_values, parameters_sensitivity):
     # remove all entries that are doubled in parameters_constant_values, settings & parameters_sensitivity
     str = 'Attributes "'
@@ -628,6 +607,7 @@ def constants_senstivity(parameters_constant_values, parameters_sensitivity):
         )
         logging.warning(str)
     return
+
 
 def test_techno_economical_parameters_complete(experiment):
     parameter_list = {
@@ -745,9 +725,8 @@ def test_techno_economical_parameters_complete(experiment):
 
                 experiment.update({parameter: parameter_list[parameter]})
 
-def overall_results_title(
-    settings, number_of_project_sites, sensitivity_array_dict
-):
+
+def overall_results_title(settings, number_of_project_sites, sensitivity_array_dict):
     logging.debug("Generating header for results.csv")
     title_overall_results = pd.DataFrame(columns=["case", "project_site_name"])
 
@@ -835,6 +814,7 @@ def overall_results_title(
                     "total_pv_generation_kWh",
                     "total_wind_generation_kWh",
                     "total_genset_generation_kWh",
+                    "consumption_fuel_annual_kWh",
                     "consumption_fuel_annual_l",
                     "consumption_main_grid_mg_side_annual_kWh",
                     "feedin_main_grid_mg_side_annual_kWh",
@@ -901,13 +881,13 @@ def overall_results_title(
                         "costs_pcoupling",
                         "costs_distribution_grid",
                         "costs_project",
-                        "first_investment",
-                        "operation_mantainance_expenditures",
                         "costs_maingrid_extension",
                         "expenditures_fuel_total",
                         "expenditures_main_grid_consumption_total",
                         "expenditures_shortage_total",
                         "revenue_main_grid_feedin_total",
+                        "first_investment",
+                        "operation_maintenance_expenditures",
                     ]
                 ),
             ],

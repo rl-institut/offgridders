@@ -20,6 +20,7 @@ import src.F_case_definitions as cases
 import src.G0_oemof_simulate as oemof_simulate
 import src.H0_multicriteria_analysis as multicriteria_analysis
 
+
 def main():
     # Logging
     logger.define_logging(
@@ -31,8 +32,7 @@ def main():
     )
 
     logging.info(
-        "\n Coded by: Martha M. Hoffmann "
-        "\n Reiner Lemoine Institute (Berlin) \n \n "
+        "\n Coded by: Martha M. Hoffmann " "\n Reiner Lemoine Institute (Berlin) \n \n "
     )
 
     ###############################################################################
@@ -107,7 +107,7 @@ def main():
     # noisy timeseries at a project site, noise has to be included in csv data!   #
     # -----------------------------------------------------------------------------#
     # todo test and optionally delete noise function
-    process_input.apply_noise(sensitivity_experiment_s) #Applies white noise
+    process_input.apply_noise(sensitivity_experiment_s)  # Applies white noise
 
     # Calculation of grid_availability with randomized blackouts
     if settings["necessity_for_blackout_timeseries_generation"] == True:
