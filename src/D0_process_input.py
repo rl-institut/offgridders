@@ -62,8 +62,8 @@ def economic_values(experiment):
             experiment["fuel_price"],
             experiment["project_lifetime"],
             experiment["wacc"],
-            experiment["fuel_price_change_annual"],
             experiment["crf"],
+            experiment["fuel_price_change_annual"]
         )
         experiment.update({"price_fuel": present_value_changing_fuel_price})
     else:
