@@ -211,7 +211,7 @@ def annuities_365(case_dict, oemof_results, experiment):
         else:
             om += experiment[item + "_cost_opex"] * experiment[item + "_lifetime"]
 
-    oemof_results.update({"operation_mantainance_expenditures": om})
+    oemof_results.update({"operation_maintenance_expenditures": om})
 
     logging.debug("Economic evaluation. Scaling investment costs and O&M to year.")
 
@@ -297,6 +297,7 @@ def expenditures_fuel(oemof_results, experiment):
             / experiment["combustion_value_fuel"]
         }
     )
+
     oemof_results.update(
         {
             "expenditures_fuel_annual": oemof_results["consumption_fuel_annual_l"]
@@ -306,8 +307,8 @@ def expenditures_fuel(oemof_results, experiment):
 
     oemof_results.update(
         {
-            "operation_mantainance_expenditures": oemof_results[
-                "operation_mantainance_expenditures"
+            "operation_maintenance_expenditures": oemof_results[
+                "operation_maintenance_expenditures"
             ]
             + oemof_results["expenditures_fuel_annual"]
         }
@@ -344,8 +345,8 @@ def expenditures_main_grid_consumption(oemof_results, experiment):
 
     oemof_results.update(
         {
-            "operation_mantainance_expenditures": oemof_results[
-                "operation_mantainance_expenditures"
+            "operation_maintenance_expenditures": oemof_results[
+                "operation_maintenance_expenditures"
             ]
             + oemof_results["expenditures_main_grid_consumption_annual"]
         }
@@ -382,8 +383,8 @@ def expenditures_shortage(oemof_results, experiment):
 
     oemof_results.update(
         {
-            "operation_mantainance_expenditures": oemof_results[
-                "operation_mantainance_expenditures"
+            "operation_maintenance_expenditures": oemof_results[
+                "operation_maintenance_expenditures"
             ]
             + oemof_results["expenditures_shortage_annual"]
         }

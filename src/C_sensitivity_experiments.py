@@ -908,7 +908,7 @@ def overall_results_title(
                         "expenditures_shortage_total",
                         "revenue_main_grid_feedin_total",
                         "first_investment",
-                        "operation_mantainance_expenditures",
+                        "operation_maintenance_expenditures",
                     ]
                 ),
             ],

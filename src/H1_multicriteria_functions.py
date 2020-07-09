@@ -56,7 +56,7 @@ def evaluate_criteria(all_results, qualitative_punctuations, multicriteria_data)
 
             # economic evaluation
             EC1 = case["first_investment"]
-            EC2 = case["operation_mantainance_expenditures"]
+            EC2 = case["operation_maintenance_expenditures"]
             if "revenue_main_grid_feedin_annual" in case.keys() and isinstance(
                 "revenue_main_grid_feedin_annual", float
             ):
