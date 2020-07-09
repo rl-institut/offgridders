@@ -564,7 +564,7 @@ def storage_fix(
         loss_rate=experiment[STORAGE_LOSS_TIMESTEP],  # from timestep to timestep
         min_storage_level=experiment[STORAGE_SOC_MIN],
         max_storage_level=experiment[STORAGE_SOC_MAX],
-        initial_capacity=experiment[STORAGE_SOC_INITIAL],  # in terms of SOC?
+        initial_storage_level=experiment[STORAGE_SOC_INITIAL],  # in terms of SOC?
         inflow_conversion_factor=experiment[
             STORAGE_EFFICIENCY_CHARGE
         ],  # storing efficiency
