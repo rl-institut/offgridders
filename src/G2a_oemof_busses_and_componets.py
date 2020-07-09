@@ -364,25 +364,6 @@ def genset_oem(
         dict_of_generators.update({number: genset})
     return dict_of_generators
 
-"""
-def genset_oem_minload(micro_grid_system, bus_fuel, bus_electricity_ac, experiment):
-    logging.debug('Added to oemof model: genset oem minload')
-    logging.warning('Currently not possible to optimize capacities of generator with minimal loading with OEMOF!')
-    genset = solph.Transformer(label="transformer_genset",
-                                               inputs   ={bus_fuel: solph.Flow()},
-                                               outputs  ={bus_electricity_ac: solph.Flow(
-                                                   investment=solph.Investment(
-                                                       ep_costs=experiment['genset_cost_annuity']),
-                                                   variable_costs   = experiment['genset_cost_var'],
-                                                   min=experiment['genset_min_loading'],
-                                                   max=experiment['genset_max_loading'],
-                                                   nonconvex=solph.NonConvex())},
-                                               conversion_factors={ bus_electricity_ac: experiment['genset_efficiency']}
-                                               )
-    micro_grid_system.add(genset)
-    return genset
-    """
-
 def pointofcoupling_feedin_fix(
     micro_grid_system,
     bus_electricity_ac,
