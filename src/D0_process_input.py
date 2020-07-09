@@ -12,6 +12,7 @@ except ModuleNotFoundError:
     print("Module error at D0")
     import src.D1_economic_functions as economics
 
+
 def list_of_cases(case_definitions):
     case_list = []
     str_cases_simulated = ""
@@ -44,6 +45,7 @@ def list_of_cases(case_definitions):
     logging.info("All simulated cases: " + str_cases_simulated[:-2])
     return case_list
 
+
 def economic_values(experiment):
     """Pre-processing of input data (calculation of economic values)"""
     experiment.update(
@@ -63,7 +65,7 @@ def economic_values(experiment):
             experiment["project_lifetime"],
             experiment["wacc"],
             experiment["crf"],
-            experiment["fuel_price_change_annual"]
+            experiment["fuel_price_change_annual"],
         )
         experiment.update({"price_fuel": present_value_changing_fuel_price})
     else:
@@ -136,6 +138,7 @@ def economic_values(experiment):
 
     return experiment
 
+
 def add_timeseries(experiment_s):
     # Update experiments and add longest date_time_index to settings
     entries = 0
@@ -184,8 +187,7 @@ def add_timeseries(experiment_s):
                 != year_timeseries_in_file
             ):
                 file_index = [
-                    item + pd.DateOffset(year=index[0].year)
-                    for item in index
+                    item + pd.DateOffset(year=index[0].year) for item in index
                 ]
                 # shift to fileindex of data sets to analysed year
                 demand_ac = pd.Series(
@@ -205,12 +207,8 @@ def add_timeseries(experiment_s):
                     index=experiment_s[experiment]["file_index"],
                 )
                 # from provided data use only analysed timeframe
-                experiment_s[experiment].update(
-                    {"demand_profile_ac": demand_ac[index]}
-                )
-                experiment_s[experiment].update(
-                    {"demand_profile_dc": demand_dc[index]}
-                )
+                experiment_s[experiment].update({"demand_profile_ac": demand_ac[index]})
+                experiment_s[experiment].update({"demand_profile_dc": demand_dc[index]})
                 experiment_s[experiment].update(
                     {"pv_generation_per_kWp": pv_generation_per_kWp[index]}
                 )
@@ -236,9 +234,7 @@ def add_timeseries(experiment_s):
             experiment_s[experiment].update(
                 {
                     "demand_profile_ac": pd.Series(
-                        experiment_s[experiment]["demand_ac"][
-                            0 : len(index)
-                        ].values,
+                        experiment_s[experiment]["demand_ac"][0 : len(index)].values,
                         index=index,
                     )
                 }
@@ -246,9 +242,7 @@ def add_timeseries(experiment_s):
             experiment_s[experiment].update(
                 {
                     "demand_profile_dc": pd.Series(
-                        experiment_s[experiment]["demand_dc"][
-                            0 : len(index)
-                        ].values,
+                        experiment_s[experiment]["demand_dc"][0 : len(index)].values,
                         index=index,
                     )
                 }
@@ -318,16 +312,16 @@ def add_timeseries(experiment_s):
             index = experiment_s[experiment]["date_time_index"]
             experiment_s[experiment].update(
                 {
-                    "demand_profile_ac": experiment_s[experiment][
-                        "demand_profile_ac"
-                    ][index]
+                    "demand_profile_ac": experiment_s[experiment]["demand_profile_ac"][
+                        index
+                    ]
                 }
             )
             experiment_s[experiment].update(
                 {
-                    "demand_profile_dc": experiment_s[experiment][
-                        "demand_profile_dc"
-                    ][index]
+                    "demand_profile_dc": experiment_s[experiment]["demand_profile_dc"][
+                        index
+                    ]
                 }
             )
             experiment_s[experiment].update(
@@ -374,18 +368,10 @@ def add_timeseries(experiment_s):
         )
         experiment_s[experiment].update(
             {
-                "total_demand_ac": sum(
-                    experiment_s[experiment]["demand_profile_ac"]
-                ),
-                "peak_demand_ac": max(
-                    experiment_s[experiment]["demand_profile_ac"]
-                ),
-                "total_demand_dc": sum(
-                    experiment_s[experiment]["demand_profile_dc"]
-                ),
-                "peak_demand_dc": max(
-                    experiment_s[experiment]["demand_profile_dc"]
-                ),
+                "total_demand_ac": sum(experiment_s[experiment]["demand_profile_ac"]),
+                "peak_demand_ac": max(experiment_s[experiment]["demand_profile_ac"]),
+                "total_demand_dc": sum(experiment_s[experiment]["demand_profile_dc"]),
+                "peak_demand_dc": max(experiment_s[experiment]["demand_profile_dc"]),
                 "peak_pv_generation_per_kWp": max(
                     experiment_s[experiment]["pv_generation_per_kWp"]
                 ),
@@ -463,17 +449,17 @@ def add_timeseries(experiment_s):
 
     return max_date_time_index, max_evaluated_days
 
+
 def apply_noise(experiment_s):
     for experiment in experiment_s:
         on_series(experiment_s[experiment], "white_noise_demand", "demand_ac")
         on_series(experiment_s[experiment], "white_noise_demand", "demand_dc")
-        on_series(
-            experiment_s[experiment], "white_noise_pv", "pv_generation_per_kWp"
-        )
+        on_series(experiment_s[experiment], "white_noise_pv", "pv_generation_per_kWp")
         on_series(
             experiment_s[experiment], "white_noise_wind", "wind_generation_per_kW"
         )
     return
+
 
 def on_series(experiment, noise_name, series_name):
     if experiment[noise_name] != 0:
@@ -484,6 +470,7 @@ def on_series(experiment, noise_name, series_name):
         experiment.update({series_name: series_values})
         # add display of series with noise
     return
+
 
 def randomized(white_noise_percentage, data_subframe):
     import numpy as np

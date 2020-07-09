@@ -109,6 +109,7 @@ def evaluate_criteria(all_results, qualitative_punctuations, multicriteria_data)
 
     return evaluations, capacities
 
+
 def normalize_evaluations(global_evaluations, weights_criteria, type):
     """
     Normalize evaluations
@@ -154,9 +155,7 @@ def normalize_evaluations(global_evaluations, weights_criteria, type):
                         logging.debug(
                             "All cases are equal for this criterion. Therefore, criterion weight is turned into 0"
                         )
-                        change_weights(
-                            weights_criteria, dimension, criterion
-                        )
+                        change_weights(weights_criteria, dimension, criterion)
                 else:
                     normalized_evaluations[dimension][criterion].append(
                         abs(value - ideal_values[criterion])
@@ -164,6 +163,7 @@ def normalize_evaluations(global_evaluations, weights_criteria, type):
                     )
 
     return normalized_evaluations
+
 
 def rank(normalized_evaluations, weights_dimensions, weights_criteria):
     """
@@ -233,6 +233,7 @@ def rank(normalized_evaluations, weights_dimensions, weights_criteria):
 
     return Ls
 
+
 def prepare_local_evaluations(global_evaluations, cases):
     """
     This functions is used to select only the evaluations of cases inside each combination of parameters of the sensibility analysis,
@@ -258,6 +259,7 @@ def prepare_local_evaluations(global_evaluations, cases):
         local_evaluations.append(local_evaluation)
 
     return local_evaluations
+
 
 def linear_evaluation(qualitative_punctuations, components, case, criterion):
     """
@@ -305,6 +307,7 @@ def linear_evaluation(qualitative_punctuations, components, case, criterion):
     else:
         return Num / Den
 
+
 def create_diccionary(self):
     """
     :return:
@@ -323,6 +326,7 @@ def create_diccionary(self):
     }
 
     return dictionary
+
 
 def change_weights(weights_criteria, dimension, criterion):
     """
@@ -353,6 +357,7 @@ def change_weights(weights_criteria, dimension, criterion):
             weights_criteria[criterion] = weights_criteria[criterion] / total
 
     return
+
 
 def representation(
     all_data,
@@ -439,9 +444,7 @@ def representation(
         51: "AZ",
     }
 
-    workbook = xlsxwriter.Workbook(
-        settings["output_folder"] + "/MCA_evaluations.xlsx"
-    )
+    workbook = xlsxwriter.Workbook(settings["output_folder"] + "/MCA_evaluations.xlsx")
 
     for n in range(len(all_data["evaluations"])):
         # there will be a tab for each project
@@ -544,9 +547,7 @@ def representation(
                     j += 1
                 else:
                     worksheet.write(row, col, case, format_highlight2)
-                    worksheet.write(
-                        row + 1, col, "case_" + str(j), format_highlight2
-                    )
+                    worksheet.write(row + 1, col, "case_" + str(j), format_highlight2)
                     j += 1
                 col += 1
             i += 1
@@ -693,14 +694,10 @@ def representation(
         for dimension in all_data["normalized_evaluations"][n + 1]:
             for criterion in all_data["normalized_evaluations"][n + 1][dimension]:
                 worksheet.write(row, 2, criterion, format_highlight)
-                worksheet.write(
-                    row, 3, weights_criteria[criterion], format_highlight
-                )
+                worksheet.write(row, 3, weights_criteria[criterion], format_highlight)
                 col = 4
                 i = 0
-                values = all_data["normalized_evaluations"][n + 1][dimension][
-                    criterion
-                ]
+                values = all_data["normalized_evaluations"][n + 1][dimension][criterion]
                 for value in values:
                     if i / (len(cases) * 2) < 0.5:
                         worksheet.write(row, col, value, format_text)
@@ -779,18 +776,14 @@ def representation(
                     for L in combinations:
                         col = start_col
                         for case in L:
-                            worksheet.write(
-                                row, col, round(case, 2), format_highlight
-                            )
+                            worksheet.write(row, col, round(case, 2), format_highlight)
                             col += 1
                         row += 1
                 else:
                     for L in combinations:
                         col = start_col
                         for case in L:
-                            worksheet.write(
-                                row, col, round(case, 2), format_highlight2
-                            )
+                            worksheet.write(row, col, round(case, 2), format_highlight2)
                             col += 1
                         row += 1
                 start_col += len(cases)
@@ -800,6 +793,7 @@ def representation(
     workbook.close()
 
     return
+
 
 def plot_evaluations(
     evaluations, plot_criteria, parameters, cases, projects_name, settings

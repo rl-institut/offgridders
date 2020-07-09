@@ -6,18 +6,22 @@ def annuity_factor(project_life, wacc):
     annuity_factor = 1 / wacc - 1 / (wacc * (1 + wacc) ** project_life)
     return annuity_factor
 
+
 # accounting factor to translate present value to annual cash flows
 def crf(project_life, wacc):
     crf = (wacc * (1 + wacc) ** project_life) / ((1 + wacc) ** project_life - 1)
     return crf
 
+
 def present_value_of_changing_fuel_price(
     fuel_price, project_lifetime, wacc, crf, fuel_price_change_annual
 ):
     if fuel_price_change_annual != 0:
-        logging.error("You chose parameter 'fuel_price_change_annual' unequal zero. "
-                      "This calculation is still faulty and you should check the resulting fuel price. "
-                      "It would be better if you set your fuel price by hand.")
+        logging.error(
+            "You chose parameter 'fuel_price_change_annual' unequal zero. "
+            "This calculation is still faulty and you should check the resulting fuel price. "
+            "It would be better if you set your fuel price by hand."
+        )
 
         cash_flow_fuel_l = 0
         fuel_price_i = fuel_price
@@ -25,11 +29,17 @@ def present_value_of_changing_fuel_price(
             cash_flow_fuel_l += fuel_price_i / (1 + wacc) ** (i)
             fuel_price_i = fuel_price_i * (1 + fuel_price_change_annual)
         present_value_changing_fuel_price = cash_flow_fuel_l * crf
-        logging.info(" The resulting fuel price is: " + str(present_value_changing_fuel_price))
+        logging.info(
+            " The resulting fuel price is: " + str(present_value_changing_fuel_price)
+        )
     else:
         present_value_changing_fuel_price = fuel_price
-        logging.info("Simulation will run with a fuel price of " + str(present_value_changing_fuel_price))
+        logging.info(
+            "Simulation will run with a fuel price of "
+            + str(present_value_changing_fuel_price)
+        )
     return present_value_changing_fuel_price
+
 
 def capex_from_investment(investment_t0, lifetime, project_life, wacc, tax):
     # [quantity, investment, installation, weight, lifetime, om, first_investment]
@@ -59,15 +69,15 @@ def capex_from_investment(investment_t0, lifetime, project_life, wacc, tax):
         linear_depreciation_last_investment = last_investment / lifetime
         capex = capex - linear_depreciation_last_investment * (
             number_of_investments * lifetime - project_life
-        ) / (
-                    (1 + wacc) ** (project_life)
-                )
+        ) / ((1 + wacc) ** (project_life))
 
     return capex
+
 
 def annuity(present_value, crf):
     annuity = present_value * crf
     return annuity
+
 
 def present_value_from_annuity(annuity, annuity_factor):
     present_value = annuity * annuity_factor

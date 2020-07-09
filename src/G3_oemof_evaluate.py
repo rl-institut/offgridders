@@ -18,11 +18,10 @@ except ImportError:
 
 
 def join_e_flows_df(timeseries, name, e_flows_df):
-    new_column = pd.DataFrame(
-        timeseries.values, columns=[name], index=timeseries.index
-    )
+    new_column = pd.DataFrame(timeseries.values, columns=[name], index=timeseries.index)
     e_flows_df = e_flows_df.join(new_column)
     return e_flows_df
+
 
 def annual_value(name, timeseries, oemof_results, case_dict):
     value = sum(timeseries)
@@ -69,6 +68,7 @@ def get_demand(
     oemof_results.update({"demand_peak_kW": max(e_flows_df["Demand"])})
     return e_flows_df
 
+
 def get_shortage(
     case_dict,
     oemof_results,
@@ -94,9 +94,7 @@ def get_shortage(
                 oemof_results,
                 case_dict,
             )
-            e_flows_df = join_e_flows_df(
-                shortage_ac, "Demand shortage AC", e_flows_df
-            )
+            e_flows_df = join_e_flows_df(shortage_ac, "Demand shortage AC", e_flows_df)
 
             if case_dict["evaluation_perspective"] == "AC_system":
                 shortage += shortage_ac
@@ -114,9 +112,7 @@ def get_shortage(
                 oemof_results,
                 case_dict,
             )
-            e_flows_df = join_e_flows_df(
-                shortage_dc, "Demand shortage DC", e_flows_df
-            )
+            e_flows_df = join_e_flows_df(shortage_dc, "Demand shortage DC", e_flows_df)
 
             if case_dict["evaluation_perspective"] == "AC_system":
                 shortage += shortage_dc / experiment["rectifier_ac_dc_efficiency"]
@@ -133,12 +129,8 @@ def get_shortage(
         annual_value(
             "total_demand_shortage_annual_kWh", shortage, oemof_results, case_dict
         )
-        e_flows_df = join_e_flows_df(
-            shortage, "Demand shortage", e_flows_df
-        )
-        e_flows_df = join_e_flows_df(
-            demand_supplied, "Demand supplied", e_flows_df
-        )
+        e_flows_df = join_e_flows_df(shortage, "Demand shortage", e_flows_df)
+        e_flows_df = join_e_flows_df(demand_supplied, "Demand supplied", e_flows_df)
     else:
         oemof_results.update(
             {
@@ -149,6 +141,7 @@ def get_shortage(
         )
         oemof_results.update({"total_demand_shortage_annual_kWh": 0})
     return e_flows_df
+
 
 def get_excess(
     case_dict, oemof_results, electricity_bus_ac, electricity_bus_dc, e_flows_df
@@ -163,12 +156,8 @@ def get_excess(
             (("bus_electricity_ac", "sink_excess"), "flow")
         ]
         excess += excess_ac
-        annual_value(
-            "total_excess_ac_annual_kWh", excess_ac, oemof_results, case_dict
-        )
-        e_flows_df = join_e_flows_df(
-            excess_ac, "Excess generation AC", e_flows_df
-        )
+        annual_value("total_excess_ac_annual_kWh", excess_ac, oemof_results, case_dict)
+        e_flows_df = join_e_flows_df(excess_ac, "Excess generation AC", e_flows_df)
 
     if electricity_bus_dc != None:
 
@@ -179,9 +168,7 @@ def get_excess(
         annual_value(
             "total_excess_dc_annual_kWh", excess, oemof_results, case_dict
         )  # not given as result.csv right now
-        e_flows_df = join_e_flows_df(
-            excess_dc, "Excess generation DC", e_flows_df
-        )
+        e_flows_df = join_e_flows_df(excess_dc, "Excess generation DC", e_flows_df)
 
     annual_value(
         "total_excess_annual_kWh", excess, oemof_results, case_dict
@@ -189,6 +176,7 @@ def get_excess(
     e_flows_df = join_e_flows_df(excess, "Excess generation", e_flows_df)
 
     return e_flows_df
+
 
 def get_pv(
     case_dict,
@@ -204,12 +192,8 @@ def get_pv(
         pv_gen = electricity_bus_dc["sequences"][
             (("source_pv", "bus_electricity_dc"), "flow")
         ]
-        annual_value(
-            "total_pv_generation_kWh", pv_gen, oemof_results, case_dict
-        )
-        e_flows_df = join_e_flows_df(
-            pv_gen, "PV generation DC", e_flows_df
-        )
+        annual_value("total_pv_generation_kWh", pv_gen, oemof_results, case_dict)
+        e_flows_df = join_e_flows_df(pv_gen, "PV generation DC", e_flows_df)
         if case_dict["evaluation_perspective"] == "AC_system":
             e_flows_df = join_e_flows_df(
                 pv_gen / experiment["rectifier_ac_dc_efficiency"],
@@ -256,6 +240,7 @@ def get_pv(
         oemof_results.update({"capacity_pv_kWp": 0})
     return e_flows_df
 
+
 def get_rectifier(
     case_dict, oemof_results, electricity_bus_ac, electricity_bus_dc, e_flows_df
 ):
@@ -265,16 +250,12 @@ def get_rectifier(
         rectifier_out = electricity_bus_dc["sequences"][
             (("transformer_rectifier", "bus_electricity_dc"), "flow")
         ]
-        e_flows_df = join_e_flows_df(
-            rectifier_out, "Rectifier output", e_flows_df
-        )
+        e_flows_df = join_e_flows_df(rectifier_out, "Rectifier output", e_flows_df)
 
         rectifier_in = electricity_bus_ac["sequences"][
             (("bus_electricity_ac", "transformer_rectifier"), "flow")
         ]
-        e_flows_df = join_e_flows_df(
-            rectifier_in, "Rectifier input", e_flows_df
-        )
+        e_flows_df = join_e_flows_df(rectifier_in, "Rectifier input", e_flows_df)
 
         annual_value(
             "total_rectifier_ac_dc_throughput_kWh",
@@ -294,16 +275,13 @@ def get_rectifier(
 
     elif isinstance(case_dict["rectifier_ac_dc_fixed_capacity"], float):
         oemof_results.update(
-            {
-                "capacity_rectifier_ac_dc_kW": case_dict[
-                    "rectifier_ac_dc_fixed_capacity"
-                ]
-            }
+            {"capacity_rectifier_ac_dc_kW": case_dict["rectifier_ac_dc_fixed_capacity"]}
         )
 
     elif case_dict["rectifier_ac_dc_fixed_capacity"] == None:
         oemof_results.update({"capacity_rectifier_ac_dc_kW": 0})
     return e_flows_df
+
 
 def get_inverter(
     case_dict, oemof_results, electricity_bus_ac, electricity_bus_dc, e_flows_df
@@ -314,16 +292,12 @@ def get_inverter(
         inverter_out = electricity_bus_ac["sequences"][
             (("transformer_inverter_dc_ac", "bus_electricity_ac"), "flow")
         ]
-        e_flows_df =join_e_flows_df(
-            inverter_out, "Inverter output", e_flows_df
-        )
+        e_flows_df = join_e_flows_df(inverter_out, "Inverter output", e_flows_df)
 
         inverter_in = electricity_bus_dc["sequences"][
             (("bus_electricity_dc", "transformer_inverter_dc_ac"), "flow")
         ]
-        e_flows_df = join_e_flows_df(
-            inverter_in, "Inverter input", e_flows_df
-        )
+        e_flows_df = join_e_flows_df(inverter_in, "Inverter input", e_flows_df)
 
         annual_value(
             "total_inverter_dc_ac_throughput_kWh",
@@ -343,16 +317,13 @@ def get_inverter(
 
     elif isinstance(case_dict["inverter_dc_ac_fixed_capacity"], float):
         oemof_results.update(
-            {
-                "capacity_inverter_dc_ac_kW": case_dict[
-                    "inverter_dc_ac_fixed_capacity"
-                ]
-            }
+            {"capacity_inverter_dc_ac_kW": case_dict["inverter_dc_ac_fixed_capacity"]}
         )
 
     elif case_dict["inverter_dc_ac_fixed_capacity"] == None:
         oemof_results.update({"capacity_inverter_dc_ac_kW": 0})
     return e_flows_df
+
 
 def get_wind(
     case_dict, oemof_results, electricity_bus_ac, e_flows_df, wind_generation_max
@@ -363,12 +334,8 @@ def get_wind(
         wind_gen = electricity_bus_ac["sequences"][
             (("source_wind", "bus_electricity_ac"), "flow")
         ]
-        annual_value(
-            "total_wind_generation_kWh", wind_gen, oemof_results, case_dict
-        )
-        e_flows_df = join_e_flows_df(
-            wind_gen, "Wind generation", e_flows_df
-        )
+        annual_value("total_wind_generation_kWh", wind_gen, oemof_results, case_dict)
+        e_flows_df = join_e_flows_df(wind_gen, "Wind generation", e_flows_df)
     else:
         oemof_results.update({"total_wind_generation_kWh": 0})
 
@@ -400,6 +367,7 @@ def get_wind(
         oemof_results.update({"capacity_wind_kW": 0})
     return e_flows_df
 
+
 def get_genset(case_dict, oemof_results, electricity_bus_ac, e_flows_df):
     logging.debug("Evaluate flow: genset")
     # Get flow
@@ -407,16 +375,11 @@ def get_genset(case_dict, oemof_results, electricity_bus_ac, e_flows_df):
         genset = electricity_bus_ac["sequences"][
             (("transformer_genset_1", "bus_electricity_ac"), "flow")
         ]
-        e_flows_df = join_e_flows_df(
-            genset, "Genset 1 generation", e_flows_df
-        )
+        e_flows_df = join_e_flows_df(genset, "Genset 1 generation", e_flows_df)
         total_genset = genset
         for number in range(2, case_dict["number_of_equal_generators"] + 1):
             genset = electricity_bus_ac["sequences"][
-                (
-                    ("transformer_genset_" + str(number), "bus_electricity_ac"),
-                    "flow",
-                )
+                (("transformer_genset_" + str(number), "bus_electricity_ac"), "flow",)
             ]
             e_flows_df = join_e_flows_df(
                 genset, "Genset " + str(number) + " generation", e_flows_df
@@ -425,9 +388,7 @@ def get_genset(case_dict, oemof_results, electricity_bus_ac, e_flows_df):
         annual_value(
             "total_genset_generation_kWh", total_genset, oemof_results, case_dict
         )
-        e_flows_df = join_e_flows_df(
-            total_genset, "Genset generation", e_flows_df
-        )
+        e_flows_df = join_e_flows_df(total_genset, "Genset generation", e_flows_df)
     else:
         oemof_results.update({"total_genset_generation_kWh": 0})
 
@@ -437,31 +398,26 @@ def get_genset(case_dict, oemof_results, electricity_bus_ac, e_flows_df):
         genset_capacity = 0
         for number in range(1, case_dict["number_of_equal_generators"] + 1):
             genset_capacity += electricity_bus_ac["scalars"][
-                (
-                    ("transformer_genset_" + str(number), "bus_electricity_ac"),
-                    "invest",
-                )
+                (("transformer_genset_" + str(number), "bus_electricity_ac"), "invest",)
             ]
         oemof_results.update({"capacity_genset_kW": genset_capacity})
     elif isinstance(case_dict["genset_fixed_capacity"], float):
-        oemof_results.update(
-            {"capacity_genset_kW": case_dict["genset_fixed_capacity"]}
-        )
+        oemof_results.update({"capacity_genset_kW": case_dict["genset_fixed_capacity"]})
     elif case_dict["genset_fixed_capacity"] == None:
         oemof_results.update({"capacity_genset_kW": 0})
     return e_flows_df
+
 
 def get_fuel(case_dict, oemof_results, results):
     logging.debug("Evaluate flow: fuel")
     if case_dict["genset_fixed_capacity"] != None:
         fuel_bus = outputlib.views.node(results, "bus_fuel")
         fuel = fuel_bus["sequences"][(("source_fuel", "bus_fuel"), "flow")]
-        annual_value(
-            "consumption_fuel_annual_kWh", fuel, oemof_results, case_dict
-        )
+        annual_value("consumption_fuel_annual_kWh", fuel, oemof_results, case_dict)
     else:
         oemof_results.update({"consumption_fuel_annual_kWh": 0})
     return
+
 
 def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
     logging.debug("Evaluate flow: storage")
@@ -481,15 +437,11 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
             "total_storage_throughput_kWh", storage_charge, oemof_results, case_dict
         )
 
-        e_flows_df = join_e_flows_df(
-            storage_charge, "Storage charge DC", e_flows_df
-        )
+        e_flows_df = join_e_flows_df(storage_charge, "Storage charge DC", e_flows_df)
         e_flows_df = join_e_flows_df(
             storage_discharge, "Storage discharge DC", e_flows_df
         )
-        e_flows_df = join_e_flows_df(
-            stored_capacity, "Stored capacity", e_flows_df
-        )
+        e_flows_df = join_e_flows_df(stored_capacity, "Stored capacity", e_flows_df)
 
         if case_dict["evaluation_perspective"] == "AC_system":
             e_flows_df = join_e_flows_df(
@@ -522,9 +474,7 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
     if case_dict["storage_fixed_capacity"] == False:
         # Optimized storage capacity
         storage = outputlib.views.node(results, "generic_storage")
-        storage_capacity = storage["scalars"][
-            (("generic_storage", "None"), "invest")
-        ]
+        storage_capacity = storage["scalars"][(("generic_storage", "None"), "invest")]
 
         electricity_bus_dc = outputlib.views.node(results, "bus_electricity_dc")
         storage_power = electricity_bus_dc["scalars"][
@@ -565,9 +515,8 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
 
     return e_flows_df
 
-def get_national_grid(
-    case_dict, oemof_results, results, e_flows_df, grid_availability
-):
+
+def get_national_grid(case_dict, oemof_results, results, e_flows_df, grid_availability):
     logging.debug("Evaluate flow: main grid")
     micro_grid_bus = outputlib.views.node(results, "bus_electricity_ac")
     # define grid availability
@@ -575,9 +524,7 @@ def get_national_grid(
         case_dict["pcc_consumption_fixed_capacity"] != None
         or case_dict["pcc_feedin_fixed_capacity"] != None
     ):
-        e_flows_df = join_e_flows_df(
-            grid_availability, "Grid availability", e_flows_df
-        )
+        e_flows_df = join_e_flows_df(grid_availability, "Grid availability", e_flows_df)
     else:
         grid_availability_symbolic = pd.Series(
             [0 for i in e_flows_df.index], index=e_flows_df.index
@@ -603,10 +550,7 @@ def get_national_grid(
             results, "bus_electricity_ng_consumption"
         )
         consumption_utility_side = bus_electricity_ng_consumption["sequences"][
-            (
-                ("bus_electricity_ng_consumption", "transformer_pcc_consumption"),
-                "flow",
-            )
+            (("bus_electricity_ng_consumption", "transformer_pcc_consumption"), "flow",)
         ]
         e_flows_df = join_e_flows_df(
             consumption_utility_side,
@@ -724,6 +668,7 @@ def get_national_grid(
     )
 
     return e_flows_df
+
 
 def get_res_share(case_dict, oemof_results, experiment):
     logging.debug("Evaluate: res share")
