@@ -59,7 +59,9 @@ def capex_from_investment(investment_t0, lifetime, project_life, wacc, tax):
         linear_depreciation_last_investment = last_investment / lifetime
         capex = capex - linear_depreciation_last_investment * (
             number_of_investments * lifetime - project_life
-        )
+        ) / (
+                    (1 + wacc) ** (project_life)
+                )
 
     return capex
 
