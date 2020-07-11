@@ -670,7 +670,7 @@ def maingrid_feedin(micro_grid_system, experiment):
 
     # create and add demand sink to micro_grid_system - fixed
     sink_maingrid_feedin = solph.Sink(
-        label="sink_maingrid_feedin",
+        label=SINK_MAINGRID_FEEDIN,
         inputs={
             bus_electricity_ng_feedin: solph.Flow(
                 actual_value=experiment[GRID_AVAILABILITY],
