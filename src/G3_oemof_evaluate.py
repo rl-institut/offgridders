@@ -263,14 +263,14 @@ def get_rectifier(
     # Get flow
     if case_dict[RECTIFIER_AC_DC_FIXED_CAPACITY] != None:
         rectifier_out = electricity_bus_dc["sequences"][
-            (("transformer_rectifier", BUS_ELECTRICITY_DC), "flow")
+            ((TRANSFORMER_RECTIFIER, BUS_ELECTRICITY_DC), "flow")
         ]
         e_flows_df = join_e_flows_df(
             rectifier_out, "Rectifier output", e_flows_df
         )
 
         rectifier_in = electricity_bus_ac["sequences"][
-            ((BUS_ELECTRICITY_AC, "transformer_rectifier"), "flow")
+            ((BUS_ELECTRICITY_AC, TRANSFORMER_RECTIFIER), "flow")
         ]
         e_flows_df = join_e_flows_df(
             rectifier_in, "Rectifier input", e_flows_df
@@ -288,7 +288,7 @@ def get_rectifier(
     # Get capacity
     if case_dict[RECTIFIER_AC_DC_FIXED_CAPACITY] == False:
         rectifier_capacity = electricity_bus_ac["scalars"][
-            ((BUS_ELECTRICITY_AC, "transformer_rectifier"), "invest")
+            ((BUS_ELECTRICITY_AC, TRANSFORMER_RECTIFIER), "invest")
         ]
         oemof_results.update({CAPACITY_RECTIFIER_AC_DC_KW: rectifier_capacity})
 

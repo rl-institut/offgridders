@@ -192,7 +192,7 @@ def rectifier_fix(
 ):
     logging.debug("Added to oemof model: rectifier fix")
     rectifier = solph.Transformer(
-        label="transformer_rectifier",
+        label=TRANSFORMER_RECTIFIER,
         inputs={
             bus_electricity_ac: solph.Flow(
                 nominal_value=capacity_rectifier,
@@ -212,7 +212,7 @@ def rectifier_oem(
 ):
     logging.debug("Added to oemof model: rectifier oem")
     rectifier = solph.Transformer(
-        label="transformer_rectifier",
+        label=TRANSFORMER_RECTIFIER,
         inputs={
             bus_electricity_ac: solph.Flow(
                 investment=solph.Investment(
@@ -610,7 +610,7 @@ def distribution_grid_ac(
 ):
     logging.debug("Added to oemof model: Distribution grid efficiency (AC)")
     distribution = solph.Transformer(
-        label="transformer_rectifier",
+        label=TRANSFORMER_RECTIFIER,
         inputs={bus_electricity_ac: solph.Flow(investment=solph.Investment())},
         outputs={bus_electricity_demand: solph.Flow()},
         conversion_factors={
