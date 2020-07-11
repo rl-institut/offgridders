@@ -392,7 +392,7 @@ def pointofcoupling_feedin_fix(
 ):
     logging.debug("Added to oemof model: pcc feedin fix")
     pointofcoupling_feedin = solph.Transformer(
-        label="transformer_pcc_feedin",
+        label=TRANSFORMER_PCC_FEEDIN,
         inputs={
             bus_electricity_ac: solph.Flow(
                 nominal_value=capacity_pointofcoupling,
@@ -418,7 +418,7 @@ def pointofcoupling_feedin_oem(
 ):
     logging.debug("Added to oemof model: pcc feedin oem")
     pointofcoupling_feedin = solph.Transformer(
-        label="transformer_pcc_feedin",
+        label=TRANSFORMER_PCC_FEEDIN,
         inputs={
             bus_electricity_ac: solph.Flow(
                 investment=solph.Investment(

@@ -643,7 +643,7 @@ def get_national_grid(
 
     if case_dict[PCC_FEEDIN_FIXED_CAPACITY] != None:
         feedin_mg_side = micro_grid_bus["sequences"][
-            ((BUS_ELECTRICITY_AC, "transformer_pcc_feedin"), "flow")
+            ((BUS_ELECTRICITY_AC, TRANSFORMER_PCC_FEEDIN), "flow")
         ]
         e_flows_df = join_e_flows_df(
             feedin_mg_side, "Feed into main grid (MG side)", e_flows_df
@@ -659,7 +659,7 @@ def get_national_grid(
             results, "bus_electricity_ng_feedin"
         )
         feedin_utility_side = bus_electricity_ng_feedin["sequences"][
-            (("transformer_pcc_feedin", "bus_electricity_ng_feedin"), "flow")
+            ((TRANSFORMER_PCC_FEEDIN, "bus_electricity_ng_feedin"), "flow")
         ]
         e_flows_df = join_e_flows_df(
             feedin_utility_side, "Feed into main grid (utility side)", e_flows_df
