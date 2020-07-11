@@ -97,7 +97,7 @@ def maingrid_consumption(micro_grid_system, experiment):
 def pv_fix(micro_grid_system, bus_electricity_dc, experiment, capacity_pv):
     logging.debug("Added to oemof model: pv fix")
     source_pv = solph.Source(
-        label="source_pv",
+        label=SOURCE_PV,
         outputs={
             bus_electricity_dc: solph.Flow(
                 label="PV generation",
@@ -122,7 +122,7 @@ def pv_oem(micro_grid_system, bus_electricity_dc, experiment):
         logging.warning("Error, PV generation negative")
 
     source_pv = solph.Source(
-        label="source_pv",
+        label=SOURCE_PV,
         outputs={
             bus_electricity_dc: solph.Flow(
                 label="PV generation",

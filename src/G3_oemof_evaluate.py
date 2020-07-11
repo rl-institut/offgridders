@@ -202,7 +202,7 @@ def get_pv(
     # Get flow
     if case_dict[PV_FIXED_CAPACITY] != None:
         pv_gen = electricity_bus_dc["sequences"][
-            (("source_pv", BUS_ELECTRICITY_DC), "flow")
+            ((SOURCE_PV, BUS_ELECTRICITY_DC), "flow")
         ]
         annual_value(
             TOTAL_PV_GENERATION_KWH, pv_gen, oemof_results, case_dict
@@ -234,7 +234,7 @@ def get_pv(
             oemof_results.update(
                 {
                     CAPACITY_PV_KWP: electricity_bus_dc["scalars"][
-                        (("source_pv", BUS_ELECTRICITY_DC), "invest")
+                        ((SOURCE_PV, BUS_ELECTRICITY_DC), "invest")
                     ]
                     * pv_generation_max
                 }
@@ -243,7 +243,7 @@ def get_pv(
             oemof_results.update(
                 {
                     CAPACITY_PV_KWP: electricity_bus_dc["scalars"][
-                        (("source_pv", BUS_ELECTRICITY_DC), "invest")
+                        ((SOURCE_PV, BUS_ELECTRICITY_DC), "invest")
                     ]
                     / pv_generation_max
                 }
