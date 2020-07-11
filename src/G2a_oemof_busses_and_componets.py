@@ -72,7 +72,7 @@ def maingrid_consumption(micro_grid_system, experiment):
     micro_grid_system.add(bus_electricity_ng_consumption)
 
     source_maingrid_consumption = solph.Source(
-        label="source_maingrid_consumption",
+        label=SOURCE_MAINGRID_CONSUMPTION,
         outputs={
             bus_electricity_ng_consumption: solph.Flow(
                 actual_value=experiment[GRID_AVAILABILITY],
