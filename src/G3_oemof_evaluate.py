@@ -414,7 +414,7 @@ def get_genset(case_dict, oemof_results, electricity_bus_ac, e_flows_df):
         for number in range(2, case_dict[NUMBER_OF_EQUAL_GENERATORS] + 1):
             genset = electricity_bus_ac["sequences"][
                 (
-                    ("transformer_genset_" + str(number), BUS_ELECTRICITY_AC),
+                    (TRANSFORMER_GENSET_ + str(number), BUS_ELECTRICITY_AC),
                     "flow",
                 )
             ]
@@ -438,7 +438,7 @@ def get_genset(case_dict, oemof_results, electricity_bus_ac, e_flows_df):
         for number in range(1, case_dict[NUMBER_OF_EQUAL_GENERATORS] + 1):
             genset_capacity += electricity_bus_ac["scalars"][
                 (
-                    ("transformer_genset_" + str(number), BUS_ELECTRICITY_AC),
+                    (TRANSFORMER_GENSET_ + str(number), BUS_ELECTRICITY_AC),
                     "invest",
                 )
             ]

@@ -287,7 +287,7 @@ def genset_fix(
     dict_of_generators = {}
     for number in range(1, number_of_equal_generators + 1):
         genset = solph.Transformer(
-            label="transformer_genset_" + str(number),
+            label=TRANSFORMER_GENSET_ + str(number),
             inputs={bus_fuel: solph.Flow()},
             outputs={
                 bus_electricity_ac: solph.Flow(
@@ -315,7 +315,7 @@ def genset_fix_minload(
     dict_of_generators = {}
     for number in range(1, number_of_equal_generators + 1):
         genset = solph.Transformer(
-            label="transformer_genset_" + str(number),
+            label=TRANSFORMER_GENSET_ + str(number),
             inputs={bus_fuel: solph.Flow()},
             outputs={
                 bus_electricity_ac: solph.Flow(
@@ -346,7 +346,7 @@ def genset_oem(
     dict_of_generators = {}
     for number in range(1, number_of_generators + 1):
         genset = solph.Transformer(
-            label="transformer_genset_" + str(number),
+            label=TRANSFORMER_GENSET_ + str(number),
             inputs={bus_fuel: solph.Flow()},
             outputs={
                 bus_electricity_ac: solph.Flow(
