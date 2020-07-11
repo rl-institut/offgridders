@@ -361,7 +361,7 @@ def get_wind(
     # Get flow
     if case_dict[WIND_FIXED_CAPACITY] != None:
         wind_gen = electricity_bus_ac["sequences"][
-            (("source_wind", BUS_ELECTRICITY_AC), "flow")
+            ((SOURCE_WIND, BUS_ELECTRICITY_AC), "flow")
         ]
         annual_value(
             TOTAL_WIND_GENERATION_KWH, wind_gen, oemof_results, case_dict
@@ -378,7 +378,7 @@ def get_wind(
             oemof_results.update(
                 {
                     CAPACITY_WIND_KW: electricity_bus_ac["scalars"][
-                        (("source_wind", BUS_ELECTRICITY_AC), "invest")
+                        ((SOURCE_WIND, BUS_ELECTRICITY_AC), "invest")
                     ]
                     * wind_generation_max
                 }
@@ -387,7 +387,7 @@ def get_wind(
             oemof_results.update(
                 {
                     CAPACITY_WIND_KW: electricity_bus_ac["scalars"][
-                        (("source_wind", BUS_ELECTRICITY_AC), "invest")
+                        ((SOURCE_WIND, BUS_ELECTRICITY_AC), "invest")
                     ]
                     / wind_generation_max
                 }

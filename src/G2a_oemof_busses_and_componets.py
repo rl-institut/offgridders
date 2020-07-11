@@ -142,7 +142,7 @@ def pv_oem(micro_grid_system, bus_electricity_dc, experiment):
 def wind_fix(micro_grid_system, bus_electricity_ac, experiment, capacity_wind):
     logging.debug("Added to oemof model: wind")
     source_wind = solph.Source(
-        label="source_wind",
+        label=SOURCE_WIND,
         outputs={
             bus_electricity_ac: solph.Flow(
                 label="Wind generation",
@@ -167,7 +167,7 @@ def wind_oem(micro_grid_system, bus_electricity_ac, experiment):
         logging.warning("Error, Wind generation negative")
 
     source_wind = solph.Source(
-        label="source_wind",
+        label=SOURCE_WIND,
         outputs={
             bus_electricity_ac: solph.Flow(
                 label="Wind generation",
