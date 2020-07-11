@@ -262,7 +262,7 @@ def inverter_dc_ac_oem(
         inputs={
             bus_electricity_dc: solph.Flow(
                 investment=solph.Investment(
-                    ep_costs=experiment["inverter_dc_ac_cost_annuity"]
+                    ep_costs=experiment[INVERTER_DC_AC_COST_ANNUITY]
                 ),
                 variable_costs=experiment[INVERTER_DC_AC_COST_VAR],
             )
