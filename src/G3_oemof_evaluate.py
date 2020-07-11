@@ -588,7 +588,7 @@ def get_national_grid(
 
     if case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] != None:
         consumption_mg_side = micro_grid_bus["sequences"][
-            (("transformer_pcc_consumption", BUS_ELECTRICITY_AC), "flow")
+            ((TRANSFORMER_PCC_CONSUMPTION, BUS_ELECTRICITY_AC), "flow")
         ]
         e_flows_df = join_e_flows_df(
             consumption_mg_side, "Consumption from main grid (MG side)", e_flows_df
@@ -604,7 +604,7 @@ def get_national_grid(
         )
         consumption_utility_side = bus_electricity_ng_consumption["sequences"][
             (
-                (BUS_ELECTRICITY_NG_CONSUMPTION, "transformer_pcc_consumption"),
+                (BUS_ELECTRICITY_NG_CONSUMPTION, TRANSFORMER_PCC_CONSUMPTION),
                 "flow",
             )
         ]

@@ -443,7 +443,7 @@ def pointofcoupling_consumption_fix(
 ):
     logging.debug("Added to oemof model: pcc consumption fix")
     pointofcoupling_consumption = solph.Transformer(
-        label="transformer_pcc_consumption",
+        label=TRANSFORMER_PCC_CONSUMPTION,
         inputs={
             bus_electricity_ng_consumption: solph.Flow(
                 nominal_value=cap_pointofcoupling,  # inflow is limited to nominal value!
@@ -469,7 +469,7 @@ def pointofcoupling_consumption_oem(
 ):
     logging.debug("Added to oemof model: pcc consumption oem")
     pointofcoupling_consumption = solph.Transformer(
-        label="transformer_pcc_consumption",
+        label=TRANSFORMER_PCC_CONSUMPTION,
         inputs={
             bus_electricity_ng_consumption: solph.Flow(
                 variable_costs=experiment[PCOUPLING_COST_VAR]
