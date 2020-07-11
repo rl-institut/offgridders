@@ -683,7 +683,7 @@ def maingrid_feedin(micro_grid_system, experiment):
 
     # to fill in for not really provided feed in
     source_maingrid_feedin_symbolic = solph.Source(
-        label="source_maingrid_feedin_symbolic",
+        label=SINK_MAINGRID_FEEDIN_SYMBOLIC,
         outputs={bus_electricity_ng_feedin: solph.Flow()},
     )
     micro_grid_system.add(source_maingrid_feedin_symbolic)
