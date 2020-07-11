@@ -467,15 +467,15 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
     logging.debug("Evaluate flow: storage")
     # Get flow
     if case_dict[STORAGE_FIXED_CAPACITY] != None:
-        storage = outputlib.views.node(results, "generic_storage")
+        storage = outputlib.views.node(results, GENERIC_STORAGE)
         storage_discharge = storage["sequences"][
-            (("generic_storage", BUS_ELECTRICITY_DC), "flow")
+            ((GENERIC_STORAGE, BUS_ELECTRICITY_DC), "flow")
         ]
         storage_charge = storage["sequences"][
-            ((BUS_ELECTRICITY_DC, "generic_storage"), "flow")
+            ((BUS_ELECTRICITY_DC, GENERIC_STORAGE), "flow")
         ]
         stored_capacity = storage["sequences"][
-            (("generic_storage", "None"), "capacity")
+            ((GENERIC_STORAGE, "None"), "capacity")
         ]
         annual_value(
             "total_storage_throughput_kWh", storage_charge, oemof_results, case_dict
@@ -521,14 +521,14 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
     # Get capacity
     if case_dict[STORAGE_FIXED_CAPACITY] == False:
         # Optimized storage capacity
-        storage = outputlib.views.node(results, "generic_storage")
+        storage = outputlib.views.node(results, GENERIC_STORAGE)
         storage_capacity = storage["scalars"][
-            (("generic_storage", "None"), "invest")
+            ((GENERIC_STORAGE, "None"), "invest")
         ]
 
         electricity_bus_dc = outputlib.views.node(results, BUS_ELECTRICITY_DC)
         storage_power = electricity_bus_dc["scalars"][
-            (("generic_storage", BUS_ELECTRICITY_DC), "invest")
+            ((GENERIC_STORAGE, BUS_ELECTRICITY_DC), "invest")
         ]
 
         oemof_results.update(

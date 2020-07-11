@@ -496,7 +496,7 @@ def storage_fix(
 ):
     logging.debug("Added to oemof model: storage fix")
     generic_storage = solph.components.GenericStorage(
-        label="generic_storage",
+        label=GENERIC_STORAGE,
         nominal_capacity=capacity_storage,
         inputs={
             bus_electricity_dc: solph.Flow(
@@ -551,7 +551,7 @@ def storage_fix_secondary(micro_grid_system, bus_electricity_dc, experiment, cap
 def storage_oem(micro_grid_system, bus_electricity_dc, experiment):
     logging.debug("Added to oemof model: storage oem")
     generic_storage = solph.components.GenericStorage(
-        label="generic_storage",
+        label=GENERIC_STORAGE,
         investment=solph.Investment(
             ep_costs=experiment["storage_capacity_cost_annuity"]
         ),
