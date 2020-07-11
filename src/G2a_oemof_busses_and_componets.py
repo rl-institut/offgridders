@@ -448,7 +448,7 @@ def pointofcoupling_consumption_fix(
             bus_electricity_ng_consumption: solph.Flow(
                 nominal_value=cap_pointofcoupling,  # inflow is limited to nominal value!
                 variable_costs=experiment[PCOUPLING_COST_VAR]
-                + experiment["maingrid_electricity_price"],
+                + experiment[MAINGRID_ELECTRICITY_PRICE],
             )
         },
         outputs={bus_electricity_ac: solph.Flow()},
@@ -473,7 +473,7 @@ def pointofcoupling_consumption_oem(
         inputs={
             bus_electricity_ng_consumption: solph.Flow(
                 variable_costs=experiment[PCOUPLING_COST_VAR]
-                + experiment["maingrid_electricity_price"],
+                + experiment[MAINGRID_ELECTRICITY_PRICE],
                 investment=solph.Investment(
                     ep_costs=experiment[PCOUPLING_COST_ANNUITY]
                 ),
