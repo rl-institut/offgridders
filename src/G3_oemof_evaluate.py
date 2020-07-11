@@ -86,7 +86,7 @@ def get_shortage(
         if electricity_bus_ac != None:
 
             shortage_ac = electricity_bus_ac["sequences"][
-                (("source_shortage", BUS_ELECTRICITY_AC), "flow")
+                ((SOURCE_SHORTAGE, BUS_ELECTRICITY_AC), "flow")
             ]
             annual_value(
                 "total_demand_shortage_ac_annual_kWh",
@@ -106,7 +106,7 @@ def get_shortage(
         if electricity_bus_dc != None:
 
             shortage_dc = electricity_bus_dc["sequences"][
-                (("source_shortage", BUS_ELECTRICITY_DC), "flow")
+                ((SOURCE_SHORTAGE, BUS_ELECTRICITY_DC), "flow")
             ]
             annual_value(
                 "total_demand_shortage_dc_annual_kWh",

@@ -292,3 +292,4 @@ BUS_FUEL = "bus_fuel"
 
 #G2a_oemof_busses_and_components
 SOURCE_FUEL= "source_fuel"
+SOURCE_SHORTAGE = "source_shortage"

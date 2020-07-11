@@ -44,7 +44,7 @@ def shortage(
 ):
     logging.debug("Added to oemof model: source shortage")
     source_shortage = solph.Source(
-        label="source_shortage",
+        label=SOURCE_SHORTAGE,
         outputs={
             bus_electricity_ac: solph.Flow(
                 variable_costs=experiment[SHORTAGE_PENALTY_COST],
