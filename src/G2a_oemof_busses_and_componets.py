@@ -553,7 +553,7 @@ def storage_oem(micro_grid_system, bus_electricity_dc, experiment):
     generic_storage = solph.components.GenericStorage(
         label=GENERIC_STORAGE,
         investment=solph.Investment(
-            ep_costs=experiment["storage_capacity_cost_annuity"]
+            ep_costs=experiment[STORAGE_CAPACITY_COST_ANNUITY]
         ),
         inputs={
             bus_electricity_dc: solph.Flow(
