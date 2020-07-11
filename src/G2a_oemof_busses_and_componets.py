@@ -396,7 +396,7 @@ def pointofcoupling_feedin_fix(
         inputs={
             bus_electricity_ac: solph.Flow(
                 nominal_value=capacity_pointofcoupling,
-                variable_costs=experiment["pcoupling_cost_var"]
+                variable_costs=experiment[PCOUPLING_COST_VAR]
                 - experiment[MAINGRID_FEEDIN_TARIFF],
             )
         },
@@ -424,7 +424,7 @@ def pointofcoupling_feedin_oem(
                 investment=solph.Investment(
                     ep_costs=experiment["pcoupling_cost_annuity"]
                 ),
-                variable_costs=experiment["pcoupling_cost_var"]
+                variable_costs=experiment[PCOUPLING_COST_VAR]
                 - experiment[MAINGRID_FEEDIN_TARIFF],
             )
         },
@@ -447,7 +447,7 @@ def pointofcoupling_consumption_fix(
         inputs={
             bus_electricity_ng_consumption: solph.Flow(
                 nominal_value=cap_pointofcoupling,  # inflow is limited to nominal value!
-                variable_costs=experiment["pcoupling_cost_var"]
+                variable_costs=experiment[PCOUPLING_COST_VAR]
                 + experiment["maingrid_electricity_price"],
             )
         },
@@ -472,7 +472,7 @@ def pointofcoupling_consumption_oem(
         label="transformer_pcc_consumption",
         inputs={
             bus_electricity_ng_consumption: solph.Flow(
-                variable_costs=experiment["pcoupling_cost_var"]
+                variable_costs=experiment[PCOUPLING_COST_VAR]
                 + experiment["maingrid_electricity_price"],
                 investment=solph.Investment(
                     ep_costs=experiment["pcoupling_cost_annuity"]
