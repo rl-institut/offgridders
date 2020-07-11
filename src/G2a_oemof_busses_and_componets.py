@@ -238,7 +238,7 @@ def inverter_dc_ac_fix(
 ):
     logging.debug("Added to oemof model: inverter_dc_ac fix")
     inverter_dc_ac = solph.Transformer(
-        label="transformer_inverter_dc_ac",
+        label=TRANSFORMER_INVERTER_DC_AC,
         inputs={
             bus_electricity_dc: solph.Flow(
                 nominal_value=capacity_inverter_dc_ac,
@@ -258,7 +258,7 @@ def inverter_dc_ac_oem(
 ):
     logging.debug("Added to oemof model: inverter_dc_ac oem")
     inverter_dc_ac = solph.Transformer(
-        label="transformer_inverter_dc_ac",
+        label=TRANSFORMER_INVERTER_DC_AC,
         inputs={
             bus_electricity_dc: solph.Flow(
                 investment=solph.Investment(

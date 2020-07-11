@@ -312,14 +312,14 @@ def get_inverter(
     # Get flow
     if case_dict[INVERTER_DC_AC_FIXED_CAPACITY] != None:
         inverter_out = electricity_bus_ac["sequences"][
-            (("transformer_inverter_dc_ac", BUS_ELECTRICITY_AC), "flow")
+            ((TRANSFORMER_INVERTER_DC_AC, BUS_ELECTRICITY_AC), "flow")
         ]
         e_flows_df =join_e_flows_df(
             inverter_out, "Inverter output", e_flows_df
         )
 
         inverter_in = electricity_bus_dc["sequences"][
-            ((BUS_ELECTRICITY_DC, "transformer_inverter_dc_ac"), "flow")
+            ((BUS_ELECTRICITY_DC, TRANSFORMER_INVERTER_DC_AC), "flow")
         ]
         e_flows_df = join_e_flows_df(
             inverter_in, "Inverter input", e_flows_df
@@ -337,7 +337,7 @@ def get_inverter(
     # Get capacity
     if case_dict[INVERTER_DC_AC_FIXED_CAPACITY] == False:
         inverter_capacity = electricity_bus_dc["scalars"][
-            ((BUS_ELECTRICITY_DC, "transformer_inverter_dc_ac"), "invest")
+            ((BUS_ELECTRICITY_DC, TRANSFORMER_INVERTER_DC_AC), "invest")
         ]
         oemof_results.update({CAPACITY_INVERTER_DC_AC_KW: inverter_capacity})
 
