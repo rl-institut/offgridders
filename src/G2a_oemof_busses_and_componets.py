@@ -85,7 +85,7 @@ def maingrid_consumption(micro_grid_system, experiment):
     micro_grid_system.add(source_maingrid_consumption)
 
     sink_maingrid_consumption_symbolic = solph.Sink(
-        label="sink_maingrid_consumption_symbolic",
+        label=SINK_MAINGRID_CONSUMPTION_SYMBOLIC,
         inputs={bus_electricity_ng_consumption: solph.Flow()},
     )
     micro_grid_system.add(sink_maingrid_consumption_symbolic)
