@@ -614,7 +614,7 @@ def distribution_grid_ac(
         inputs={bus_electricity_ac: solph.Flow(investment=solph.Investment())},
         outputs={bus_electricity_demand: solph.Flow()},
         conversion_factors={
-            bus_electricity_demand: experiment["distribution_grid_efficiency"]
+            bus_electricity_demand: experiment[DISTRIBUTION_GRID_EFFICIENCY]
         },
     )
     micro_grid_system.add(distribution)
