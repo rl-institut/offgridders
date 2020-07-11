@@ -67,7 +67,7 @@ def maingrid_consumption(micro_grid_system, experiment):
     logging.debug("Added to oemof model: maingrid consumption")
     # create and add demand sink to micro_grid_system - fixed
     bus_electricity_ng_consumption = solph.Bus(
-        label="bus_electricity_ng_consumption"
+        label=BUS_ELECTRICITY_NG_CONSUMPTION
     )
     micro_grid_system.add(bus_electricity_ng_consumption)
 

@@ -600,11 +600,11 @@ def get_national_grid(
             case_dict,
         )
         bus_electricity_ng_consumption = outputlib.views.node(
-            results, "bus_electricity_ng_consumption"
+            results, BUS_ELECTRICITY_NG_CONSUMPTION
         )
         consumption_utility_side = bus_electricity_ng_consumption["sequences"][
             (
-                ("bus_electricity_ng_consumption", "transformer_pcc_consumption"),
+                (BUS_ELECTRICITY_NG_CONSUMPTION, "transformer_pcc_consumption"),
                 "flow",
             )
         ]
