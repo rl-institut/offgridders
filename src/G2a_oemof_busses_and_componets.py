@@ -622,7 +622,7 @@ def distribution_grid_ac(
     logging.debug("Added to oemof model: demand AC")
     # create and add demand sink to micro_grid_system - fixed
     sink_demand_ac = solph.Sink(
-        label="sink_demand_ac",
+        label=SINK_DEMAND_AC,
         inputs={
             bus_electricity_ac: solph.Flow(
                 actual_value=demand_profile, nominal_value=1, fixed=True
@@ -638,7 +638,7 @@ def demand_ac(micro_grid_system, bus_electricity_ac, demand_profile):
     logging.debug("Added to oemof model: demand AC")
     # create and add demand sink to micro_grid_system - fixed
     sink_demand_ac = solph.Sink(
-        label="sink_demand_ac",
+        label=SINK_DEMAND_AC,
         inputs={
             bus_electricity_ac: solph.Flow(
                 actual_value=demand_profile, nominal_value=1, fixed=True

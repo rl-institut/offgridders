@@ -43,7 +43,7 @@ def get_demand(
         index=experiment[DATE_TIME_INDEX],
     )
     demand_ac = electricity_bus_ac["sequences"][
-        ((BUS_ELECTRICITY_AC, "sink_demand_ac"), "flow")
+        ((BUS_ELECTRICITY_AC, SINK_DEMAND_AC), "flow")
     ]
     e_flows_df = join_e_flows_df(demand_ac, "Demand AC", e_flows_df)
     if case_dict[EVALUATION_PERSPECTIVE] == "AC_bus":
