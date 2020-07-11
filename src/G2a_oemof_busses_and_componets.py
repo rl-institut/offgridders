@@ -595,7 +595,7 @@ def excess(micro_grid_system, bus_electricity_ac, bus_electricity_dc):
     logging.debug("Added to oemof model: excess")
     # create and add excess electricity sink to micro_grid_system - variable
     sink_excess = solph.Sink(
-        label="sink_excess",
+        label=SINK_EXCESS,
         inputs={bus_electricity_ac: solph.Flow(), bus_electricity_dc: solph.Flow()},
     )
     micro_grid_system.add(sink_excess)

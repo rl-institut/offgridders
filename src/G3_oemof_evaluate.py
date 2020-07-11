@@ -160,7 +160,7 @@ def get_excess(
     if electricity_bus_ac != None:
 
         excess_ac = electricity_bus_ac["sequences"][
-            ((BUS_ELECTRICITY_AC, "sink_excess"), "flow")
+            ((BUS_ELECTRICITY_AC, SINK_EXCESS), "flow")
         ]
         excess += excess_ac
         annual_value(
@@ -173,7 +173,7 @@ def get_excess(
     if electricity_bus_dc != None:
 
         excess_dc = electricity_bus_dc["sequences"][
-            ((BUS_ELECTRICITY_DC, "sink_excess"), "flow")
+            ((BUS_ELECTRICITY_DC, SINK_EXCESS), "flow")
         ]
         excess += excess_dc
         annual_value(
