@@ -129,7 +129,7 @@ def pv_oem(micro_grid_system, bus_electricity_dc, experiment):
                 actual_value=pv_norm,
                 fixed=True,
                 investment=solph.Investment(
-                    ep_costs=experiment["pv_cost_annuity"] / peak_pv_generation
+                    ep_costs=experiment[PV_COST_ANNUITY] / peak_pv_generation
                 ),
                 variable_costs=experiment[PV_COST_VAR] / peak_pv_generation,
             )
