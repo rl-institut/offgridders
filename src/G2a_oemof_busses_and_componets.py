@@ -422,7 +422,7 @@ def pointofcoupling_feedin_oem(
         inputs={
             bus_electricity_ac: solph.Flow(
                 investment=solph.Investment(
-                    ep_costs=experiment["pcoupling_cost_annuity"]
+                    ep_costs=experiment[PCOUPLING_COST_ANNUITY]
                 ),
                 variable_costs=experiment[PCOUPLING_COST_VAR]
                 - experiment[MAINGRID_FEEDIN_TARIFF],
@@ -475,7 +475,7 @@ def pointofcoupling_consumption_oem(
                 variable_costs=experiment[PCOUPLING_COST_VAR]
                 + experiment["maingrid_electricity_price"],
                 investment=solph.Investment(
-                    ep_costs=experiment["pcoupling_cost_annuity"]
+                    ep_costs=experiment[PCOUPLING_COST_ANNUITY]
                 ),
             )
         },
