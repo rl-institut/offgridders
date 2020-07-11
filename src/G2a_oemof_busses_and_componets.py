@@ -563,7 +563,7 @@ def storage_oem(micro_grid_system, bus_electricity_dc, experiment):
         outputs={
             bus_electricity_dc: solph.Flow(
                 investment=solph.Investment(
-                    ep_costs=experiment["storage_power_cost_annuity"]
+                    ep_costs=experiment[STORAGE_POWER_COST_ANNUITY]
                 )
             )
         },
