@@ -216,7 +216,7 @@ def rectifier_oem(
         inputs={
             bus_electricity_ac: solph.Flow(
                 investment=solph.Investment(
-                    ep_costs=experiment["rectifier_ac_dc_cost_annuity"]
+                    ep_costs=experiment[RECTIFIER_AC_DC_COST_ANNUITY]
                 ),
                 variable_costs=experiment[RECTIFIER_AC_DC_COST_VAR],
             )

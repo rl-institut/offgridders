@@ -72,7 +72,7 @@ def annuities_365(case_dict, oemof_results, experiment):
         * oemof_results[POWER_STORAGE_KW],
         ANNUITY_GENSET: experiment["genset_cost_annuity"]
         * oemof_results[CAPACITY_GENSET_KW],
-        ANNUITY_RECTIFIER_AC_DC: experiment["rectifier_ac_dc_cost_annuity"]
+        ANNUITY_RECTIFIER_AC_DC: experiment[RECTIFIER_AC_DC_COST_ANNUITY]
         * oemof_results[CAPACITY_RECTIFIER_AC_DC_KW],
         ANNUITY_INVERTER_DC_AC: experiment["inverter_dc_ac_cost_annuity"]
         * oemof_results[CAPACITY_INVERTER_DC_AC_KW],
