@@ -455,7 +455,7 @@ def get_fuel(case_dict, oemof_results, results):
     logging.debug("Evaluate flow: fuel")
     if case_dict[GENSET_FIXED_CAPACITY] != None:
         fuel_bus = outputlib.views.node(results, BUS_FUEL)
-        fuel = fuel_bus["sequences"][(("source_fuel", BUS_FUEL), "flow")]
+        fuel = fuel_bus["sequences"][((SOURCE_FUEL, BUS_FUEL), "flow")]
         annual_value(
             "consumption_fuel_annual_kWh", fuel, oemof_results, case_dict
         )

@@ -289,3 +289,6 @@ SHARE_BACKUP = "share_backup"
 SHARE_USAGE = "share_usage"
 SHARE_HYBRID = "share_hybrid"
 BUS_FUEL = "bus_fuel"
+
+#G2a_oemof_busses_and_components
+SOURCE_FUEL= "source_fuel"

@@ -28,7 +28,7 @@ def fuel(micro_grid_system, bus_fuel, experiment):
     logging.debug("Added to oemof model: source fuel")
     # Does NOT include a boundary for intendet minimal renewable factor (as in dispatch, operation costs in focus)
     source_fuel = solph.Source(
-        label="source_fuel",
+        label=SOURCE_FUEL,
         outputs={
             bus_fuel: solph.Flow(
                 variable_costs=experiment[PRICE_FUEL]
