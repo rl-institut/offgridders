@@ -351,7 +351,7 @@ def genset_oem(
             outputs={
                 bus_electricity_ac: solph.Flow(
                     investment=solph.Investment(
-                        ep_costs=experiment["genset_cost_annuity"]
+                        ep_costs=experiment[GENSET_COST_ANNUITY]
                     ),
                     variable_costs=experiment[GENSET_COST_VAR],
                 )
