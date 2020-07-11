@@ -55,7 +55,7 @@ def get_demand(
     #        or case_dict['storage_fixed_capacity'] != None:
 
     demand_dc = electricity_bus_dc["sequences"][
-        ((BUS_ELECTRICITY_DC, "sink_demand_dc"), "flow")
+        ((BUS_ELECTRICITY_DC, SINK_DEMAND_DC), "flow")
     ]
     e_flows_df = join_e_flows_df(demand_dc, "Demand DC", e_flows_df)
     if case_dict[EVALUATION_PERSPECTIVE] == "AC_bus":
