@@ -351,8 +351,8 @@ def hybrid_test(case_dict, oemof_results, experiment, e_flows_df):
                 [0 for t in demand_profile.index], index=demand_profile.index
             )
 
-        if "Genset generation" in e_flows_df.columns:
-            genset_generation = e_flows_df["Genset generation"]
+        if GENSET_GENERATION in e_flows_df.columns:
+            genset_generation = e_flows_df[GENSET_GENERATION]
         else:
             genset_generation = pd.Series(
                 [0 for t in demand_profile.index], index=demand_profile.index
@@ -485,8 +485,8 @@ def usage_test(case_dict, oemof_results, experiment, e_flows_df):
                 [0 for t in demand_profile.index], index=demand_profile.index
             )
 
-        if "Genset generation" in e_flows_df.columns:
-            genset_generation = e_flows_df["Genset generation"]
+        if GENSET_GENERATION in e_flows_df.columns:
+            genset_generation = e_flows_df[GENSET_GENERATION]
         else:
             genset_generation = pd.Series(
                 [0 for t in demand_profile.index], index=demand_profile.index

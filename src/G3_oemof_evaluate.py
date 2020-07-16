@@ -426,7 +426,7 @@ def get_genset(case_dict, oemof_results, electricity_bus_ac, e_flows_df):
             TOTAL_GENSET_GENERATION_KWH, total_genset, oemof_results, case_dict
         )
         e_flows_df = join_e_flows_df(
-            total_genset, "Genset generation", e_flows_df
+            total_genset, GENSET_GENERATION, e_flows_df
         )
     else:
         oemof_results.update({TOTAL_GENSET_GENERATION_KWH: 0})
