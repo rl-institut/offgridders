@@ -51,7 +51,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
         "Storage SOC",
         "Storage charge",
         "Storage charge AC",
-        "Storage charge DC",
+        STORAGE_CHARGE_DC,
         GENSET_GENERATION,
         GRID_AVAILABILITY,
     ]
@@ -76,7 +76,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
         "Storage discharge AC",
         "Storage discharge DC",
         "Storage charge AC",
-        "Storage charge DC",
+        STORAGE_CHARGE_DC,
     ]
 
     mg_flows = pd.DataFrame(
