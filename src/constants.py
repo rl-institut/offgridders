@@ -317,3 +317,6 @@ SINK_DEMAND_AC = "sink_demand_ac"
 SINK_DEMAND_DC = "sink_demand_dc"
 SINK_MAINGRID_FEEDIN = "sink_maingrid_feedin"
 SINK_MAINGRID_FEEDIN_SYMBOLIC = "source_maingrid_feedin_symbolic"
+
+#G2b
+STORAGE_CAPACITY_MIN = "storage_capacity_min"

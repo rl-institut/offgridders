@@ -66,7 +66,7 @@ def backup(
             ):  # Storage subject to OEM
                 stored_electricity += (
                     model.GenericInvestmentStorageBlock.capacity[storage, t]
-                    - experiment["storage_capacity_min"]
+                    - experiment[STORAGE_CAPACITY_MIN]
                     * model.GenericInvestmentStorageBlock.invest[storage]
                 )
             elif isinstance(
@@ -74,7 +74,7 @@ def backup(
             ):  # Fixed storage subject to dispatch
                 stored_electricity += (
                     model.GenericStorageBlock.capacity[storage, t]
-                    - experiment["storage_capacity_min"] * storage.nominal_capacity
+                    - experiment[STORAGE_CAPACITY_MIN] * storage.nominal_capacity
                 )
             else:
                 logging.warning(
@@ -167,7 +167,7 @@ def backup_test(case_dict, oemof_results, experiment, e_flows_df):
             + (
                 stored_electricity[t]
                 - oemof_results[CAPACITY_STORAGE_KWH]
-                * experiment["storage_capacity_min"]
+                * experiment[STORAGE_CAPACITY_MIN]
             )
             * experiment[STORAGE_CRATE_DISCHARGE]
             * experiment[STORAGE_EFFICIENCY_DISCHARGE]
@@ -187,7 +187,7 @@ def backup_test(case_dict, oemof_results, experiment, e_flows_df):
                         + (
                             stored_electricity[t]
                             - oemof_results[CAPACITY_STORAGE_KWH]
-                            * experiment["storage_capacity_min"]
+                            * experiment[STORAGE_CAPACITY_MIN]
                         )
                         * experiment[STORAGE_CRATE_DISCHARGE]
                         * experiment[STORAGE_EFFICIENCY_DISCHARGE]
