@@ -344,8 +344,8 @@ def hybrid_test(case_dict, oemof_results, experiment, e_flows_df):
                 [0 for t in demand_profile.index], index=demand_profile.index
             )
 
-        if "Consumption from main grid (MG side)" in e_flows_df.columns:
-            pcc_consumption = e_flows_df["Consumption from main grid (MG side)"]
+        if CONSUMPTION_MAIN_GRID_MG_SIDE in e_flows_df.columns:
+            pcc_consumption = e_flows_df[CONSUMPTION_MAIN_GRID_MG_SIDE]
         else:
             pcc_consumption = pd.Series(
                 [0 for t in demand_profile.index], index=demand_profile.index
@@ -478,8 +478,8 @@ def usage_test(case_dict, oemof_results, experiment, e_flows_df):
                 [0 for t in demand_profile.index], index=demand_profile.index
             )
 
-        if "Consumption from main grid (MG side)" in e_flows_df.columns:
-            pcc_feedin = e_flows_df["Consumption from main grid (MG side)"]
+        if CONSUMPTION_MAIN_GRID_MG_SIDE in e_flows_df.columns:
+            pcc_feedin = e_flows_df[CONSUMPTION_MAIN_GRID_MG_SIDE]
         else:
             pcc_feedin = pd.Series(
                 [0 for t in demand_profile.index], index=demand_profile.index

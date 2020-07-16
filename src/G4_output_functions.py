@@ -43,7 +43,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
         "PV generation DC",
         "Wind generation",
         "Excess generation",
-        "Consumption from main grid (MG side)",
+        CONSUMPTION_MAIN_GRID_MG_SIDE,
         "Feed into main grid (MG side)",
         "Storage discharge",
         "Storage discharge AC",
@@ -109,7 +109,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
                             columns=[entry],
                             index=e_flows_df[entry].index,
                         )  # Display those values as negative in graphs/files
-                elif entry == "Consumption from main grid (MG side)":
+                elif entry == CONSUMPTION_MAIN_GRID_MG_SIDE:
                     new_column = pd.DataFrame(
                         e_flows_df[entry].values,
                         columns=["Consumption from main grid"],

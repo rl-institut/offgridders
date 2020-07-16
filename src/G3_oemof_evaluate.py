@@ -591,7 +591,7 @@ def get_national_grid(
             ((TRANSFORMER_PCC_CONSUMPTION, BUS_ELECTRICITY_AC), "flow")
         ]
         e_flows_df = join_e_flows_df(
-            consumption_mg_side, "Consumption from main grid (MG side)", e_flows_df
+            consumption_mg_side, CONSUMPTION_MAIN_GRID_MG_SIDE, e_flows_df
         )
         annual_value(
             CONSUMPTION_MAIN_GRID_MG_SIDE_ANNUAL_KWH,
