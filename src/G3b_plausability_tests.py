@@ -158,7 +158,7 @@ def gridavailability_feedin(oemof_results, e_flows_df):
         test = [
             (
                 e_flows_df["Feed into main grid"][t] != 0
-                and e_flows_df["Grid availability"][t] == 0
+                and e_flows_df[GRID_AVAILABILITY][t] == 0
             )
             for t in e_flows_df.index
         ]
@@ -182,7 +182,7 @@ def gridavailability_feedin(oemof_results, e_flows_df):
 def gridavailability_consumption(oemof_results, e_flows_df):
     logging.debug("Plausibility test: Grid availability consumption")
     if ("Consumption from main grid" in e_flows_df.columns) and (
-        "Grid availability" in e_flows_df.columns
+        GRID_AVAILABILITY in e_flows_df.columns
     ):
 
         boolean = True
@@ -190,7 +190,7 @@ def gridavailability_consumption(oemof_results, e_flows_df):
         test = [
             (
                 e_flows_df["Consumption from main grid"][t] != 0
-                and e_flows_df["Grid availability"][t] == 0
+                and e_flows_df[GRID_AVAILABILITY][t] == 0
             )
             for t in e_flows_df.index
         ]
@@ -247,7 +247,7 @@ def excess_feedin(oemof_results, e_flows_df):
     logging.debug("Plausibility test: Excess/Feedin")
     if (
         ("Excess electricity" in e_flows_df.columns)
-        and ("Grid availability" in e_flows_df.columns)
+        and (GRID_AVAILABILITY in e_flows_df.columns)
         and ("Feed into main grid" in e_flows_df.columns)
     ):
 
@@ -264,7 +264,7 @@ def excess_feedin(oemof_results, e_flows_df):
                 )  # actual item!
                 or (
                     (e_flows_df["Excess electricity"][t] != 0)
-                    and (e_flows_df["Grid availability"][t] == 0)
+                    and (e_flows_df[GRID_AVAILABILITY][t] == 0)
                 )
             )
             for t in e_flows_df.index

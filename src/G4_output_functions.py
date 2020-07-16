@@ -53,7 +53,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
         "Storage charge AC",
         "Storage charge DC",
         "Genset generation",
-        "Grid availability",
+        GRID_AVAILABILITY,
     ]
 
     negative_list = [
@@ -144,8 +144,8 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
             mg_flows = mg_flows.drop(["Storage SOC"], axis=1)
             if case_dict[STORAGE_FIXED_CAPACITY] != None:
                 number_of_subplots += 1
-        if "Grid availability" in mg_flows.columns:
-            mg_flows = mg_flows.drop(["Grid availability"], axis=1)
+        if GRID_AVAILABILITY in mg_flows.columns:
+            mg_flows = mg_flows.drop([GRID_AVAILABILITY], axis=1)
             if (case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] != None) or (
                 case_dict[PCC_FEEDIN_FIXED_CAPACITY] != None
             ):
@@ -209,7 +209,7 @@ def plot_flows(case_dict, experiment, mg_flows, e_flows_df, number_of_subplots):
         "Storage discharge": "#ccccff",  # pidgeon blue
         "Demand shortage": "#ff3300",  # bright red
         "Storage SOC": "#0033cc",  # blue
-        "Grid availability": "#cc0000",  # red
+        GRID_AVAILABILITY: "#cc0000",  # red
     }
 
     mg_flows.plot(
@@ -229,13 +229,13 @@ def plot_flows(case_dict, experiment, mg_flows, e_flows_df, number_of_subplots):
         if (
             (case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] != None)
             or (case_dict[PCC_FEEDIN_FIXED_CAPACITY] != None)
-        ) and ("Grid availability" in e_flows_df.columns):
-            e_flows_df["Grid availability"].plot(
+        ) and (GRID_AVAILABILITY in e_flows_df.columns):
+            e_flows_df[GRID_AVAILABILITY].plot(
                 ax=axes[1],
-                color=color_dict.get("Grid availability", "#333333"),
+                color=color_dict.get(GRID_AVAILABILITY, "#333333"),
                 drawstyle="steps-mid",
             )
-            ylabel += "Grid availability"
+            ylabel += GRID_AVAILABILITY
 
         if number_of_subplots > 1:
             ylabel += ",\n "

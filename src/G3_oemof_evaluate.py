@@ -576,14 +576,14 @@ def get_national_grid(
         or case_dict[PCC_FEEDIN_FIXED_CAPACITY] != None
     ):
         e_flows_df = join_e_flows_df(
-            grid_availability, "Grid availability", e_flows_df
+            grid_availability, GRID_AVAILABILITY, e_flows_df
         )
     else:
         grid_availability_symbolic = pd.Series(
             [0 for i in e_flows_df.index], index=e_flows_df.index
         )
         e_flows_df = join_e_flows_df(
-            grid_availability_symbolic, "Grid availability", e_flows_df
+            grid_availability_symbolic, GRID_AVAILABILITY, e_flows_df
         )
 
     if case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] != None:
