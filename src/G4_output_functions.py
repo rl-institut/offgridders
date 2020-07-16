@@ -268,9 +268,9 @@ def save_storage(experiment, case_dict, e_flows_df, filename):
             "Storage SOC",
         ]
         storage_flows = pd.DataFrame(
-            e_flows_df["Stored capacity"].values,
-            columns=["Stored capacity"],
-            index=e_flows_df["Stored capacity"].index,
+            e_flows_df[STORED_CAPACITY].values,
+            columns=[STORED_CAPACITY],
+            index=e_flows_df[STORED_CAPACITY].index,
         )
 
         for entry in flows_connected_to_electricity_mg_bus:
@@ -318,7 +318,7 @@ def save_storage(experiment, case_dict, e_flows_df, filename):
             plt.close()
             plt.clf()
             plt.cla()
-            if len(storage_flows["Stored capacity"]) >= 5 * 24:
+            if len(storage_flows[STORED_CAPACITY]) >= 5 * 24:
                 fig = storage_flows[24 : 5 * 24].plot(
                     title="Storage flows of case "
                     + case_dict[CASE_NAME]

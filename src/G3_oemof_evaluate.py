@@ -488,7 +488,7 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
             storage_discharge, "Storage discharge DC", e_flows_df
         )
         e_flows_df = join_e_flows_df(
-            stored_capacity, "Stored capacity", e_flows_df
+            stored_capacity, STORED_CAPACITY, e_flows_df
         )
 
         if case_dict[EVALUATION_PERSPECTIVE] == "AC_bus":

@@ -136,8 +136,8 @@ def backup_test(case_dict, oemof_results, experiment, e_flows_df):
     if case_dict[STABILITY_CONSTRAINT] != False:
         demand_profile = e_flows_df[DEMAND]
 
-        if "Stored capacity" in e_flows_df.columns:
-            stored_electricity = e_flows_df["Stored capacity"]
+        if STORED_CAPACITY in e_flows_df.columns:
+            stored_electricity = e_flows_df[STORED_CAPACITY]
         else:
             stored_electricity = pd.Series(
                 [0 for t in demand_profile.index], index=demand_profile.index
@@ -337,8 +337,8 @@ def hybrid_test(case_dict, oemof_results, experiment, e_flows_df):
                 [0 for t in demand_profile.index], index=demand_profile.index
             )
 
-        if "Stored capacity" in e_flows_df.columns:
-            stored_electricity = e_flows_df["Stored capacity"]
+        if STORED_CAPACITY in e_flows_df.columns:
+            stored_electricity = e_flows_df[STORED_CAPACITY]
         else:
             stored_electricity = pd.Series(
                 [0 for t in demand_profile.index], index=demand_profile.index
@@ -735,7 +735,7 @@ def forced_charge_test(case_dict, oemof_results, experiment, e_flows_df):
                 )
                 + (
                     oemof_results[CAPACITY_STORAGE_KWH]
-                    - e_flows_df["Stored capacity"][t]
+                    - e_flows_df[STORED_CAPACITY][t]
                 )
                 / (experiment[STORAGE_SOC_MAX] - experiment[STORAGE_SOC_MIN])
             )
@@ -765,7 +765,7 @@ def forced_charge_test(case_dict, oemof_results, experiment, e_flows_df):
                         )
                         + (
                             oemof_results[CAPACITY_STORAGE_KWH]
-                            - e_flows_df["Stored capacity"][t]
+                            - e_flows_df[STORED_CAPACITY][t]
                         )
                         / (
                             experiment[STORAGE_SOC_MAX]
@@ -840,7 +840,7 @@ def discharge_only_at_blackout_test(case_dict, oemof_results, e_flows_df):
         boolean_test = [
             e_flows_df["Storage discharge DC"][t]
             <= (1 - e_flows_df["Grid availability"][t])
-            * e_flows_df["Stored capacity"][t]
+            * e_flows_df[STORED_CAPACITY][t]
             for t in range(0, len(e_flows_df.index))
         ]
 
@@ -852,7 +852,7 @@ def discharge_only_at_blackout_test(case_dict, oemof_results, e_flows_df):
                     (
                         e_flows_df["Storage discharge DC"][t]
                         - (1 - e_flows_df["Grid availability"][t])
-                        * e_flows_df["Stored capacity"][t]
+                        * e_flows_df[STORED_CAPACITY][t]
                     )
                     for t in range(0, len(e_flows_df.index))
                 ],
