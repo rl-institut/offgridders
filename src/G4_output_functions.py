@@ -34,7 +34,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
     flows_connected_to_electricity_mg_bus = [
         "Demand AC",
         "Demand DC",
-        "Demand shortage",
+        DEMAND_SHORTAGE,
         "Demand shortage AC",
         "Demand shortage DC",
         "Demand supplied",
@@ -57,7 +57,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
     ]
 
     negative_list = [
-        "Demand shortage",
+        DEMAND_SHORTAGE,
         "Demand shortage AC",
         "Demand shortage DC",
         "Storage discharge",
@@ -88,7 +88,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
         if entry in e_flows_df.columns:
             # do not add energyflow of shortage/supplied demand, if no shortage occurs
             if not (
-                (entry == "Demand supplied" or entry == "Demand shortage")
+                (entry == "Demand supplied" or entry == DEMAND_SHORTAGE)
                 and (
                     sum(e_flows_df[DEMAND].values)
                     == sum(e_flows_df["Demand supplied"].values)
@@ -207,7 +207,7 @@ def plot_flows(case_dict, experiment, mg_flows, e_flows_df, number_of_subplots):
         "Excess generation": "#996600",  # brown
         "Feed into main grid": "#ff33cc",  # pink
         "Storage discharge": "#ccccff",  # pidgeon blue
-        "Demand shortage": "#ff3300",  # bright red
+        DEMAND_SHORTAGE: "#ff3300",  # bright red
         "Storage SOC": "#0033cc",  # blue
         GRID_AVAILABILITY: "#cc0000",  # red
     }

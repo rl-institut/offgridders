@@ -134,7 +134,7 @@ def get_shortage(
             TOTAL_DEMAND_SHORTAGE_ANNUAL_KWH, shortage, oemof_results, case_dict
         )
         e_flows_df = join_e_flows_df(
-            shortage, "Demand shortage", e_flows_df
+            shortage, DEMAND_SHORTAGE, e_flows_df
         )
         e_flows_df = join_e_flows_df(
             demand_supplied, "Demand supplied", e_flows_df

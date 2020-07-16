@@ -78,7 +78,7 @@ def demand_supply_shortage(oemof_results, e_flows_df):
     if (
         ("Demand supplied" in e_flows_df.columns)
         and (DEMAND in e_flows_df.columns)
-        and ("Demand shortage" in e_flows_df.columns)
+        and (DEMAND_SHORTAGE in e_flows_df.columns)
     ):
 
         boolean = True
@@ -87,12 +87,12 @@ def demand_supply_shortage(oemof_results, e_flows_df):
             (
                 (
                     e_flows_df["Demand supplied"][t] == e_flows_df[DEMAND][t]
-                    and e_flows_df["Demand shortage"][t] == 0
+                    and e_flows_df[DEMAND_SHORTAGE][t] == 0
                 )
                 or (
                     (
                         e_flows_df["Demand supplied"][t] != e_flows_df[DEMAND][t]
-                        and e_flows_df["Demand shortage"][t] != 0
+                        and e_flows_df[DEMAND_SHORTAGE][t] != 0
                     )
                 )
             )
@@ -214,7 +214,7 @@ def gridavailability_consumption(oemof_results, e_flows_df):
 def excess_shortage(oemof_results, e_flows_df):
     logging.debug("Plausibility test: Excess/shortage")
     if ("Excess electricity" in e_flows_df.columns) and (
-        "Demand shortage" in e_flows_df.columns
+        DEMAND_SHORTAGE in e_flows_df.columns
     ):
 
         boolean = True
@@ -222,7 +222,7 @@ def excess_shortage(oemof_results, e_flows_df):
         test = [
             (
                 e_flows_df["Excess electricity"][t] != 0
-                and e_flows_df["Demand shortage"][t] != 0
+                and e_flows_df[DEMAND_SHORTAGE][t] != 0
             )
             for t in e_flows_df.index
         ]

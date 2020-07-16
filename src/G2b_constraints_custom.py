@@ -156,7 +156,7 @@ def backup_test(case_dict, oemof_results, experiment, e_flows_df):
         genset_capacity = oemof_results[CAPACITY_GENSET_KW]
 
         if case_dict[ALLOW_SHORTAGE] == True:
-            shortage = e_flows_df["Demand shortage"]
+            shortage = e_flows_df[DEMAND_SHORTAGE]
         else:
             shortage = pd.Series(
                 [0 for t in demand_profile.index], index=demand_profile.index
@@ -331,7 +331,7 @@ def hybrid_test(case_dict, oemof_results, experiment, e_flows_df):
         demand_profile = e_flows_df[DEMAND]
 
         if case_dict[ALLOW_SHORTAGE] == True:
-            shortage = e_flows_df["Demand shortage"]
+            shortage = e_flows_df[DEMAND_SHORTAGE]
         else:
             shortage = pd.Series(
                 [0 for t in demand_profile.index], index=demand_profile.index
@@ -465,7 +465,7 @@ def usage_test(case_dict, oemof_results, experiment, e_flows_df):
         demand_profile = e_flows_df[DEMAND]
 
         if case_dict[ALLOW_SHORTAGE] == True:
-            shortage = e_flows_df["Demand shortage"]
+            shortage = e_flows_df[DEMAND_SHORTAGE]
         else:
             shortage = pd.Series(
                 [0 for t in demand_profile.index], index=demand_profile.index
