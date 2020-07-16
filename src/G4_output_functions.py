@@ -45,7 +45,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
         "Excess generation",
         CONSUMPTION_MAIN_GRID_MG_SIDE,
         "Feed into main grid (MG side)",
-        "Storage discharge",
+        STORAGE_DISCHARGE,
         "Storage discharge AC",
         "Storage discharge DC",
         "Storage SOC",
@@ -60,7 +60,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
         DEMAND_SHORTAGE,
         "Demand shortage AC",
         "Demand shortage DC",
-        "Storage discharge",
+        STORAGE_DISCHARGE,
         "Storage discharge AC",
         "Storage discharge DC",
         "Feed into main grid (MG side)",
@@ -206,7 +206,7 @@ def plot_flows(case_dict, experiment, mg_flows, e_flows_df, number_of_subplots):
         "Storage charge": "#0033cc",  # light green
         "Excess generation": "#996600",  # brown
         "Feed into main grid": "#ff33cc",  # pink
-        "Storage discharge": "#ccccff",  # pidgeon blue
+        STORAGE_DISCHARGE: "#ccccff",  # pidgeon blue
         DEMAND_SHORTAGE: "#ff3300",  # bright red
         "Storage SOC": "#0033cc",  # blue
         GRID_AVAILABILITY: "#cc0000",  # red
@@ -263,7 +263,7 @@ def save_storage(experiment, case_dict, e_flows_df, filename):
     if case_dict[STORAGE_FIXED_CAPACITY] != None:
 
         flows_connected_to_electricity_mg_bus = [
-            "Storage discharge",
+            STORAGE_DISCHARGE,
             "Storage charge",
             "Storage SOC",
         ]
@@ -275,7 +275,7 @@ def save_storage(experiment, case_dict, e_flows_df, filename):
 
         for entry in flows_connected_to_electricity_mg_bus:
             if entry in e_flows_df.columns:
-                if entry == "Storage discharge":
+                if entry == STORAGE_DISCHARGE:
                     new_column = pd.DataFrame(
                         -e_flows_df[entry].values,
                         columns=[entry],

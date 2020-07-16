@@ -506,14 +506,14 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
                 e_flows_df["Storage charge AC"], "Storage charge", e_flows_df
             )
             e_flows_df = join_e_flows_df(
-                e_flows_df["Storage discharge AC"], "Storage discharge", e_flows_df
+                e_flows_df["Storage discharge AC"], STORAGE_DISCHARGE, e_flows_df
             )
         else:
             e_flows_df = join_e_flows_df(
                 e_flows_df["Storage charge DC"], "Storage charge", e_flows_df
             )
             e_flows_df = join_e_flows_df(
-                e_flows_df["Storage discharge DC"], "Storage discharge", e_flows_df
+                e_flows_df["Storage discharge DC"], STORAGE_DISCHARGE, e_flows_df
             )
     else:
         oemof_results.update({"total_storage_throughput_kWh": 0})

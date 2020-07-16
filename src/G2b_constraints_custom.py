@@ -471,8 +471,8 @@ def usage_test(case_dict, oemof_results, experiment, e_flows_df):
                 [0 for t in demand_profile.index], index=demand_profile.index
             )
 
-        if "Storage discharge" in e_flows_df.columns:
-            storage_discharge = e_flows_df["Storage discharge"]
+        if STORAGE_DISCHARGE in e_flows_df.columns:
+            storage_discharge = e_flows_df[STORAGE_DISCHARGE]
         else:
             storage_discharge = pd.Series(
                 [0 for t in demand_profile.index], index=demand_profile.index
