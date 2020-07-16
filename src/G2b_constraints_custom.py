@@ -910,7 +910,7 @@ def inverter_only_at_blackout_test(case_dict, oemof_results, e_flows_df):
         and case_dict[INVERTER_DC_AC_FIXED_CAPACITY] != None
     ):
         boolean_test = [
-            e_flows_df["Inverter input"][t]
+            e_flows_df[INVERTER_INPUT][t]
             <= (1 - e_flows_df[GRID_AVAILABILITY][t])
             * oemof_results[CAPACITY_INVERTER_DC_AC_KW]
             for t in range(0, len(e_flows_df.index))
@@ -922,7 +922,7 @@ def inverter_only_at_blackout_test(case_dict, oemof_results, e_flows_df):
             ratio = pd.Series(
                 [
                     (
-                        e_flows_df["Inverter input"][t]
+                        e_flows_df[INVERTER_INPUT][t]
                         - (1 - e_flows_df[GRID_AVAILABILITY][t])
                         * oemof_results[CAPACITY_INVERTER_DC_AC_KW]
                     )

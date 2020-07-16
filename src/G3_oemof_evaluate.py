@@ -322,7 +322,7 @@ def get_inverter(
             ((BUS_ELECTRICITY_DC, TRANSFORMER_INVERTER_DC_AC), "flow")
         ]
         e_flows_df = join_e_flows_df(
-            inverter_in, "Inverter input", e_flows_df
+            inverter_in, INVERTER_INPUT, e_flows_df
         )
 
         annual_value(
