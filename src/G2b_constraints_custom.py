@@ -838,7 +838,7 @@ def discharge_only_at_blackout_test(case_dict, oemof_results, e_flows_df):
         and case_dict[STORAGE_FIXED_CAPACITY] != None
     ):
         boolean_test = [
-            e_flows_df["Storage discharge DC"][t]
+            e_flows_df[STORAGE_DISCHARGE_DC][t]
             <= (1 - e_flows_df[GRID_AVAILABILITY][t])
             * e_flows_df[STORED_CAPACITY][t]
             for t in range(0, len(e_flows_df.index))
@@ -850,7 +850,7 @@ def discharge_only_at_blackout_test(case_dict, oemof_results, e_flows_df):
             ratio = pd.Series(
                 [
                     (
-                        e_flows_df["Storage discharge DC"][t]
+                        e_flows_df[STORAGE_DISCHARGE_DC][t]
                         - (1 - e_flows_df[GRID_AVAILABILITY][t])
                         * e_flows_df[STORED_CAPACITY][t]
                     )

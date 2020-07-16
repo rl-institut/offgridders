@@ -47,7 +47,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
         "Feed into main grid (MG side)",
         STORAGE_DISCHARGE,
         "Storage discharge AC",
-        "Storage discharge DC",
+        STORAGE_DISCHARGE_DC,
         "Storage SOC",
         "Storage charge",
         "Storage charge AC",
@@ -62,7 +62,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
         "Demand shortage DC",
         STORAGE_DISCHARGE,
         "Storage discharge AC",
-        "Storage discharge DC",
+        STORAGE_DISCHARGE_DC,
         "Feed into main grid (MG side)",
     ]
 
@@ -74,7 +74,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
         "PV generation AC",
         "PV generation DC",
         "Storage discharge AC",
-        "Storage discharge DC",
+        STORAGE_DISCHARGE_DC,
         "Storage charge AC",
         STORAGE_CHARGE_DC,
     ]
