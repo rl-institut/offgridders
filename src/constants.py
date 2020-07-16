@@ -320,3 +320,4 @@ SINK_MAINGRID_FEEDIN_SYMBOLIC = "source_maingrid_feedin_symbolic"
 
 #G2b
 STORAGE_CAPACITY_MIN = "storage_capacity_min"
+DEMAND = "Demand"

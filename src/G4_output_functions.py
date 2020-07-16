@@ -80,9 +80,9 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
     ]
 
     mg_flows = pd.DataFrame(
-        e_flows_df["Demand"].values,
-        columns=["Demand"],
-        index=e_flows_df["Demand"].index,
+        e_flows_df[DEMAND].values,
+        columns=[DEMAND],
+        index=e_flows_df[DEMAND].index,
     )
     for entry in flows_connected_to_electricity_mg_bus:
         if entry in e_flows_df.columns:
@@ -90,7 +90,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
             if not (
                 (entry == "Demand supplied" or entry == "Demand shortage")
                 and (
-                    sum(e_flows_df["Demand"].values)
+                    sum(e_flows_df[DEMAND].values)
                     == sum(e_flows_df["Demand supplied"].values)
                 )
             ):
@@ -165,7 +165,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
                     bbox_inches="tight",
                 )
 
-            elif timeframe == "days" and (len(mg_flows["Demand"]) >= 5 * 24):
+            elif timeframe == "days" and (len(mg_flows[DEMAND]) >= 5 * 24):
                 plot_flows(
                     case_dict,
                     experiment,
@@ -197,7 +197,7 @@ def plot_flows(case_dict, experiment, mg_flows, e_flows_df, number_of_subplots):
 
     # website with websafe hexacolours: https://www.colorhexa.com/web-safe-colors
     color_dict = {
-        "Demand": "#33ff00",  # dark green
+        DEMAND: "#33ff00",  # dark green
         "Demand supplied": "#66cc33",  # grass green
         "PV generation": "#ffcc00",  # orange
         "Wind generation": "#33ccff",  # light blue

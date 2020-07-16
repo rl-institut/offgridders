@@ -39,7 +39,7 @@ def get_demand(
 
     e_flows_df = pd.DataFrame(
         [0 for i in experiment[DATE_TIME_INDEX]],
-        columns=["Demand"],
+        columns=[DEMAND],
         index=experiment[DATE_TIME_INDEX],
     )
     demand_ac = electricity_bus_ac["sequences"][
@@ -47,9 +47,9 @@ def get_demand(
     ]
     e_flows_df = join_e_flows_df(demand_ac, "Demand AC", e_flows_df)
     if case_dict[EVALUATION_PERSPECTIVE] == "AC_bus":
-        e_flows_df["Demand"] += demand_ac
+        e_flows_df[DEMAND] += demand_ac
     else:
-        e_flows_df["Demand"] += demand_ac / experiment[INVERTER_DC_AC_EFFICIENCY]
+        e_flows_df[DEMAND] += demand_ac / experiment[INVERTER_DC_AC_EFFICIENCY]
 
     # if case_dict['pv_fixed_capacity'] != None \
     #        or case_dict['storage_fixed_capacity'] != None:
@@ -59,14 +59,14 @@ def get_demand(
     ]
     e_flows_df = join_e_flows_df(demand_dc, "Demand DC", e_flows_df)
     if case_dict[EVALUATION_PERSPECTIVE] == "AC_bus":
-        e_flows_df["Demand"] += demand_dc / experiment[RECTIFIER_AC_DC_EFFICIENCY]
+        e_flows_df[DEMAND] += demand_dc / experiment[RECTIFIER_AC_DC_EFFICIENCY]
     else:
-        e_flows_df["Demand"] += demand_dc
+        e_flows_df[DEMAND] += demand_dc
 
     annual_value(
-        TOTAL_DEMAND_ANNUAL_KWH, e_flows_df["Demand"], oemof_results, case_dict
+        TOTAL_DEMAND_ANNUAL_KWH, e_flows_df[DEMAND], oemof_results, case_dict
     )
-    oemof_results.update({DEMAND_PEAK_KW: max(e_flows_df["Demand"])})
+    oemof_results.update({DEMAND_PEAK_KW: max(e_flows_df[DEMAND])})
     return e_flows_df
 
 def get_shortage(
@@ -123,7 +123,7 @@ def get_shortage(
             else:
                 shortage += shortage_dc
 
-        demand_supplied = e_flows_df["Demand"] - shortage
+        demand_supplied = e_flows_df[DEMAND] - shortage
         annual_value(
             TOTAL_DEMAND_SUPPLIED_ANNUAL_KWH,
             demand_supplied,

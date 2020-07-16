@@ -134,7 +134,7 @@ def backup_test(case_dict, oemof_results, experiment, e_flows_df):
         Testing simulation results for adherance to above defined stability criterion
     """
     if case_dict[STABILITY_CONSTRAINT] != False:
-        demand_profile = e_flows_df["Demand"]
+        demand_profile = e_flows_df[DEMAND]
 
         if "Stored capacity" in e_flows_df.columns:
             stored_electricity = e_flows_df["Stored capacity"]
@@ -328,7 +328,7 @@ def hybrid_test(case_dict, oemof_results, experiment, e_flows_df):
         #todo actually this does not test the stability_share_power criterion, which includes the storage power!
     """
     if case_dict[STABILITY_CONSTRAINT] != False:
-        demand_profile = e_flows_df["Demand"]
+        demand_profile = e_flows_df[DEMAND]
 
         if case_dict[ALLOW_SHORTAGE] == True:
             shortage = e_flows_df["Demand shortage"]
@@ -462,7 +462,7 @@ def usage_test(case_dict, oemof_results, experiment, e_flows_df):
         Testing simulation results for adherance to above defined stability criterion
     """
     if case_dict[STABILITY_CONSTRAINT] != False:
-        demand_profile = e_flows_df["Demand"]
+        demand_profile = e_flows_df[DEMAND]
 
         if case_dict[ALLOW_SHORTAGE] == True:
             shortage = e_flows_df["Demand shortage"]
