@@ -206,7 +206,7 @@ def wind_fix(micro_grid_system, bus_electricity_ac, experiment, capacity_wind):
         label=SOURCE_WIND,
         outputs={
             bus_electricity_ac: solph.Flow(
-                label="Wind generation",
+                label=WIND_GENERATION,
                 actual_value=experiment[WIND_GENERATION_PER_KW],
                 fixed=True,
                 nominal_value=capacity_wind,
@@ -231,7 +231,7 @@ def wind_oem(micro_grid_system, bus_electricity_ac, experiment):
         label=SOURCE_WIND,
         outputs={
             bus_electricity_ac: solph.Flow(
-                label="Wind generation",
+                label=WIND_GENERATION,
                 actual_value=wind_norm,
                 fixed=True,
                 investment=solph.Investment(

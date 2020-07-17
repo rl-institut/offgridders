@@ -41,7 +41,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
         PV_GENERATION,
         PV_GENERATION_AC,
         PV_GENERATION_DC,
-        "Wind generation",
+        WIND_GENERATION,
         EXCESS_GENERATION,
         CONSUMPTION_MAIN_GRID_MG_SIDE,
         "Feed into main grid (MG side)",
@@ -200,7 +200,7 @@ def plot_flows(case_dict, experiment, mg_flows, e_flows_df, number_of_subplots):
         DEMAND: "#33ff00",  # dark green
         DEMAND_SUPPLIED: "#66cc33",  # grass green
         PV_GENERATION: "#ffcc00",  # orange
-        "Wind generation": "#33ccff",  # light blue
+        WIND_GENERATION: "#33ccff",  # light blue
         GENSET_GENERATION: "#000000",  # black
         "Consumption from main grid": "#990099",  # violet
         "Storage charge": "#0033cc",  # light green

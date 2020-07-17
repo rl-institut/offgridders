@@ -367,7 +367,7 @@ def get_wind(
             TOTAL_WIND_GENERATION_KWH, wind_gen, oemof_results, case_dict
         )
         e_flows_df = join_e_flows_df(
-            wind_gen, "Wind generation", e_flows_df
+            wind_gen, WIND_GENERATION, e_flows_df
         )
     else:
         oemof_results.update({TOTAL_WIND_GENERATION_KWH: 0})
