@@ -13,7 +13,7 @@ import networkx as nx
 
 
 def print_oemof_meta_main_invest(experiment, meta, electricity_bus, case_name):
-    if experiment["display_meta"] == True:
+    if experiment[DISPLAY_META] == True:
         logging.info("********* Meta results *********")
         pp.pprint(meta)
 
