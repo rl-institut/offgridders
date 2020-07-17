@@ -164,7 +164,7 @@ def get_excess(
         ]
         excess += excess_ac
         annual_value(
-            "total_demand_excess_ac_annual_kWh", excess_ac, oemof_results, case_dict
+            TOTAL_DEMAND_EXCESS_AC_ANNUAL_KWH, excess_ac, oemof_results, case_dict
         )
         e_flows_df = join_e_flows_df(
             excess_ac, "Excess generation AC", e_flows_df
