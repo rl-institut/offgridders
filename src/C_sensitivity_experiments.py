@@ -429,7 +429,7 @@ def with_base_case(
     (
         sensitivity_experiment_s,
         total_number_of_experiments,
-    ) = get.combinations_around_base(
+    ) = combinations_around_base(
         sensitivity_array_dict, universal_parameters, project_site_s
     )
 
