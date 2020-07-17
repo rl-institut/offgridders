@@ -273,7 +273,7 @@ def get_rectifier(
             ((BUS_ELECTRICITY_AC, TRANSFORMER_RECTIFIER), FLOW)
         ]
         e_flows_df = join_e_flows_df(
-            rectifier_in, "Rectifier input", e_flows_df
+            rectifier_in, RECTIFIER_INPUT, e_flows_df
         )
 
         annual_value(
