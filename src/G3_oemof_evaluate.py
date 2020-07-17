@@ -213,13 +213,13 @@ def get_pv(
         if case_dict[EVALUATION_PERSPECTIVE] == AC_BUS:
             e_flows_df = join_e_flows_df(
                 pv_gen / experiment[RECTIFIER_AC_DC_EFFICIENCY],
-                "PV generation AC",
+                PV_GENERATION_AC,
                 e_flows_df,
             )
 
         if case_dict[EVALUATION_PERSPECTIVE] == AC_BUS:
             e_flows_df = join_e_flows_df(
-                e_flows_df["PV generation AC"], "PV generation", e_flows_df
+                e_flows_df[PV_GENERATION_AC], "PV generation", e_flows_df
             )
         else:
             e_flows_df = join_e_flows_df(
