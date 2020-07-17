@@ -20,7 +20,7 @@ def print_oemof_meta_main_invest(experiment, meta, electricity_bus, case_name):
     # print the sums of the flows around the electricity bus
     if experiment["display_main"] == True:
         logging.info("********* Main results *********")
-        pp.pprint(electricity_bus["sequences"].sum(axis=0))
+        pp.pprint(electricity_bus[SEQUENCES].sum(axis=0))
 
     # print the scalars of investment optimization (not equal to capacities!)
     if case_name == "base_oem" or case_name == "base_oem_with_min_loading":

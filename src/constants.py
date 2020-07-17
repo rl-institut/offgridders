@@ -330,3 +330,6 @@ STORAGE_DISCHARGE = "Storage discharge"
 STORAGE_CHARGE_DC = "Storage charge DC"
 STORAGE_DISCHARGE_DC = "Storage discharge DC"
 INVERTER_INPUT = "Inverter input"
+
+#G3
+SEQUENCES = "sequences"
