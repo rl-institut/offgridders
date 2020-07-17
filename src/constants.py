@@ -379,3 +379,4 @@ STORAGE = "storage"
 #G3b
 CONSUMPTION_FROM_MAIN_GRID = "Consumption from main grid"
 FEED_INTO_MAIN_GRID = "Feed into main grid"
+EXCESS_ELECTRICITY = "Excess electricity"

@@ -213,7 +213,7 @@ def gridavailability_consumption(oemof_results, e_flows_df):
 
 def excess_shortage(oemof_results, e_flows_df):
     logging.debug("Plausibility test: Excess/shortage")
-    if ("Excess electricity" in e_flows_df.columns) and (
+    if (EXCESS_ELECTRICITY in e_flows_df.columns) and (
         DEMAND_SHORTAGE in e_flows_df.columns
     ):
 
@@ -221,7 +221,7 @@ def excess_shortage(oemof_results, e_flows_df):
 
         test = [
             (
-                e_flows_df["Excess electricity"][t] != 0
+                e_flows_df[EXCESS_ELECTRICITY][t] != 0
                 and e_flows_df[DEMAND_SHORTAGE][t] != 0
             )
             for t in e_flows_df.index
@@ -246,7 +246,7 @@ def excess_shortage(oemof_results, e_flows_df):
 def excess_feedin(oemof_results, e_flows_df):
     logging.debug("Plausibility test: Excess/Feedin")
     if (
-        ("Excess electricity" in e_flows_df.columns)
+        (EXCESS_ELECTRICITY in e_flows_df.columns)
         and (GRID_AVAILABILITY in e_flows_df.columns)
         and (FEED_INTO_MAIN_GRID in e_flows_df.columns)
     ):
@@ -256,14 +256,14 @@ def excess_feedin(oemof_results, e_flows_df):
         test = [
             (
                 (
-                    (e_flows_df["Excess electricity"][t] != 0)
+                    (e_flows_df[EXCESS_ELECTRICITY][t] != 0)
                     and (
                         e_flows_df[FEED_INTO_MAIN_GRID][t]
                         != oemof_results["capacity pcc"][t]
                     )
                 )  # actual item!
                 or (
-                    (e_flows_df["Excess electricity"][t] != 0)
+                    (e_flows_df[EXCESS_ELECTRICITY][t] != 0)
                     and (e_flows_df[GRID_AVAILABILITY][t] == 0)
                 )
             )
