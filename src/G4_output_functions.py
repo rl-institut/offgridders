@@ -26,7 +26,7 @@ def print_oemof_meta_main_invest(experiment, meta, electricity_bus, case_name):
     if case_name == "base_oem" or case_name == "base_oem_with_min_loading":
         if experiment["display_invest"] == True:
             logging.info("********* Invest results *********")
-            pp.pprint(electricity_bus["scalars"])
+            pp.pprint(electricity_bus[SCALARS])
     return
 
 def save_mg_flows(experiment, case_dict, e_flows_df, filename):
@@ -38,7 +38,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
         DEMAND_SHORTAGE_AC,
         DEMAND_SHORTAGE_DC,
         DEMAND_SUPPLIED,
-        "PV generation",
+        PV_GENERATION,
         PV_GENERATION_AC,
         PV_GENERATION_DC,
         "Wind generation",
@@ -199,7 +199,7 @@ def plot_flows(case_dict, experiment, mg_flows, e_flows_df, number_of_subplots):
     color_dict = {
         DEMAND: "#33ff00",  # dark green
         DEMAND_SUPPLIED: "#66cc33",  # grass green
-        "PV generation": "#ffcc00",  # orange
+        PV_GENERATION: "#ffcc00",  # orange
         "Wind generation": "#33ccff",  # light blue
         GENSET_GENERATION: "#000000",  # black
         "Consumption from main grid": "#990099",  # violet

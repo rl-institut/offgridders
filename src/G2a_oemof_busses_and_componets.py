@@ -161,7 +161,7 @@ def pv_fix(micro_grid_system, bus_electricity_dc, experiment, capacity_pv):
         label=SOURCE_PV,
         outputs={
             bus_electricity_dc: solph.Flow(
-                label="PV generation",
+                label=PV_GENERATION,
                 actual_value=experiment[PV_GENERATION_PER_KWP],
                 fixed=True,
                 nominal_value=capacity_pv,
@@ -186,7 +186,7 @@ def pv_oem(micro_grid_system, bus_electricity_dc, experiment):
         label=SOURCE_PV,
         outputs={
             bus_electricity_dc: solph.Flow(
-                label="PV generation",
+                label=PV_GENERATION,
                 actual_value=pv_norm,
                 fixed=True,
                 investment=solph.Investment(

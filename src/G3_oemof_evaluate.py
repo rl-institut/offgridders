@@ -219,11 +219,11 @@ def get_pv(
 
         if case_dict[EVALUATION_PERSPECTIVE] == AC_BUS:
             e_flows_df = join_e_flows_df(
-                e_flows_df[PV_GENERATION_AC], "PV generation", e_flows_df
+                e_flows_df[PV_GENERATION_AC], PV_GENERATION, e_flows_df
             )
         else:
             e_flows_df = join_e_flows_df(
-                e_flows_df[PV_GENERATION_DC], "PV generation", e_flows_df
+                e_flows_df[PV_GENERATION_DC], PV_GENERATION, e_flows_df
             )
     else:
         oemof_results.update({TOTAL_PV_GENERATION_KWH: 0})
@@ -233,7 +233,7 @@ def get_pv(
         if pv_generation_max > 1:
             oemof_results.update(
                 {
-                    CAPACITY_PV_KWP: electricity_bus_dc["scalars"][
+                    CAPACITY_PV_KWP: electricity_bus_dc[SCALARS][
                         ((SOURCE_PV, BUS_ELECTRICITY_DC), "invest")
                     ]
                     * pv_generation_max
@@ -242,7 +242,7 @@ def get_pv(
         elif pv_generation_max > 0 and pv_generation_max < 1:
             oemof_results.update(
                 {
-                    CAPACITY_PV_KWP: electricity_bus_dc["scalars"][
+                    CAPACITY_PV_KWP: electricity_bus_dc[SCALARS][
                         ((SOURCE_PV, BUS_ELECTRICITY_DC), "invest")
                     ]
                     / pv_generation_max
@@ -287,7 +287,7 @@ def get_rectifier(
 
     # Get capacity
     if case_dict[RECTIFIER_AC_DC_FIXED_CAPACITY] == False:
-        rectifier_capacity = electricity_bus_ac["scalars"][
+        rectifier_capacity = electricity_bus_ac[SCALARS][
             ((BUS_ELECTRICITY_AC, TRANSFORMER_RECTIFIER), "invest")
         ]
         oemof_results.update({CAPACITY_RECTIFIER_AC_DC_KW: rectifier_capacity})
@@ -336,7 +336,7 @@ def get_inverter(
 
     # Get capacity
     if case_dict[INVERTER_DC_AC_FIXED_CAPACITY] == False:
-        inverter_capacity = electricity_bus_dc["scalars"][
+        inverter_capacity = electricity_bus_dc[SCALARS][
             ((BUS_ELECTRICITY_DC, TRANSFORMER_INVERTER_DC_AC), "invest")
         ]
         oemof_results.update({CAPACITY_INVERTER_DC_AC_KW: inverter_capacity})
@@ -377,7 +377,7 @@ def get_wind(
         if wind_generation_max > 1:
             oemof_results.update(
                 {
-                    CAPACITY_WIND_KW: electricity_bus_ac["scalars"][
+                    CAPACITY_WIND_KW: electricity_bus_ac[SCALARS][
                         ((SOURCE_WIND, BUS_ELECTRICITY_AC), "invest")
                     ]
                     * wind_generation_max
@@ -386,7 +386,7 @@ def get_wind(
         elif wind_generation_max > 0 and wind_generation_max < 1:
             oemof_results.update(
                 {
-                    CAPACITY_WIND_KW: electricity_bus_ac["scalars"][
+                    CAPACITY_WIND_KW: electricity_bus_ac[SCALARS][
                         ((SOURCE_WIND, BUS_ELECTRICITY_AC), "invest")
                     ]
                     / wind_generation_max
@@ -436,7 +436,7 @@ def get_genset(case_dict, oemof_results, electricity_bus_ac, e_flows_df):
         # Optimized generator capacity (sum)
         genset_capacity = 0
         for number in range(1, case_dict[NUMBER_OF_EQUAL_GENERATORS] + 1):
-            genset_capacity += electricity_bus_ac["scalars"][
+            genset_capacity += electricity_bus_ac[SCALARS][
                 (
                     (TRANSFORMER_GENSET_ + str(number), BUS_ELECTRICITY_AC),
                     "invest",
@@ -522,12 +522,12 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
     if case_dict[STORAGE_FIXED_CAPACITY] == False:
         # Optimized storage capacity
         storage = outputlib.views.node(results, GENERIC_STORAGE)
-        storage_capacity = storage["scalars"][
+        storage_capacity = storage[SCALARS][
             ((GENERIC_STORAGE, "None"), "invest")
         ]
 
         electricity_bus_dc = outputlib.views.node(results, BUS_ELECTRICITY_DC)
-        storage_power = electricity_bus_dc["scalars"][
+        storage_power = electricity_bus_dc[SCALARS][
             ((GENERIC_STORAGE, BUS_ELECTRICITY_DC), "invest")
         ]
 
