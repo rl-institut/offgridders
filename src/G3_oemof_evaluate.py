@@ -137,7 +137,7 @@ def get_shortage(
             shortage, DEMAND_SHORTAGE, e_flows_df
         )
         e_flows_df = join_e_flows_df(
-            demand_supplied, "Demand supplied", e_flows_df
+            demand_supplied, DEMAND_SUPPLIED, e_flows_df
         )
     else:
         oemof_results.update(

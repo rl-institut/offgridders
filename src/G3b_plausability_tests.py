@@ -76,7 +76,7 @@ def charge_discharge(oemof_results, e_flows_df):
 def demand_supply_shortage(oemof_results, e_flows_df):
     logging.debug("Plausibility test: Demand/Supply/Shortage")
     if (
-        ("Demand supplied" in e_flows_df.columns)
+        (DEMAND_SUPPLIED in e_flows_df.columns)
         and (DEMAND in e_flows_df.columns)
         and (DEMAND_SHORTAGE in e_flows_df.columns)
     ):
@@ -86,12 +86,12 @@ def demand_supply_shortage(oemof_results, e_flows_df):
         test = [
             (
                 (
-                    e_flows_df["Demand supplied"][t] == e_flows_df[DEMAND][t]
+                    e_flows_df[DEMAND_SUPPLIED][t] == e_flows_df[DEMAND][t]
                     and e_flows_df[DEMAND_SHORTAGE][t] == 0
                 )
                 or (
                     (
-                        e_flows_df["Demand supplied"][t] != e_flows_df[DEMAND][t]
+                        e_flows_df[DEMAND_SUPPLIED][t] != e_flows_df[DEMAND][t]
                         and e_flows_df[DEMAND_SHORTAGE][t] != 0
                     )
                 )

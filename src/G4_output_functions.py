@@ -37,7 +37,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
         DEMAND_SHORTAGE,
         DEMAND_SHORTAGE_AC,
         DEMAND_SHORTAGE_DC,
-        "Demand supplied",
+        DEMAND_SUPPLIED,
         "PV generation",
         "PV generation AC",
         "PV generation DC",
@@ -88,10 +88,10 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
         if entry in e_flows_df.columns:
             # do not add energyflow of shortage/supplied demand, if no shortage occurs
             if not (
-                (entry == "Demand supplied" or entry == DEMAND_SHORTAGE)
+                (entry == DEMAND_SUPPLIED or entry == DEMAND_SHORTAGE)
                 and (
                     sum(e_flows_df[DEMAND].values)
-                    == sum(e_flows_df["Demand supplied"].values)
+                    == sum(e_flows_df[DEMAND_SUPPLIED].values)
                 )
             ):
 
@@ -198,7 +198,7 @@ def plot_flows(case_dict, experiment, mg_flows, e_flows_df, number_of_subplots):
     # website with websafe hexacolours: https://www.colorhexa.com/web-safe-colors
     color_dict = {
         DEMAND: "#33ff00",  # dark green
-        "Demand supplied": "#66cc33",  # grass green
+        DEMAND_SUPPLIED: "#66cc33",  # grass green
         "PV generation": "#ffcc00",  # orange
         "Wind generation": "#33ccff",  # light blue
         GENSET_GENERATION: "#000000",  # black
