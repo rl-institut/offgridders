@@ -2,7 +2,6 @@ import logging
 
 import src.H1_multicriteria_functions as multicriteria_functions
 
-
 def main_analysis(overallresults, multicriteria_data, settings):
     """
     This function rules the multicriteria analysis and calls all other functions
@@ -43,7 +42,7 @@ def main_analysis(overallresults, multicriteria_data, settings):
         evaluations, capacities = multicriteria_functions.evaluate_criteria(
             all_results, qualitative_punctuations, multicriteria_data
         )
-        all_projects_MCA_data["capacities"] = capacities
+        all_projects_MCA_data[CAPACITIES] = capacities
 
         for project in evaluations:
             # all evaluations for a same criterion are put together, to make easier the following ranking

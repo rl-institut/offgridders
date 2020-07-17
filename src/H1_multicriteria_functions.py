@@ -565,14 +565,14 @@ def representation(
         )
 
         row += 1
-        for capacity in all_data["capacities"][n + 1]:
+        for capacity in all_data[CAPACITIES][n + 1]:
             worksheet.merge_range(
                 "B" + str(row + 1) + ":D" + str(row + 1), capacity, format_highlight
             )
 
             col = 4
             i = 0
-            for value in all_data["capacities"][n + 1][capacity]:
+            for value in all_data[CAPACITIES][n + 1][capacity]:
                 if i / (len(cases) * 2) < 0.5:
                     worksheet.write(row, col, round(value, 2), format_text)
                 else:

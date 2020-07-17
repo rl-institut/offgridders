@@ -386,3 +386,6 @@ CAPACITY_PCC = "capacity pcc"
 DISPLAY_META = "display_meta"
 DISPLAY_MAIN = "display_main"
 DISPLAY_INVEST = "display_invest"
+
+#H0
+CAPACITIES = "capacities"
