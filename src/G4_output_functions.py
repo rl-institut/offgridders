@@ -100,7 +100,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
                     if entry == "Feed into main grid (MG side)":
                         new_column = pd.DataFrame(
                             -e_flows_df[entry].values,
-                            columns=["Feed into main grid"],
+                            columns=[FEED_INTO_MAIN_GRID],
                             index=e_flows_df[entry].index,
                         )
                     else:
@@ -205,7 +205,7 @@ def plot_flows(case_dict, experiment, mg_flows, e_flows_df, number_of_subplots):
         CONSUMPTION_FROM_MAIN_GRID: "#990099",  # violet
         STORAGE_CHARGE: "#0033cc",  # light green
         EXCESS_GENERATION: "#996600",  # brown
-        "Feed into main grid": "#ff33cc",  # pink
+        FEED_INTO_MAIN_GRID: "#ff33cc",  # pink
         STORAGE_DISCHARGE: "#ccccff",  # pidgeon blue
         DEMAND_SHORTAGE: "#ff3300",  # bright red
         STORAGE_SOC: "#0033cc",  # blue

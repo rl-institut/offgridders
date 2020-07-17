@@ -118,7 +118,7 @@ def demand_supply_shortage(oemof_results, e_flows_df):
 def feedin_consumption(oemof_results, e_flows_df):
     logging.debug("Plausibility test: Feedin/Consumption")
     if (CONSUMPTION_FROM_MAIN_GRID in e_flows_df.columns) and (
-        "Feed into main grid" in e_flows_df.columns
+        FEED_INTO_MAIN_GRID in e_flows_df.columns
     ):
 
         boolean = True
@@ -126,7 +126,7 @@ def feedin_consumption(oemof_results, e_flows_df):
         test = [
             (
                 e_flows_df[CONSUMPTION_FROM_MAIN_GRID][t] != 0
-                and e_flows_df["Feed into main grid"][t] != 0
+                and e_flows_df[FEED_INTO_MAIN_GRID][t] != 0
             )
             for t in e_flows_df.index
         ]
@@ -150,14 +150,14 @@ def feedin_consumption(oemof_results, e_flows_df):
 def gridavailability_feedin(oemof_results, e_flows_df):
     logging.debug("Plausibility test: Grid availability/Feedin")
     if (CONSUMPTION_FROM_MAIN_GRID in e_flows_df.columns) and (
-        "Feed into main grid" in e_flows_df.columns
+        FEED_INTO_MAIN_GRID in e_flows_df.columns
     ):
 
         boolean = True
 
         test = [
             (
-                e_flows_df["Feed into main grid"][t] != 0
+                e_flows_df[FEED_INTO_MAIN_GRID][t] != 0
                 and e_flows_df[GRID_AVAILABILITY][t] == 0
             )
             for t in e_flows_df.index
@@ -248,7 +248,7 @@ def excess_feedin(oemof_results, e_flows_df):
     if (
         ("Excess electricity" in e_flows_df.columns)
         and (GRID_AVAILABILITY in e_flows_df.columns)
-        and ("Feed into main grid" in e_flows_df.columns)
+        and (FEED_INTO_MAIN_GRID in e_flows_df.columns)
     ):
 
         boolean = True
@@ -258,7 +258,7 @@ def excess_feedin(oemof_results, e_flows_df):
                 (
                     (e_flows_df["Excess electricity"][t] != 0)
                     and (
-                        e_flows_df["Feed into main grid"][t]
+                        e_flows_df[FEED_INTO_MAIN_GRID][t]
                         != oemof_results["capacity pcc"][t]
                     )
                 )  # actual item!
