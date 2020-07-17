@@ -4,7 +4,46 @@ For defining custom constraints of the micro grid solutions
 import pyomo.environ as po
 import logging
 import pandas as pd
-
+from src.constants import (SHORTAGE_LIMIT,
+                           NUMBER_OF_EQUAL_GENERATORS,
+                           GENSET_FIXED_CAPACITY,
+                           PCC_CONSUMPTION_FIXED_CAPACITY,
+                           ALLOW_SHORTAGE,
+                           GRID_AVAILABILITY,
+                           STORAGE_FIXED_CAPACITY,
+                           STORAGE_CAPACITY_MIN,
+                           STORAGE_CRATE_DISCHARGE,
+                           STORAGE_EFFICIENCY_DISCHARGE,
+                           INVERTER_DC_AC_EFFICIENCY,
+                           STORAGE_FIXED_POWER,
+                           STABILITY_CONSTRAINT,
+                           DEMAND,
+                           STORED_CAPACITY,
+                           CAPACITY_PCOUPLING_KW,
+                           CAPACITY_GENSET_KW,
+                           DEMAND_SHORTAGE,
+                           CAPACITY_STORAGE_KWH,
+                           PEAK_DEMAND,
+                           STORAGE_SOC_MIN,
+                           CONSUMPTION_MAIN_GRID_MG_SIDE,
+                           GENSET_GENERATION,
+                           PEAK_DEMAND_AC,
+                           STORAGE_DISCHARGE,
+                           COMMENTS,
+                           MAINGRID_RENEWABLE_SHARE,
+                           MIN_RENEWABLE_SHARE,
+                           RENEWABLE_SHARE_CONSTRAINT,
+                           RES_SHARE,
+                           STORAGE_CRATE_CHARGE,
+                           STORAGE_SOC_MAX,
+                           FORCE_CHARGE_FROM_MAINGRID,
+                           STORAGE_CHARGE_DC,
+                           DISCHARGE_ONLY_WHEN_BLACKOUT,
+                           STORAGE_DISCHARGE_DC,
+                           INVERTER_DC_AC_FIXED_CAPACITY,
+                           ENABLE_INVERTER_ONLY_AT_BLACKOUT,
+                           INVERTER_INPUT,
+                           CAPACITY_INVERTER_DC_AC_KW,SHORTAGE_MAX_TIMESTEP)
 
 
 def backup(
