@@ -261,8 +261,8 @@ def format_punctuations(multicriteria_data):
 def prepare_global_evaluations(evaluations):
     """
     Distributed criteria evaluations together.
-    A dictionary of: {CASE_NAME:{"economic":{"EC1":value_case_1_EC1,"EC2":value_case_2_EC2},"technical:{...},...},"case_name_2":{...}...}
-    is turned into: {"economic"{"EC1":[value_case_1_EC1,value_case_2_EC1,...],"EC2":[...],"technical":[...],...}
+    A dictionary of: {CASE_NAME:{ECONOMIC:{"EC1":value_case_1_EC1,"EC2":value_case_2_EC2},"technical:{...},...},"case_name_2":{...}...}
+    is turned into: {ECONOMIC{"EC1":[value_case_1_EC1,value_case_2_EC1,...],"EC2":[...],"technical":[...],...}
     This helps the whole multicriteria process.
     :return:
     a dictionary with the new format

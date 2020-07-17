@@ -7,6 +7,7 @@ import os
 import shutil
 
 
+
 def evaluate_criteria(all_results, qualitative_punctuations, multicriteria_data):
     """
     Criteria are evaluated
@@ -62,7 +63,7 @@ def evaluate_criteria(all_results, qualitative_punctuations, multicriteria_data)
             ):
                 EC2 = EC2 - case[REVENUE_MAIN_GRID_FEEDIN_ANNUAL]
             economic = {"EC1": EC1, "EC2": EC2}
-            case_evaluations["economic"] = economic
+            case_evaluations[ECONOMIC] = economic
 
             # technical evaluation
             T1 = case[AUTONOMY_FACTOR]
@@ -178,7 +179,7 @@ def rank(normalized_evaluations, weights_dimensions, weights_criteria):
     """
     # first, the evaluations are pondered
     ponderations = {
-        "economic": [],
+        ECONOMIC: [],
         "technical": [],
         "socioinstitutional": [],
         "environmental": [],
@@ -244,7 +245,7 @@ def prepare_local_evaluations(global_evaluations, cases):
     """
     local_evaluations = []
     start = 0
-    for j in range(int(len(global_evaluations["economic"]["EC1"]) / len(cases))):
+    for j in range(int(len(global_evaluations[ECONOMIC]["EC1"]) / len(cases))):
         local_evaluation = create_diccionary([])
         for dimension in global_evaluations:
             for criterion in global_evaluations[dimension]:
@@ -316,7 +317,7 @@ def create_diccionary(self):
     environmental_eval = {"EN1": [], "EN2": [], "EN3": []}
 
     dictionary = {
-        "economic": economic_eval,
+        ECONOMIC: economic_eval,
         "technical": technical_eval,
         "socioinstitutional": socioinstitutional_eval,
         "environmental": environmental_eval,
@@ -335,7 +336,7 @@ def change_weights(weights_criteria, dimension, criterion):
     :return:
     """
     weights_criteria[criterion] = 0
-    if dimension == "economic":
+    if dimension == ECONOMIC:
         criteria = ["EC1", "EC2"]
     elif dimension == "technical":
         criteria = ["T1", "T2", "T3", "T4"]
@@ -663,7 +664,7 @@ def representation(
         )
         worksheet.merge_range(
             "B" + str(row + 1) + ":" + "B" + str(row + 2),
-            weights_dimensions["economic"],
+            weights_dimensions[ECONOMIC],
             format_highlight,
         )
         worksheet.merge_range(

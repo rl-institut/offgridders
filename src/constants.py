@@ -404,3 +404,6 @@ MAINGRID = "maingrid"
 MAINGRID = "plot"
 PARAMETER = "parameter"
 SHOW = "show"
+
+#H1
+ECONOMIC = "economic"
