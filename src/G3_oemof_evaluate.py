@@ -405,7 +405,7 @@ def get_genset(case_dict, oemof_results, electricity_bus_ac, e_flows_df):
     # Get flow
     if case_dict[GENSET_FIXED_CAPACITY] != None:
         genset = electricity_bus_ac[SEQUENCES][
-            (("transformer_genset_1", BUS_ELECTRICITY_AC), FLOW)
+            ((TRANSFORMER_GENSET_1, BUS_ELECTRICITY_AC), FLOW)
         ]
         e_flows_df = join_e_flows_df(
             genset, "Genset 1 generation", e_flows_df
