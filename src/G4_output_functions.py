@@ -24,7 +24,7 @@ def print_oemof_meta_main_invest(experiment, meta, electricity_bus, case_name):
 
     # print the scalars of investment optimization (not equal to capacities!)
     if case_name == "base_oem" or case_name == "base_oem_with_min_loading":
-        if experiment["display_invest"] == True:
+        if experiment[DISPLAY_INVEST] == True:
             logging.info("********* Invest results *********")
             pp.pprint(electricity_bus[SCALARS])
     return
