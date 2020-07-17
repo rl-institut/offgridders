@@ -720,7 +720,7 @@ def get_national_grid(
             ]
 
     oemof_results.update(
-        {"total_pcoupling_throughput_kWh": total_pcoupling_throughput_kWh}
+        {TOTAL_PCOUPLING_THROUGHPUT_KWH: total_pcoupling_throughput_kWh}
     )
 
     return e_flows_df
