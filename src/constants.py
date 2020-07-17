@@ -375,3 +375,6 @@ TOTAL_PCOUPLING_THROUGHPUT_KWH = "total_pcoupling_throughput_kWh"
 WIND_COST_ANNUITY = "wind_cost_annuity"
 MAINGRID_EXTENSION_COST_ANNUITY = "maingrid_extension_cost_annuity"
 STORAGE = "storage"
+
+#G3b
+CONSUMPTION_FROM_MAIN_GRID = "Consumption from main grid"

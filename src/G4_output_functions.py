@@ -112,7 +112,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
                 elif entry == CONSUMPTION_MAIN_GRID_MG_SIDE:
                     new_column = pd.DataFrame(
                         e_flows_df[entry].values,
-                        columns=["Consumption from main grid"],
+                        columns=[CONSUMPTION_FROM_MAIN_GRID],
                         index=e_flows_df[entry].index,
                     )
                 else:
@@ -202,7 +202,7 @@ def plot_flows(case_dict, experiment, mg_flows, e_flows_df, number_of_subplots):
         PV_GENERATION: "#ffcc00",  # orange
         WIND_GENERATION: "#33ccff",  # light blue
         GENSET_GENERATION: "#000000",  # black
-        "Consumption from main grid": "#990099",  # violet
+        CONSUMPTION_FROM_MAIN_GRID: "#990099",  # violet
         STORAGE_CHARGE: "#0033cc",  # light green
         EXCESS_GENERATION: "#996600",  # brown
         "Feed into main grid": "#ff33cc",  # pink
