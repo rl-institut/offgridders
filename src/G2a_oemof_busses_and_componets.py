@@ -77,7 +77,8 @@ from src.constants import (SOURCE_FUEL,
                            SINK_DEMAND_DC,
                            SINK_MAINGRID_FEEDIN,
                            GRID_AVAILABILITY,
-                           SINK_MAINGRID_FEEDIN_SYMBOLIC, PV_GENERATION, WIND_GENERATION, WIND_COST_ANNUITY)
+                           SINK_MAINGRID_FEEDIN_SYMBOLIC, PV_GENERATION, WIND_GENERATION, WIND_COST_ANNUITY,
+                           BUS_ELECTRICITY_NG_FEEDIN)
 
 ###############################################################################
 # Define all oemof_functioncalls (including generate graph etc)
