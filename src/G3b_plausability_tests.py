@@ -259,7 +259,7 @@ def excess_feedin(oemof_results, e_flows_df):
                     (e_flows_df[EXCESS_ELECTRICITY][t] != 0)
                     and (
                         e_flows_df[FEED_INTO_MAIN_GRID][t]
-                        != oemof_results["capacity pcc"][t]
+                        != oemof_results[CAPACITY_PCC][t]
                     )
                 )  # actual item!
                 or (
