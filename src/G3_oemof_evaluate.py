@@ -326,13 +326,13 @@ def get_inverter(
         )
 
         annual_value(
-            "total_inverter_dc_ac_throughput_kWh",
+            TOTAL_INVERTER_DC_AC_THROUGHPUT_KWH,
             inverter_in,
             oemof_results,
             case_dict,
         )
     else:
-        oemof_results.update({"total_inverter_dc_ac_throughput_kWh": 0})
+        oemof_results.update({TOTAL_INVERTER_DC_AC_THROUGHPUT_KWH: 0})
 
     # Get capacity
     if case_dict[INVERTER_DC_AC_FIXED_CAPACITY] == False:
