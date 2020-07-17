@@ -841,12 +841,12 @@ def plot_evaluations(
                 if criterion in plot_criteria:
                     evaluations_values = evaluations[project][dimension][criterion]
                     df = pd.DataFrame()
-                    df["cases and experiments"] = cases_exp
-                    df["evaluation"] = evaluations_values
+                    df[CASES_AND_EXPERIMENTS] = cases_exp
+                    df[EVALUATION] = evaluations_values
 
                     df.plot.bar(
-                        x="cases and experiments",
-                        y="evaluation",
+                        x=CASES_AND_EXPERIMENTS,
+                        y=EVALUATION,
                         title="Evaluation of the "
                         + dimension
                         + " criterion, "
