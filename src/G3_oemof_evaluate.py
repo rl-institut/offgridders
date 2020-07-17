@@ -503,14 +503,14 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
                 e_flows_df,
             )
             e_flows_df = join_e_flows_df(
-                e_flows_df[STORAGE_CHARGE_AC], "Storage charge", e_flows_df
+                e_flows_df[STORAGE_CHARGE_AC], STORAGE_CHARGE, e_flows_df
             )
             e_flows_df = join_e_flows_df(
                 e_flows_df[STORAGE_DISCHARGE_AC], STORAGE_DISCHARGE, e_flows_df
             )
         else:
             e_flows_df = join_e_flows_df(
-                e_flows_df[STORAGE_CHARGE_DC], "Storage charge", e_flows_df
+                e_flows_df[STORAGE_CHARGE_DC], STORAGE_CHARGE, e_flows_df
             )
             e_flows_df = join_e_flows_df(
                 e_flows_df[STORAGE_DISCHARGE_DC], STORAGE_DISCHARGE, e_flows_df

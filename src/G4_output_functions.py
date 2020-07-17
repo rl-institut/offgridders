@@ -49,7 +49,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
         STORAGE_DISCHARGE_AC,
         STORAGE_DISCHARGE_DC,
         "Storage SOC",
-        "Storage charge",
+        STORAGE_CHARGE,
         STORAGE_CHARGE_AC,
         STORAGE_CHARGE_DC,
         GENSET_GENERATION,
@@ -203,7 +203,7 @@ def plot_flows(case_dict, experiment, mg_flows, e_flows_df, number_of_subplots):
         WIND_GENERATION: "#33ccff",  # light blue
         GENSET_GENERATION: "#000000",  # black
         "Consumption from main grid": "#990099",  # violet
-        "Storage charge": "#0033cc",  # light green
+        STORAGE_CHARGE: "#0033cc",  # light green
         EXCESS_GENERATION: "#996600",  # brown
         "Feed into main grid": "#ff33cc",  # pink
         STORAGE_DISCHARGE: "#ccccff",  # pidgeon blue
@@ -264,7 +264,7 @@ def save_storage(experiment, case_dict, e_flows_df, filename):
 
         flows_connected_to_electricity_mg_bus = [
             STORAGE_DISCHARGE,
-            "Storage charge",
+            STORAGE_CHARGE,
             "Storage SOC",
         ]
         storage_flows = pd.DataFrame(

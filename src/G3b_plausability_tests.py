@@ -46,14 +46,14 @@ def charge_discharge(oemof_results, e_flows_df):
     logging.debug("Plausibility test: Charge/Discharge")
     if (
         STORAGE_DISCHARGE in e_flows_df.columns
-        and "Storage charge" in e_flows_df.columns
+        and STORAGE_CHARGE in e_flows_df.columns
     ):
         boolean = True
 
         test = [
             (
                 e_flows_df[STORAGE_DISCHARGE][t] != 0
-                and e_flows_df["Storage charge"][t] == 0
+                and e_flows_df[STORAGE_CHARGE][t] == 0
             )
             for t in e_flows_df.index
         ]
