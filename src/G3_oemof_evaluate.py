@@ -315,7 +315,7 @@ def get_inverter(
             ((TRANSFORMER_INVERTER_DC_AC, BUS_ELECTRICITY_AC), FLOW)
         ]
         e_flows_df =join_e_flows_df(
-            inverter_out, "Inverter output", e_flows_df
+            inverter_out, INVERTER_OUTPUT, e_flows_df
         )
 
         inverter_in = electricity_bus_dc[SEQUENCES][
