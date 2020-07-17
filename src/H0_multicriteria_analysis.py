@@ -227,15 +227,15 @@ def format_punctuations(multicriteria_data):
     plot_criteria = []
     for criterion in multicriteria_data[CRITERIA]:
         assessment = multicriteria_data[CRITERIA][criterion]
-        weights_criteria[assessment["Abrev"]] = assessment[WEIGHT]
-        punctuations[assessment["Abrev"]] = {
+        weights_criteria[assessment[ABREV]] = assessment[WEIGHT]
+        punctuations[assessment[ABREV]] = {
             PV: assessment[PV],
             WIND: assessment[WIND],
             GENSET: assessment["diesel"],
             "maingrid": assessment["maingrid"],
         }
         if assessment["plot"] == "Yes":
-            plot_criteria.append(assessment["Abrev"])
+            plot_criteria.append(assessment[ABREV])
 
     parameters = {}
     for parameter in multicriteria_data[PARAMETERS]:
