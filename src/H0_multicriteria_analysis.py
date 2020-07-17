@@ -220,14 +220,14 @@ def format_punctuations(multicriteria_data):
     weights_dimensions = {}
     for dimension in multicriteria_data[DIMENSION]:
         assessment = multicriteria_data[DIMENSION][dimension]
-        weights_dimensions[assessment[DIMENSION]] = assessment["weight"]
+        weights_dimensions[assessment[DIMENSION]] = assessment[WEIGHT]
 
     weights_criteria = {}
     punctuations = {}
     plot_criteria = []
     for criterion in multicriteria_data[CRITERIA]:
         assessment = multicriteria_data[CRITERIA][criterion]
-        weights_criteria[assessment["Abrev"]] = assessment["weight"]
+        weights_criteria[assessment["Abrev"]] = assessment[WEIGHT]
         punctuations[assessment["Abrev"]] = {
             PV: assessment[PV],
             WIND: assessment[WIND],
