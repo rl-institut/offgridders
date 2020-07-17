@@ -155,12 +155,12 @@ def presentation(overallresults, parameters):
         index = 0
         parameters[parameter][LEVELS] = []
         parameters[parameter][PREVIOUS_LEVEL] = None
-        parameters[parameter]["changes"] = []
+        parameters[parameter][CHANGES] = []
         for level in overallresults[previous_project][parameter]:
             if level not in parameters[parameter][LEVELS]:
                 parameters[parameter][LEVELS].append(level)
             if level != parameters[parameter][PREVIOUS_LEVEL]:
-                parameters[parameter]["changes"].append(index)
+                parameters[parameter][CHANGES].append(index)
                 parameters[parameter][PREVIOUS_LEVEL] = level
             index += 1
 
@@ -169,7 +169,7 @@ def presentation(overallresults, parameters):
     for parameter in parameters:
         if parameters[parameter]["analyse"] == True:
             if len(experiments2analyse) == 0:
-                for change in parameters[parameter]["changes"]:
+                for change in parameters[parameter][CHANGES]:
                     experiments2analyse.append(change)
             else:
                 provisional_experiments2analyse = experiments2analyse.copy()
@@ -178,8 +178,8 @@ def presentation(overallresults, parameters):
                     i = 0
                     while (
                         number_included < len(parameters[parameter][LEVELS]) - 1
-                    ) and i < len(parameters[parameter]["changes"]):
-                        subchange = parameters[parameter]["changes"][i]
+                    ) and i < len(parameters[parameter][CHANGES]):
+                        subchange = parameters[parameter][CHANGES][i]
                         if subchange > change:
                             experiments2analyse.append(subchange)
                             number_included += 1
