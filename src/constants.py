@@ -333,3 +333,4 @@ INVERTER_INPUT = "Inverter input"
 
 #G3
 SEQUENCES = "sequences"
+FLOW = "flow"
