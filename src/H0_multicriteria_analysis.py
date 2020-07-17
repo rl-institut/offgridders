@@ -241,7 +241,7 @@ def format_punctuations(multicriteria_data):
     for parameter in multicriteria_data[PARAMETERS]:
         assessment = multicriteria_data[PARAMETERS][parameter]
         if isinstance(assessment[PARAMETER], str):
-            if assessment["show"] == 1.0:
+            if assessment[SHOW] == 1.0:
                 parameters[assessment[PARAMETER]] = {ANALYSE: True}
             else:
                 parameters[assessment[PARAMETER]] = {ANALYSE: False}
