@@ -224,7 +224,7 @@ def format_punctuations(multicriteria_data):
     weights_dimensions = {}
     for dimension in multicriteria_data[DIMENSIONS]:
         assessment = multicriteria_data[DIMENSIONS][dimension]
-        weights_dimensions[assessment[DIMENSIONS]] = assessment[WEIGHT]
+        weights_dimensions[assessment[DIMENSIONS_W]] = assessment[WEIGHT]
 
     weights_criteria = {}
     punctuations = {}

@@ -405,6 +405,8 @@ MAINGRID = "plot"
 PARAMETER = "parameter"
 SHOW = "show"
 
+DIMENSION_W = "Dimensions"
+
 #H1
 ECONOMIC = "economic"
 TECHNICAL = "technical"
