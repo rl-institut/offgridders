@@ -75,7 +75,7 @@ def evaluate_criteria(all_results, qualitative_punctuations, multicriteria_data)
                 qualitative_punctuations, generation_components, case, "T4"
             )
             technical = {"T1": T1, "T2": T2, "T3": T3, "T4": T4}
-            case_evaluations["technical"] = technical
+            case_evaluations[TECHNICAL] = technical
 
             # socioinstitutional evaluation
             S1 = linear_evaluation(
@@ -180,7 +180,7 @@ def rank(normalized_evaluations, weights_dimensions, weights_criteria):
     # first, the evaluations are pondered
     ponderations = {
         ECONOMIC: [],
-        "technical": [],
+        TECHNICAL: [],
         "socioinstitutional": [],
         "environmental": [],
     }
@@ -318,7 +318,7 @@ def create_diccionary(self):
 
     dictionary = {
         ECONOMIC: economic_eval,
-        "technical": technical_eval,
+        TECHNICAL: technical_eval,
         "socioinstitutional": socioinstitutional_eval,
         "environmental": environmental_eval,
     }
@@ -338,7 +338,7 @@ def change_weights(weights_criteria, dimension, criterion):
     weights_criteria[criterion] = 0
     if dimension == ECONOMIC:
         criteria = ["EC1", "EC2"]
-    elif dimension == "technical":
+    elif dimension == TECHNICAL:
         criteria = ["T1", "T2", "T3", "T4"]
     elif dimension == "socioinstitutional":
         criteria = ["S1", "S2", "S3"]
@@ -672,7 +672,7 @@ def representation(
         )
         worksheet.merge_range(
             "B" + str(row + 3) + ":" + "B" + str(row + 6),
-            weights_dimensions["technical"],
+            weights_dimensions[TECHNICAL],
             format_highlight,
         )
         worksheet.merge_range(
