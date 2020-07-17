@@ -208,7 +208,7 @@ def get_pv(
             TOTAL_PV_GENERATION_KWH, pv_gen, oemof_results, case_dict
         )
         e_flows_df = join_e_flows_df(
-            pv_gen, "PV generation DC", e_flows_df
+            pv_gen, PV_GENERATION_DC, e_flows_df
         )
         if case_dict[EVALUATION_PERSPECTIVE] == AC_BUS:
             e_flows_df = join_e_flows_df(
@@ -223,7 +223,7 @@ def get_pv(
             )
         else:
             e_flows_df = join_e_flows_df(
-                e_flows_df["PV generation DC"], "PV generation", e_flows_df
+                e_flows_df[PV_GENERATION_DC], "PV generation", e_flows_df
             )
     else:
         oemof_results.update({TOTAL_PV_GENERATION_KWH: 0})
