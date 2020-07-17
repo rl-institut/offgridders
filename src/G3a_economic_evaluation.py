@@ -123,7 +123,7 @@ def annuities_365(case_dict, oemof_results, experiment):
         PV,
         WIND,
         GENSET,
-        "storage",
+        STORAGE,
         PCOUPLING,
         MAINGRID_EXTENSION,
         DISTRIBUTION_GRID,
@@ -139,7 +139,7 @@ def annuities_365(case_dict, oemof_results, experiment):
             investment += (
                 experiment[PV_COST_INVESTMENT] * oemof_results[CAPACITY_PV_KWP]
             )
-        elif item == "storage":
+        elif item == STORAGE:
             investment += (
                 experiment[SHORTAGE_CAPACITY_COST_INVESTMENT]
                 * oemof_results[CAPACITY_STORAGE_KWH]
@@ -184,7 +184,7 @@ def annuities_365(case_dict, oemof_results, experiment):
             * experiment[item + "_cost_var"]
         )
 
-    for item in [PCOUPLING, "storage", RECTIFIER_AC_DC, INVERTER_DC_AC]:
+    for item in [PCOUPLING, STORAGE, RECTIFIER_AC_DC, INVERTER_DC_AC]:
         om_var_interval.update(
             {
                 "om_var_"
@@ -199,7 +199,7 @@ def annuities_365(case_dict, oemof_results, experiment):
 
     # include opex costs
     for item in component_list:
-        if item == "storage":
+        if item == STORAGE:
             om += (
                 experiment[SHORTAGE_CAPACITY_COST_OPEX]
                 * experiment[STORAGE_CAPACITY_LIFETIME]
@@ -255,7 +255,7 @@ def costs(oemof_results, experiment):
         PV,
         WIND,
         GENSET,
-        "storage",
+        STORAGE,
         PCOUPLING,
         MAINGRID_EXTENSION,
         DISTRIBUTION_GRID,
