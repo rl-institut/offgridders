@@ -89,7 +89,7 @@ def get_shortage(
                 ((SOURCE_SHORTAGE, BUS_ELECTRICITY_AC), FLOW)
             ]
             annual_value(
-                "total_demand_shortage_ac_annual_kWh",
+                TOTAL_DEMAND_SHORTAGE_AC_ANNUAL_KWH,
                 shortage_ac,
                 oemof_results,
                 case_dict,
