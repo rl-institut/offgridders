@@ -18,7 +18,7 @@ def print_oemof_meta_main_invest(experiment, meta, electricity_bus, case_name):
         pp.pprint(meta)
 
     # print the sums of the flows around the electricity bus
-    if experiment["display_main"] == True:
+    if experiment[DISPLAY_MAIN] == True:
         logging.info("********* Main results *********")
         pp.pprint(electricity_bus[SEQUENCES].sum(axis=0))
 

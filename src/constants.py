@@ -384,3 +384,4 @@ CAPACITY_PCC = "capacity pcc"
 
 #G4
 DISPLAY_META = "display_meta"
+DISPLAY_MAIN = "display_main"
