@@ -373,3 +373,4 @@ TOTAL_PCOUPLING_THROUGHPUT_KWH = "total_pcoupling_throughput_kWh"
 
 #G3a
 WIND_COST_ANNUITY = "wind_cost_annuity"
+MAINGRID_EXTENSION_COST_ANNUITY = "maingrid_extension_cost_annuity"
