@@ -13,7 +13,7 @@ def main_analysis(overallresults, multicriteria_data, settings):
     """
 
     all_projects_MCA_data = {
-        "evaluations": {},
+        EVALUATIONS: {},
         "normalized_evaluations": {},
         "global_Ls": {},
         "local_Ls": {},
@@ -49,7 +49,7 @@ def main_analysis(overallresults, multicriteria_data, settings):
             global_evaluations = prepare_global_evaluations(
                 evaluations[project]
             )
-            all_projects_MCA_data["evaluations"][project] = global_evaluations
+            all_projects_MCA_data[EVALUATIONS][project] = global_evaluations
 
             # first, a global ranking, for all solutions, is calculated
             # evaluations are normalized
@@ -101,7 +101,7 @@ def main_analysis(overallresults, multicriteria_data, settings):
 
         # plot criteria evaluations
         multicriteria_functions.plot_evaluations(
-            all_projects_MCA_data["evaluations"],
+            all_projects_MCA_data[EVALUATIONS],
             plot_criteria,
             parameters,
             cases,

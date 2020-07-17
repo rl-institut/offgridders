@@ -443,7 +443,7 @@ def representation(
         settings[OUTPUT_FOLDER] + "/MCA_evaluations.xlsx"
     )
 
-    for n in range(len(all_data["evaluations"])):
+    for n in range(len(all_data[EVALUATIONS])):
         # there will be a tab for each project
         worksheet = workbook.add_worksheet(projects_name[n])
 
@@ -619,8 +619,8 @@ def representation(
             "Environmental",
             format_highlight,
         )
-        for dimension in all_data["evaluations"][n + 1]:
-            for criterion in all_data["evaluations"][n + 1][dimension]:
+        for dimension in all_data[EVALUATIONS][n + 1]:
+            for criterion in all_data[EVALUATIONS][n + 1][dimension]:
                 worksheet.merge_range(
                     "C" + str(row + 1) + ":D" + str(row + 1),
                     criterion,
@@ -628,7 +628,7 @@ def representation(
                 )
                 col = 4
                 i = 0
-                values = all_data["evaluations"][n + 1][dimension][criterion]
+                values = all_data[EVALUATIONS][n + 1][dimension][criterion]
                 for value in values:
                     if i / (len(cases) * 2) < 0.5:
                         worksheet.write(row, col, value, format_text)

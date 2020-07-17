@@ -389,3 +389,4 @@ DISPLAY_INVEST = "display_invest"
 
 #H0
 CAPACITIES = "capacities"
+EVALUATIONS = "evaluations"
