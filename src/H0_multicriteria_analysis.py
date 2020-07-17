@@ -153,12 +153,12 @@ def presentation(overallresults, parameters):
     # look at which solved experiments the levels of the parameters of the sensibility analysis change
     for parameter in parameters:
         index = 0
-        parameters[parameter]["levels"] = []
+        parameters[parameter][LEVELS] = []
         parameters[parameter]["previous_level"] = None
         parameters[parameter]["changes"] = []
         for level in overallresults[previous_project][parameter]:
-            if level not in parameters[parameter]["levels"]:
-                parameters[parameter]["levels"].append(level)
+            if level not in parameters[parameter][LEVELS]:
+                parameters[parameter][LEVELS].append(level)
             if level != parameters[parameter]["previous_level"]:
                 parameters[parameter]["changes"].append(index)
                 parameters[parameter]["previous_level"] = level
@@ -177,7 +177,7 @@ def presentation(overallresults, parameters):
                     number_included = 0
                     i = 0
                     while (
-                        number_included < len(parameters[parameter]["levels"]) - 1
+                        number_included < len(parameters[parameter][LEVELS]) - 1
                     ) and i < len(parameters[parameter]["changes"]):
                         subchange = parameters[parameter]["changes"][i]
                         if subchange > change:

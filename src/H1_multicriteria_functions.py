@@ -497,9 +497,9 @@ def representation(
                 del parameters_name[0]
                 cells = len(cases)
                 for param in parameters_name:
-                    cells = cells * len(parameters[param]["levels"])
+                    cells = cells * len(parameters[param][LEVELS])
                 if first:
-                    for level in parameters[parameter]["levels"]:
+                    for level in parameters[parameter][LEVELS]:
                         worksheet.merge_range(
                             str(columns[col])
                             + str(row + 1)
@@ -516,7 +516,7 @@ def representation(
                     first = False
                 else:
                     while col < final:
-                        for level in parameters[parameter]["levels"]:
+                        for level in parameters[parameter][LEVELS]:
                             worksheet.merge_range(
                                 str(columns[col])
                                 + str(row + 1)
@@ -822,7 +822,7 @@ def plot_evaluations(
     combinations = len(cases)
     for parameter in parameters:
         if parameters[parameter]["analyse"] == True:
-            combinations = combinations * len(parameters[parameter]["levels"])
+            combinations = combinations * len(parameters[parameter][LEVELS])
 
     cases_exp = []
     for i in range(combinations):
