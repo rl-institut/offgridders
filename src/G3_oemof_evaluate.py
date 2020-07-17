@@ -408,7 +408,7 @@ def get_genset(case_dict, oemof_results, electricity_bus_ac, e_flows_df):
             ((TRANSFORMER_GENSET_1, BUS_ELECTRICITY_AC), FLOW)
         ]
         e_flows_df = join_e_flows_df(
-            genset, "Genset 1 generation", e_flows_df
+            genset, GENSET_1_GENERATION, e_flows_df
         )
         total_genset = genset
         for number in range(2, case_dict[NUMBER_OF_EQUAL_GENERATORS] + 1):
