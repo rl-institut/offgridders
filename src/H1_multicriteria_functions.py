@@ -587,7 +587,7 @@ def representation(
         # write evaluations of criteria
         row += 1
         worksheet.merge_range(
-            "A" + str(row + 1) + ":B" + str(row + 1), DIMENSION, format_highlight
+            "A" + str(row + 1) + ":B" + str(row + 1), DIMENSIONS, format_highlight
         )
         worksheet.merge_range(
             "C" + str(row + 1) + ":D" + str(row + 1), CRITERIA, format_highlight
@@ -643,7 +643,7 @@ def representation(
         # write normalized evaluations of criteria
         row += 1
         col = 0
-        worksheet.write(row, col, DIMENSION, format_highlight)
+        worksheet.write(row, col, DIMENSIONS, format_highlight)
         worksheet.write(row, col + 1, "Weights", format_highlight)
         worksheet.write(row, col + 2, CRITERIA, format_highlight)
         worksheet.write(row, col + 3, "Weights", format_highlight)

@@ -1,6 +1,10 @@
 import logging
 
 import src.H1_multicriteria_functions as multicriteria_functions
+from src.constants import EVALUATIONS, NORMALIZED_EVALUATIONS, GLOBAL_LS, LOCAL_LS, SENSITIVITY_ALL_COMBINATIONS, \
+    CAPACITIES, CASE, PROJECT_SITE_NAME, LEVELS, PREVIOUS_LEVEL, CHANGES, ANALYSE, FILENAME, DIMENSIONS, WEIGHT, \
+    CRITERIA, ABREV, PV, WIND, GENSET, MAINGRID, DIESEL, PARAMETERS, PARAMETER, SHOW
+
 
 def main_analysis(overallresults, multicriteria_data, settings):
     """
@@ -218,9 +222,9 @@ def format_punctuations(multicriteria_data):
     """
 
     weights_dimensions = {}
-    for dimension in multicriteria_data[DIMENSION]:
-        assessment = multicriteria_data[DIMENSION][dimension]
-        weights_dimensions[assessment[DIMENSION]] = assessment[WEIGHT]
+    for dimension in multicriteria_data[DIMENSIONS]:
+        assessment = multicriteria_data[DIMENSIONS][dimension]
+        weights_dimensions[assessment[DIMENSIONS]] = assessment[WEIGHT]
 
     weights_criteria = {}
     punctuations = {}
