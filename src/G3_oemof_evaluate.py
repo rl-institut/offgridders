@@ -277,13 +277,13 @@ def get_rectifier(
         )
 
         annual_value(
-            "total_rectifier_ac_dc_throughput_kWh",
+            TOTAL_RECTIFIER_AC_DC_THROUGHPUT_KWH,
             rectifier_in,
             oemof_results,
             case_dict,
         )
     else:
-        oemof_results.update({"total_rectifier_ac_dc_throughput_kWh": 0})
+        oemof_results.update({TOTAL_RECTIFIER_AC_DC_THROUGHPUT_KWH: 0})
 
     # Get capacity
     if case_dict[RECTIFIER_AC_DC_FIXED_CAPACITY] == False:
