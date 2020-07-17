@@ -86,7 +86,7 @@ def evaluate_criteria(all_results, qualitative_punctuations, multicriteria_data)
                 qualitative_punctuations, generation_components, case, "S3"
             )
             socioinstitutional = {"S1": S1, "S2": S2, "S3": S3}
-            case_evaluations["socioinstitutional"] = socioinstitutional
+            case_evaluations[SOCIOINSTITUTIONAL] = socioinstitutional
 
             # environmental evaluation
             EN1 = linear_evaluation(
@@ -181,7 +181,7 @@ def rank(normalized_evaluations, weights_dimensions, weights_criteria):
     ponderations = {
         ECONOMIC: [],
         TECHNICAL: [],
-        "socioinstitutional": [],
+        SOCIOINSTITUTIONAL: [],
         "environmental": [],
     }
     for dimension in normalized_evaluations:
@@ -319,7 +319,7 @@ def create_diccionary(self):
     dictionary = {
         ECONOMIC: economic_eval,
         TECHNICAL: technical_eval,
-        "socioinstitutional": socioinstitutional_eval,
+        SOCIOINSTITUTIONAL: socioinstitutional_eval,
         "environmental": environmental_eval,
     }
 
@@ -340,7 +340,7 @@ def change_weights(weights_criteria, dimension, criterion):
         criteria = ["EC1", "EC2"]
     elif dimension == TECHNICAL:
         criteria = ["T1", "T2", "T3", "T4"]
-    elif dimension == "socioinstitutional":
+    elif dimension == SOCIOINSTITUTIONAL:
         criteria = ["S1", "S2", "S3"]
     elif dimension == "environmental":
         criteria = ["EN1", "EN2", "EN3"]
@@ -680,7 +680,7 @@ def representation(
         )
         worksheet.merge_range(
             "B" + str(row + 7) + ":" + "B" + str(row + 9),
-            weights_dimensions["socioinstitutional"],
+            weights_dimensions[SOCIOINSTITUTIONAL],
             format_highlight,
         )
         worksheet.merge_range(
