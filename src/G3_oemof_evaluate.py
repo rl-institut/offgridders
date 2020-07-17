@@ -167,7 +167,7 @@ def get_excess(
             TOTAL_DEMAND_EXCESS_AC_ANNUAL_KWH, excess_ac, oemof_results, case_dict
         )
         e_flows_df = join_e_flows_df(
-            excess_ac, "Excess generation AC", e_flows_df
+            excess_ac, EXCESS_GENERATION_AC, e_flows_df
         )
 
     if electricity_bus_dc != None:
