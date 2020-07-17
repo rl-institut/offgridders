@@ -50,7 +50,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
         STORAGE_DISCHARGE_DC,
         "Storage SOC",
         "Storage charge",
-        "Storage charge AC",
+        STORAGE_CHARGE_AC,
         STORAGE_CHARGE_DC,
         GENSET_GENERATION,
         GRID_AVAILABILITY,
@@ -75,7 +75,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
         PV_GENERATION_DC,
         "Storage discharge AC",
         STORAGE_DISCHARGE_DC,
-        "Storage charge AC",
+        STORAGE_CHARGE_AC,
         STORAGE_CHARGE_DC,
     ]
 

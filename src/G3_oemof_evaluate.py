@@ -494,7 +494,7 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
         if case_dict[EVALUATION_PERSPECTIVE] == AC_BUS:
             e_flows_df = join_e_flows_df(
                 storage_charge / experiment[RECTIFIER_AC_DC_EFFICIENCY],
-                "Storage charge AC",
+                STORAGE_CHARGE_AC,
                 e_flows_df,
             )
             e_flows_df = join_e_flows_df(
@@ -503,7 +503,7 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
                 e_flows_df,
             )
             e_flows_df = join_e_flows_df(
-                e_flows_df["Storage charge AC"], "Storage charge", e_flows_df
+                e_flows_df[STORAGE_CHARGE_AC], "Storage charge", e_flows_df
             )
             e_flows_df = join_e_flows_df(
                 e_flows_df["Storage discharge AC"], STORAGE_DISCHARGE, e_flows_df
