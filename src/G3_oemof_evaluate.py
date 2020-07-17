@@ -553,13 +553,13 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
     if oemof_results[CAPACITY_STORAGE_KWH] > 0:
         e_flows_df = join_e_flows_df(
             stored_capacity / oemof_results[CAPACITY_STORAGE_KWH],
-            "Storage SOC",
+            STORAGE_SOC,
             e_flows_df,
         )
     else:
         e_flows_df = join_e_flows_df(
             pd.Series([0 for t in e_flows_df.index], index=e_flows_df.index),
-            "Storage SOC",
+            STORAGE_SOC,
             e_flows_df,
         )
 

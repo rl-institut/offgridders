@@ -48,7 +48,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
         STORAGE_DISCHARGE,
         STORAGE_DISCHARGE_AC,
         STORAGE_DISCHARGE_DC,
-        "Storage SOC",
+        STORAGE_SOC,
         STORAGE_CHARGE,
         STORAGE_CHARGE_AC,
         STORAGE_CHARGE_DC,
@@ -140,8 +140,8 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
             if item in mg_flows.columns:
                 mg_flows = mg_flows.drop([item], axis=1)
 
-        if "Storage SOC" in mg_flows.columns:
-            mg_flows = mg_flows.drop(["Storage SOC"], axis=1)
+        if STORAGE_SOC in mg_flows.columns:
+            mg_flows = mg_flows.drop([STORAGE_SOC], axis=1)
             if case_dict[STORAGE_FIXED_CAPACITY] != None:
                 number_of_subplots += 1
         if GRID_AVAILABILITY in mg_flows.columns:
@@ -208,7 +208,7 @@ def plot_flows(case_dict, experiment, mg_flows, e_flows_df, number_of_subplots):
         "Feed into main grid": "#ff33cc",  # pink
         STORAGE_DISCHARGE: "#ccccff",  # pidgeon blue
         DEMAND_SHORTAGE: "#ff3300",  # bright red
-        "Storage SOC": "#0033cc",  # blue
+        STORAGE_SOC: "#0033cc",  # blue
         GRID_AVAILABILITY: "#cc0000",  # red
     }
 
@@ -241,14 +241,14 @@ def plot_flows(case_dict, experiment, mg_flows, e_flows_df, number_of_subplots):
             ylabel += ",\n "
 
         if (case_dict[STORAGE_FIXED_CAPACITY] != None) and (
-            "Storage SOC" in e_flows_df.columns
+            STORAGE_SOC in e_flows_df.columns
         ):
-            e_flows_df["Storage SOC"].plot(
+            e_flows_df[STORAGE_SOC].plot(
                 ax=axes[1],
-                color=color_dict.get("Storage SOC", "#333333"),
+                color=color_dict.get(STORAGE_SOC, "#333333"),
                 drawstyle="steps-mid",
             )
-            ylabel += "Storage SOC"
+            ylabel += STORAGE_SOC
 
         axes[1].set(xlabel="Time", ylabel=ylabel)
         if number_of_subplots > 1:
@@ -265,7 +265,7 @@ def save_storage(experiment, case_dict, e_flows_df, filename):
         flows_connected_to_electricity_mg_bus = [
             STORAGE_DISCHARGE,
             STORAGE_CHARGE,
-            "Storage SOC",
+            STORAGE_SOC,
         ]
         storage_flows = pd.DataFrame(
             e_flows_df[STORED_CAPACITY].values,
