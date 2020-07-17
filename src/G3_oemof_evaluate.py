@@ -665,7 +665,7 @@ def get_national_grid(
             feedin_utility_side, "Feed into main grid (utility side)", e_flows_df
         )
         annual_value(
-            "feedin_main_grid_utility_side_annual_kWh",
+            FEEDIN_MAIN_GRID_UTILITY_SIDE_ANNUAL_KWH,
             feedin_utility_side,
             oemof_results,
             case_dict,
@@ -674,7 +674,7 @@ def get_national_grid(
         oemof_results.update(
             {
                 FEEDIN_MAIN_GRID_MG_SIDE_ANNUAL_KWH: 0,
-                "feedin_main_grid_utility_side_annual_kWh": 0,
+                FEEDIN_MAIN_GRID_UTILITY_SIDE_ANNUAL_KWH: 0,
             }
         )
 
