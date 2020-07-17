@@ -235,7 +235,7 @@ def wind_oem(micro_grid_system, bus_electricity_ac, experiment):
                 actual_value=wind_norm,
                 fixed=True,
                 investment=solph.Investment(
-                    ep_costs=experiment["wind_cost_annuity"] / peak_wind_generation
+                    ep_costs=experiment[WIND_COST_ANNUITY] / peak_wind_generation
                 ),
                 variable_costs=experiment[WIND_COST_VAR] / peak_wind_generation,
             )

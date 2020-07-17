@@ -370,3 +370,6 @@ CONSUMPTION_MAIN_GRID_UTILITY_SIDE_ANNUAL_KWH = "consumption_main_grid_utility_s
 BUS_ELECTRICITY_NG_FEEDIN = "bus_electricity_ng_feedin"
 FEEDIN_MAIN_GRID_UTILITY_SIDE_ANNUAL_KWH = "feedin_main_grid_utility_side_annual_kWh"
 TOTAL_PCOUPLING_THROUGHPUT_KWH = "total_pcoupling_throughput_kWh"
+
+#G3a
+WIND_COST_ANNUITY = "wind_cost_annuity"
