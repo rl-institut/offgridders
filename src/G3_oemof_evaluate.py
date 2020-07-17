@@ -457,10 +457,10 @@ def get_fuel(case_dict, oemof_results, results):
         fuel_bus = outputlib.views.node(results, BUS_FUEL)
         fuel = fuel_bus[SEQUENCES][((SOURCE_FUEL, BUS_FUEL), FLOW)]
         annual_value(
-            "consumption_fuel_annual_kWh", fuel, oemof_results, case_dict
+            CONSUMPTION_FUEL_ANNUAL_KWH, fuel, oemof_results, case_dict
         )
     else:
-        oemof_results.update({"consumption_fuel_annual_kWh": 0})
+        oemof_results.update({CONSUMPTION_FUEL_ANNUAL_KWH: 0})
     return
 
 def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
