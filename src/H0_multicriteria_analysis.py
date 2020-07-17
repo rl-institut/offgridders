@@ -232,7 +232,7 @@ def format_punctuations(multicriteria_data):
             PV: assessment[PV],
             WIND: assessment[WIND],
             GENSET: assessment[DIESEL],
-            "maingrid": assessment["maingrid"],
+            MAINGRID: assessment[MAINGRID],
         }
         if assessment["plot"] == "Yes":
             plot_criteria.append(assessment[ABREV])
