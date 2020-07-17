@@ -726,7 +726,7 @@ def demand_dc(micro_grid_system, bus_electricity_dc, demand_profile):
 
 def maingrid_feedin(micro_grid_system, experiment):
     logging.debug("Added to oemof model: maingrid feedin")
-    bus_electricity_ng_feedin = solph.Bus(label="bus_electricity_ng_feedin")
+    bus_electricity_ng_feedin = solph.Bus(label=BUS_ELECTRICITY_NG_FEEDIN)
     micro_grid_system.add(bus_electricity_ng_feedin)
 
     # create and add demand sink to micro_grid_system - fixed

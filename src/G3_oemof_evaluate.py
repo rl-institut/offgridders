@@ -656,10 +656,10 @@ def get_national_grid(
         )
 
         bus_electricity_ng_feedin = outputlib.views.node(
-            results, "bus_electricity_ng_feedin"
+            results, BUS_ELECTRICITY_NG_FEEDIN
         )
         feedin_utility_side = bus_electricity_ng_feedin[SEQUENCES][
-            ((TRANSFORMER_PCC_FEEDIN, "bus_electricity_ng_feedin"), FLOW)
+            ((TRANSFORMER_PCC_FEEDIN, BUS_ELECTRICITY_NG_FEEDIN), FLOW)
         ]
         e_flows_df = join_e_flows_df(
             feedin_utility_side, "Feed into main grid (utility side)", e_flows_df
