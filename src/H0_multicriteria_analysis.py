@@ -167,7 +167,7 @@ def presentation(overallresults, parameters):
     # selects the solved experiments to keep for the multicriteria analysis (where the parameters levels change)
     experiments2analyse = []
     for parameter in parameters:
-        if parameters[parameter]["analyse"] == True:
+        if parameters[parameter][ANALYSE] == True:
             if len(experiments2analyse) == 0:
                 for change in parameters[parameter][CHANGES]:
                     experiments2analyse.append(change)
@@ -242,9 +242,9 @@ def format_punctuations(multicriteria_data):
         assessment = multicriteria_data[PARAMETERS][parameter]
         if isinstance(assessment["parameter"], str):
             if assessment["show"] == 1.0:
-                parameters[assessment["parameter"]] = {"analyse": True}
+                parameters[assessment["parameter"]] = {ANALYSE: True}
             else:
-                parameters[assessment["parameter"]] = {"analyse": False}
+                parameters[assessment["parameter"]] = {ANALYSE: False}
 
     return (
         weights_dimensions,
