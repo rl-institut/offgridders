@@ -154,14 +154,14 @@ def presentation(overallresults, parameters):
     for parameter in parameters:
         index = 0
         parameters[parameter][LEVELS] = []
-        parameters[parameter]["previous_level"] = None
+        parameters[parameter][PREVIOUS_LEVEL] = None
         parameters[parameter]["changes"] = []
         for level in overallresults[previous_project][parameter]:
             if level not in parameters[parameter][LEVELS]:
                 parameters[parameter][LEVELS].append(level)
-            if level != parameters[parameter]["previous_level"]:
+            if level != parameters[parameter][PREVIOUS_LEVEL]:
                 parameters[parameter]["changes"].append(index)
-                parameters[parameter]["previous_level"] = level
+                parameters[parameter][PREVIOUS_LEVEL] = level
             index += 1
 
     # selects the solved experiments to keep for the multicriteria analysis (where the parameters levels change)
