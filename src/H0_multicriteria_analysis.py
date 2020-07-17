@@ -15,7 +15,7 @@ def main_analysis(overallresults, multicriteria_data, settings):
     all_projects_MCA_data = {
         EVALUATIONS: {},
         NORMALIZED_EVALUATIONS: {},
-        "global_Ls": {},
+        GLOBAL_LS: {},
         "local_Ls": {},
     }  # it will store all needed data for the representation of the MCA in excel sheet
 
@@ -64,7 +64,7 @@ def main_analysis(overallresults, multicriteria_data, settings):
             global_Ls = multicriteria_functions.rank(
                 global_normalized_evaluations, weights_dimensions, weights_criteria
             )
-            all_projects_MCA_data["global_Ls"][project] = global_Ls
+            all_projects_MCA_data[GLOBAL_LS][project] = global_Ls
 
             # then, a local ranking, for each combinations of parameters (if asked), is calculated
             if sensibility:

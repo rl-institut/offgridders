@@ -728,8 +728,8 @@ def representation(
         worksheet.write(row, 3, "L1", format_highlight)
         worksheet.write(row + 1, 3, "Linf", format_highlight)
         worksheet.write(row + 2, 3, "L", format_highlight)
-        for j in range(len(all_data["global_Ls"][n + 1])):
-            L = all_data["global_Ls"][n + 1][j]
+        for j in range(len(all_data[GLOBAL_LS][n + 1])):
+            L = all_data[GLOBAL_LS][n + 1][j]
             col = 4
             for value in L:
                 worksheet.write(row, col, round(value, 2), format_highlight)
