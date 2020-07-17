@@ -390,3 +390,4 @@ DISPLAY_INVEST = "display_invest"
 #H0
 CAPACITIES = "capacities"
 EVALUATIONS = "evaluations"
+NORMALIZED_EVALUATIONS = "normalized_evaluations"

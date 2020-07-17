@@ -14,7 +14,7 @@ def main_analysis(overallresults, multicriteria_data, settings):
 
     all_projects_MCA_data = {
         EVALUATIONS: {},
-        "normalized_evaluations": {},
+        NORMALIZED_EVALUATIONS: {},
         "global_Ls": {},
         "local_Ls": {},
     }  # it will store all needed data for the representation of the MCA in excel sheet
@@ -56,7 +56,7 @@ def main_analysis(overallresults, multicriteria_data, settings):
             global_normalized_evaluations = multicriteria_functions.normalize_evaluations(
                 global_evaluations, weights_criteria, "global"
             )
-            all_projects_MCA_data["normalized_evaluations"][
+            all_projects_MCA_data[NORMALIZED_EVALUATIONS][
                 project
             ] = global_normalized_evaluations
 

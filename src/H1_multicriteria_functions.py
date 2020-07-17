@@ -690,15 +690,15 @@ def representation(
             weights_dimensions["environmental"],
             format_highlight,
         )
-        for dimension in all_data["normalized_evaluations"][n + 1]:
-            for criterion in all_data["normalized_evaluations"][n + 1][dimension]:
+        for dimension in all_data[NORMALIZED_EVALUATIONS][n + 1]:
+            for criterion in all_data[NORMALIZED_EVALUATIONS][n + 1][dimension]:
                 worksheet.write(row, 2, criterion, format_highlight)
                 worksheet.write(
                     row, 3, weights_criteria[criterion], format_highlight
                 )
                 col = 4
                 i = 0
-                values = all_data["normalized_evaluations"][n + 1][dimension][
+                values = all_data[NORMALIZED_EVALUATIONS][n + 1][dimension][
                     criterion
                 ]
                 for value in values:
