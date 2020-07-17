@@ -16,7 +16,7 @@ def main_analysis(overallresults, multicriteria_data, settings):
         EVALUATIONS: {},
         NORMALIZED_EVALUATIONS: {},
         GLOBAL_LS: {},
-        "local_Ls": {},
+        LOCAL_LS: {},
     }  # it will store all needed data for the representation of the MCA in excel sheet
 
     # information from the multicriteria tab in input excel file is set in the right format
@@ -85,7 +85,7 @@ def main_analysis(overallresults, multicriteria_data, settings):
                         weights_criteria,
                     )
                     local_Ls.append(local_Ls_each)
-                all_projects_MCA_data["local_Ls"][project] = local_Ls
+                all_projects_MCA_data[LOCAL_LS][project] = local_Ls
 
         # present results of the multicriteria analysis in excel file
         multicriteria_functions.representation(

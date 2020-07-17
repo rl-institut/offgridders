@@ -773,8 +773,8 @@ def representation(
             worksheet.write(row, 3, "L1", format_highlight)
             worksheet.write(row + 1, 3, "Linf", format_highlight)
             worksheet.write(row + 2, 3, "L", format_highlight)
-            for j in range(len(all_data["local_Ls"][n + 1])):
-                combinations = all_data["local_Ls"][n + 1][j]
+            for j in range(len(all_data[LOCAL_LS][n + 1])):
+                combinations = all_data[LOCAL_LS][n + 1][j]
                 if i % 2 == 0:
                     for L in combinations:
                         col = start_col
