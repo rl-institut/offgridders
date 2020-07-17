@@ -95,7 +95,7 @@ def get_shortage(
                 case_dict,
             )
             e_flows_df = join_e_flows_df(
-                shortage_ac, "Demand shortage AC", e_flows_df
+                shortage_ac, DEMAND_SHORTAGE_AC, e_flows_df
             )
 
             if case_dict[EVALUATION_PERSPECTIVE] == AC_BUS:

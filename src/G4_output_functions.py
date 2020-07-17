@@ -35,7 +35,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
         "Demand AC",
         "Demand DC",
         DEMAND_SHORTAGE,
-        "Demand shortage AC",
+        DEMAND_SHORTAGE_AC,
         "Demand shortage DC",
         "Demand supplied",
         "PV generation",
@@ -58,7 +58,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
 
     negative_list = [
         DEMAND_SHORTAGE,
-        "Demand shortage AC",
+        DEMAND_SHORTAGE_AC,
         "Demand shortage DC",
         STORAGE_DISCHARGE,
         "Storage discharge AC",
@@ -69,7 +69,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
     droplist = [
         "Demand AC",
         "Demand DC",
-        "Demand shortage AC",
+        DEMAND_SHORTAGE_AC,
         "Demand shortage DC",
         "PV generation AC",
         "PV generation DC",
