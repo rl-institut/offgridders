@@ -111,14 +111,9 @@ from src.constants import (
     TOTAL_PCOUPLING_THROUGHPUT_KWH,
     MAINGRID_RENEWABLE_SHARE,
     RES_SHARE,
-    AC_SYSTEM,
-)
+    AC_SYSTEM)
 
-try:
-    import matplotlib.pyplot as plt
-except ImportError:
-    logging.warning("Attention! matplotlib could not be imported.")
-    plt = None
+import matplotlib.pyplot as plt
 
 
 def join_e_flows_df(timeseries, name, e_flows_df):
