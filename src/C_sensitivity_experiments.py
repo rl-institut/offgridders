@@ -14,174 +14,175 @@ from copy import deepcopy
 # todo: this module should not be called here
 import src.D0_process_input as process_input_parameters
 
-from src.constants import ( BLACKOUT_DURATION,
-                            BLACKOUT_DURATION_STD_DEVIATION,
-                            BLACKOUT_FREQUENCY,
-                            BLACKOUT_FREQUENCY_STD_DEVIATION,
-                            SENSITIVITY_ALL_COMBINATIONS,
-                            DEMAND_AC_SCALING_FACTOR,
-                            DEMAND_DC_SCALING_FACTOR,
-                            STORAGE_SOC_INITIAL,
-                            TOTAL_NUMBER_OF_EXPERIMENTS,
-                            PROJECT_SITE_NAME,
-                            EXPERIMENT_NAME,
-                            MIN,
-                            MAX,
-                            STEP,
-                            COMBUSTION_VALUE_FUEL,
-                            DISTRIBUTION_GRID_COST_INVESTMENT,
-                            DISTRIBUTION_GRID_COST_OPEX ,
-                            DISTRIBUTION_GRID_LIFETIME,
-                            GENSET_BATCH,
-                            GENSET_COST_INVESTMENT,
-                            GENSET_COST_OPEX,
-                            GENSET_COST_VAR,
-                            GENSET_EFFICIENCY,
-                            GENSET_LIFETIME,
-                            GENSET_MAX_LOADING,
-                            GENSET_MIN_LOADING,
-                            GENSET_OVERSIZE_FACTOR,
-                            INVERTER_DC_AC_BATCH ,
-                            INVERTER_DC_AC_COST_INVESTMENT,
-                            INVERTER_DC_AC_COST_OPEX,
-                            INVERTER_DC_AC_COST_VAR,
-                            INVERTER_DC_AC_EFFICIENCY,
-                            INVERTER_DC_AC_LIFETIME,
-                            MAINGRID_DISTANCE,
-                            MAINGRID_ELECTRICITY_PRICE,
-                            MAINGRID_EXTENSION_COST_INVESTMENT,
-                            MAINGRID_EXTENSION_COST_OPEX,
-                            MAINGRID_EXTENSION_LIFETIME,
-                            MAINGRID_FEEDIN_TARIFF,
-                            MAINGRID_RENEWABLE_SHARE,
-                            MIN_RENEWABLE_SHARE,
-                            PCOUPLING_BATCH,
-                            PCOUPLING_COST_INVESTMENT,
-                            PCOUPLING_COST_OPEX,
-                            PCOUPLING_COST_VAR,
-                            PCOUPLING_EFFICIENCY,
-                            PCOUPLING_LIFETIME,
-                            PCOUPLING_OVERSIZE_FACTOR,
-                            PRICE_FUEL,
-                            PROJECT_COST_INVESTMENT,
-                            PROJECT_COST_OPEX,
-                            PROJECT_LIFETIME,
-                            PV_BATCH,
-                            PV_COST_INVESTMENT,
-                            PV_COST_OPEX ,
-                            PV_COST_VAR,
-                            PV_LIFETIME,
-                            RECTIFIER_AC_DC_BATCH,
-                            RECTIFIER_AC_DC_COST_INVESTMENT,
-                            RECTIFIER_AC_DC_COST_OPEX,
-                            RECTIFIER_AC_DC_COST_VAR,
-                            RECTIFIER_AC_DC_EFFICIENCY,
-                            RECTIFIER_AC_DC_LIFETIME,
-                            SHORTAGE_MAX_ALLOWED,
-                            SHORTAGE_MAX_TIMESTEP,
-                            SHORTAGE_PENALTY_COST,
-                            SHORTAGE_LIMIT,
-                            SHORTAGE_BATCH_CAPACITY,
-                            SHORTAGE_BATCH_POWER,
-                            SHORTAGE_CAPACITY_COST_INVESTMENT,
-                            SHORTAGE_CAPACITY_COST_OPEX ,
-                            STORAGE_CAPACITY_LIFETIME,
-                            STORAGE_COST_VAR,
-                            STORAGE_CRATE_CHARGE,
-                            STORAGE_CRATE_DISCHARGE,
-                            STORAGE_EFFICIENCY_CHARGE,
-                            STORAGE_EFFICIENCY_DISCHARGE,
-                            STORAGE_LOSS_TIMESTEP,
-                            STORAGE_POWER_COST_INVESTMENT,
-                            STORAGE_POWER_COST_OPEX ,
-                            STORAGE_POWER_LIFETIME,
-                            STORAGE_SOC_MAX ,
-                            STORAGE_SOC_MIN ,
-                            TAX,
-                            WACC,
-                            WHITE_NOISE_DEMAND,
-                            WHITE_NOISE_PV,
-                            WHITE_NOISE_WIND,
-                            WIND_BATCH ,
-                            WIND_COST_INVESTMENT,
-                            WIND_COST_OPEX,
-                            WIND_COST_VAR,
-                            WIND_LIFETIME,
-                            FUEL_PRICE,
-                            FUEL_PRICE_CHANGE_ANNUAL,
-                            CASE,
-                            RESULTS_DEMAND_CHARACTERISTICS,
-                            RESULTS_BLACKOUT_CHARACTERISTICS,
-                            CAPACITY_INVERTER_KW,
-                            LCOE,
-                            ANNUITY,
-                            NPV,
-                            SUPPLY_RELIABILITY_KWH,
-                            RES_SHARE,
-                            AUTONOMY_FACTOR,
-                            TOTAL_DEMAND_ANNUAL_KWH,
-                            DEMAND_PEAK_KW,
-                            TOTAL_DEMAND_SUPPLIED_ANNUAL_KWH,
-                            TOTAL_DEMAND_SHORTAGE_ANNUAL_KWH,
-                            NATIONAL_GRID_RELIABILITY_H,
-                            NATIONAL_GRID_TOTAL_BLACKOUT_DURATION,
-                            NATIONAL_GRID_NUMBER_OF_BLACKOUTS,
-                            TOTAL_PV_GENERATION_KWH,
-                            TOTAL_WIND_GENERATION_KWH,
-                            TOTAL_GENSET_GENERATION_KWH,
-                            CONSUMPTION_FUEL_ANNUAL_L,
-                            CONSUMPTION_MAIN_GRID_MG_SIDE_ANNUAL_KWH,
-                            FEEDIN_MAIN_GRID_MG_SIDE_ANNUAL_KWH,
-                            RESULTS_ANNUITIES,
-                            ANNUITY_PV,
-                            ANNUITY_STORAGE,
-                            ANNUITY_RECTIFIER_AC_DC,
-                            ANNUITY_INVERTER_DC_AC,
-                            ANNUITY_WIND ,
-                            ANNUITY_GENSET,
-                            ANNUITY_PCOUPLING,
-                            ANNUITY_DISTRIBUTION_GRID,
-                            ANNUITY_PROJECT,
-                            ANNUITY_MAINGRID_EXTENSION,
-                            EXPENDITURES_FUEL_ANNUAL,
-                            EXPENDITURES_MAIN_GRID_CONSUMPTION_ANNUAL,
-                            EXPENDITURES_SHORTAGE_ANNUAL,
-                            REVENUE_MAIN_GRID_FEEDIN_ANNUAL,
-                            RESULTS_COSTS,
-                            COSTS_PV,
-                            COSTS_STORAGE,
-                            COSTS_RECTIFIER_AC_DC,
-                            COSTS_INVERTER_DC_AC,
-                            COSTS_WIND ,
-                            COSTS_GENSET,
-                            COSTS_PCOUPLING,
-                            COSTS_DISTRIBUTION_GRID,
-                            COSTS_PROJECT,
-                            FIRST_INVESTMENT,
-                            OPERATION_MAINTAINANCE_EXPENDITURES,
-                            COSTS_MAINGRID_EXTENSION,
-                            EXPENDITURES_FUEL_TOTAL,
-                            EXPENDITURES_MAIN_GRID_CONSUMPTION_TOTAL,
-                            EXPENDITURES_SHORTAGE_TOTAL,
-                            REVENUE_MAIN_GRID_FEEDIN_TOTAL,
-                            OBJECTIVE_VALUE,
-                            SIMULATION_TIME,
-                            EVALUATION_TIME,
-                            FILENAME,
-                            COMMENTS,
-                            CAPACITY_PCOUPLING_KW,
-                            DEMAND_AC,
-                            DEMAND_DC,
-                            PV_GENERATION_PER_KWP,
-                            WIND_GENERATION_PER_KW,
-                            GRID_AVAILABILITY,
-                            OUTPUT_FOLDER,
-                            CAPACITY_PV_KWP,
-                            CAPACITY_STORAGE_KWH,
-                            POWER_STORAGE_KW,
-                            CAPACITY_RECTIFIER_AC_DC_KW,
-                            CAPACITY_WIND_KW,
-                            CAPACITY_GENSET_KW,
+from src.constants import (
+    BLACKOUT_DURATION,
+    BLACKOUT_DURATION_STD_DEVIATION,
+    BLACKOUT_FREQUENCY,
+    BLACKOUT_FREQUENCY_STD_DEVIATION,
+    SENSITIVITY_ALL_COMBINATIONS,
+    DEMAND_AC_SCALING_FACTOR,
+    DEMAND_DC_SCALING_FACTOR,
+    STORAGE_SOC_INITIAL,
+    TOTAL_NUMBER_OF_EXPERIMENTS,
+    PROJECT_SITE_NAME,
+    EXPERIMENT_NAME,
+    MIN,
+    MAX,
+    STEP,
+    COMBUSTION_VALUE_FUEL,
+    DISTRIBUTION_GRID_COST_INVESTMENT,
+    DISTRIBUTION_GRID_COST_OPEX,
+    DISTRIBUTION_GRID_LIFETIME,
+    GENSET_BATCH,
+    GENSET_COST_INVESTMENT,
+    GENSET_COST_OPEX,
+    GENSET_COST_VAR,
+    GENSET_EFFICIENCY,
+    GENSET_LIFETIME,
+    GENSET_MAX_LOADING,
+    GENSET_MIN_LOADING,
+    GENSET_OVERSIZE_FACTOR,
+    INVERTER_DC_AC_BATCH,
+    INVERTER_DC_AC_COST_INVESTMENT,
+    INVERTER_DC_AC_COST_OPEX,
+    INVERTER_DC_AC_COST_VAR,
+    INVERTER_DC_AC_EFFICIENCY,
+    INVERTER_DC_AC_LIFETIME,
+    MAINGRID_DISTANCE,
+    MAINGRID_ELECTRICITY_PRICE,
+    MAINGRID_EXTENSION_COST_INVESTMENT,
+    MAINGRID_EXTENSION_COST_OPEX,
+    MAINGRID_EXTENSION_LIFETIME,
+    MAINGRID_FEEDIN_TARIFF,
+    MAINGRID_RENEWABLE_SHARE,
+    MIN_RENEWABLE_SHARE,
+    PCOUPLING_BATCH,
+    PCOUPLING_COST_INVESTMENT,
+    PCOUPLING_COST_OPEX,
+    PCOUPLING_COST_VAR,
+    PCOUPLING_EFFICIENCY,
+    PCOUPLING_LIFETIME,
+    PCOUPLING_OVERSIZE_FACTOR,
+    PRICE_FUEL,
+    PROJECT_COST_INVESTMENT,
+    PROJECT_COST_OPEX,
+    PROJECT_LIFETIME,
+    PV_BATCH,
+    PV_COST_INVESTMENT,
+    PV_COST_OPEX,
+    PV_COST_VAR,
+    PV_LIFETIME,
+    RECTIFIER_AC_DC_BATCH,
+    RECTIFIER_AC_DC_COST_INVESTMENT,
+    RECTIFIER_AC_DC_COST_OPEX,
+    RECTIFIER_AC_DC_COST_VAR,
+    RECTIFIER_AC_DC_EFFICIENCY,
+    RECTIFIER_AC_DC_LIFETIME,
+    SHORTAGE_MAX_ALLOWED,
+    SHORTAGE_MAX_TIMESTEP,
+    SHORTAGE_PENALTY_COST,
+    SHORTAGE_LIMIT,
+    SHORTAGE_BATCH_CAPACITY,
+    SHORTAGE_BATCH_POWER,
+    SHORTAGE_CAPACITY_COST_INVESTMENT,
+    SHORTAGE_CAPACITY_COST_OPEX,
+    STORAGE_CAPACITY_LIFETIME,
+    STORAGE_COST_VAR,
+    STORAGE_CRATE_CHARGE,
+    STORAGE_CRATE_DISCHARGE,
+    STORAGE_EFFICIENCY_CHARGE,
+    STORAGE_EFFICIENCY_DISCHARGE,
+    STORAGE_LOSS_TIMESTEP,
+    STORAGE_POWER_COST_INVESTMENT,
+    STORAGE_POWER_COST_OPEX,
+    STORAGE_POWER_LIFETIME,
+    STORAGE_SOC_MAX,
+    STORAGE_SOC_MIN,
+    TAX,
+    WACC,
+    WHITE_NOISE_DEMAND,
+    WHITE_NOISE_PV,
+    WHITE_NOISE_WIND,
+    WIND_BATCH,
+    WIND_COST_INVESTMENT,
+    WIND_COST_OPEX,
+    WIND_COST_VAR,
+    WIND_LIFETIME,
+    FUEL_PRICE,
+    FUEL_PRICE_CHANGE_ANNUAL,
+    CASE,
+    RESULTS_DEMAND_CHARACTERISTICS,
+    RESULTS_BLACKOUT_CHARACTERISTICS,
+    CAPACITY_INVERTER_KW,
+    LCOE,
+    ANNUITY,
+    NPV,
+    SUPPLY_RELIABILITY_KWH,
+    RES_SHARE,
+    AUTONOMY_FACTOR,
+    TOTAL_DEMAND_ANNUAL_KWH,
+    DEMAND_PEAK_KW,
+    TOTAL_DEMAND_SUPPLIED_ANNUAL_KWH,
+    TOTAL_DEMAND_SHORTAGE_ANNUAL_KWH,
+    NATIONAL_GRID_RELIABILITY_H,
+    NATIONAL_GRID_TOTAL_BLACKOUT_DURATION,
+    NATIONAL_GRID_NUMBER_OF_BLACKOUTS,
+    TOTAL_PV_GENERATION_KWH,
+    TOTAL_WIND_GENERATION_KWH,
+    TOTAL_GENSET_GENERATION_KWH,
+    CONSUMPTION_FUEL_ANNUAL_L,
+    CONSUMPTION_MAIN_GRID_MG_SIDE_ANNUAL_KWH,
+    FEEDIN_MAIN_GRID_MG_SIDE_ANNUAL_KWH,
+    RESULTS_ANNUITIES,
+    ANNUITY_PV,
+    ANNUITY_STORAGE,
+    ANNUITY_RECTIFIER_AC_DC,
+    ANNUITY_INVERTER_DC_AC,
+    ANNUITY_WIND,
+    ANNUITY_GENSET,
+    ANNUITY_PCOUPLING,
+    ANNUITY_DISTRIBUTION_GRID,
+    ANNUITY_PROJECT,
+    ANNUITY_MAINGRID_EXTENSION,
+    EXPENDITURES_FUEL_ANNUAL,
+    EXPENDITURES_MAIN_GRID_CONSUMPTION_ANNUAL,
+    EXPENDITURES_SHORTAGE_ANNUAL,
+    REVENUE_MAIN_GRID_FEEDIN_ANNUAL,
+    RESULTS_COSTS,
+    COSTS_PV,
+    COSTS_STORAGE,
+    COSTS_RECTIFIER_AC_DC,
+    COSTS_INVERTER_DC_AC,
+    COSTS_WIND,
+    COSTS_GENSET,
+    COSTS_PCOUPLING,
+    COSTS_DISTRIBUTION_GRID,
+    COSTS_PROJECT,
+    FIRST_INVESTMENT,
+    OPERATION_MAINTAINANCE_EXPENDITURES,
+    COSTS_MAINGRID_EXTENSION,
+    EXPENDITURES_FUEL_TOTAL,
+    EXPENDITURES_MAIN_GRID_CONSUMPTION_TOTAL,
+    EXPENDITURES_SHORTAGE_TOTAL,
+    REVENUE_MAIN_GRID_FEEDIN_TOTAL,
+    OBJECTIVE_VALUE,
+    SIMULATION_TIME,
+    EVALUATION_TIME,
+    FILENAME,
+    COMMENTS,
+    CAPACITY_PCOUPLING_KW,
+    DEMAND_AC,
+    DEMAND_DC,
+    PV_GENERATION_PER_KWP,
+    WIND_GENERATION_PER_KW,
+    GRID_AVAILABILITY,
+    OUTPUT_FOLDER,
+    CAPACITY_PV_KWP,
+    CAPACITY_STORAGE_KWH,
+    POWER_STORAGE_KW,
+    CAPACITY_RECTIFIER_AC_DC_KW,
+    CAPACITY_WIND_KW,
+    CAPACITY_GENSET_KW,
 )
 
 # Generate names for blackout sensitivity_experiment_s, used in sensitivity.blackoutexperiments and in maintool
@@ -193,9 +194,7 @@ def get_blackout_experiment_name(blackout_experiment):
         + "_"
         + "dur_dev"
         + "_"
-        + str(
-            round(float(blackout_experiment[BLACKOUT_DURATION_STD_DEVIATION]), 3)
-        )
+        + str(round(float(blackout_experiment[BLACKOUT_DURATION_STD_DEVIATION]), 3))
         + "_"
         + "freq"
         + "_"
@@ -203,16 +202,13 @@ def get_blackout_experiment_name(blackout_experiment):
         + "_"
         + "freq_dev"
         + "_"
-        + str(
-            round(float(blackout_experiment[BLACKOUT_FREQUENCY_STD_DEVIATION]), 3)
-        )
+        + str(round(float(blackout_experiment[BLACKOUT_FREQUENCY_STD_DEVIATION]), 3))
     )
     return blackout_experiment_name
 
-#Sensitivy
-def get(
-    settings, parameters_constant_values, parameters_sensitivity, project_sites
-):
+
+# Sensitivy
+def get(settings, parameters_constant_values, parameters_sensitivity, project_sites):
     #######################################################
     # Get sensitivity_experiment_s for sensitivity analysis            #
     #######################################################
@@ -223,10 +219,7 @@ def get(
             sensitivity_array_dict,
             total_number_of_experiments,
         ) = all_possible(
-            settings,
-            parameters_constant_values,
-            parameters_sensitivity,
-            project_sites,
+            settings, parameters_constant_values, parameters_sensitivity, project_sites,
         )
 
     elif settings[SENSITIVITY_ALL_COMBINATIONS] == False:
@@ -236,15 +229,12 @@ def get(
             sensitivity_array_dict,
             total_number_of_experiments,
         ) = with_base_case(
-            settings,
-            parameters_constant_values,
-            parameters_sensitivity,
-            project_sites,
+            settings, parameters_constant_values, parameters_sensitivity, project_sites,
         )
 
     else:
         logging.warning(
-            'Setting SENSITIVITY_ALL_COMBINATIONS not valid! Has to be TRUE or FALSE.'
+            "Setting SENSITIVITY_ALL_COMBINATIONS not valid! Has to be TRUE or FALSE."
         )
 
     names_sensitivities = [key for key in sensitivity_array_dict.keys()]
@@ -275,9 +265,7 @@ def get(
         )
 
         #  Add economic values to sensitivity sensitivity_experiment_s
-        process_input_parameters.economic_values(
-            sensitivitiy_experiment_s[experiment]
-        )
+        process_input_parameters.economic_values(sensitivitiy_experiment_s[experiment])
         # Give a file item to the sensitivity_experiment_s
         experiment_name(
             sensitivitiy_experiment_s[experiment],
@@ -289,17 +277,12 @@ def get(
             sensitivitiy_experiment_s[experiment].update({COMMENTS: ""})
 
         if sensitivitiy_experiment_s[experiment][STORAGE_SOC_INITIAL] == "None":
-            sensitivitiy_experiment_s[experiment].update(
-                {STORAGE_SOC_INITIAL: None}
-            )
+            sensitivitiy_experiment_s[experiment].update({STORAGE_SOC_INITIAL: None})
     #######################################################
     # Get blackout_experiment_s for sensitvitiy           #
     #######################################################
     # Creating dict of possible blackout scenarios (combinations of durations  frequencies
-    (
-        blackout_experiment_s,
-        blackout_experiments_count,
-    ) = blackout(
+    (blackout_experiment_s, blackout_experiments_count,) = blackout(
         sensitivity_array_dict, parameters_constant_values, settings
     )
 
@@ -361,18 +344,15 @@ def get(
         names_sensitivities,
     )
 
-#Generate Exp
+
+# Generate Exp
 def all_possible(
     settings, parameters_constant_values, parameters_sensitivity, project_site_s
 ):
     # Deletes constants from parameters_constant_values depending on values defined in sensitivity
-    constants_senstivity(
-        parameters_constant_values, parameters_sensitivity
-    )
+    constants_senstivity(parameters_constant_values, parameters_sensitivity)
     # Deletes constants from parameters_constant_values depending on values defined in project sites
-    constants_project_sites(
-        parameters_constant_values, project_site_s
-    )
+    constants_project_sites(parameters_constant_values, project_site_s)
     # Deletes project site parameter that is also included in sensitivity analysis
     project_sites_sensitivity(parameters_sensitivity, project_site_s)
 
@@ -385,9 +365,7 @@ def all_possible(
         parameters_sensitivity, project_site_s
     )
 
-    project_site_dict = {
-        PROJECT_SITE_NAME: [key for key in project_site_s.keys()]
-    }
+    project_site_dict = {PROJECT_SITE_NAME: [key for key in project_site_s.keys()]}
     (
         sensitivity_experiment_s,
         total_number_of_experiments,
@@ -397,9 +375,7 @@ def all_possible(
         sensitivity_experiment_s[experiment].update(deepcopy(universal_parameters))
         sensitivity_experiment_s[experiment].update(
             deepcopy(
-                project_site_s[
-                    sensitivity_experiment_s[experiment][PROJECT_SITE_NAME]
-                ]
+                project_site_s[sensitivity_experiment_s[experiment][PROJECT_SITE_NAME]]
             )
         )
 
@@ -410,12 +386,11 @@ def all_possible(
         total_number_of_experiments,
     )
 
+
 def with_base_case(
     settings, parameters_constant_values, parameters_sensitivity, project_site_s
 ):
-    constants_project_sites(
-        parameters_constant_values, project_site_s
-    )
+    constants_project_sites(parameters_constant_values, project_site_s)
 
     universal_parameters, number_of_project_sites = get_universal_parameters(
         settings, parameters_constant_values, parameters_sensitivity, project_site_s
@@ -426,10 +401,7 @@ def with_base_case(
         parameters_sensitivity, project_site_s
     )
 
-    (
-        sensitivity_experiment_s,
-        total_number_of_experiments,
-    ) = combinations_around_base(
+    (sensitivity_experiment_s, total_number_of_experiments,) = combinations_around_base(
         sensitivity_array_dict, universal_parameters, project_site_s
     )
 
@@ -439,6 +411,7 @@ def with_base_case(
         sensitivity_array_dict,
         total_number_of_experiments,
     )
+
 
 def blackout(sensitivity_array_dict, parameters_constants, settings):
     blackout_parameters = deepcopy(sensitivity_array_dict)
@@ -516,7 +489,7 @@ def blackout(sensitivity_array_dict, parameters_constants, settings):
 
     else:
         logging.warning(
-            'Setting SENSITIVITY_ALL_COMBINATIONS not valid! Has to be TRUE or FALSE.'
+            "Setting SENSITIVITY_ALL_COMBINATIONS not valid! Has to be TRUE or FALSE."
         )
 
     # define file item to save simulation / get grid availabilities
@@ -550,6 +523,7 @@ def blackout(sensitivity_array_dict, parameters_constants, settings):
 
     return blackout_experiment_s, blackout_experiments_count
 
+
 def get_universal_parameters(
     settings, parameters_constant_values, parameters_sensitivity, project_site_s
 ):
@@ -563,15 +537,13 @@ def get_universal_parameters(
 
     return universal_parameters, number_of_project_sites
 
+
 def get_dict_sensitivies_arrays(parameters_sensitivity, project_sites):
     # fill dictionary with all sensitivity ranges defining the different simulations of the sensitivity analysis
     # ! do not use a key two times, as it will be overwritten by new information
     sensitivity_array_dict = {}
     for keys in parameters_sensitivity:
-        if (
-            parameters_sensitivity[keys][MIN]
-            == parameters_sensitivity[keys][MAX]
-        ):
+        if parameters_sensitivity[keys][MIN] == parameters_sensitivity[keys][MAX]:
             sensitivity_array_dict.update(
                 {keys: np.array([parameters_sensitivity[keys][MIN]])}
             )
@@ -588,13 +560,12 @@ def get_dict_sensitivies_arrays(parameters_sensitivity, project_sites):
             )
     return sensitivity_array_dict
 
+
 def get_all_possible_combinations(sensitivity_array_dict, name_entry_dict):
     # create all possible combinations of sensitive parameters
     all_parameters = {}
     for key in sensitivity_array_dict:
-        all_parameters.update(
-            {key: [value for value in sensitivity_array_dict[key]]}
-        )
+        all_parameters.update({key: [value for value in sensitivity_array_dict[key]]})
 
     all_parameters.update(deepcopy(name_entry_dict))
     # create all possible combinations of sensitive parameters
@@ -606,13 +577,12 @@ def get_all_possible_combinations(sensitivity_array_dict, name_entry_dict):
     sensitivity_experiment_s = {}
     for experiment in all_experiments:
         number_of_experiment += 1
-        sensitivity_experiment_s.update(
-            {number_of_experiment: deepcopy(experiment)}
-        )
+        sensitivity_experiment_s.update({number_of_experiment: deepcopy(experiment)})
 
     total_number_of_experiments = number_of_experiment
 
     return sensitivity_experiment_s, total_number_of_experiments
+
 
 def combinations_around_base(
     sensitivity_array_dict, universal_parameters, project_site_s
@@ -693,6 +663,7 @@ def combinations_around_base(
     total_number_of_experiments = experiment_number
     return sensitivity_experiment_s, total_number_of_experiments
 
+
 def project_site_experiments(sensitivity_experiment_s, project_sites):
     experiment_s = {}
     number_of_experiments = 0
@@ -708,6 +679,7 @@ def project_site_experiments(sensitivity_experiment_s, project_sites):
         )
 
     return experiment_s, number_of_experiments
+
 
 def experiment_name(experiment, sensitivity_array_dict, number_of_project_sites):
     # define file postfix to save simulation
@@ -741,6 +713,7 @@ def experiment_name(experiment, sensitivity_array_dict, number_of_project_sites)
     experiment.update({FILENAME: filename})
     return
 
+
 def constants_project_sites(parameters_constant_values, project_sites):
     # remove all entries that are doubled in parameters_constant_values, settings & project_site_s from parameters_constant_values
     str = 'Attributes "'
@@ -760,6 +733,7 @@ def constants_project_sites(parameters_constant_values, project_sites):
         )
         logging.warning(str)
     return
+
 
 def project_sites_sensitivity(parameters_sensitivity, project_sites):
     # remove all entries that are doubled in sensitivity_bounds/project_site_s from project site
@@ -783,6 +757,7 @@ def project_sites_sensitivity(parameters_sensitivity, project_sites):
 
     return
 
+
 def constants_senstivity(parameters_constant_values, parameters_sensitivity):
     # remove all entries that are doubled in parameters_constant_values, settings & parameters_sensitivity
     str = 'Attributes "'
@@ -798,6 +773,7 @@ def constants_senstivity(parameters_constant_values, parameters_sensitivity):
         )
         logging.warning(str)
     return
+
 
 def test_techno_economical_parameters_complete(experiment):
     parameter_list = {
@@ -834,9 +810,9 @@ def test_techno_economical_parameters_complete(experiment):
         MAINGRID_EXTENSION_COST_OPEX: 0,
         MAINGRID_EXTENSION_LIFETIME: 40,
         MAINGRID_FEEDIN_TARIFF: 0,
-        MAINGRID_RENEWABLE_SHARE : 0,
+        MAINGRID_RENEWABLE_SHARE: 0,
         MIN_RENEWABLE_SHARE: 0,
-        PCOUPLING_BATCH : 1,
+        PCOUPLING_BATCH: 1,
         PCOUPLING_COST_INVESTMENT: 0,
         PCOUPLING_COST_OPEX: 0,
         PCOUPLING_COST_VAR: 0,
@@ -873,7 +849,7 @@ def test_techno_economical_parameters_complete(experiment):
         STORAGE_EFFICIENCY_CHARGE: 0.8,
         STORAGE_EFFICIENCY_DISCHARGE: 1,
         STORAGE_LOSS_TIMESTEP: 0,
-        STORAGE_POWER_COST_INVESTMENT : 0,
+        STORAGE_POWER_COST_INVESTMENT: 0,
         STORAGE_POWER_COST_OPEX: 0,
         STORAGE_POWER_LIFETIME: 5,
         STORAGE_SOC_INITIAL: None,
@@ -915,9 +891,8 @@ def test_techno_economical_parameters_complete(experiment):
 
                 experiment.update({parameter: parameter_list[parameter]})
 
-def overall_results_title(
-    settings, number_of_project_sites, sensitivity_array_dict
-):
+
+def overall_results_title(settings, number_of_project_sites, sensitivity_array_dict):
     logging.debug("Generating header for results.csv")
     title_overall_results = pd.DataFrame(columns=[CASE, PROJECT_SITE_NAME])
 

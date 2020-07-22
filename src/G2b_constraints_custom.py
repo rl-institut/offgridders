@@ -4,46 +4,49 @@ For defining custom constraints of the micro grid solutions
 import pyomo.environ as po
 import logging
 import pandas as pd
-from src.constants import (SHORTAGE_LIMIT,
-                           NUMBER_OF_EQUAL_GENERATORS,
-                           GENSET_FIXED_CAPACITY,
-                           PCC_CONSUMPTION_FIXED_CAPACITY,
-                           ALLOW_SHORTAGE,
-                           GRID_AVAILABILITY,
-                           STORAGE_FIXED_CAPACITY,
-                           STORAGE_CAPACITY_MIN,
-                           STORAGE_CRATE_DISCHARGE,
-                           STORAGE_EFFICIENCY_DISCHARGE,
-                           INVERTER_DC_AC_EFFICIENCY,
-                           STORAGE_FIXED_POWER,
-                           STABILITY_CONSTRAINT,
-                           DEMAND,
-                           STORED_CAPACITY,
-                           CAPACITY_PCOUPLING_KW,
-                           CAPACITY_GENSET_KW,
-                           DEMAND_SHORTAGE,
-                           CAPACITY_STORAGE_KWH,
-                           PEAK_DEMAND,
-                           STORAGE_SOC_MIN,
-                           CONSUMPTION_MAIN_GRID_MG_SIDE,
-                           GENSET_GENERATION,
-                           PEAK_DEMAND_AC,
-                           STORAGE_DISCHARGE,
-                           COMMENTS,
-                           MAINGRID_RENEWABLE_SHARE,
-                           MIN_RENEWABLE_SHARE,
-                           RENEWABLE_SHARE_CONSTRAINT,
-                           RES_SHARE,
-                           STORAGE_CRATE_CHARGE,
-                           STORAGE_SOC_MAX,
-                           FORCE_CHARGE_FROM_MAINGRID,
-                           STORAGE_CHARGE_DC,
-                           DISCHARGE_ONLY_WHEN_BLACKOUT,
-                           STORAGE_DISCHARGE_DC,
-                           INVERTER_DC_AC_FIXED_CAPACITY,
-                           ENABLE_INVERTER_ONLY_AT_BLACKOUT,
-                           INVERTER_INPUT,
-                           CAPACITY_INVERTER_DC_AC_KW,SHORTAGE_MAX_TIMESTEP)
+from src.constants import (
+    SHORTAGE_LIMIT,
+    NUMBER_OF_EQUAL_GENERATORS,
+    GENSET_FIXED_CAPACITY,
+    PCC_CONSUMPTION_FIXED_CAPACITY,
+    ALLOW_SHORTAGE,
+    GRID_AVAILABILITY,
+    STORAGE_FIXED_CAPACITY,
+    STORAGE_CAPACITY_MIN,
+    STORAGE_CRATE_DISCHARGE,
+    STORAGE_EFFICIENCY_DISCHARGE,
+    INVERTER_DC_AC_EFFICIENCY,
+    STORAGE_FIXED_POWER,
+    STABILITY_CONSTRAINT,
+    DEMAND,
+    STORED_CAPACITY,
+    CAPACITY_PCOUPLING_KW,
+    CAPACITY_GENSET_KW,
+    DEMAND_SHORTAGE,
+    CAPACITY_STORAGE_KWH,
+    PEAK_DEMAND,
+    STORAGE_SOC_MIN,
+    CONSUMPTION_MAIN_GRID_MG_SIDE,
+    GENSET_GENERATION,
+    PEAK_DEMAND_AC,
+    STORAGE_DISCHARGE,
+    COMMENTS,
+    MAINGRID_RENEWABLE_SHARE,
+    MIN_RENEWABLE_SHARE,
+    RENEWABLE_SHARE_CONSTRAINT,
+    RES_SHARE,
+    STORAGE_CRATE_CHARGE,
+    STORAGE_SOC_MAX,
+    FORCE_CHARGE_FROM_MAINGRID,
+    STORAGE_CHARGE_DC,
+    DISCHARGE_ONLY_WHEN_BLACKOUT,
+    STORAGE_DISCHARGE_DC,
+    INVERTER_DC_AC_FIXED_CAPACITY,
+    ENABLE_INVERTER_ONLY_AT_BLACKOUT,
+    INVERTER_INPUT,
+    CAPACITY_INVERTER_DC_AC_KW,
+    SHORTAGE_MAX_TIMESTEP,
+)
 
 
 def backup(
@@ -100,9 +103,7 @@ def backup(
         ## ------- Get stored capacity storage at t------- #
         if case_dict[STORAGE_FIXED_CAPACITY] != None:
             stored_electricity = 0
-            if (
-                case_dict[STORAGE_FIXED_CAPACITY] == False
-            ):  # Storage subject to OEM
+            if case_dict[STORAGE_FIXED_CAPACITY] == False:  # Storage subject to OEM
                 stored_electricity += (
                     model.GenericInvestmentStorageBlock.capacity[storage, t]
                     - experiment[STORAGE_CAPACITY_MIN]
@@ -168,6 +169,7 @@ def backup(
     )
     return model
 
+
 def backup_test(case_dict, oemof_results, experiment, e_flows_df):
     """
         Testing simulation results for adherance to above defined stability criterion
@@ -184,8 +186,7 @@ def backup_test(case_dict, oemof_results, experiment, e_flows_df):
 
         if GRID_AVAILABILITY in e_flows_df.columns:
             pcc_capacity = (
-                oemof_results[CAPACITY_PCOUPLING_KW]
-                * e_flows_df[GRID_AVAILABILITY]
+                oemof_results[CAPACITY_PCOUPLING_KW] * e_flows_df[GRID_AVAILABILITY]
             )
         else:
             pcc_capacity = pd.Series(
@@ -205,8 +206,7 @@ def backup_test(case_dict, oemof_results, experiment, e_flows_df):
             genset_capacity
             + (
                 stored_electricity[t]
-                - oemof_results[CAPACITY_STORAGE_KWH]
-                * experiment[STORAGE_CAPACITY_MIN]
+                - oemof_results[CAPACITY_STORAGE_KWH] * experiment[STORAGE_CAPACITY_MIN]
             )
             * experiment[STORAGE_CRATE_DISCHARGE]
             * experiment[STORAGE_EFFICIENCY_DISCHARGE]
@@ -232,8 +232,7 @@ def backup_test(case_dict, oemof_results, experiment, e_flows_df):
                         * experiment[STORAGE_EFFICIENCY_DISCHARGE]
                         * experiment[INVERTER_DC_AC_EFFICIENCY]
                         + pcc_capacity[t]
-                        - experiment[SHORTAGE_LIMIT]
-                        * (demand_profile[t] - shortage[t])
+                        - experiment[SHORTAGE_LIMIT] * (demand_profile[t] - shortage[t])
                     )
                     / (experiment[PEAK_DEMAND])
                     for t in range(0, len(demand_profile.index))
@@ -241,11 +240,10 @@ def backup_test(case_dict, oemof_results, experiment, e_flows_df):
                 index=demand_profile.index,
             )
             ratio_below_zero = ratio.clip_upper(0)
-            test_warning(
-                ratio_below_zero, oemof_results, boolean_test
-            )
+            test_warning(ratio_below_zero, oemof_results, boolean_test)
     else:
         pass
+
 
 def hybrid(
     model,
@@ -288,9 +286,7 @@ def hybrid(
         ## ------- Get stored capacity storage at t------- #
         if case_dict[STORAGE_FIXED_CAPACITY] != None:
             stored_electricity = 0
-            if (
-                case_dict[STORAGE_FIXED_CAPACITY] == False
-            ):  # Storage subject to OEM
+            if case_dict[STORAGE_FIXED_CAPACITY] == False:  # Storage subject to OEM
                 stored_electricity += (
                     model.GenericInvestmentStorageBlock.capacity[storage, t]
                     - experiment[STORAGE_SOC_MIN]
@@ -361,6 +357,7 @@ def hybrid(
     )
     return model
 
+
 def hybrid_test(case_dict, oemof_results, experiment, e_flows_df):
     """
         Testing simulation results for adherance to above defined stability criterion
@@ -401,8 +398,7 @@ def hybrid_test(case_dict, oemof_results, experiment, e_flows_df):
             genset_generation[t]
             + (
                 stored_electricity[t]
-                - oemof_results[CAPACITY_STORAGE_KWH]
-                * experiment[STORAGE_SOC_MIN]
+                - oemof_results[CAPACITY_STORAGE_KWH] * experiment[STORAGE_SOC_MIN]
             )
             * experiment[STORAGE_CRATE_DISCHARGE]
             * experiment[STORAGE_EFFICIENCY_DISCHARGE]
@@ -428,8 +424,7 @@ def hybrid_test(case_dict, oemof_results, experiment, e_flows_df):
                         * experiment[STORAGE_EFFICIENCY_DISCHARGE]
                         * experiment[INVERTER_DC_AC_EFFICIENCY]
                         + pcc_consumption[t]
-                        - experiment[SHORTAGE_LIMIT]
-                        * (demand_profile[t] - shortage[t])
+                        - experiment[SHORTAGE_LIMIT] * (demand_profile[t] - shortage[t])
                     )
                     / (experiment[PEAK_DEMAND_AC])
                     for t in range(0, len(demand_profile.index))
@@ -437,14 +432,13 @@ def hybrid_test(case_dict, oemof_results, experiment, e_flows_df):
                 index=demand_profile.index,
             )
             ratio_below_zero = ratio.clip_upper(0)
-            test_warning(
-                ratio_below_zero, oemof_results, boolean_test
-            )
+            test_warning(ratio_below_zero, oemof_results, boolean_test)
 
     else:
         pass
 
     return
+
 
 def usage(
     model,
@@ -487,14 +481,14 @@ def usage(
         ## ------- Get discharge storage at t------- #
         if case_dict[STORAGE_FIXED_CAPACITY] != None:
             expr += (
-                model.flow[storage, el_bus, t]
-                * experiment[INVERTER_DC_AC_EFFICIENCY]
+                model.flow[storage, el_bus, t] * experiment[INVERTER_DC_AC_EFFICIENCY]
             )
         return expr >= 0
 
     model.stability_constraint = po.Constraint(model.TIMESTEPS, rule=stability_rule)
 
     return model
+
 
 def usage_test(case_dict, oemof_results, experiment, e_flows_df):
     """
@@ -546,11 +540,9 @@ def usage_test(case_dict, oemof_results, experiment, e_flows_df):
                 [
                     (
                         genset_generation[t]
-                        + storage_discharge[t]
-                        * experiment[INVERTER_DC_AC_EFFICIENCY]
+                        + storage_discharge[t] * experiment[INVERTER_DC_AC_EFFICIENCY]
                         + pcc_feedin[t]
-                        - experiment[SHORTAGE_LIMIT]
-                        * (demand_profile[t] - shortage[t])
+                        - experiment[SHORTAGE_LIMIT] * (demand_profile[t] - shortage[t])
                     )
                     / (experiment[PEAK_DEMAND])
                     for t in range(0, len(demand_profile.index))
@@ -558,13 +550,12 @@ def usage_test(case_dict, oemof_results, experiment, e_flows_df):
                 index=demand_profile.index,
             )
             ratio_below_zero = ratio.clip_upper(0)
-            test_warning(
-                ratio_below_zero, oemof_results, boolean_test
-            )
+            test_warning(ratio_below_zero, oemof_results, boolean_test)
     else:
         pass
 
     return
+
 
 def test_warning(ratio_below_zero, oemof_results, boolean_test):
     if abs(ratio_below_zero.values.min()) < 10 ** (-6):
@@ -592,6 +583,7 @@ def test_warning(ratio_below_zero, oemof_results, boolean_test):
             }
         )
     return
+
 
 def share(
     model,
@@ -638,9 +630,7 @@ def share(
 
         if genset is not None:
             for number in range(1, case_dict[NUMBER_OF_EQUAL_GENERATORS] + 1):
-                genset_generation_kWh = sum(
-                    model.flow[genset[number], el_bus_ac, :]
-                )
+                genset_generation_kWh = sum(model.flow[genset[number], el_bus_ac, :])
                 total_generation += genset_generation_kWh
                 fossil_generation += genset_generation_kWh
 
@@ -660,8 +650,7 @@ def share(
             total_generation += wind_plant_generation
 
         expr = (
-            fossil_generation
-            - (1 - experiment[MIN_RENEWABLE_SHARE]) * total_generation
+            fossil_generation - (1 - experiment[MIN_RENEWABLE_SHARE]) * total_generation
         )
         return expr <= 0
 
@@ -669,14 +658,13 @@ def share(
 
     return model
 
+
 def share_test(case_dict, oemof_results, experiment):
     """
     Testing simulation results for adherance to above defined stability criterion
     """
     if case_dict[RENEWABLE_SHARE_CONSTRAINT] == True:
-        boolean_test = (
-            oemof_results[RES_SHARE] >= experiment[MIN_RENEWABLE_SHARE]
-        )
+        boolean_test = oemof_results[RES_SHARE] >= experiment[MIN_RENEWABLE_SHARE]
         if boolean_test == False:
             deviation = (
                 experiment[MIN_RENEWABLE_SHARE] - oemof_results[RES_SHARE]
@@ -701,6 +689,7 @@ def share_test(case_dict, oemof_results, experiment):
         pass
 
     return
+
 
 def forced_charge(model, case_dict, el_bus_dc, storage, experiment):
     ## ------- Get CAP Storage ------- #
@@ -730,9 +719,7 @@ def forced_charge(model, case_dict, el_bus_dc, storage, experiment):
         stored_electricity = 0
         expr = 0
         if case_dict[STORAGE_FIXED_CAPACITY] != None:
-            if (
-                case_dict[STORAGE_FIXED_CAPACITY] == False
-            ):  # Storage subject to OEM
+            if case_dict[STORAGE_FIXED_CAPACITY] == False:  # Storage subject to OEM
                 stored_electricity += model.GenericInvestmentStorageBlock.capacity[
                     storage, t
                 ]
@@ -755,6 +742,7 @@ def forced_charge(model, case_dict, el_bus_dc, storage, experiment):
 
     return model
 
+
 def forced_charge_test(case_dict, oemof_results, experiment, e_flows_df):
     """
     Testing simulation results for adherance to above defined criterion
@@ -767,15 +755,9 @@ def forced_charge_test(case_dict, oemof_results, experiment, e_flows_df):
                 * (
                     1
                     + experiment[STORAGE_SOC_MIN]
-                    / (
-                        experiment[STORAGE_SOC_MAX]
-                        - experiment[STORAGE_SOC_MIN]
-                    )
+                    / (experiment[STORAGE_SOC_MAX] - experiment[STORAGE_SOC_MIN])
                 )
-                + (
-                    oemof_results[CAPACITY_STORAGE_KWH]
-                    - e_flows_df[STORED_CAPACITY][t]
-                )
+                + (oemof_results[CAPACITY_STORAGE_KWH] - e_flows_df[STORED_CAPACITY][t])
                 / (experiment[STORAGE_SOC_MAX] - experiment[STORAGE_SOC_MIN])
             )
             * e_flows_df[GRID_AVAILABILITY][t]
@@ -806,10 +788,7 @@ def forced_charge_test(case_dict, oemof_results, experiment, e_flows_df):
                             oemof_results[CAPACITY_STORAGE_KWH]
                             - e_flows_df[STORED_CAPACITY][t]
                         )
-                        / (
-                            experiment[STORAGE_SOC_MAX]
-                            - experiment[STORAGE_SOC_MIN]
-                        )
+                        / (experiment[STORAGE_SOC_MAX] - experiment[STORAGE_SOC_MIN])
                     )
                     * e_flows_df[GRID_AVAILABILITY][t]
                     - e_flows_df[STORAGE_CHARGE_DC][t]
@@ -835,6 +814,7 @@ def forced_charge_test(case_dict, oemof_results, experiment, e_flows_df):
 
     return
 
+
 def discharge_only_at_blackout(model, case_dict, el_bus, storage, experiment):
     grid_inavailability = 1 - experiment[GRID_AVAILABILITY]
 
@@ -846,9 +826,7 @@ def discharge_only_at_blackout(model, case_dict, el_bus, storage, experiment):
             # Battery discharge flow
             expr += model.flow[storage, el_bus, t]
             # Get stored electricity at t
-            if (
-                case_dict[STORAGE_FIXED_CAPACITY] == False
-            ):  # Storage subject to OEM
+            if case_dict[STORAGE_FIXED_CAPACITY] == False:  # Storage subject to OEM
                 stored_electricity += model.GenericInvestmentStorageBlock.capacity[
                     storage, t
                 ]
@@ -868,6 +846,7 @@ def discharge_only_at_blackout(model, case_dict, el_bus, storage, experiment):
 
     return model
 
+
 def discharge_only_at_blackout_test(case_dict, oemof_results, e_flows_df):
     """
     Testing simulation results for adherance to above defined criterion
@@ -878,8 +857,7 @@ def discharge_only_at_blackout_test(case_dict, oemof_results, e_flows_df):
     ):
         boolean_test = [
             e_flows_df[STORAGE_DISCHARGE_DC][t]
-            <= (1 - e_flows_df[GRID_AVAILABILITY][t])
-            * e_flows_df[STORED_CAPACITY][t]
+            <= (1 - e_flows_df[GRID_AVAILABILITY][t]) * e_flows_df[STORED_CAPACITY][t]
             for t in range(0, len(e_flows_df.index))
         ]
 
@@ -913,6 +891,7 @@ def discharge_only_at_blackout_test(case_dict, oemof_results, e_flows_df):
 
     return
 
+
 def inverter_only_at_blackout(model, case_dict, el_bus, inverter, experiment):
     grid_inavailability = 1 - experiment[GRID_AVAILABILITY]
 
@@ -938,6 +917,7 @@ def inverter_only_at_blackout(model, case_dict, el_bus, inverter, experiment):
     )
 
     return model
+
 
 def inverter_only_at_blackout_test(case_dict, oemof_results, e_flows_df):
     """
@@ -984,6 +964,7 @@ def inverter_only_at_blackout_test(case_dict, oemof_results, e_flows_df):
                 )
 
     return
+
 
 # todo shortage constraint / stbaility constraint only relates to AC bus
 def timestep(model, case_dict, experiment, el_bus, sink_demand, source_shortage):

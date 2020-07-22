@@ -8,60 +8,63 @@ import logging
 
 import src.D1_economic_functions as economics
 
-from src.constants import ( PERFORM_SIMULATION,
-                            BASED_ON_CASE,
-                            ANNUITY_FACTOR,
-                            CRF,
-                            PV ,
-                            WIND,
-                            GENSET,
-                            STORAGE_CAPACITY,
-                            STORAGE_POWER,
-                            PCOUPLING,
-                            MAINGRID_EXTENSION,
-                            DISTRIBUTION_GRID,
-                            RECTIFIER_AC_DC,
-                            INVERTER_DC_AC,
-                            PROJECT,
-                            EVALUATED_DAYS,
-                            TIME_END,
-                            TIME_START,
-                            DATE_TIME_INDEX,
-                            TIME_FREQUENCY,
-                            FILE_INDEX,
-                            DEMAND_PROFILE_AC,
-                            DEMAND_PROFILE_DC,
-                            ACCUMULATED_PROFILE_AC_SIDE,
-                            ACCUMULATED_PROFILE_DC_SIDE,
-                            TOTAL_DEMAND_AC,
-                            PEAK_DEMAND_AC,
-                            TOTAL_DEMAND_DC,
-                            PEAK_DEMAND_DC,
-                            PEAK_PV_GENERATION_PER_KWP,
-                            PEAK_WIND_GENERATION_PER_KW,
-                            MEAN_DEMAND_AC,
-                            MEAN_DEMAND_DC,
-                            PEAK_MEAN_DEMAND_RATIO_AC,
-                            PEAK_MEAN_DEMAND_RATIO_DC,
-                            ABS_PEAK_DEMAND_AC_SIDE,
-                            PROJECT_LIFETIME,
-                            WACC,
-                            PRICE_FUEL,
-                            FUEL_PRICE,
-                            FUEL_PRICE_CHANGE_ANNUAL,
-                            TAX,
-                            DEMAND_AC,
-                            PV_GENERATION_PER_KWP,
-                            WIND_GENERATION_PER_KW,
-                            GRID_AVAILABILITY,
-                            DEMAND_DC,
-                            LP_FILE_FOR_ONLY_3_TIMESTEPS,
-                            RECTIFIER_AC_DC_EFFICIENCY,
-                            INVERTER_DC_AC_EFFICIENCY,
-                            PROJECT_SITE_NAME,
-                            WHITE_NOISE_DEMAND,
-                            WHITE_NOISE_PV,
-                            WHITE_NOISE_WIND)
+from src.constants import (
+    PERFORM_SIMULATION,
+    BASED_ON_CASE,
+    ANNUITY_FACTOR,
+    CRF,
+    PV,
+    WIND,
+    GENSET,
+    STORAGE_CAPACITY,
+    STORAGE_POWER,
+    PCOUPLING,
+    MAINGRID_EXTENSION,
+    DISTRIBUTION_GRID,
+    RECTIFIER_AC_DC,
+    INVERTER_DC_AC,
+    PROJECT,
+    EVALUATED_DAYS,
+    TIME_END,
+    TIME_START,
+    DATE_TIME_INDEX,
+    TIME_FREQUENCY,
+    FILE_INDEX,
+    DEMAND_PROFILE_AC,
+    DEMAND_PROFILE_DC,
+    ACCUMULATED_PROFILE_AC_SIDE,
+    ACCUMULATED_PROFILE_DC_SIDE,
+    TOTAL_DEMAND_AC,
+    PEAK_DEMAND_AC,
+    TOTAL_DEMAND_DC,
+    PEAK_DEMAND_DC,
+    PEAK_PV_GENERATION_PER_KWP,
+    PEAK_WIND_GENERATION_PER_KW,
+    MEAN_DEMAND_AC,
+    MEAN_DEMAND_DC,
+    PEAK_MEAN_DEMAND_RATIO_AC,
+    PEAK_MEAN_DEMAND_RATIO_DC,
+    ABS_PEAK_DEMAND_AC_SIDE,
+    PROJECT_LIFETIME,
+    WACC,
+    PRICE_FUEL,
+    FUEL_PRICE,
+    FUEL_PRICE_CHANGE_ANNUAL,
+    TAX,
+    DEMAND_AC,
+    PV_GENERATION_PER_KWP,
+    WIND_GENERATION_PER_KW,
+    GRID_AVAILABILITY,
+    DEMAND_DC,
+    LP_FILE_FOR_ONLY_3_TIMESTEPS,
+    RECTIFIER_AC_DC_EFFICIENCY,
+    INVERTER_DC_AC_EFFICIENCY,
+    PROJECT_SITE_NAME,
+    WHITE_NOISE_DEMAND,
+    WHITE_NOISE_PV,
+    WHITE_NOISE_WIND,
+)
+
 
 def list_of_cases(case_definitions):
     case_list = []
@@ -88,12 +91,13 @@ def list_of_cases(case_definitions):
         if len(case_list) == 0:
             logging.error(
                 "No cases defined to be simulated. \n "
-                'Did you set any PERFORM_SIMULATION=True in excel template, tab CASE_DEFINITIONS?'
+                "Did you set any PERFORM_SIMULATION=True in excel template, tab CASE_DEFINITIONS?"
             )
             sys.exit()
 
     logging.info("All simulated cases: " + str_cases_simulated[:-2])
     return case_list
+
 
 def economic_values(experiment):
     """Pre-processing of input data (calculation of economic values)"""
@@ -119,11 +123,11 @@ def economic_values(experiment):
         experiment.update({PRICE_FUEL: present_value_changing_fuel_price})
     else:
         logging.warning(
-            'You used decrepated value PRICE_FUEL in your excel input file. \n '
+            "You used decrepated value PRICE_FUEL in your excel input file. \n "
             + "    "
             + "    "
             + "    "
-            + 'This still works, but with values FUEL_PRICE and FUEL_PRICE_CHANGE_ANNUAL you could take into account price changes.'
+            + "This still works, but with values FUEL_PRICE and FUEL_PRICE_CHANGE_ANNUAL you could take into account price changes."
         )
 
     component_list = [
@@ -187,6 +191,7 @@ def economic_values(experiment):
 
     return experiment
 
+
 def add_timeseries(experiment_s):
     # Update experiments and add longest date_time_index to settings
     entries = 0
@@ -235,8 +240,7 @@ def add_timeseries(experiment_s):
                 != year_timeseries_in_file
             ):
                 file_index = [
-                    item + pd.DateOffset(year=index[0].year)
-                    for item in index
+                    item + pd.DateOffset(year=index[0].year) for item in index
                 ]
                 # shift to fileindex of data sets to analysed year
                 demand_ac = pd.Series(
@@ -256,12 +260,8 @@ def add_timeseries(experiment_s):
                     index=experiment_s[experiment][FILE_INDEX],
                 )
                 # from provided data use only analysed timeframe
-                experiment_s[experiment].update(
-                    {DEMAND_PROFILE_AC: demand_ac[index]}
-                )
-                experiment_s[experiment].update(
-                    {DEMAND_PROFILE_DC: demand_dc[index]}
-                )
+                experiment_s[experiment].update({DEMAND_PROFILE_AC: demand_ac[index]})
+                experiment_s[experiment].update({DEMAND_PROFILE_DC: demand_dc[index]})
                 experiment_s[experiment].update(
                     {PV_GENERATION_PER_KWP: pv_generation_per_kWp[index]}
                 )
@@ -287,9 +287,7 @@ def add_timeseries(experiment_s):
             experiment_s[experiment].update(
                 {
                     DEMAND_PROFILE_AC: pd.Series(
-                        experiment_s[experiment][DEMAND_AC][
-                            0 : len(index)
-                        ].values,
+                        experiment_s[experiment][DEMAND_AC][0 : len(index)].values,
                         index=index,
                     )
                 }
@@ -297,9 +295,7 @@ def add_timeseries(experiment_s):
             experiment_s[experiment].update(
                 {
                     DEMAND_PROFILE_DC: pd.Series(
-                        experiment_s[experiment][DEMAND_DC][
-                            0 : len(index)
-                        ].values,
+                        experiment_s[experiment][DEMAND_DC][0 : len(index)].values,
                         index=index,
                     )
                 }
@@ -338,9 +334,7 @@ def add_timeseries(experiment_s):
                 )
 
         else:
-            logging.warning(
-                'Project site value FILE_INDEX neither None not non-None.'
-            )
+            logging.warning("Project site value FILE_INDEX neither None not non-None.")
 
         # Used for generation of lp file with only 3-timesteps = Useful to verify optimized equations
         if experiment_s[experiment][LP_FILE_FOR_ONLY_3_TIMESTEPS] == True:
@@ -368,18 +362,10 @@ def add_timeseries(experiment_s):
 
             index = experiment_s[experiment][DATE_TIME_INDEX]
             experiment_s[experiment].update(
-                {
-                    DEMAND_PROFILE_AC: experiment_s[experiment][
-                        DEMAND_PROFILE_AC
-                    ][index]
-                }
+                {DEMAND_PROFILE_AC: experiment_s[experiment][DEMAND_PROFILE_AC][index]}
             )
             experiment_s[experiment].update(
-                {
-                    DEMAND_PROFILE_DC: experiment_s[experiment][
-                        DEMAND_PROFILE_DC
-                    ][index]
-                }
+                {DEMAND_PROFILE_DC: experiment_s[experiment][DEMAND_PROFILE_DC][index]}
             )
             experiment_s[experiment].update(
                 {
@@ -398,17 +384,15 @@ def add_timeseries(experiment_s):
             if GRID_AVAILABILITY in experiment_s[experiment].keys():
                 experiment_s[experiment].update(
                     {
-                        GRID_AVAILABILITY: experiment_s[experiment][
-                            GRID_AVAILABILITY
-                        ][index]
+                        GRID_AVAILABILITY: experiment_s[experiment][GRID_AVAILABILITY][
+                            index
+                        ]
                     }
                 )
 
         experiment_s[experiment].update(
             {
-                ACCUMULATED_PROFILE_AC_SIDE: experiment_s[experiment][
-                    DEMAND_PROFILE_AC
-                ]
+                ACCUMULATED_PROFILE_AC_SIDE: experiment_s[experiment][DEMAND_PROFILE_AC]
                 + experiment_s[experiment][DEMAND_PROFILE_DC]
                 / experiment_s[experiment][RECTIFIER_AC_DC_EFFICIENCY]
             }
@@ -416,27 +400,17 @@ def add_timeseries(experiment_s):
 
         experiment_s[experiment].update(
             {
-                ACCUMULATED_PROFILE_DC_SIDE: experiment_s[experiment][
-                    DEMAND_PROFILE_AC
-                ]
+                ACCUMULATED_PROFILE_DC_SIDE: experiment_s[experiment][DEMAND_PROFILE_AC]
                 / experiment_s[experiment][INVERTER_DC_AC_EFFICIENCY]
                 + experiment_s[experiment][DEMAND_PROFILE_DC]
             }
         )
         experiment_s[experiment].update(
             {
-                TOTAL_DEMAND_AC: sum(
-                    experiment_s[experiment][DEMAND_PROFILE_AC]
-                ),
-                PEAK_DEMAND_AC: max(
-                    experiment_s[experiment][DEMAND_PROFILE_AC]
-                ),
-                TOTAL_DEMAND_DC: sum(
-                    experiment_s[experiment][DEMAND_PROFILE_DC]
-                ),
-                PEAK_DEMAND_DC: max(
-                    experiment_s[experiment][DEMAND_PROFILE_DC]
-                ),
+                TOTAL_DEMAND_AC: sum(experiment_s[experiment][DEMAND_PROFILE_AC]),
+                PEAK_DEMAND_AC: max(experiment_s[experiment][DEMAND_PROFILE_AC]),
+                TOTAL_DEMAND_DC: sum(experiment_s[experiment][DEMAND_PROFILE_DC]),
+                PEAK_DEMAND_DC: max(experiment_s[experiment][DEMAND_PROFILE_DC]),
                 PEAK_PV_GENERATION_PER_KWP: max(
                     experiment_s[experiment][PV_GENERATION_PER_KWP]
                 ),
@@ -458,9 +432,7 @@ def add_timeseries(experiment_s):
         if experiment_s[experiment][MEAN_DEMAND_AC] > 0:
             experiment_s[experiment].update(
                 {
-                    PEAK_MEAN_DEMAND_RATIO_AC: experiment_s[experiment][
-                        PEAK_DEMAND_AC
-                    ]
+                    PEAK_MEAN_DEMAND_RATIO_AC: experiment_s[experiment][PEAK_DEMAND_AC]
                     / experiment_s[experiment][MEAN_DEMAND_AC]
                 }
             )
@@ -470,9 +442,7 @@ def add_timeseries(experiment_s):
         if experiment_s[experiment][MEAN_DEMAND_DC] > 0:
             experiment_s[experiment].update(
                 {
-                    PEAK_MEAN_DEMAND_RATIO_DC: experiment_s[experiment][
-                        PEAK_DEMAND_DC
-                    ]
+                    PEAK_MEAN_DEMAND_RATIO_DC: experiment_s[experiment][PEAK_DEMAND_DC]
                     / experiment_s[experiment][MEAN_DEMAND_DC]
                 }
             )
@@ -514,17 +484,15 @@ def add_timeseries(experiment_s):
 
     return max_date_time_index, max_evaluated_days
 
+
 def apply_noise(experiment_s):
     for experiment in experiment_s:
         on_series(experiment_s[experiment], WHITE_NOISE_DEMAND, DEMAND_AC)
         on_series(experiment_s[experiment], WHITE_NOISE_DEMAND, DEMAND_DC)
-        on_series(
-            experiment_s[experiment], WHITE_NOISE_PV, PV_GENERATION_PER_KWP
-        )
-        on_series(
-            experiment_s[experiment], WHITE_NOISE_WIND, WIND_GENERATION_PER_KW
-        )
+        on_series(experiment_s[experiment], WHITE_NOISE_PV, PV_GENERATION_PER_KWP)
+        on_series(experiment_s[experiment], WHITE_NOISE_WIND, WIND_GENERATION_PER_KW)
     return
+
 
 def on_series(experiment, noise_name, series_name):
     if experiment[noise_name] != 0:
@@ -535,6 +503,7 @@ def on_series(experiment, noise_name, series_name):
         experiment.update({series_name: series_values})
         # add display of series with noise
     return
+
 
 def randomized(white_noise_percentage, data_subframe):
     import numpy as np

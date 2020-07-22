@@ -1,55 +1,56 @@
-
 import logging
 import sys
 import oemof.solph as solph
 import oemof.outputlib as outputlib
 import src.G2a_oemof_busses_and_componets as generate
 import src.G2b_constraints_custom as constraints_custom
-from src.constants import ( BUS_FUEL,
-                            DATE_TIME_INDEX,
-                            BUS_ELECTRICITY_AC,
-                            DEMAND_PROFILE_AC,
-                            GENSET_FIXED_CAPACITY,
-                            GENSET_WITH_MINIMAL_LOADING,
-                            NUMBER_OF_EQUAL_GENERATORS,
-                            CASE_NAME,
-                            WIND_FIXED_CAPACITY,
-                            PCC_CONSUMPTION_FIXED_CAPACITY,
-                            PCC_FEEDIN_FIXED_CAPACITY,
-                            PEAK_DEMAND,
-                            BUS_ELECTRICITY_DC,
-                            DEMAND_PROFILE_DC,
-                            PV_FIXED_CAPACITY,
-                            STORAGE_FIXED_CAPACITY,
-                            STORAGE_FIXED_POWER,
-                            RECTIFIER_AC_DC_FIXED_CAPACITY,
-                            INVERTER_DC_AC_FIXED_CAPACITY,
-                            ALLOW_SHORTAGE,
-                            STABILITY_CONSTRAINT,
-                            SHARE_BACKUP,
-                            SHARE_USAGE,
-                            SHARE_HYBRID,
-                            RENEWABLE_SHARE_CONSTRAINT,
-                            FORCE_CHARGE_FROM_MAINGRID,
-                            DISCHARGE_ONLY_WHEN_BLACKOUT,
-                            ENABLE_INVERTER_ONLY_AT_BLACKOUT,
-                            SOLVER,
-                            SAVE_LP_FILE,
-                            OUTPUT_FOLDER,
-                            MAIN,
-                            META)
+from src.constants import (
+    BUS_FUEL,
+    DATE_TIME_INDEX,
+    BUS_ELECTRICITY_AC,
+    DEMAND_PROFILE_AC,
+    GENSET_FIXED_CAPACITY,
+    GENSET_WITH_MINIMAL_LOADING,
+    NUMBER_OF_EQUAL_GENERATORS,
+    CASE_NAME,
+    WIND_FIXED_CAPACITY,
+    PCC_CONSUMPTION_FIXED_CAPACITY,
+    PCC_FEEDIN_FIXED_CAPACITY,
+    PEAK_DEMAND,
+    BUS_ELECTRICITY_DC,
+    DEMAND_PROFILE_DC,
+    PV_FIXED_CAPACITY,
+    STORAGE_FIXED_CAPACITY,
+    STORAGE_FIXED_POWER,
+    RECTIFIER_AC_DC_FIXED_CAPACITY,
+    INVERTER_DC_AC_FIXED_CAPACITY,
+    ALLOW_SHORTAGE,
+    STABILITY_CONSTRAINT,
+    SHARE_BACKUP,
+    SHARE_USAGE,
+    SHARE_HYBRID,
+    RENEWABLE_SHARE_CONSTRAINT,
+    FORCE_CHARGE_FROM_MAINGRID,
+    DISCHARGE_ONLY_WHEN_BLACKOUT,
+    ENABLE_INVERTER_ONLY_AT_BLACKOUT,
+    SOLVER,
+    SAVE_LP_FILE,
+    OUTPUT_FOLDER,
+    MAIN,
+    META,
+)
+
 
 def load_energysystem_lp():
     # based on lp file
     return
 
+
 def build(experiment, case_dict):
     logging.debug("Complete case dictionary:")
     logging.debug(case_dict)
 
-    logging.debug(
-        "Create oemof model by adding case-specific busses and components."
-    )
+    logging.debug("Create oemof model by adding case-specific busses and components.")
 
     # create energy system
     micro_grid_system = solph.EnergySystem(timeindex=experiment[DATE_TIME_INDEX])
@@ -85,7 +86,7 @@ def build(experiment, case_dict):
                 + "    "
                 + "    "
                 + "    "
-                + 'Please set GENSET_WITH_MINIMAL_LOADING=False for this case on tab CASE_DEFINITIONS in the excel template.'
+                + "Please set GENSET_WITH_MINIMAL_LOADING=False for this case on tab CASE_DEFINITIONS in the excel template."
             )
             sys.exit()
             # genset = generate.genset_oem_minload(micro_grid_system, bus_fuel, bus_electricity_ac, experiment, case_dict['number_of_equal_generators'])
@@ -232,9 +233,7 @@ def build(experiment, case_dict):
     if case_dict[PV_FIXED_CAPACITY] == None:
         solar_plant = None
     elif case_dict[PV_FIXED_CAPACITY] == False:
-        solar_plant = generate.pv_oem(
-            micro_grid_system, bus_electricity_dc, experiment
-        )
+        solar_plant = generate.pv_oem(micro_grid_system, bus_electricity_dc, experiment)
 
     elif isinstance(case_dict[PV_FIXED_CAPACITY], float):
         solar_plant = generate.pv_fix(
@@ -457,9 +456,7 @@ def build(experiment, case_dict):
     if case_dict[ENABLE_INVERTER_ONLY_AT_BLACKOUT] == False:
         pass
     elif case_dict[ENABLE_INVERTER_ONLY_AT_BLACKOUT] == True:
-        logging.info(
-            "Added constraint: Allowing inverter use only at blackout times."
-        )
+        logging.info("Added constraint: Allowing inverter use only at blackout times.")
         constraints_custom.inverter_only_at_blackout(
             model, case_dict, bus_electricity_dc, inverter, experiment
         )
@@ -481,6 +478,7 @@ def build(experiment, case_dict):
                                           source_shortage, bus_electricity_dc)
     """
     return micro_grid_system, model
+
 
 def simulate(experiment, micro_grid_system, model, file_name):
     logging.info("Simulating...")
@@ -507,6 +505,7 @@ def simulate(experiment, micro_grid_system, model, file_name):
     micro_grid_system.results[META] = outputlib.processing.meta_results(model)
     return micro_grid_system
 
+
 def store_results(micro_grid_system, file_name, output_folder):
     # store energy system with results
     micro_grid_system.dump(
@@ -516,6 +515,7 @@ def store_results(micro_grid_system, file_name, output_folder):
         "Stored results in " + output_folder + "/oemof" + "/" + file_name + ".oemof"
     )
     return micro_grid_system
+
 
 def load_oemof_results(output_folder, file_name):
     logging.debug("Restore the energy system and the results.")

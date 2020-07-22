@@ -1,9 +1,35 @@
 import logging
 
 import src.H1_multicriteria_functions as multicriteria_functions
-from src.constants import EVALUATIONS, NORMALIZED_EVALUATIONS, GLOBAL_LS, LOCAL_LS, SENSITIVITY_ALL_COMBINATIONS, \
-    CAPACITIES, CASE, PROJECT_SITE_NAME, LEVELS, PREVIOUS_LEVEL, CHANGES, ANALYSE, FILENAME, DIMENSIONS, WEIGHT, \
-    CRITERIA, ABREV, PV, WIND, GENSET, MAINGRID, DIESEL, PARAMETERS, PARAMETER, SHOW, DIMENSIONS_W,PLOT
+from src.constants import (
+    EVALUATIONS,
+    NORMALIZED_EVALUATIONS,
+    GLOBAL_LS,
+    LOCAL_LS,
+    SENSITIVITY_ALL_COMBINATIONS,
+    CAPACITIES,
+    CASE,
+    PROJECT_SITE_NAME,
+    LEVELS,
+    PREVIOUS_LEVEL,
+    CHANGES,
+    ANALYSE,
+    FILENAME,
+    DIMENSIONS,
+    WEIGHT,
+    CRITERIA,
+    ABREV,
+    PV,
+    WIND,
+    GENSET,
+    MAINGRID,
+    DIESEL,
+    PARAMETERS,
+    PARAMETER,
+    SHOW,
+    DIMENSIONS_W,
+    PLOT,
+)
 
 
 def main_analysis(overallresults, multicriteria_data, settings):
@@ -33,12 +59,9 @@ def main_analysis(overallresults, multicriteria_data, settings):
     ) = format_punctuations(multicriteria_data)
 
     # the cases chosen to analyse in the multicriteria analysis are selected
-    (
-        all_results,
-        cases,
-        projects_name,
-        sensibility,
-    ) = presentation(overallresults, parameters)
+    (all_results, cases, projects_name, sensibility,) = presentation(
+        overallresults, parameters
+    )
 
     # the multicriteria analysis with sensibility parameters can only be realised if all combinations have been calculated
     if settings[SENSITIVITY_ALL_COMBINATIONS] or not sensibility:
@@ -50,9 +73,7 @@ def main_analysis(overallresults, multicriteria_data, settings):
 
         for project in evaluations:
             # all evaluations for a same criterion are put together, to make easier the following ranking
-            global_evaluations = prepare_global_evaluations(
-                evaluations[project]
-            )
+            global_evaluations = prepare_global_evaluations(evaluations[project])
             all_projects_MCA_data[EVALUATIONS][project] = global_evaluations
 
             # first, a global ranking, for all solutions, is calculated
@@ -120,6 +141,7 @@ def main_analysis(overallresults, multicriteria_data, settings):
         )
 
     return
+
 
 def presentation(overallresults, parameters):
     """
@@ -213,6 +235,7 @@ def presentation(overallresults, parameters):
 
     return all_results, cases, projects_name, sensibility
 
+
 def format_punctuations(multicriteria_data):
     """
     gets weights of dimensions and criteria, and the parameters to show from the sensibility analysis.
@@ -257,6 +280,7 @@ def format_punctuations(multicriteria_data):
         parameters,
         plot_criteria,
     )
+
 
 def prepare_global_evaluations(evaluations):
     """

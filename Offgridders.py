@@ -19,9 +19,21 @@ import src.E_blackouts_central_grid as central_grid
 import src.F_case_definitions as cases
 import src.G0_oemof_simulate as oemof_simulate
 import src.H0_multicriteria_analysis as multicriteria_analysis
-from src.constants import TOTAL_NUMBER_OF_EXPERIMENTS, MAX_DATE_TIME_INDEX, MAX_EVALUATED_DAYS, \
-    NECESSITY_FOR_BLACKOUT_TIMESERIES_GENERATION, GRID_AVAILABILITY, PROJECT_SITE_NAME, BASED_ON_CASE, CASE_NAME, \
-    OUTPUT_FOLDER, EVALUATION_TIME, CASE, LCOE, RES_SHARE
+from src.constants import (
+    TOTAL_NUMBER_OF_EXPERIMENTS,
+    MAX_DATE_TIME_INDEX,
+    MAX_EVALUATED_DAYS,
+    NECESSITY_FOR_BLACKOUT_TIMESERIES_GENERATION,
+    GRID_AVAILABILITY,
+    PROJECT_SITE_NAME,
+    BASED_ON_CASE,
+    CASE_NAME,
+    OUTPUT_FOLDER,
+    EVALUATION_TIME,
+    CASE,
+    LCOE,
+    RES_SHARE,
+)
 
 
 def main():
@@ -113,7 +125,7 @@ def main():
     # noisy timeseries at a project site, noise has to be included in csv data!   #
     # -----------------------------------------------------------------------------#
     # todo test and optionally delete noise function
-    process_input.apply_noise(sensitivity_experiment_s) #Applies white noise
+    process_input.apply_noise(sensitivity_experiment_s)  # Applies white noise
 
     # Calculation of grid_availability with randomized blackouts
     if settings[NECESSITY_FOR_BLACKOUT_TIMESERIES_GENERATION] == True:
@@ -126,9 +138,7 @@ def main():
     # -----------------------------------------------------------------------------#
     # import all scripts necessary for loop
     experiment_count = 0
-    total_number_of_simulations = settings[TOTAL_NUMBER_OF_EXPERIMENTS] * len(
-        case_list
-    )
+    total_number_of_simulations = settings[TOTAL_NUMBER_OF_EXPERIMENTS] * len(case_list)
 
     for experiment in sensitivity_experiment_s:
 
@@ -195,9 +205,9 @@ def main():
             if case_definitions[specific_case][BASED_ON_CASE] == False:
                 capacities_oem.update(
                     {
-                        experiment_case_dict[
-                            CASE_NAME
-                        ]: helpers.define_base_capacities(oemof_results)
+                        experiment_case_dict[CASE_NAME]: helpers.define_base_capacities(
+                            oemof_results
+                        )
                     }
                 )
 

@@ -3,15 +3,17 @@ Small scripts to keep the main file clean
 """
 
 import pandas as pd
-from src.constants import (CAPACITY_PV_KWP,
-                            CAPACITY_WIND_KW,
-                            CAPACITY_STORAGE_KWH,
-                            POWER_STORAGE_KW,
-                            CAPACITY_GENSET_KW,
-                            CAPACITY_PCOUPLING_KW,
-                            CAPACITY_RECTIFIER_AC_DC_KW,
-                            CAPACITY_INVERTER_DC_AC_KW,
-                            DEMAND_PROFILE)
+from src.constants import (
+    CAPACITY_PV_KWP,
+    CAPACITY_WIND_KW,
+    CAPACITY_STORAGE_KWH,
+    POWER_STORAGE_KW,
+    CAPACITY_GENSET_KW,
+    CAPACITY_PCOUPLING_KW,
+    CAPACITY_RECTIFIER_AC_DC_KW,
+    CAPACITY_INVERTER_DC_AC_KW,
+    DEMAND_PROFILE,
+)
 
 from oemof.tools import logger
 import logging
@@ -21,7 +23,6 @@ try:
 except ImportError:
     print("Matplotlib.pyplot could not be loaded")
     plt = None
-
 
 
 def plot_results(pandas_dataframe, title, xaxis, yaxis):
@@ -35,6 +36,7 @@ def plot_results(pandas_dataframe, title, xaxis, yaxis):
         plt.show()
     return
 
+
 def define_base_capacities(oemof_results):
     capacities_base = {
         CAPACITY_PV_KWP: oemof_results[CAPACITY_PV_KWP],
@@ -47,6 +49,7 @@ def define_base_capacities(oemof_results):
         CAPACITY_INVERTER_DC_AC_KW: oemof_results[CAPACITY_INVERTER_DC_AC_KW],
     }
     return capacities_base
+
 
 def store_result_matrix(overall_results, experiment, oemof_results):
     """
@@ -64,9 +67,7 @@ def store_result_matrix(overall_results, experiment, oemof_results):
                 )
             else:
                 result_series = result_series.append(
-                    pd.Series(
-                        [round(oemof_results[key], round_to_comma)], index=[key]
-                    )
+                    pd.Series([round(oemof_results[key], round_to_comma)], index=[key])
                 )
         # extend by item of demand profile
         elif key == DEMAND_PROFILE:

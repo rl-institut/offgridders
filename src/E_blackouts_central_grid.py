@@ -4,22 +4,23 @@ import logging
 import os.path
 from copy import deepcopy
 
-from src.constants import ( OUTPUT_FOLDER,
-                            INPUT_FOLDER_TIMESERIES,
-                            RESTORE_BLACKOUTS_IF_EXISTENT,
-                            TIMESTEP,
-                            MAX_DATE_TIME_INDEX,
-                            EXPERIMENT_NAME,
-                            GRID_TOTAL_BLACKOUT_DURATION,
-                            GRID_NUMBER_OF_BLACKOUTS,
-                            GRID_RELIABILITY,
-                            BLACKOUT_DURATION,
-                            BLACKOUT_FREQUENCY,
-                            MAX_EVALUATED_DAYS,
-                            BLACKOUT_FREQUENCY_STD_DEVIATION,
-                            NATIONAL_GRID_RELIABILITY_H,
-                            NATIONAL_GRID_TOTAL_BLACKOUT_DURATION,
-                            NATIONAL_GRID_NUMBER_OF_BLACKOUTS
+from src.constants import (
+    OUTPUT_FOLDER,
+    INPUT_FOLDER_TIMESERIES,
+    RESTORE_BLACKOUTS_IF_EXISTENT,
+    TIMESTEP,
+    MAX_DATE_TIME_INDEX,
+    EXPERIMENT_NAME,
+    GRID_TOTAL_BLACKOUT_DURATION,
+    GRID_NUMBER_OF_BLACKOUTS,
+    GRID_RELIABILITY,
+    BLACKOUT_DURATION,
+    BLACKOUT_FREQUENCY,
+    MAX_EVALUATED_DAYS,
+    BLACKOUT_FREQUENCY_STD_DEVIATION,
+    NATIONAL_GRID_RELIABILITY_H,
+    NATIONAL_GRID_TOTAL_BLACKOUT_DURATION,
+    NATIONAL_GRID_NUMBER_OF_BLACKOUTS,
 )
 
 # Check for saved blackout scenarios/grid availability, else continue randomization of backout events
@@ -34,16 +35,12 @@ def get_blackouts(settings, blackout_experiment_s):
 
     if (
         os.path.isfile(settings[OUTPUT_FOLDER] + "/grid_availability.csv")
-        or os.path.isfile(
-            settings[INPUT_FOLDER_TIMESERIES] + "/grid_availability.csv"
-        )
+        or os.path.isfile(settings[INPUT_FOLDER_TIMESERIES] + "/grid_availability.csv")
     ) and settings[RESTORE_BLACKOUTS_IF_EXISTENT] == True:
 
         # ? read to csv: timestamp as first row -> not equal column number, date time without index
         if os.path.isfile(settings[OUTPUT_FOLDER] + "/grid_availability.csv"):
-            data_set = pd.read_csv(
-                settings[OUTPUT_FOLDER] + "/grid_availability.csv"
-            )
+            data_set = pd.read_csv(settings[OUTPUT_FOLDER] + "/grid_availability.csv")
         elif os.path.isfile(
             settings[INPUT_FOLDER_TIMESERIES] + "/grid_availability.csv"
         ):
@@ -137,11 +134,10 @@ def get_blackouts(settings, blackout_experiment_s):
         logging.info("Missing blackout timeseries added through auto-generation.")
 
     grid_availability_df.index.name = TIMESTEP
-    grid_availability_df.to_csv(
-        settings[OUTPUT_FOLDER] + "/grid_availability.csv"
-    )
+    grid_availability_df.to_csv(settings[OUTPUT_FOLDER] + "/grid_availability.csv")
 
     return grid_availability_df, blackout_result_s
+
 
 def oemof_extension_for_blackouts(grid_availability):
     # calculating blackout results
@@ -149,19 +145,14 @@ def oemof_extension_for_blackouts(grid_availability):
     total_grid_blackout_duration = (
         len(grid_availability.index) - total_grid_availability
     )
-    grid_reliability = 1 - total_grid_blackout_duration / len(
-        grid_availability.index
-    )
+    grid_reliability = 1 - total_grid_blackout_duration / len(grid_availability.index)
     # Counting blackouts for blackout results
     number_of_blackouts = 0
     for step in range(0, len(grid_availability.index)):
         if grid_availability.iat[step] == 0:
             if number_of_blackouts == 0:
                 number_of_blackouts = number_of_blackouts + 1
-            elif (
-                number_of_blackouts != 0
-                and grid_availability.iat[int(step - 1)] != 0
-            ):
+            elif number_of_blackouts != 0 and grid_availability.iat[int(step - 1)] != 0:
                 number_of_blackouts = number_of_blackouts + 1
 
     blackout_result = {
@@ -171,6 +162,7 @@ def oemof_extension_for_blackouts(grid_availability):
     }
 
     return blackout_result
+
 
 def availability(
     settings, blackout_experiment_s, blackout_result_s, grid_availability_df
@@ -233,9 +225,7 @@ def availability(
             actual_number_of_blackouts = 0
 
         total_grid_availability = sum(grid_availability)
-        total_grid_blackout_duration = (
-            len(date_time_index) - total_grid_availability
-        )
+        total_grid_blackout_duration = len(date_time_index) - total_grid_availability
         # Making sure that grid outage duration is equal to expected accumulated blackout duration
         if total_grid_blackout_duration != accumulated_blackout_duration:
             logging.info(
@@ -275,6 +265,7 @@ def availability(
 
     return grid_availability_df
 
+
 def number_of_blackouts(evaluated_days, experiment):
     # Calculation of expected blackouts per analysed timeframe
     blackout_events_per_month = np.random.normal(
@@ -291,6 +282,7 @@ def number_of_blackouts(evaluated_days, experiment):
         + str(blackout_events_per_timeframe)
     )
     return blackout_events_per_timeframe
+
 
 def get_time_of_blackout_events(blackout_events_per_timeframe, date_time_index):
     # Choosing blackout event starts randomly from whole duration
@@ -315,6 +307,7 @@ def get_time_of_blackout_events(blackout_events_per_timeframe, date_time_index):
         index=date_time_index, fill_value=0
     )
     return time_of_blackout_events
+
 
 def get_blackout_event_durations(experiment, timestep, number_of_blackouts):
     # Generating blackout durations for the number of events
@@ -343,6 +336,7 @@ def get_blackout_event_durations(experiment, timestep, number_of_blackouts):
     )
 
     return blackout_event_durations, accumulated_blackout_duration
+
 
 def availability_series(
     grid_availability, time_of_blackout_events, timestep, blackout_event_durations
@@ -378,6 +372,7 @@ def availability_series(
                 grid_availability.loc[step] = 1
 
     return grid_availability, overlapping_blackouts, blackout_count
+
 
 def extend_oemof_results(oemof_results, blackout_results):
     oemof_results.update(

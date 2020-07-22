@@ -15,59 +15,65 @@ import pprint as pp
 # Logging of info
 import logging
 
-from src.constants import (CASE_NAME,
-                           FILENAME,
-                           TOTAL_DEMAND_AC,
-                           TOTAL_DEMAND_DC,
-                           ABS_PEAK_DEMAND_AC_SIDE,
-                           EVALUATED_DAYS,
-                           GENSET_WITH_MINIMAL_LOADING,
-                           CAPACITY_PV_KWP,
-                           CAPACITY_WIND_KW,
-                           CAPACITY_RECTIFIER_AC_DC_KW,
-                           CAPACITY_INVERTER_DC_AC_KW,
-                           SHORTAGE_BATCH_CAPACITY,
-                           SHORTAGE_BATCH_POWER,
-                           GENSET_BATCH,
-                           PV_BATCH,
-                           PCOUPLING_BATCH,
-                           WIND_BATCH,
-                           RECTIFIER_AC_DC_BATCH,
-                           INVERTER_DC_AC_BATCH,
-                           STORAGE_FIXED_CAPACITY,
-                           STORAGE_FIXED_POWER,
-                           GENSET_FIXED_CAPACITY,
-                           PV_FIXED_CAPACITY,
-                           PCC_CONSUMPTION_FIXED_CAPACITY,
-                           PCC_FEEDIN_FIXED_CAPACITY,
-                           WIND_FIXED_CAPACITY,
-                           RECTIFIER_AC_DC_FIXED_CAPACITY,
-                           INVERTER_DC_AC_FIXED_CAPACITY,
-                           POWER_STORAGE_KW,
-                           CAPACITY_STORAGE_KWH,
-                           CAPACITY_GENSET_KW,
-                           GENSET_OVERSIZE_FACTOR,
-                           CAPACITY_PCC_CONSUMPTION_KW,
-                           CAPACITY_PCC_FEEDING_KW,
-                           PCOUPLING_OVERSIZE_FACTOR,
-                           ALLOW_SHORTAGE,
-                           SHORTAGE_MAX_ALLOWED,
-                           MAX_SHORTAGE,
-                           STABILITY_CONSTRAINT,
-                           RENEWABLE_CONSTRAINT,
-                           MIN_RENEWABLE_SHARE,
-                           RENEWABLE_SHARE_CONSTRAINT,
-                           NUMBER_OF_EQUAL_GENERATORS,
-                           EVALUATION_PERSPECTIVE,
-                           FORCE_CHARGE_FROM_MAINGRID,
-                           DISCHARGE_ONLY_WHEN_BLACKOUT,
-                           ENABLE_INVERTER_ONLY_AT_BLACKOUT,
-                           OEM,
-                           PEAK_DEMAND,
-                           PCOUPLING_EFFICIENCY,
-                           SHARE_BACKUP, SHARE_USAGE, SHARE_HYBRID)
+from src.constants import (
+    CASE_NAME,
+    FILENAME,
+    TOTAL_DEMAND_AC,
+    TOTAL_DEMAND_DC,
+    ABS_PEAK_DEMAND_AC_SIDE,
+    EVALUATED_DAYS,
+    GENSET_WITH_MINIMAL_LOADING,
+    CAPACITY_PV_KWP,
+    CAPACITY_WIND_KW,
+    CAPACITY_RECTIFIER_AC_DC_KW,
+    CAPACITY_INVERTER_DC_AC_KW,
+    SHORTAGE_BATCH_CAPACITY,
+    SHORTAGE_BATCH_POWER,
+    GENSET_BATCH,
+    PV_BATCH,
+    PCOUPLING_BATCH,
+    WIND_BATCH,
+    RECTIFIER_AC_DC_BATCH,
+    INVERTER_DC_AC_BATCH,
+    STORAGE_FIXED_CAPACITY,
+    STORAGE_FIXED_POWER,
+    GENSET_FIXED_CAPACITY,
+    PV_FIXED_CAPACITY,
+    PCC_CONSUMPTION_FIXED_CAPACITY,
+    PCC_FEEDIN_FIXED_CAPACITY,
+    WIND_FIXED_CAPACITY,
+    RECTIFIER_AC_DC_FIXED_CAPACITY,
+    INVERTER_DC_AC_FIXED_CAPACITY,
+    POWER_STORAGE_KW,
+    CAPACITY_STORAGE_KWH,
+    CAPACITY_GENSET_KW,
+    GENSET_OVERSIZE_FACTOR,
+    CAPACITY_PCC_CONSUMPTION_KW,
+    CAPACITY_PCC_FEEDING_KW,
+    PCOUPLING_OVERSIZE_FACTOR,
+    ALLOW_SHORTAGE,
+    SHORTAGE_MAX_ALLOWED,
+    MAX_SHORTAGE,
+    STABILITY_CONSTRAINT,
+    RENEWABLE_CONSTRAINT,
+    MIN_RENEWABLE_SHARE,
+    RENEWABLE_SHARE_CONSTRAINT,
+    NUMBER_OF_EQUAL_GENERATORS,
+    EVALUATION_PERSPECTIVE,
+    FORCE_CHARGE_FROM_MAINGRID,
+    DISCHARGE_ONLY_WHEN_BLACKOUT,
+    ENABLE_INVERTER_ONLY_AT_BLACKOUT,
+    OEM,
+    PEAK_DEMAND,
+    PCOUPLING_EFFICIENCY,
+    SHARE_BACKUP,
+    SHARE_USAGE,
+    SHARE_HYBRID,
+)
+
 # This is not really a necessary class, as the whole experiement could be given to the function, but it ensures, that
 # only correct input data is included
+
 
 def update_dict(capacities_oem, specific_case, experiment):
     experiment_case_dict = {}
@@ -83,15 +89,11 @@ def update_dict(capacities_oem, specific_case, experiment):
             TOTAL_DEMAND_DC: experiment[TOTAL_DEMAND_DC],
             PEAK_DEMAND: experiment[ABS_PEAK_DEMAND_AC_SIDE],
             EVALUATED_DAYS: experiment[EVALUATED_DAYS],
-            GENSET_WITH_MINIMAL_LOADING: specific_case[
-                GENSET_WITH_MINIMAL_LOADING
-            ],
+            GENSET_WITH_MINIMAL_LOADING: specific_case[GENSET_WITH_MINIMAL_LOADING],
         }
     )
 
-    warning_string = (
-        "Invalid case definitions. For case " + specific_case[CASE_NAME]
-    )
+    warning_string = "Invalid case definitions. For case " + specific_case[CASE_NAME]
 
     ###########################################
     # Define capacities                       #
@@ -113,8 +115,8 @@ def update_dict(capacities_oem, specific_case, experiment):
         SHORTAGE_BATCH_POWER,
         GENSET_BATCH,
         PV_BATCH,
-        PCOUPLING_BATCH ,  # check entry
-        PCOUPLING_BATCH ,  # check entry
+        PCOUPLING_BATCH,  # check entry
+        PCOUPLING_BATCH,  # check entry
         WIND_BATCH,
         RECTIFIER_AC_DC_BATCH,
         INVERTER_DC_AC_BATCH,
@@ -175,12 +177,8 @@ def update_dict(capacities_oem, specific_case, experiment):
     # Allowing shortage, define max. shortage #
     ###########################################
     if specific_case[ALLOW_SHORTAGE] == "default":
-        experiment_case_dict.update(
-            {ALLOW_SHORTAGE: experiment[ALLOW_SHORTAGE]}
-        )
-        experiment_case_dict.update(
-            {MAX_SHORTAGE: experiment[SHORTAGE_MAX_ALLOWED]}
-        )
+        experiment_case_dict.update({ALLOW_SHORTAGE: experiment[ALLOW_SHORTAGE]})
+        experiment_case_dict.update({MAX_SHORTAGE: experiment[SHORTAGE_MAX_ALLOWED]})
 
     elif specific_case[ALLOW_SHORTAGE] == False:
         experiment_case_dict.update({ALLOW_SHORTAGE: False})
@@ -191,23 +189,19 @@ def update_dict(capacities_oem, specific_case, experiment):
         and specific_case[MAX_SHORTAGE] == "default"
     ):
         experiment_case_dict.update({ALLOW_SHORTAGE: True})
-        experiment_case_dict.update(
-            {MAX_SHORTAGE: experiment[SHORTAGE_MAX_ALLOWED]}
-        )
+        experiment_case_dict.update({MAX_SHORTAGE: experiment[SHORTAGE_MAX_ALLOWED]})
 
     elif specific_case[ALLOW_SHORTAGE] == True:
         if isinstance(specific_case[MAX_SHORTAGE], float) or isinstance(
             specific_case[MAX_SHORTAGE], int
         ):
             experiment_case_dict.update({ALLOW_SHORTAGE: True})
-            experiment_case_dict.update(
-                {MAX_SHORTAGE: specific_case[MAX_SHORTAGE]}
-            )
+            experiment_case_dict.update({MAX_SHORTAGE: specific_case[MAX_SHORTAGE]})
 
     else:
         logging.warning(
             warning_string
-            + ' values ALLOW_SHORTAGE (True/False/default) and MAX_SHORTAGE (float/default) not defined properly: '
+            + " values ALLOW_SHORTAGE (True/False/default) and MAX_SHORTAGE (float/default) not defined properly: "
             + str(specific_case[ALLOW_SHORTAGE])
             + str(isinstance(specific_case[ALLOW_SHORTAGE], str))
         )
@@ -228,7 +222,7 @@ def update_dict(capacities_oem, specific_case, experiment):
     else:
         logging.warning(
             warning_string
-            + ' value STABILITY_CONSTRAINT (False/share_backup/share_usage) not defined properly'
+            + " value STABILITY_CONSTRAINT (False/share_backup/share_usage) not defined properly"
         )
 
     ###########################################
@@ -249,15 +243,13 @@ def update_dict(capacities_oem, specific_case, experiment):
     else:
         logging.warning(
             warning_string
-            + ' value RENEWABLE_SHARE_CONSTRAINT (True/False/default) not defined properly'
+            + " value RENEWABLE_SHARE_CONSTRAINT (True/False/default) not defined properly"
         )
 
     experiment_case_dict[NUMBER_OF_EQUAL_GENERATORS] = specific_case[
         NUMBER_OF_EQUAL_GENERATORS
     ]
-    experiment_case_dict[EVALUATION_PERSPECTIVE] = specific_case[
-        EVALUATION_PERSPECTIVE
-    ]
+    experiment_case_dict[EVALUATION_PERSPECTIVE] = specific_case[EVALUATION_PERSPECTIVE]
     experiment_case_dict[FORCE_CHARGE_FROM_MAINGRID] = specific_case[
         FORCE_CHARGE_FROM_MAINGRID
     ]
@@ -269,11 +261,12 @@ def update_dict(capacities_oem, specific_case, experiment):
     ]
     return experiment_case_dict
 
+
 def get_base_capacity(
     experiment_case_dict, case_dict_entry, capacities, component_name, batch_size
 ):
-    if case_dict_entry ==OEM:
-        case_dict_capacity =OEM
+    if case_dict_entry == OEM:
+        case_dict_capacity = OEM
     elif case_dict_entry == None or case_dict_entry == "None":
         case_dict_capacity = None
     elif isinstance(case_dict_entry, float) or isinstance(case_dict_entry, int):
@@ -283,9 +276,7 @@ def get_base_capacity(
         case_dict_capacity = float(case_dict_capacity)
     elif case_dict_entry in capacities:
         case_dict_capacity = capacities[case_dict_entry][component_name]
-        case_dict_capacity = (
-            round(0.5 + case_dict_capacity / batch_size) * batch_size
-        )
+        case_dict_capacity = round(0.5 + case_dict_capacity / batch_size) * batch_size
         case_dict_capacity = float(case_dict_capacity)
     else:
         logging.warning(
@@ -294,15 +285,14 @@ def get_base_capacity(
 
     return case_dict_capacity
 
+
 def define_capacity(experiment_case_dict, case_dict_capacity, oemof_name):
 
-    if case_dict_capacity ==OEM:
+    if case_dict_capacity == OEM:
         experiment_case_dict.update({oemof_name: False})
     elif case_dict_capacity == None or case_dict_capacity == 0:
         experiment_case_dict.update({oemof_name: None})
-    elif isinstance(case_dict_capacity, float) or isinstance(
-        case_dict_capacity, int
-    ):
+    elif isinstance(case_dict_capacity, float) or isinstance(case_dict_capacity, int):
         experiment_case_dict.update({oemof_name: case_dict_capacity})
     else:
         logging.warning(

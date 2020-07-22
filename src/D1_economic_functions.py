@@ -1,14 +1,15 @@
-
 # annuity factor to calculate present value of cash flows
 def annuity_factor(project_life, wacc):
     # discount_rate was replaced here by wacc
     annuity_factor = 1 / wacc - 1 / (wacc * (1 + wacc) ** project_life)
     return annuity_factor
 
+
 # accounting factor to translate present value to annual cash flows
 def crf(project_life, wacc):
     crf = (wacc * (1 + wacc) ** project_life) / ((1 + wacc) ** project_life - 1)
     return crf
+
 
 def present_value_of_changing_fuel_price(
     fuel_price, project_lifetime, wacc, crf, fuel_price_change_annual
@@ -20,6 +21,7 @@ def present_value_of_changing_fuel_price(
         fuel_price_i = fuel_price_i * (1 + fuel_price_change_annual)
     present_value_changing_fuel_price = cash_flow_fuel_l * crf
     return present_value_changing_fuel_price
+
 
 def capex_from_investment(investment_t0, lifetime, project_life, wacc, tax):
     # [quantity, investment, installation, weight, lifetime, om, first_investment]
@@ -53,9 +55,11 @@ def capex_from_investment(investment_t0, lifetime, project_life, wacc, tax):
 
     return capex
 
+
 def annuity(present_value, crf):
     annuity = present_value * crf
     return annuity
+
 
 def present_value_from_annuity(annuity, annuity_factor):
     present_value = annuity * annuity_factor

@@ -1,7 +1,18 @@
 import logging
 
-from src.constants import STORAGE_DISCHARGE, STORAGE_CHARGE, COMMENTS, DEMAND_SUPPLIED, DEMAND, DEMAND_SHORTAGE, \
-    CONSUMPTION_FROM_MAIN_GRID, FEED_INTO_MAIN_GRID, GRID_AVAILABILITY, EXCESS_ELECTRICITY, CAPACITY_PCC
+from src.constants import (
+    STORAGE_DISCHARGE,
+    STORAGE_CHARGE,
+    COMMENTS,
+    DEMAND_SUPPLIED,
+    DEMAND,
+    DEMAND_SHORTAGE,
+    CONSUMPTION_FROM_MAIN_GRID,
+    FEED_INTO_MAIN_GRID,
+    GRID_AVAILABILITY,
+    EXCESS_ELECTRICITY,
+    CAPACITY_PCC,
+)
 
 """
 e_flows_df can include columns with titles...
@@ -21,6 +32,7 @@ e_flows_df can include columns with titles...
 'PV generation'
 'Grid availability'
 """
+
 
 def run(oemof_results, e_flows_df):
     """
@@ -44,12 +56,10 @@ def run(oemof_results, e_flows_df):
     excess_feedin(oemof_results, e_flows_df)
     return
 
+
 def charge_discharge(oemof_results, e_flows_df):
     logging.debug("Plausibility test: Charge/Discharge")
-    if (
-        STORAGE_DISCHARGE in e_flows_df.columns
-        and STORAGE_CHARGE in e_flows_df.columns
-    ):
+    if STORAGE_DISCHARGE in e_flows_df.columns and STORAGE_CHARGE in e_flows_df.columns:
         boolean = True
 
         test = [
@@ -74,6 +84,7 @@ def charge_discharge(oemof_results, e_flows_df):
                 }
             )
     return
+
 
 def demand_supply_shortage(oemof_results, e_flows_df):
     logging.debug("Plausibility test: Demand/Supply/Shortage")
@@ -117,6 +128,7 @@ def demand_supply_shortage(oemof_results, e_flows_df):
 
     return
 
+
 def feedin_consumption(oemof_results, e_flows_df):
     logging.debug("Plausibility test: Feedin/Consumption")
     if (CONSUMPTION_FROM_MAIN_GRID in e_flows_df.columns) and (
@@ -148,6 +160,7 @@ def feedin_consumption(oemof_results, e_flows_df):
             )
 
     return
+
 
 def gridavailability_feedin(oemof_results, e_flows_df):
     logging.debug("Plausibility test: Grid availability/Feedin")
@@ -181,6 +194,7 @@ def gridavailability_feedin(oemof_results, e_flows_df):
 
     return
 
+
 def gridavailability_consumption(oemof_results, e_flows_df):
     logging.debug("Plausibility test: Grid availability consumption")
     if (CONSUMPTION_FROM_MAIN_GRID in e_flows_df.columns) and (
@@ -213,6 +227,7 @@ def gridavailability_consumption(oemof_results, e_flows_df):
 
     return
 
+
 def excess_shortage(oemof_results, e_flows_df):
     logging.debug("Plausibility test: Excess/shortage")
     if (EXCESS_ELECTRICITY in e_flows_df.columns) and (
@@ -244,6 +259,7 @@ def excess_shortage(oemof_results, e_flows_df):
             )
 
     return
+
 
 def excess_feedin(oemof_results, e_flows_df):
     logging.debug("Plausibility test: Excess/Feedin")
@@ -280,10 +296,7 @@ def excess_feedin(oemof_results, e_flows_df):
                 "PLAUSABILITY TEST FAILED: Excess while feedin to national grid not maximal (PCC capacity)!"
             )
             oemof_results.update(
-                {
-                    COMMENTS: oemof_results[COMMENTS]
-                    + "Excess while feedin not maximal."
-                }
+                {COMMENTS: oemof_results[COMMENTS] + "Excess while feedin not maximal."}
             )
 
     return

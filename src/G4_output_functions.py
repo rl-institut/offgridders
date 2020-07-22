@@ -11,14 +11,48 @@ import logging
 import oemof.graph as graph
 import networkx as nx
 
-from src.constants import DISPLAY_META, DISPLAY_MAIN, SEQUENCES, DISPLAY_INVEST, SCALARS, DEMAND_SHORTAGE, \
-    DEMAND_SHORTAGE_AC, DEMAND_SHORTAGE_DC, DEMAND_SUPPLIED, PV_GENERATION, PV_GENERATION_AC, PV_GENERATION_DC, \
-    WIND_GENERATION, EXCESS_GENERATION, CONSUMPTION_MAIN_GRID_MG_SIDE, STORAGE_DISCHARGE, STORAGE_DISCHARGE_AC, \
-    STORAGE_DISCHARGE_DC, STORAGE_SOC, STORAGE_CHARGE, STORAGE_CHARGE_AC, STORAGE_CHARGE_DC, GENSET_GENERATION, \
-    GRID_AVAILABILITY, DEMAND, FEED_INTO_MAIN_GRID, CONSUMPTION_FROM_MAIN_GRID, SAVE_TO_CSV_FLOWS_ELECTRICITY_MG, \
-    OUTPUT_FOLDER, CASE_NAME, SAVE_TO_PNG_FLOWS_ELECTRICITY_MG, STORAGE_FIXED_CAPACITY, PCC_CONSUMPTION_FIXED_CAPACITY, \
-    PCC_FEEDIN_FIXED_CAPACITY, PROJECT_SITE_NAME, STORED_CAPACITY, SAVE_TO_CSV_FLOWS_STORAGE, SAVE_TO_PNG_FLOWS_STORAGE, \
-    WIND, PV
+from src.constants import (
+    DISPLAY_META,
+    DISPLAY_MAIN,
+    SEQUENCES,
+    DISPLAY_INVEST,
+    SCALARS,
+    DEMAND_SHORTAGE,
+    DEMAND_SHORTAGE_AC,
+    DEMAND_SHORTAGE_DC,
+    DEMAND_SUPPLIED,
+    PV_GENERATION,
+    PV_GENERATION_AC,
+    PV_GENERATION_DC,
+    WIND_GENERATION,
+    EXCESS_GENERATION,
+    CONSUMPTION_MAIN_GRID_MG_SIDE,
+    STORAGE_DISCHARGE,
+    STORAGE_DISCHARGE_AC,
+    STORAGE_DISCHARGE_DC,
+    STORAGE_SOC,
+    STORAGE_CHARGE,
+    STORAGE_CHARGE_AC,
+    STORAGE_CHARGE_DC,
+    GENSET_GENERATION,
+    GRID_AVAILABILITY,
+    DEMAND,
+    FEED_INTO_MAIN_GRID,
+    CONSUMPTION_FROM_MAIN_GRID,
+    SAVE_TO_CSV_FLOWS_ELECTRICITY_MG,
+    OUTPUT_FOLDER,
+    CASE_NAME,
+    SAVE_TO_PNG_FLOWS_ELECTRICITY_MG,
+    STORAGE_FIXED_CAPACITY,
+    PCC_CONSUMPTION_FIXED_CAPACITY,
+    PCC_FEEDIN_FIXED_CAPACITY,
+    PROJECT_SITE_NAME,
+    STORED_CAPACITY,
+    SAVE_TO_CSV_FLOWS_STORAGE,
+    SAVE_TO_PNG_FLOWS_STORAGE,
+    WIND,
+    PV,
+)
 
 
 def print_oemof_meta_main_invest(experiment, meta, electricity_bus, case_name):
@@ -37,6 +71,7 @@ def print_oemof_meta_main_invest(experiment, meta, electricity_bus, case_name):
             logging.info("********* Invest results *********")
             pp.pprint(electricity_bus[SCALARS])
     return
+
 
 def save_mg_flows(experiment, case_dict, e_flows_df, filename):
     logging.debug("Saving flows MG.")
@@ -89,9 +124,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
     ]
 
     mg_flows = pd.DataFrame(
-        e_flows_df[DEMAND].values,
-        columns=[DEMAND],
-        index=e_flows_df[DEMAND].index,
+        e_flows_df[DEMAND].values, columns=[DEMAND], index=e_flows_df[DEMAND].index,
     )
     for entry in flows_connected_to_electricity_mg_bus:
         if entry in e_flows_df.columns:
@@ -196,6 +229,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
 
     return
 
+
 def plot_flows(case_dict, experiment, mg_flows, e_flows_df, number_of_subplots):
     if number_of_subplots < 1:
         fig, axes = plt.subplots(nrows=1, figsize=(16 / 2.54, 10 / 2.54 / 2))
@@ -261,11 +295,10 @@ def plot_flows(case_dict, experiment, mg_flows, e_flows_df, number_of_subplots):
 
         axes[1].set(xlabel="Time", ylabel=ylabel)
         if number_of_subplots > 1:
-            axes[1].legend(
-                loc="center left", bbox_to_anchor=(1, 0.5), frameon=False
-            )
+            axes[1].legend(loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
 
     return
+
 
 def save_storage(experiment, case_dict, e_flows_df, filename):
     logging.debug("Saving flows storage.")
@@ -335,9 +368,7 @@ def save_storage(experiment, case_dict, e_flows_df, filename):
                     + experiment[PROJECT_SITE_NAME]
                 )
                 fig.set(xlabel="Time", ylabel="Electricity flow/stored in kWh")
-                fig.legend(
-                    loc="center left", bbox_to_anchor=(1, 0.5), frameon=False
-                )
+                fig.legend(loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
                 plt.savefig(
                     experiment[OUTPUT_FOLDER]
                     + "/storage/"
@@ -350,6 +381,7 @@ def save_storage(experiment, case_dict, e_flows_df, filename):
                 plt.clf()
                 plt.cla()
     return
+
 
 def save_network_graph(energysystem, case_name):
     logging.debug("Generate networkx diagram")
@@ -387,6 +419,7 @@ def save_network_graph(energysystem, case_name):
         },
         edge_color="#eeac7e",
     )
+
 
 def draw_graph(
     grph,

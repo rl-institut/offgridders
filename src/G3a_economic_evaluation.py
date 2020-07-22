@@ -5,22 +5,81 @@
 import logging
 
 # Try to import matplotlib librar
-from src.constants import PCC_CONSUMPTION_FIXED_CAPACITY, PCC_FEEDIN_FIXED_CAPACITY, NPV, ANNUITY, ANNUITY_FACTOR, \
-    TOTAL_DEMAND_SUPPLIED_ANNUAL_KWH, LCOE, EVALUATED_DAYS, PV_COST_ANNUITY, ANNUITY_PV, CAPACITY_PV_KWP, ANNUITY_WIND, \
-    WIND_COST_ANNUITY, CAPACITY_WIND_KW, ANNUITY_STORAGE, STORAGE_CAPACITY_COST_ANNUITY, CAPACITY_STORAGE_KWH, \
-    STORAGE_POWER_COST_ANNUITY, POWER_STORAGE_KW, ANNUITY_GENSET, GENSET_COST_ANNUITY, CAPACITY_GENSET_KW, \
-    ANNUITY_RECTIFIER_AC_DC, RECTIFIER_AC_DC_COST_ANNUITY, CAPACITY_RECTIFIER_AC_DC_KW, ANNUITY_INVERTER_DC_AC, \
-    INVERTER_DC_AC_COST_ANNUITY, CAPACITY_INVERTER_DC_AC_KW, PROJECT, DISTRIBUTION_GRID, ANNUITY_PCOUPLING, \
-    PCOUPLING_COST_ANNUITY, CAPACITY_PCOUPLING_KW, ANNUITY_MAINGRID_EXTENSION, MAINGRID_EXTENSION_COST_ANNUITY, \
-    MAINGRID_DISTANCE, PV, WIND, GENSET, STORAGE, PCOUPLING, MAINGRID_EXTENSION, RECTIFIER_AC_DC, INVERTER_DC_AC, \
-    PV_COST_INVESTMENT, SHORTAGE_CAPACITY_COST_INVESTMENT, STORAGE_POWER_COST_INVESTMENT, \
-    MAINGRID_EXTENSION_COST_INVESTMENT, FIRST_INVESTMENT, SHORTAGE_CAPACITY_COST_OPEX, STORAGE_CAPACITY_LIFETIME, \
-    STORAGE_POWER_COST_OPEX, STORAGE_POWER_LIFETIME, OPERATION_MAINTAINANCE_EXPENDITURES, CONSUMPTION_FUEL_ANNUAL_L, \
-    CONSUMPTION_FUEL_ANNUAL_KWH, COMBUSTION_VALUE_FUEL, EXPENDITURES_FUEL_ANNUAL, PRICE_FUEL, EXPENDITURES_FUEL_TOTAL, \
-    EXPENDITURES_MAIN_GRID_CONSUMPTION_ANNUAL, CONSUMPTION_MAIN_GRID_MG_SIDE_ANNUAL_KWH, MAINGRID_ELECTRICITY_PRICE, \
-    EXPENDITURES_MAIN_GRID_CONSUMPTION_TOTAL, EXPENDITURES_SHORTAGE_ANNUAL, TOTAL_DEMAND_SHORTAGE_ANNUAL_KWH, \
-    SHORTAGE_PENALTY_COST, EXPENDITURES_SHORTAGE_TOTAL, COMMENTS, REVENUE_MAIN_GRID_FEEDIN_ANNUAL, \
-    FEEDIN_MAIN_GRID_MG_SIDE_ANNUAL_KWH, MAINGRID_FEEDIN_TARIFF, REVENUE_MAIN_GRID_FEEDIN_TOTAL
+from src.constants import (
+    PCC_CONSUMPTION_FIXED_CAPACITY,
+    PCC_FEEDIN_FIXED_CAPACITY,
+    NPV,
+    ANNUITY,
+    ANNUITY_FACTOR,
+    TOTAL_DEMAND_SUPPLIED_ANNUAL_KWH,
+    LCOE,
+    EVALUATED_DAYS,
+    PV_COST_ANNUITY,
+    ANNUITY_PV,
+    CAPACITY_PV_KWP,
+    ANNUITY_WIND,
+    WIND_COST_ANNUITY,
+    CAPACITY_WIND_KW,
+    ANNUITY_STORAGE,
+    STORAGE_CAPACITY_COST_ANNUITY,
+    CAPACITY_STORAGE_KWH,
+    STORAGE_POWER_COST_ANNUITY,
+    POWER_STORAGE_KW,
+    ANNUITY_GENSET,
+    GENSET_COST_ANNUITY,
+    CAPACITY_GENSET_KW,
+    ANNUITY_RECTIFIER_AC_DC,
+    RECTIFIER_AC_DC_COST_ANNUITY,
+    CAPACITY_RECTIFIER_AC_DC_KW,
+    ANNUITY_INVERTER_DC_AC,
+    INVERTER_DC_AC_COST_ANNUITY,
+    CAPACITY_INVERTER_DC_AC_KW,
+    PROJECT,
+    DISTRIBUTION_GRID,
+    ANNUITY_PCOUPLING,
+    PCOUPLING_COST_ANNUITY,
+    CAPACITY_PCOUPLING_KW,
+    ANNUITY_MAINGRID_EXTENSION,
+    MAINGRID_EXTENSION_COST_ANNUITY,
+    MAINGRID_DISTANCE,
+    PV,
+    WIND,
+    GENSET,
+    STORAGE,
+    PCOUPLING,
+    MAINGRID_EXTENSION,
+    RECTIFIER_AC_DC,
+    INVERTER_DC_AC,
+    PV_COST_INVESTMENT,
+    SHORTAGE_CAPACITY_COST_INVESTMENT,
+    STORAGE_POWER_COST_INVESTMENT,
+    MAINGRID_EXTENSION_COST_INVESTMENT,
+    FIRST_INVESTMENT,
+    SHORTAGE_CAPACITY_COST_OPEX,
+    STORAGE_CAPACITY_LIFETIME,
+    STORAGE_POWER_COST_OPEX,
+    STORAGE_POWER_LIFETIME,
+    OPERATION_MAINTAINANCE_EXPENDITURES,
+    CONSUMPTION_FUEL_ANNUAL_L,
+    CONSUMPTION_FUEL_ANNUAL_KWH,
+    COMBUSTION_VALUE_FUEL,
+    EXPENDITURES_FUEL_ANNUAL,
+    PRICE_FUEL,
+    EXPENDITURES_FUEL_TOTAL,
+    EXPENDITURES_MAIN_GRID_CONSUMPTION_ANNUAL,
+    CONSUMPTION_MAIN_GRID_MG_SIDE_ANNUAL_KWH,
+    MAINGRID_ELECTRICITY_PRICE,
+    EXPENDITURES_MAIN_GRID_CONSUMPTION_TOTAL,
+    EXPENDITURES_SHORTAGE_ANNUAL,
+    TOTAL_DEMAND_SHORTAGE_ANNUAL_KWH,
+    SHORTAGE_PENALTY_COST,
+    EXPENDITURES_SHORTAGE_TOTAL,
+    COMMENTS,
+    REVENUE_MAIN_GRID_FEEDIN_ANNUAL,
+    FEEDIN_MAIN_GRID_MG_SIDE_ANNUAL_KWH,
+    MAINGRID_FEEDIN_TARIFF,
+    REVENUE_MAIN_GRID_FEEDIN_TOTAL,
+)
 
 try:
     import matplotlib.pyplot as plt
@@ -31,6 +90,7 @@ except ImportError:
 ###############################################################################
 #
 ###############################################################################
+
 
 def project_annuities(case_dict, oemof_results, experiment):
     # Define all annuities based on component capacities (Capex+Opex), add var. operational costs
@@ -48,17 +108,13 @@ def project_annuities(case_dict, oemof_results, experiment):
 
     if case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] != None:
         # ---------Expenditures from electricity consumption from main grid ----------#
-        expenditures_main_grid_consumption(
-            oemof_results, experiment
-        )
+        expenditures_main_grid_consumption(oemof_results, experiment)
 
     if case_dict[PCC_FEEDIN_FIXED_CAPACITY] != None:
         # ---------Revenues from electricity feed-in to main grid ----------#
         revenue_main_grid_feedin(oemof_results, experiment)
 
-    oemof_results.update(
-        {NPV: oemof_results[ANNUITY] * experiment[ANNUITY_FACTOR]}
-    )
+    oemof_results.update({NPV: oemof_results[ANNUITY] * experiment[ANNUITY_FACTOR]})
 
     if oemof_results[TOTAL_DEMAND_SUPPLIED_ANNUAL_KWH] > 0:
         oemof_results.update(
@@ -71,6 +127,7 @@ def project_annuities(case_dict, oemof_results, experiment):
         oemof_results.update({LCOE: 0})
     return
 
+
 def annuities_365(case_dict, oemof_results, experiment):
     evaluated_days = case_dict[EVALUATED_DAYS]
 
@@ -79,14 +136,11 @@ def annuities_365(case_dict, oemof_results, experiment):
     )
 
     interval_annuity = {
-        ANNUITY_PV: experiment[PV_COST_ANNUITY]
-        * oemof_results[CAPACITY_PV_KWP],
-        ANNUITY_WIND: experiment[WIND_COST_ANNUITY]
-        * oemof_results[CAPACITY_WIND_KW],
+        ANNUITY_PV: experiment[PV_COST_ANNUITY] * oemof_results[CAPACITY_PV_KWP],
+        ANNUITY_WIND: experiment[WIND_COST_ANNUITY] * oemof_results[CAPACITY_WIND_KW],
         ANNUITY_STORAGE: experiment[STORAGE_CAPACITY_COST_ANNUITY]
         * oemof_results[CAPACITY_STORAGE_KWH]
-        + experiment[STORAGE_POWER_COST_ANNUITY]
-        * oemof_results[POWER_STORAGE_KW],
+        + experiment[STORAGE_POWER_COST_ANNUITY] * oemof_results[POWER_STORAGE_KW],
         ANNUITY_GENSET: experiment[GENSET_COST_ANNUITY]
         * oemof_results[CAPACITY_GENSET_KW],
         ANNUITY_RECTIFIER_AC_DC: experiment[RECTIFIER_AC_DC_COST_ANNUITY]
@@ -97,9 +151,7 @@ def annuities_365(case_dict, oemof_results, experiment):
 
     list_fix = [PROJECT, DISTRIBUTION_GRID]
     for item in list_fix:
-        interval_annuity.update(
-            {"annuity_" + item: experiment[item + "_cost_annuity"]}
-        )
+        interval_annuity.update({"annuity_" + item: experiment[item + "_cost_annuity"]})
 
     if (
         case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] != None
@@ -127,9 +179,7 @@ def annuities_365(case_dict, oemof_results, experiment):
     ):
         interval_annuity.update(
             {
-                ANNUITY_MAINGRID_EXTENSION: experiment[
-                    MAINGRID_EXTENSION_COST_ANNUITY
-                ]
+                ANNUITY_MAINGRID_EXTENSION: experiment[MAINGRID_EXTENSION_COST_ANNUITY]
                 * experiment[MAINGRID_DISTANCE]
             }
         )
@@ -162,7 +212,7 @@ def annuities_365(case_dict, oemof_results, experiment):
                 * oemof_results[CAPACITY_STORAGE_KWH]
             )
             investment += (
-                experiment[STORAGE_POWER_COST_INVESTMENT ]
+                experiment[STORAGE_POWER_COST_INVESTMENT]
                 * oemof_results[CAPACITY_STORAGE_KWH]
             )
         elif item == MAINGRID_EXTENSION:
@@ -180,14 +230,10 @@ def annuities_365(case_dict, oemof_results, experiment):
 
     oemof_results.update({FIRST_INVESTMENT: investment})
 
-    logging.debug(
-        "Economic evaluation. Calculating O&M costs over analysed timeframe."
-    )
+    logging.debug("Economic evaluation. Calculating O&M costs over analysed timeframe.")
 
     om_var_interval = {}
-    om = (
-        0  # first, var costs are included, then opex costs and finally expenditures
-    )
+    om = 0  # first, var costs are included, then opex costs and finally expenditures
     for item in [PV, WIND, GENSET]:
         om_var_interval.update(
             {
@@ -222,8 +268,7 @@ def annuities_365(case_dict, oemof_results, experiment):
                 * experiment[STORAGE_CAPACITY_LIFETIME]
             )
             om += (
-                experiment[STORAGE_POWER_COST_OPEX]
-                * experiment[STORAGE_POWER_LIFETIME]
+                experiment[STORAGE_POWER_COST_OPEX] * experiment[STORAGE_POWER_LIFETIME]
             )
         else:
             om += experiment[item + "_cost_opex"] * experiment[item + "_lifetime"]
@@ -238,9 +283,7 @@ def annuities_365(case_dict, oemof_results, experiment):
             oemof_results.update(
                 {
                     "annuity_"
-                    + item: (interval_annuity["annuity_" + item])
-                    * 365
-                    / evaluated_days
+                    + item: (interval_annuity["annuity_" + item]) * 365 / evaluated_days
                 }
             )
         else:
@@ -265,6 +308,7 @@ def annuities_365(case_dict, oemof_results, experiment):
 
     return
 
+
 def costs(oemof_results, experiment):
     logging.debug("Economic evaluation. Calculating present costs.")
 
@@ -285,22 +329,18 @@ def costs(oemof_results, experiment):
         oemof_results.update(
             {
                 "costs_"
-                + item: oemof_results["annuity_" + item]
-                * experiment[ANNUITY_FACTOR]
+                + item: oemof_results["annuity_" + item] * experiment[ANNUITY_FACTOR]
             }
         )
 
     return
 
+
 def expenditures_fuel(oemof_results, experiment):
-    logging.debug(
-        "Economic evaluation. Calculating fuel consumption and expenditures."
-    )
+    logging.debug("Economic evaluation. Calculating fuel consumption and expenditures.")
     oemof_results.update(
         {
-            CONSUMPTION_FUEL_ANNUAL_L: oemof_results[
-                CONSUMPTION_FUEL_ANNUAL_KWH
-            ]
+            CONSUMPTION_FUEL_ANNUAL_L: oemof_results[CONSUMPTION_FUEL_ANNUAL_KWH]
             / experiment[COMBUSTION_VALUE_FUEL]
         }
     )
@@ -328,12 +368,10 @@ def expenditures_fuel(oemof_results, experiment):
     )
 
     oemof_results.update(
-        {
-            ANNUITY: oemof_results[ANNUITY]
-            + oemof_results[EXPENDITURES_FUEL_ANNUAL]
-        }
+        {ANNUITY: oemof_results[ANNUITY] + oemof_results[EXPENDITURES_FUEL_ANNUAL]}
     )
     return
+
 
 def expenditures_main_grid_consumption(oemof_results, experiment):
     logging.debug(
@@ -375,6 +413,7 @@ def expenditures_main_grid_consumption(oemof_results, experiment):
     )
     return
 
+
 def expenditures_shortage(oemof_results, experiment):
     logging.debug("Economic evaluation. Calculating shortage and expenditures.")
     # Necessary in oemof_results: consumption_main_grid_annual
@@ -398,9 +437,7 @@ def expenditures_shortage(oemof_results, experiment):
 
     oemof_results.update(
         {
-            EXPENDITURES_SHORTAGE_TOTAL: oemof_results[
-                EXPENDITURES_SHORTAGE_ANNUAL
-            ]
+            EXPENDITURES_SHORTAGE_TOTAL: oemof_results[EXPENDITURES_SHORTAGE_ANNUAL]
             * experiment[ANNUITY_FACTOR]
         }
     )
@@ -420,6 +457,7 @@ def expenditures_shortage(oemof_results, experiment):
             }
         )
     return
+
 
 def revenue_main_grid_feedin(oemof_results, experiment):
     logging.debug("Economic evaluation. Calculating feeding and revenues.")
@@ -448,6 +486,7 @@ def revenue_main_grid_feedin(oemof_results, experiment):
         }
     )
     return
+
 
 def annual_value(value, evaluated_days):
     value = value * 365 / evaluated_days

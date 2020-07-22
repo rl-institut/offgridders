@@ -1,4 +1,4 @@
-#A1_GENERAL_FUNCTIONS
+# A1_GENERAL_FUNCTIONS
 CAPACITY_PV_KWP = "capacity_pv_kWp"
 CAPACITY_WIND_KW = "capacity_wind_kW"
 CAPACITY_STORAGE_KWH = "capacity_storage_kWh"
@@ -9,8 +9,8 @@ CAPACITY_RECTIFIER_AC_DC_KW = "capacity_rectifier_ac_dc_kW"
 CAPACITY_INVERTER_DC_AC_KW = "capacity_inverter_dc_ac_kW"
 DEMAND_PROFILE = "demand_profile"
 
-#B_READ_FROM_FILES
-SETTINGS ="settings"
+# B_READ_FROM_FILES
+SETTINGS = "settings"
 INPUT_CONSTANT = "input_constant"
 INPUT_SENSITIVITY = "input_sensitivity"
 PROJECT_SITES = "project_sites"
@@ -19,7 +19,9 @@ MULTICRITERIA_DATA = "multicriteria_data"
 INPUT_FOLDER_TIMESERIES = "input_folder_timeseries"
 TIMESERIES_FILE = "timeseries_file"
 TITLE_GRID_AVAILABILITY = "title_grid_availability"
-NECESSITY_FOR_BLACKOUT_TIMESERIES_GENERATION = "necessity_for_blackout_timeseries_generation"
+NECESSITY_FOR_BLACKOUT_TIMESERIES_GENERATION = (
+    "necessity_for_blackout_timeseries_generation"
+)
 SETTING_VALUE = "setting_value"
 UNIT = "Unit"
 VALUE = "Value"
@@ -28,7 +30,7 @@ MAX_SHORTAGE = "max_shortage"
 NUMBER_OF_EQUAL_GENERATORS = "number_of_equal_generators"
 DIMENSIONS = "dimensions"
 CRITERIA = "criteria"
-PARAMETERS ="parameters"
+PARAMETERS = "parameters"
 TARIFF = "tariff"
 TITLE_TIME = "title_time"
 TITLE_DEMAND_AC = "title_demand_ac"
@@ -48,9 +50,9 @@ LP_FILE_FOR_ONLY_3_TIMESTEPS = "lp_file_for_only_3_timesteps"
 SAVE_TO_CSV_FLOWS_STORAGE = "save_to_csv_flows_storage"
 SAVE_TO_PNG_FLOWS_STORAGE = "save_to_png_flows_storage"
 SAVE_TO_CSV_FLOWS_ELECTRICITY_MG = "save_to_csv_flows_electricity_mg"
-SAVE_TO_PNG_FLOWS_ELECTRICITY_MG  = "save_to_png_flows_electricity_mg"
+SAVE_TO_PNG_FLOWS_ELECTRICITY_MG = "save_to_png_flows_electricity_mg"
 
-#C_SENSITIVITY_EXPERIMENTS
+# C_SENSITIVITY_EXPERIMENTS
 BLACKOUT_DURATION = "blackout_duration"
 BLACKOUT_DURATION_STD_DEVIATION = "blackout_duration_std_deviation"
 BLACKOUT_FREQUENCY = "blackout_frequency"
@@ -207,7 +209,7 @@ EVALUATION_TIME = "evaluation_time"
 FILENAME = "filename"
 COMMENTS = "comments"
 
-#D0_process_input
+# D0_process_input
 PERFORM_SIMULATION = "perform_simulation"
 BASED_ON_CASE = "based_on_case"
 ANNUITY_FACTOR = "annuity_factor"
@@ -245,7 +247,7 @@ PEAK_MEAN_DEMAND_RATIO_AC = "peak/mean_demand_ratio_ac"
 PEAK_MEAN_DEMAND_RATIO_DC = "peak/mean_demand_ratio_dc"
 ABS_PEAK_DEMAND_AC_SIDE = "abs_peak_demand_ac_side"
 
-#E_blackouts_central_grid
+# E_blackouts_central_grid
 TIMESTEP = "timestep"
 MAX_DATE_TIME_INDEX = "max_date_time_index"
 GRID_TOTAL_BLACKOUT_DURATION = "grid_total_blackout_duration"
@@ -253,7 +255,7 @@ GRID_NUMBER_OF_BLACKOUTS = "grid_number_of_blackouts"
 GRID_RELIABILITY = "grid_reliability"
 MAX_EVALUATED_DAYS = "max_evaluated_days"
 
-#F_case_definitions
+# F_case_definitions
 PEAK_DEMAND = "peak_demand"
 GENSET_WITH_MINIMAL_LOADING = "genset_with_minimal_loading"
 CAPACITY_PCC_CONSUMPTION_KW = "capacity_pcc_consumption_kW"
@@ -277,7 +279,7 @@ DISCHARGE_ONLY_WHEN_BLACKOUT = "discharge_only_when_blackout"
 ENABLE_INVERTER_ONLY_AT_BLACKOUT = "enable_inverter_only_at_backout"
 OEM = "oem"
 
-#G0_oemof_simulate
+# G0_oemof_simulate
 MAIN = "main"
 META = "meta"
 OBJECTIVE = "objective"
@@ -290,8 +292,8 @@ SHARE_USAGE = "share_usage"
 SHARE_HYBRID = "share_hybrid"
 BUS_FUEL = "bus_fuel"
 
-#G2a_oemof_busses_and_components
-SOURCE_FUEL= "source_fuel"
+# G2a_oemof_busses_and_components
+SOURCE_FUEL = "source_fuel"
 SOURCE_SHORTAGE = "source_shortage"
 BUS_ELECTRICITY_NG_CONSUMPTION = "bus_electricity_ng_consumption"
 SOURCE_MAINGRID_CONSUMPTION = "source_maingrid_consumption"
@@ -312,13 +314,13 @@ GENERIC_STORAGE = "generic_storage"
 STORAGE_CAPACITY_COST_ANNUITY = "storage_capacity_cost_annuity"
 STORAGE_POWER_COST_ANNUITY = "storage_power_cost_annuity"
 SINK_EXCESS = "sink_excess"
-DISTRIBUTION_GRID_EFFICIENCY ="distribution_grid_efficiency"
+DISTRIBUTION_GRID_EFFICIENCY = "distribution_grid_efficiency"
 SINK_DEMAND_AC = "sink_demand_ac"
 SINK_DEMAND_DC = "sink_demand_dc"
 SINK_MAINGRID_FEEDIN = "sink_maingrid_feedin"
 SINK_MAINGRID_FEEDIN_SYMBOLIC = "source_maingrid_feedin_symbolic"
 
-#G2b
+# G2b
 STORAGE_CAPACITY_MIN = "storage_capacity_min"
 DEMAND = "Demand"
 STORED_CAPACITY = "Stored capacity"
@@ -331,11 +333,11 @@ STORAGE_CHARGE_DC = "Storage charge DC"
 STORAGE_DISCHARGE_DC = "Storage discharge DC"
 INVERTER_INPUT = "Inverter input"
 
-#G3
+# G3
 SEQUENCES = "sequences"
 FLOW = "flow"
 AC_BUS = "AC_bus"
-TOTAL_DEMAND_SHORTAGE_AC_ANNUAL_KWH =  "total_demand_shortage_ac_annual_kWh"
+TOTAL_DEMAND_SHORTAGE_AC_ANNUAL_KWH = "total_demand_shortage_ac_annual_kWh"
 DEMAND_SHORTAGE_AC = "Demand shortage AC"
 TOTAL_DEMAND_SHORTAGE_DC_ANNUAL_KWH = "total_demand_shortage_dc_annual_kWh"
 DEMAND_SHORTAGE_DC = "Demand shortage DC"
@@ -366,28 +368,30 @@ STORAGE_CHARGE_AC = "Storage charge AC"
 STORAGE_DISCHARGE_AC = "Storage discharge AC"
 STORAGE_CHARGE = "Storage charge"
 STORAGE_SOC = "Storage SOC"
-CONSUMPTION_MAIN_GRID_UTILITY_SIDE_ANNUAL_KWH = "consumption_main_grid_utility_side_annual_kWh"
+CONSUMPTION_MAIN_GRID_UTILITY_SIDE_ANNUAL_KWH = (
+    "consumption_main_grid_utility_side_annual_kWh"
+)
 BUS_ELECTRICITY_NG_FEEDIN = "bus_electricity_ng_feedin"
 FEEDIN_MAIN_GRID_UTILITY_SIDE_ANNUAL_KWH = "feedin_main_grid_utility_side_annual_kWh"
 TOTAL_PCOUPLING_THROUGHPUT_KWH = "total_pcoupling_throughput_kWh"
 
-#G3a
+# G3a
 WIND_COST_ANNUITY = "wind_cost_annuity"
 MAINGRID_EXTENSION_COST_ANNUITY = "maingrid_extension_cost_annuity"
 STORAGE = "storage"
 
-#G3b
+# G3b
 CONSUMPTION_FROM_MAIN_GRID = "Consumption from main grid"
 FEED_INTO_MAIN_GRID = "Feed into main grid"
 EXCESS_ELECTRICITY = "Excess electricity"
 CAPACITY_PCC = "capacity pcc"
 
-#G4
+# G4
 DISPLAY_META = "display_meta"
 DISPLAY_MAIN = "display_main"
 DISPLAY_INVEST = "display_invest"
 
-#H0
+# H0
 CAPACITIES = "capacities"
 EVALUATIONS = "evaluations"
 NORMALIZED_EVALUATIONS = "normalized_evaluations"
@@ -405,9 +409,9 @@ PLOT = "plot"
 PARAMETER = "parameter"
 SHOW = "show"
 
-DIMENSIONS_W = "Dimensions"
+DIMENSIONS_W = "Dimensions" #dimension_weights
 
-#H1
+# H1
 ECONOMIC = "economic"
 TECHNICAL = "technical"
 SOCIOINSTITUTIONAL = "socioinstitutional"
