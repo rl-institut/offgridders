@@ -48,7 +48,6 @@ from src.constants import (
     SHORTAGE_MAX_TIMESTEP,
 )
 
-
 def backup(
     model,
     case_dict,

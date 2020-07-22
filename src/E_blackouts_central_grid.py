@@ -266,7 +266,7 @@ def availability(
     return grid_availability_df
 
 
-def number_of_blackouts(evaluated_days, experiment):
+def get_number_of_blackouts(evaluated_days, experiment):
     # Calculation of expected blackouts per analysed timeframe
     blackout_events_per_month = np.random.normal(
         loc=experiment[BLACKOUT_FREQUENCY],  # median value: blackout duration

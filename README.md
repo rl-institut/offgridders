@@ -25,8 +25,8 @@ If you have questions regarding the tool's execution or it's code pieces, please
 * If python3 not pre-installed: Install miniconda
 * Download and integrate cbc solver
 * Open Anaconda prompt, create environment
-* Run: pip install -r requirements.txt
-* Execute: python A_main_script.py ./inputs/test_input_template.xlsx
+* Run: `pip install -r requirements.txt`
+* Execute: `python Offgridders.py ./inputs/test_input_template.xlsx`
 
 For Details: See [github wiki](https://github.com/smartie2076/simulator_grid-connected_micro_grid/wiki/Installation)
 

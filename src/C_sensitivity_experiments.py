@@ -401,7 +401,10 @@ def with_base_case(
         parameters_sensitivity, project_site_s
     )
 
-    (sensitivity_experiment_s, total_number_of_experiments,) = combinations_around_base(
+    (
+        sensitivity_experiment_s,
+        total_number_of_experiments,
+    ) = get_combinations_around_base(
         sensitivity_array_dict, universal_parameters, project_site_s
     )
 
@@ -584,7 +587,7 @@ def get_all_possible_combinations(sensitivity_array_dict, name_entry_dict):
     return sensitivity_experiment_s, total_number_of_experiments
 
 
-def combinations_around_base(
+def get_combinations_around_base(
     sensitivity_array_dict, universal_parameters, project_site_s
 ):
 
@@ -912,6 +915,8 @@ def overall_results_title(settings, number_of_project_sites, sensitivity_array_d
                     SUPPLY_RELIABILITY_KWH,
                     RES_SHARE,
                     AUTONOMY_FACTOR,
+                    "co2_emissions_kgCO2eq",
+                    "total_excess_annual_kWh"
                 ]
             ),
         ],
@@ -978,6 +983,7 @@ def overall_results_title(settings, number_of_project_sites, sensitivity_array_d
                     TOTAL_PV_GENERATION_KWH,
                     TOTAL_WIND_GENERATION_KWH,
                     TOTAL_GENSET_GENERATION_KWH,
+                    "consumption_fuel_annual_kWh",
                     CONSUMPTION_FUEL_ANNUAL_L,
                     CONSUMPTION_MAIN_GRID_MG_SIDE_ANNUAL_KWH,
                     FEEDIN_MAIN_GRID_MG_SIDE_ANNUAL_KWH,

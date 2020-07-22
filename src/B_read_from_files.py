@@ -116,7 +116,6 @@ def process_excel_file(input_excel_file):
         multicriteria_data,
     )
 
-
 def get_data(file, sheet, header_row, index_column, last_column):
     # Gets data from excel template
     if index_column == None and last_column == None:
@@ -133,7 +132,6 @@ def get_data(file, sheet, header_row, index_column, last_column):
         data = data.dropna()
     return data
 
-
 def identify_true_false(entry):
     # Translates strings True/False to boolean
     if entry == "True":
@@ -144,7 +142,6 @@ def identify_true_false(entry):
         pass
 
     return entry
-
 
 def get_settings(file, sheet_settings):
     # defines dictionary connected to settings
@@ -157,15 +154,34 @@ def get_settings(file, sheet_settings):
         settings[key] = identify_true_false(settings[key])
     return settings
 
-
 def get_parameters_constant(file, sheet_input_constant):
     # defines dictionary connected to parameters
     parameters_constant = get_data(file, sheet_input_constant, 6, "A", "C")
     parameters_constant = parameters_constant.to_dict(orient="dict")
     parameters_constant_units = parameters_constant[UNIT]
     parameters_constant_values = parameters_constant[VALUE]
-    return parameters_constant_units, parameters_constant_values
+    parameters_constant_units = parameters_constant["Unit"]
+    parameters_constant_values = parameters_constant["Value"]
 
+    if "fuel_co2_emission_factor" not in parameters_constant_values.keys():
+        parameters_constant_values.update({"fuel_co2_emission_factor": 2.68})
+        parameters_constant_units.update({"fuel_co2_emission_factor": "kgCO2/l"})
+        logging.warning(
+            "Optional parameter `fuel_co2_emission_factor` was not included in the input parameters."
+            "The CO2 emissions will be calculated with the default value of 2.68 kgCO2/l diesel"
+        )
+
+    if "maingrid_co2_emission_factor" not in parameters_constant_values.keys():
+        parameters_constant_values.update({"maingrid_co2_emission_factor": 0.9})
+        parameters_constant_units.update({"maingrid_co2_emission_factor": "kgCO2/kWh"})
+        logging.warning(
+            "Optional parameter `maingrid_co2_emission_factor` was not included in the input parameters."
+            "The CO2 emissions will be calculated with the default value of 0.9 kgCO2/ kWh "
+            "consumed from the (fully coal-based) maingrid."
+        )
+
+    # print(parameters_constant_values)
+    return parameters_constant_units, parameters_constant_values
 
 def get_parameters_sensitivity(file, sheet_input_sensitivity):
     # defines dictionary connected to senstivity analysis
@@ -214,6 +230,16 @@ def get_case_definitions(file, sheet_project_sites):
         if case_definitions[case][MAX_SHORTAGE] != "default":
             case_definitions[case].update(
                 {MAX_SHORTAGE: float(case_definitions[case][MAX_SHORTAGE])}
+            )
+
+        if case_definitions[case]["evaluation_perspective"] not in [
+            "AC_system",
+            "DC_system",
+        ]:
+            logging.error(
+                "Parameter evaluation_perspective has to be either 'AC_system' or 'DC_system', "
+                "but is ",
+                case_definitions[case]["evaluation_perspective"],
             )
 
         case_definitions[case].update(

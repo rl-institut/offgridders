@@ -15,19 +15,74 @@ Here is a template for new release sections
 -
 ### Removed
 -
+### Fixed
+-
 ```
+## [Unreleased]
 
-## [Unreleased] - 2020-05-01
+### Added
+-
+### Changed
+-
+### Removed
+-
+### Fixed
+-
+
+## [Offgridders V4.4] - 2020-07-09
+
+### Added
+- Error message if parameter `evaluation_perspective` is not chosen correctly (#97)
+- Warning message if `fuel_price_change_annual` != 0, as calculation may be faulty (#97)
+
+### Changed
+- Added parameter `consumption_fuel_annual_kWh` to simulation outputs (#97)
+- Input template file so that it runs MCA and gives options of `evaluation_perspective` (#97)
+- If `fuel_price_change_annual` == 0, function `present_value_changing_fuel_price` is not executed and returns fuel price (#97)
+- Order of cost results in simulation outputs, as `first_investment_cost`, `operation_mantainance_expenditures` as these are not to be added to costs, expenditures and revenues to calculate the NPC (#97)
+- Formula calculating the residual value of an asset. Now, the sales revenue is translated into a present value: 
+`linear_depreciation_last_investment = last_investment / lifetime` and `capex = capex - linear_depreciation_last_investment * (number_of_investments * lifetime - project_life) / (1 + wacc) ** (project_life)` (#97)
+                )`
+### Removed
+- Removed unused function call in G2a (`genset_oem_minload`) (#97)
+
+### Fixed
+- Miscalculation of `total_demand_supplied_annual_kWh` due to wrong `evaluation_perspective` on tab `case_definitions`  (#97)
+- Function call of `present_value_changing_fuel_price` (#97)
+- Typo: Replace `operation_mantainance_expenditures` by `operation_maintenance_expenditures` (#97)
+
+## [Offgridders V4.3] - 2020-07-02
+
+### Fixed
+- Faulty function calls from module structure change: 'get_universal_parameters',
+'get_combinations_around_base', 'get_number_of_blackouts' (#86)
+
+## [Offgridders V4.2] - 2020-06-30
+
+### Added
+- `total_excess_annual_kWh` to list of output parameters. Calculation: `total_excess_annual_kWh = total_excess_ac_annual_kWh + total_excess_dc_annual` (#73)
+- Optional parameters and their default values `fuel_co2_emission_factor` (2.68 kgCO2eq/l diesel) and `maingrid_co2_emission_factor` (0.9 kgCO2eq/kWh) to input template, sheet `input_constant` and module `B` (#77)
+- Calculation of C02 emissions and new output value: `co2_emissions_kgCO2eq`. It is based on the kWh consumption from the national grid (before transfromer station losses) and diesel consumption (#77)
+
+### Changed
+-
+
+### Removed
+-
+
+### Fixed
+- Typo when calling for the inverter capacity ('capacity_inverter_dc_ac_kW' and not 'capacity_inverter_kW'), (#75)
+- Typo for unit of `maingrid_extension_lifetime` (a)
+
+## [Offgridders V4.1] - 2020-06-30
 
 ### Added
 - readthedocs.yml file (#59)
 
 ### Changed
 - Moved Wiki to Readthedocs (#41)
-- Change
-
-### Removed
--
+- Changed class structure to modules/functions (#53)
+- Script A0 was refactored to Offgridders. It runs now through `python Offgridders.py YOUR_INPUT_EXCEL_SHEET_PATH` (#53)
 
 ### Fixed
 - Compilation of readthedocs by changing advanced settings on readthedocs.io (#59)

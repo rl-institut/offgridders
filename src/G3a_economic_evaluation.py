@@ -336,6 +336,24 @@ def costs(oemof_results, experiment):
     return
 
 
+
+def calculate_co2_emissions(oemof_results, experiment):
+    co2_emissions = 0
+    if "consumption_fuel_annual_l" in oemof_results:
+        co2_emissions += (
+            oemof_results["consumption_fuel_annual_l"]
+            * experiment["fuel_co2_emission_factor"]
+        )
+    if "consumption_main_grid_utility_side_annual_kWh" in oemof_results:
+        co2_emissions += (
+            oemof_results["consumption_main_grid_utility_side_annual_kWh"]
+            * experiment["maingrid_co2_emission_factor"]
+        )
+    oemof_results.update({"co2_emissions_kgCO2eq": co2_emissions})
+    logging.debug("Calculated CO2 emissions.")
+    return
+
+
 def expenditures_fuel(oemof_results, experiment):
     logging.debug("Economic evaluation. Calculating fuel consumption and expenditures.")
     oemof_results.update(
@@ -344,6 +362,7 @@ def expenditures_fuel(oemof_results, experiment):
             / experiment[COMBUSTION_VALUE_FUEL]
         }
     )
+
     oemof_results.update(
         {
             EXPENDITURES_FUEL_ANNUAL: oemof_results[CONSUMPTION_FUEL_ANNUAL_L]
