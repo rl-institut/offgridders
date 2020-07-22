@@ -401,7 +401,7 @@ WEIGHT = "weight"
 ABREV = "Abrev"
 DIESEL = "diesel"
 MAINGRID = "maingrid"
-MAINGRID = "plot"
+PLOT = "plot"
 PARAMETER = "parameter"
 SHOW = "show"
 

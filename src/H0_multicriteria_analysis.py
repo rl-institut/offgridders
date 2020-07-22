@@ -3,7 +3,7 @@ import logging
 import src.H1_multicriteria_functions as multicriteria_functions
 from src.constants import EVALUATIONS, NORMALIZED_EVALUATIONS, GLOBAL_LS, LOCAL_LS, SENSITIVITY_ALL_COMBINATIONS, \
     CAPACITIES, CASE, PROJECT_SITE_NAME, LEVELS, PREVIOUS_LEVEL, CHANGES, ANALYSE, FILENAME, DIMENSIONS, WEIGHT, \
-    CRITERIA, ABREV, PV, WIND, GENSET, MAINGRID, DIESEL, PARAMETERS, PARAMETER, SHOW, DIMENSIONS_W
+    CRITERIA, ABREV, PV, WIND, GENSET, MAINGRID, DIESEL, PARAMETERS, PARAMETER, SHOW, DIMENSIONS_W,PLOT
 
 
 def main_analysis(overallresults, multicriteria_data, settings):
@@ -238,7 +238,7 @@ def format_punctuations(multicriteria_data):
             GENSET: assessment[DIESEL],
             MAINGRID: assessment[MAINGRID],
         }
-        if assessment[MAINGRID] == "Yes":
+        if assessment[PLOT] == "Yes":
             plot_criteria.append(assessment[ABREV])
 
     parameters = {}
