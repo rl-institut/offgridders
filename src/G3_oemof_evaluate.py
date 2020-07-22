@@ -197,7 +197,7 @@ def get_shortage(
             )
             e_flows_df = join_e_flows_df(shortage_ac, DEMAND_SHORTAGE_AC, e_flows_df)
 
-            if case_dict["evaluation_perspective"] == AC_SYSTEM:
+            if case_dict[EVALUATION_PERSPECTIVE] == AC_SYSTEM:
                 shortage += shortage_ac
             else:
                 shortage += shortage_ac / experiment[INVERTER_DC_AC_EFFICIENCY]
@@ -295,7 +295,7 @@ def get_pv(
                 e_flows_df,
             )
 
-        if case_dict["evaluation_perspective"] == AC_SYSTEM:
+        if case_dict[EVALUATION_PERSPECTIVE] == AC_SYSTEM:
             e_flows_df = join_e_flows_df(
                 e_flows_df[PV_GENERATION_AC], PV_GENERATION, e_flows_df
             )

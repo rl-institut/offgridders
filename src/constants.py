@@ -51,6 +51,7 @@ SAVE_TO_CSV_FLOWS_STORAGE = "save_to_csv_flows_storage"
 SAVE_TO_PNG_FLOWS_STORAGE = "save_to_png_flows_storage"
 SAVE_TO_CSV_FLOWS_ELECTRICITY_MG = "save_to_csv_flows_electricity_mg"
 SAVE_TO_PNG_FLOWS_ELECTRICITY_MG = "save_to_png_flows_electricity_mg"
+EVALUATION_PERSPECTIVE = "evaluation_perspective"
 
 # C_SENSITIVITY_EXPERIMENTS
 BLACKOUT_DURATION = "blackout_duration"
@@ -273,7 +274,7 @@ ALLOW_SHORTAGE = "allow_shortage"
 STABILITY_CONSTRAINT = "stability_constraint"
 RENEWABLE_CONSTRAINT = "renewable_constraint"
 RENEWABLE_SHARE_CONSTRAINT = "renewable_share_constraint"
-EVALUATION_PERSPECTIVE = "evaluation_perspective"
+EVALUATION_PERSPECTIVE = EVALUATION_PERSPECTIVE
 FORCE_CHARGE_FROM_MAINGRID = "force_charge_from_maingrid"
 DISCHARGE_ONLY_WHEN_BLACKOUT = "discharge_only_when_blackout"
 ENABLE_INVERTER_ONLY_AT_BLACKOUT = "enable_inverter_only_at_backout"

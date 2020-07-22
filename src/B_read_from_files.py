@@ -45,7 +45,7 @@ from src.constants import (
     SAVE_TO_CSV_FLOWS_ELECTRICITY_MG,
     SAVE_TO_PNG_FLOWS_ELECTRICITY_MG,
     FILE_INDEX,
-)
+    EVALUATION_PERSPECTIVE)
 
 # requires xlrd
 
@@ -237,14 +237,14 @@ def get_case_definitions(file, sheet_project_sites):
                 {MAX_SHORTAGE: float(case_definitions[case][MAX_SHORTAGE])}
             )
 
-        if case_definitions[case]["evaluation_perspective"] not in [
+        if case_definitions[case][EVALUATION_PERSPECTIVE] not in [
             "AC_SYSTEM",
             "DC_system",
         ]:
             logging.error(
                 "Parameter evaluation_perspective has to be either 'AC_system' or 'DC_system', "
                 "but is ",
-                case_definitions[case]["evaluation_perspective"],
+                case_definitions[case][EVALUATION_PERSPECTIVE],
             )
 
         case_definitions[case].update(
