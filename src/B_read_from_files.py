@@ -45,7 +45,8 @@ from src.constants import (
     SAVE_TO_CSV_FLOWS_ELECTRICITY_MG,
     SAVE_TO_PNG_FLOWS_ELECTRICITY_MG,
     FILE_INDEX,
-    EVALUATION_PERSPECTIVE)
+    EVALUATION_PERSPECTIVE,
+)
 
 # requires xlrd
 
