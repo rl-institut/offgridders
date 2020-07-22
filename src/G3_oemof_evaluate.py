@@ -10,11 +10,8 @@ import oemof.outputlib as outputlib
 import logging
 
 # Try to import matplotlib librar
-try:
-    import matplotlib.pyplot as plt
-except ImportError:
-    logging.warning("Attention! matplotlib could not be imported.")
-    plt = None
+import matplotlib.pyplot as plt
+
 
 
 def join_e_flows_df(timeseries, name, e_flows_df):
