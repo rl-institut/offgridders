@@ -41,7 +41,6 @@ from src.constants import (
 )
 
 
-
 def load_energysystem_lp():
     # based on lp file
     return

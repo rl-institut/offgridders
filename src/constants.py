@@ -409,7 +409,7 @@ PLOT = "plot"
 PARAMETER = "parameter"
 SHOW = "show"
 
-DIMENSIONS_W = "Dimensions" #dimension_weights
+DIMENSIONS_W = "Dimensions"  # dimension_weights
 
 # H1
 ECONOMIC = "economic"

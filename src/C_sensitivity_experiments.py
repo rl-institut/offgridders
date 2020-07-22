@@ -916,7 +916,7 @@ def overall_results_title(settings, number_of_project_sites, sensitivity_array_d
                     RES_SHARE,
                     AUTONOMY_FACTOR,
                     "co2_emissions_kgCO2eq",
-                    "total_excess_annual_kWh"
+                    "total_excess_annual_kWh",
                 ]
             ),
         ],

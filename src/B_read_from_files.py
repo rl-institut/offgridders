@@ -116,6 +116,7 @@ def process_excel_file(input_excel_file):
         multicriteria_data,
     )
 
+
 def get_data(file, sheet, header_row, index_column, last_column):
     # Gets data from excel template
     if index_column == None and last_column == None:
@@ -132,6 +133,7 @@ def get_data(file, sheet, header_row, index_column, last_column):
         data = data.dropna()
     return data
 
+
 def identify_true_false(entry):
     # Translates strings True/False to boolean
     if entry == "True":
@@ -143,6 +145,7 @@ def identify_true_false(entry):
 
     return entry
 
+
 def get_settings(file, sheet_settings):
     # defines dictionary connected to settings
     settings = get_data(file, sheet_settings, 11, "B", "C")
@@ -153,6 +156,7 @@ def get_settings(file, sheet_settings):
     for key in settings:
         settings[key] = identify_true_false(settings[key])
     return settings
+
 
 def get_parameters_constant(file, sheet_input_constant):
     # defines dictionary connected to parameters
@@ -182,6 +186,7 @@ def get_parameters_constant(file, sheet_input_constant):
 
     # print(parameters_constant_values)
     return parameters_constant_units, parameters_constant_values
+
 
 def get_parameters_sensitivity(file, sheet_input_sensitivity):
     # defines dictionary connected to senstivity analysis

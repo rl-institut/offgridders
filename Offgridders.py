@@ -36,7 +36,6 @@ from src.constants import (
 )
 
 
-
 def main():
     # Logging
     logger.define_logging(

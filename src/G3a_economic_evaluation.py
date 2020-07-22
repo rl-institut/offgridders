@@ -336,7 +336,6 @@ def costs(oemof_results, experiment):
     return
 
 
-
 def calculate_co2_emissions(oemof_results, experiment):
     co2_emissions = 0
     if "consumption_fuel_annual_l" in oemof_results:
