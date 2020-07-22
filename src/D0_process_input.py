@@ -5,12 +5,8 @@ Small scripts to keep the main file clean
 import pandas as pd
 import sys
 import logging
+import src.D1_economic_functions as economics
 
-try:
-    import src.D1_economic_functions as economics
-except ModuleNotFoundError:
-    print("Module error at D0")
-    import src.D1_economic_functions as economics
 
 
 def list_of_cases(case_definitions):
