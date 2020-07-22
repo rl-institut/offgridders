@@ -102,7 +102,7 @@ def evaluate_criteria(all_results, qualitative_punctuations, multicriteria_data)
                 REVENUE_MAIN_GRID_FEEDIN_ANNUAL, float
             ):
                 EC2 = EC2 - case[REVENUE_MAIN_GRID_FEEDIN_ANNUAL]
-            economic = {"EC1": EC1, "EC2": EC2}
+            economic = {"EC1": EC1, "EC2": EC2} #Here str are conserved as a variable is prevously declarated with the same name
             case_evaluations[ECONOMIC] = economic
 
             # technical evaluation
