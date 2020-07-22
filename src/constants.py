@@ -336,7 +336,7 @@ INVERTER_INPUT = "Inverter input"
 # G3
 SEQUENCES = "sequences"
 FLOW = "flow"
-AC_BUS = "AC_bus"
+AC_SYSTEM = "AC_SYSTEM"
 TOTAL_DEMAND_SHORTAGE_AC_ANNUAL_KWH = "total_demand_shortage_ac_annual_kWh"
 DEMAND_SHORTAGE_AC = "Demand shortage AC"
 TOTAL_DEMAND_SHORTAGE_DC_ANNUAL_KWH = "total_demand_shortage_dc_annual_kWh"

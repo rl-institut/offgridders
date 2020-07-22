@@ -233,7 +233,7 @@ def get_case_definitions(file, sheet_project_sites):
             )
 
         if case_definitions[case]["evaluation_perspective"] not in [
-            "AC_system",
+            "AC_SYSTEM",
             "DC_system",
         ]:
             logging.error(

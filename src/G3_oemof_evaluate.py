@@ -19,7 +19,6 @@ from src.constants import (
     SINK_DEMAND_AC,
     FLOW,
     EVALUATION_PERSPECTIVE,
-    AC_BUS,
     INVERTER_DC_AC_EFFICIENCY,
     BUS_ELECTRICITY_DC,
     SINK_DEMAND_DC,
@@ -149,7 +148,7 @@ def get_demand(
         ((BUS_ELECTRICITY_AC, SINK_DEMAND_AC), FLOW)
     ]
     e_flows_df = join_e_flows_df(demand_ac, "Demand AC", e_flows_df)
-    if case_dict[EVALUATION_PERSPECTIVE] == "AC_system":
+    if case_dict[EVALUATION_PERSPECTIVE] == AC_SYSTEM:
         e_flows_df[DEMAND] += demand_ac
     else:
         e_flows_df[DEMAND] += demand_ac / experiment[INVERTER_DC_AC_EFFICIENCY]
@@ -161,7 +160,7 @@ def get_demand(
         ((BUS_ELECTRICITY_DC, SINK_DEMAND_DC), FLOW)
     ]
     e_flows_df = join_e_flows_df(demand_dc, "Demand DC", e_flows_df)
-    if case_dict[EVALUATION_PERSPECTIVE] == "AC_system":
+    if case_dict[EVALUATION_PERSPECTIVE] == AC_SYSTEM:
         e_flows_df[DEMAND] += demand_dc / experiment[RECTIFIER_AC_DC_EFFICIENCY]
     else:
         e_flows_df[DEMAND] += demand_dc
@@ -198,7 +197,7 @@ def get_shortage(
             )
             e_flows_df = join_e_flows_df(shortage_ac, DEMAND_SHORTAGE_AC, e_flows_df)
 
-            if case_dict["evaluation_perspective"] == "AC_system":
+            if case_dict["evaluation_perspective"] == AC_SYSTEM:
                 shortage += shortage_ac
             else:
                 shortage += shortage_ac / experiment[INVERTER_DC_AC_EFFICIENCY]
@@ -216,7 +215,7 @@ def get_shortage(
             )
             e_flows_df = join_e_flows_df(shortage_dc, DEMAND_SHORTAGE_DC, e_flows_df)
 
-            if case_dict[EVALUATION_PERSPECTIVE] == "AC_system":
+            if case_dict[EVALUATION_PERSPECTIVE] == AC_SYSTEM:
                 shortage += shortage_dc / experiment[RECTIFIER_AC_DC_EFFICIENCY]
             else:
                 shortage += shortage_dc
@@ -289,14 +288,14 @@ def get_pv(
         pv_gen = electricity_bus_dc[SEQUENCES][((SOURCE_PV, BUS_ELECTRICITY_DC), FLOW)]
         annual_value(TOTAL_PV_GENERATION_KWH, pv_gen, oemof_results, case_dict)
         e_flows_df = join_e_flows_df(pv_gen, PV_GENERATION_DC, e_flows_df)
-        if case_dict[EVALUATION_PERSPECTIVE] == "AC_system":
+        if case_dict[EVALUATION_PERSPECTIVE] == AC_SYSTEM:
             e_flows_df = join_e_flows_df(
                 pv_gen / experiment[RECTIFIER_AC_DC_EFFICIENCY],
                 PV_GENERATION_AC,
                 e_flows_df,
             )
 
-        if case_dict["evaluation_perspective"] == "AC_system":
+        if case_dict["evaluation_perspective"] == AC_SYSTEM:
             e_flows_df = join_e_flows_df(
                 e_flows_df[PV_GENERATION_AC], PV_GENERATION, e_flows_df
             )
@@ -533,7 +532,7 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
         )
         e_flows_df = join_e_flows_df(stored_capacity, STORED_CAPACITY, e_flows_df)
 
-        if case_dict[EVALUATION_PERSPECTIVE] == "AC_system":
+        if case_dict[EVALUATION_PERSPECTIVE] == AC_SYSTEM:
             e_flows_df = join_e_flows_df(
                 storage_charge / experiment[RECTIFIER_AC_DC_EFFICIENCY],
                 STORAGE_CHARGE_AC,
