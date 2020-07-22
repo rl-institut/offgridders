@@ -1,528 +1,565 @@
 ******************************************************
-2020-07-22 11:22:09,970 - INFO - logger - Path for logging: ./micro_grid_design_logfile.log
-2020-07-22 11:22:09,971 - INFO - logger - Used oemof version: 0.2.2
-2020-07-22 11:22:09,971 - INFO - Offgridders - 
- 
- Offgridders 3.1
- Version: 11.10.2019 
+2020-07-22 12:44:01,364 - INFO - logger - Path for logging: ./micro_grid_design_logfile.log
+2020-07-22 12:44:01,364 - INFO - logger - Used oemof version: 0.2.2
+2020-07-22 12:44:01,364 - INFO - Offgridders - 
  Coded by: Martha M. Hoffmann 
  Reiner Lemoine Institute (Berlin) 
  
  
-2020-07-22 11:22:09,971 - INFO - Offgridders - Performing simulations defined by file "./tests/inputs/pytest_test.xlsx"
+2020-07-22 12:44:01,364 - INFO - Offgridders - Performing simulations defined by file "./tests/inputs/pytest_test.xlsx"
 
-2020-07-22 11:22:10,023 - DEBUG - B_read_from_files - Checking for folders and files
-2020-07-22 11:22:10,136 - INFO - B_read_from_files - Following project locations are evaluated: test_site
-2020-07-22 11:22:10,294 - WARNING - C_sensitivity_experiments - Attributes "pv_cost_investment" defined in constant and sensitivity parameters. Only sensitivity parameter value will be used for sensitivity_experiment_s.
-2020-07-22 11:22:10,298 - INFO - C_sensitivity_experiments - Parameters of sensitivity analysis: pv_cost_investment
-2020-07-22 11:22:10,312 - INFO - C_sensitivity_experiments - Randomized blackout timeseries for all combinations of blackout duration and frequency (1 experiments) will be generated.
-2020-07-22 11:22:10,500 - DEBUG - C_sensitivity_experiments - Generating header for results.csv
-2020-07-22 11:22:10,557 - INFO - C_sensitivity_experiments - For 1 project sites with 2 scenarios each, 2 sensitivity_experiment_s will be performed for each case.
-2020-07-22 11:22:10,557 - INFO - D0_process_input - Base capacities provided by: pv-diesel-mg
-2020-07-22 11:22:10,558 - INFO - D0_process_input - All simulated cases: pv-diesel-mg, pv-diesel-storage-mg, pv-wind-storage-diesel-mg
-2020-07-22 11:22:10,558 - INFO - Offgridders - With these cases, a total of 6 simulations will be performed. 
+2020-07-22 12:44:01,417 - DEBUG - B_read_from_files - Checking for folders and files
+2020-07-22 12:44:01,460 - WARNING - B_read_from_files - Optional parameter `fuel_co2_emission_factor` was not included in the input parameters.The CO2 emissions will be calculated with the default value of 2.68 kgCO2/l diesel
+2020-07-22 12:44:01,460 - WARNING - B_read_from_files - Optional parameter `maingrid_co2_emission_factor` was not included in the input parameters.The CO2 emissions will be calculated with the default value of 0.9 kgCO2/ kWh consumed from the (fully coal-based) maingrid.
+2020-07-22 12:44:01,540 - INFO - B_read_from_files - Following project locations are evaluated: test_site
+2020-07-22 12:44:01,706 - WARNING - C_sensitivity_experiments - Attributes "pv_cost_investment" defined in constant and sensitivity parameters. Only sensitivity parameter value will be used for sensitivity_experiment_s.
+2020-07-22 12:44:01,712 - INFO - C_sensitivity_experiments - Parameters of sensitivity analysis: pv_cost_investment
+2020-07-22 12:44:01,724 - ERROR - D1_economic_functions - You chose parameter 'fuel_price_change_annual' unequal zero. This calculation is still faulty and you should check the resulting fuel price. It would be better if you set your fuel price by hand.
+2020-07-22 12:44:01,725 - INFO - D1_economic_functions -  The resulting fuel price is: 0.7305005445162127
+2020-07-22 12:44:01,728 - ERROR - D1_economic_functions - You chose parameter 'fuel_price_change_annual' unequal zero. This calculation is still faulty and you should check the resulting fuel price. It would be better if you set your fuel price by hand.
+2020-07-22 12:44:01,729 - INFO - D1_economic_functions -  The resulting fuel price is: 0.7305005445162127
+2020-07-22 12:44:01,731 - INFO - C_sensitivity_experiments - Randomized blackout timeseries for all combinations of blackout duration and frequency (1 experiments) will be generated.
+2020-07-22 12:44:01,935 - DEBUG - C_sensitivity_experiments - Generating header for results.csv
+2020-07-22 12:44:02,001 - INFO - C_sensitivity_experiments - For 1 project sites with 2 scenarios each, 2 sensitivity_experiment_s will be performed for each case.
+2020-07-22 12:44:02,001 - INFO - D0_process_input - Base capacities provided by: pv-diesel-mg
+2020-07-22 12:44:02,001 - INFO - D0_process_input - All simulated cases: pv-diesel-mg, pv-diesel-storage-mg, pv-wind-storage-diesel-mg
+2020-07-22 12:44:02,002 - INFO - Offgridders - With these cases, a total of 6 simulations will be performed. 
 
-2020-07-22 11:22:10,589 - INFO - E_blackouts_central_grid - Blackout experiment "blackout_dur_0.0_dur_dev_0.0_freq_0.0_freq_dev_0.0": Total blackout duration 0 hrs, total number of blackouts 0 with grid reliability of 1.0
-2020-07-22 11:22:10,589 - INFO - E_blackouts_central_grid - Previous blackout timeseries restored: blackout_dur_0.0_dur_dev_0.0_freq_0.0_freq_dev_0.0
-2020-07-22 11:22:10,589 - INFO - E_blackouts_central_grid - All necessary blackout timeseries restored.
+2020-07-22 12:44:02,009 - INFO - E_blackouts_central_grid - Blackout experiment 1: Blackout duration 0 hrs, blackout frequency 0 per month
+******************************************************
+2020-07-22 12:45:25,651 - INFO - logger - Path for logging: ./micro_grid_design_logfile.log
+2020-07-22 12:45:25,652 - INFO - logger - Used oemof version: 0.2.2
+2020-07-22 12:45:25,652 - INFO - Offgridders - 
+ Coded by: Martha M. Hoffmann 
+ Reiner Lemoine Institute (Berlin) 
  
+ 
+2020-07-22 12:45:25,652 - INFO - Offgridders - Performing simulations defined by file "./tests/inputs/pytest_test.xlsx"
 
-2020-07-22 11:22:10,591 - DEBUG - Offgridders - Using grid availability timeseries that was randomly generated.
-2020-07-22 11:22:10,591 - INFO - Offgridders - Starting simulation of case pv-diesel-mg, project site test_site, experiment no. 1/6...
-2020-07-22 11:22:10,591 - DEBUG - G1_oemof_create_model - Complete case dictionary:
-2020-07-22 11:22:10,591 - DEBUG - G1_oemof_create_model - {'case_name': 'pv-diesel-mg', 'filename': 'pv-diesel-mg_s_pv_cost_investment_1000.0', 'total_demand_ac': 3671.6819400000004, 'total_demand_dc': 0, 'peak_demand': 74.74342, 'evaluated_days': 7, 'genset_with_minimal_loading': False, 'storage_fixed_capacity': None, 'storage_fixed_power': None, 'genset_fixed_capacity': False, 'pv_fixed_capacity': False, 'pcc_consumption_fixed_capacity': None, 'pcc_feedin_fixed_capacity': None, 'wind_fixed_capacity': None, 'rectifier_ac_dc_fixed_capacity': False, 'inverter_dc_ac_fixed_capacity': False, 'allow_shortage': True, 'max_shortage': 0, 'stability_constraint': 'share_hybrid', 'renewable_share_constraint': False, 'number_of_equal_generators': 1, 'evaluation_perspective': 'AC_system', 'force_charge_from_maingrid': False, 'discharge_only_when_blackout': False, 'enable_inverter_only_at_backout': False}
-2020-07-22 11:22:10,592 - DEBUG - G1_oemof_create_model - Create oemof model by adding case-specific busses and components.
-2020-07-22 11:22:10,594 - DEBUG - G1_oemof_create_model - Added to oemof model: Electricity bus of energy system, AC
-2020-07-22 11:22:10,594 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: demand AC
-2020-07-22 11:22:10,604 - DEBUG - G1_oemof_create_model - Added to oemof model: Fuel bus
-2020-07-22 11:22:10,608 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: source fuel
-2020-07-22 11:22:10,608 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: genset oem no minload
-2020-07-22 11:22:10,613 - DEBUG - G1_oemof_create_model - Added to oemof model: Electricity bus of energy system, DC
-2020-07-22 11:22:10,617 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: demand DC
-2020-07-22 11:22:10,618 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: pv oem
-2020-07-22 11:22:10,619 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: rectifier oem
-2020-07-22 11:22:10,620 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: inverter_dc_ac oem
-2020-07-22 11:22:10,622 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: excess
-2020-07-22 11:22:10,622 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: source shortage
-2020-07-22 11:22:10,623 - DEBUG - G1_oemof_create_model - Create oemof model based on created components and busses.
-2020-07-22 11:22:15,435 - INFO - G1_oemof_create_model - Added constraint: Stability though actual generation of diesel generators and backup through batteries.
-2020-07-22 11:22:15,583 - INFO - G1_oemof_create_model - Simulating...
-2020-07-22 11:22:16,380 - INFO - models - Optimization successful...
-2020-07-22 11:22:16,381 - DEBUG - G1_oemof_create_model - Problem solved
-2020-07-22 11:22:16,783 - DEBUG - energy_system - Attributes dumped to: simulation_results/test/oemof/pv-diesel-mg_s_pv_cost_investment_1000.0.oemof
-2020-07-22 11:22:16,783 - DEBUG - G1_oemof_create_model - Stored results in simulation_results/test/oemof/pv-diesel-mg_s_pv_cost_investment_1000.0.oemof
-2020-07-22 11:22:16,783 - DEBUG - G1_oemof_create_model - Restore the energy system and the results.
-2020-07-22 11:22:16,784 - INFO - energy_system - Restoring attributes will overwrite existing attributes.
-2020-07-22 11:22:16,793 - DEBUG - energy_system - Attributes restored from: simulation_results/test/oemof/pv-diesel-mg_s_pv_cost_investment_1000.0.oemof
-2020-07-22 11:22:16,800 - DEBUG - G3_oemof_evaluate - Evaluate flow: demand
-2020-07-22 11:22:16,806 - DEBUG - G3_oemof_evaluate - Evaluate flow: shortage
-2020-07-22 11:22:16,815 - DEBUG - G3_oemof_evaluate - Evaluate excess: 
-2020-07-22 11:22:16,822 - DEBUG - G3_oemof_evaluate - Evaluate flow: fuel
-2020-07-22 11:22:16,823 - DEBUG - G3_oemof_evaluate - Evaluate flow: genset
-2020-07-22 11:22:16,827 - DEBUG - G3_oemof_evaluate - Evaluate flow: main grid
-2020-07-22 11:22:16,832 - DEBUG - G3_oemof_evaluate - Evaluate flow: wind
-2020-07-22 11:22:16,832 - DEBUG - G3_oemof_evaluate - Evaluate flow: pv
-2020-07-22 11:22:16,836 - DEBUG - G3_oemof_evaluate - Evaluate flow: storage
-2020-07-22 11:22:16,838 - DEBUG - G3_oemof_evaluate - Evaluate flow: rectifier
-2020-07-22 11:22:16,843 - DEBUG - G3_oemof_evaluate - Evaluate flow: rectifier
-2020-07-22 11:22:16,847 - DEBUG - G3_oemof_evaluate - Evaluate: res share
-2020-07-22 11:22:16,847 - DEBUG - G3b_plausability_tests - Plausibility test: Charge/Discharge
-2020-07-22 11:22:16,847 - DEBUG - G3b_plausability_tests - Plausibility test: Demand/Supply/Shortage
-2020-07-22 11:22:16,858 - DEBUG - G3b_plausability_tests - Plausibility test: Feedin/Consumption
-2020-07-22 11:22:16,858 - DEBUG - G3b_plausability_tests - Plausibility test: Grid availability consumption
-2020-07-22 11:22:16,858 - DEBUG - G3b_plausability_tests - Plausibility test: Grid availability/Feedin
-2020-07-22 11:22:16,858 - DEBUG - G3b_plausability_tests - Plausibility test: Excess/shortage
-2020-07-22 11:22:16,859 - DEBUG - G3b_plausability_tests - Plausibility test: Excess/Feedin
-2020-07-22 11:22:16,930 - WARNING - G2b_constraints_custom - Stability criterion is strictly not fullfilled, but deviation is less then e6.
-2020-07-22 11:22:16,931 - DEBUG - G4_output_functions - Saving flows MG.
-2020-07-22 11:22:17,200 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:17,240 - DEBUG - font_manager - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('/home/local/RL-INSTITUT/santiago.infantino/miniconda3/envs/offgridders/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf') with score of 0.050000.
-2020-07-22 11:22:17,359 - DEBUG - font_manager - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=12.0 to DejaVu Sans ('/home/local/RL-INSTITUT/santiago.infantino/miniconda3/envs/offgridders/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf') with score of 0.050000.
-2020-07-22 11:22:17,408 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:17,470 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:17,504 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:17,924 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:18,006 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:18,104 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:18,148 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:18,352 - DEBUG - G4_output_functions - Saving flows storage.
-2020-07-22 11:22:18,352 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating investment costs over analysed timeframe.
-2020-07-22 11:22:18,352 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating O&M costs over analysed timeframe.
-2020-07-22 11:22:18,353 - DEBUG - G3a_economic_evaluation - Economic evaluation. Scaling investment costs and O&M to year.
-2020-07-22 11:22:18,353 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating present costs.
-2020-07-22 11:22:18,353 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating fuel consumption and expenditures.
-2020-07-22 11:22:18,353 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating shortage and expenditures.
-2020-07-22 11:22:18,353 - INFO - G0_oemof_simulate - Simulation of case "pv-diesel-mg" resulted in : 
-                  0.276 currency/kWh, at a renewable share of 27.1 percent with a reliability of 100.0 percent
-2020-07-22 11:22:18,353 - INFO - G0_oemof_simulate -     Initial simulation time (s): 0.03 / Actual evaluation time (s): 7.76
-2020-07-22 11:22:18,353 - DEBUG - G0_oemof_simulate -     Exact OEM results of case "pv-diesel-mg" : 
-                  0 kWh battery, 29.369 kWp PV, 0 kW wind, 74.743 kW genset at a renewable share of 27.1 percent with a reliability of 100.0 percent
-2020-07-22 11:22:18,353 - DEBUG - G0_oemof_simulate -     Simulation of case pv-diesel-mg complete.
-2020-07-22 11:22:18,354 - DEBUG - G0_oemof_simulate - 
+2020-07-22 12:45:25,715 - DEBUG - B_read_from_files - Checking for folders and files
+2020-07-22 12:45:25,753 - WARNING - B_read_from_files - Optional parameter `fuel_co2_emission_factor` was not included in the input parameters.The CO2 emissions will be calculated with the default value of 2.68 kgCO2/l diesel
+2020-07-22 12:45:25,753 - WARNING - B_read_from_files - Optional parameter `maingrid_co2_emission_factor` was not included in the input parameters.The CO2 emissions will be calculated with the default value of 0.9 kgCO2/ kWh consumed from the (fully coal-based) maingrid.
+2020-07-22 12:45:25,823 - INFO - B_read_from_files - Following project locations are evaluated: test_site
+2020-07-22 12:45:25,969 - WARNING - C_sensitivity_experiments - Attributes "pv_cost_investment" defined in constant and sensitivity parameters. Only sensitivity parameter value will be used for sensitivity_experiment_s.
+2020-07-22 12:45:25,973 - INFO - C_sensitivity_experiments - Parameters of sensitivity analysis: pv_cost_investment
+2020-07-22 12:45:25,988 - ERROR - D1_economic_functions - You chose parameter 'fuel_price_change_annual' unequal zero. This calculation is still faulty and you should check the resulting fuel price. It would be better if you set your fuel price by hand.
+2020-07-22 12:45:25,988 - INFO - D1_economic_functions -  The resulting fuel price is: 0.7305005445162127
+2020-07-22 12:45:25,998 - ERROR - D1_economic_functions - You chose parameter 'fuel_price_change_annual' unequal zero. This calculation is still faulty and you should check the resulting fuel price. It would be better if you set your fuel price by hand.
+2020-07-22 12:45:25,999 - INFO - D1_economic_functions -  The resulting fuel price is: 0.7305005445162127
+2020-07-22 12:45:26,004 - INFO - C_sensitivity_experiments - Randomized blackout timeseries for all combinations of blackout duration and frequency (1 experiments) will be generated.
+2020-07-22 12:45:26,276 - DEBUG - C_sensitivity_experiments - Generating header for results.csv
+2020-07-22 12:45:26,328 - INFO - C_sensitivity_experiments - For 1 project sites with 2 scenarios each, 2 sensitivity_experiment_s will be performed for each case.
+2020-07-22 12:45:26,328 - INFO - D0_process_input - Base capacities provided by: pv-diesel-mg
+2020-07-22 12:45:26,328 - INFO - D0_process_input - All simulated cases: pv-diesel-mg, pv-diesel-storage-mg, pv-wind-storage-diesel-mg
+2020-07-22 12:45:26,328 - INFO - Offgridders - With these cases, a total of 6 simulations will be performed. 
 
-2020-07-22 11:22:18,478 - INFO - Offgridders -     Estimated simulation time left: 0.6 minutes.
-2020-07-22 11:22:18,478 - INFO - Offgridders - Starting simulation of case pv-diesel-storage-mg, project site test_site, experiment no. 2/6...
-2020-07-22 11:22:18,478 - DEBUG - G1_oemof_create_model - Complete case dictionary:
-2020-07-22 11:22:18,478 - DEBUG - G1_oemof_create_model - {'case_name': 'pv-diesel-storage-mg', 'filename': 'pv-diesel-storage-mg_s_pv_cost_investment_1000.0', 'total_demand_ac': 3671.6819400000004, 'total_demand_dc': 0, 'peak_demand': 74.74342, 'evaluated_days': 7, 'genset_with_minimal_loading': False, 'storage_fixed_capacity': False, 'storage_fixed_power': False, 'genset_fixed_capacity': False, 'pv_fixed_capacity': False, 'pcc_consumption_fixed_capacity': None, 'pcc_feedin_fixed_capacity': None, 'wind_fixed_capacity': None, 'rectifier_ac_dc_fixed_capacity': False, 'inverter_dc_ac_fixed_capacity': False, 'allow_shortage': True, 'max_shortage': 0, 'stability_constraint': 'share_hybrid', 'renewable_share_constraint': False, 'number_of_equal_generators': 1, 'evaluation_perspective': 'AC_system', 'force_charge_from_maingrid': False, 'discharge_only_when_blackout': False, 'enable_inverter_only_at_backout': False}
-2020-07-22 11:22:18,478 - DEBUG - G1_oemof_create_model - Create oemof model by adding case-specific busses and components.
-2020-07-22 11:22:18,479 - DEBUG - G1_oemof_create_model - Added to oemof model: Electricity bus of energy system, AC
-2020-07-22 11:22:18,479 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: demand AC
-2020-07-22 11:22:18,480 - DEBUG - G1_oemof_create_model - Added to oemof model: Fuel bus
-2020-07-22 11:22:18,480 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: source fuel
-2020-07-22 11:22:18,480 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: genset oem no minload
-2020-07-22 11:22:18,481 - DEBUG - G1_oemof_create_model - Added to oemof model: Electricity bus of energy system, DC
-2020-07-22 11:22:18,482 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: demand DC
-2020-07-22 11:22:18,482 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: pv oem
-2020-07-22 11:22:18,483 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: storage oem
-2020-07-22 11:22:18,484 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: rectifier oem
-2020-07-22 11:22:18,489 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: inverter_dc_ac oem
-2020-07-22 11:22:18,490 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: excess
-2020-07-22 11:22:18,491 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: source shortage
-2020-07-22 11:22:18,492 - DEBUG - G1_oemof_create_model - Create oemof model based on created components and busses.
-2020-07-22 11:22:24,924 - INFO - G1_oemof_create_model - Added constraint: Stability though actual generation of diesel generators and backup through batteries.
-2020-07-22 11:22:25,288 - INFO - G1_oemof_create_model - Simulating...
-2020-07-22 11:22:25,968 - INFO - models - Optimization successful...
-2020-07-22 11:22:25,969 - DEBUG - G1_oemof_create_model - Problem solved
-2020-07-22 11:22:26,508 - DEBUG - energy_system - Attributes dumped to: simulation_results/test/oemof/pv-diesel-storage-mg_s_pv_cost_investment_1000.0.oemof
-2020-07-22 11:22:26,508 - DEBUG - G1_oemof_create_model - Stored results in simulation_results/test/oemof/pv-diesel-storage-mg_s_pv_cost_investment_1000.0.oemof
-2020-07-22 11:22:26,508 - DEBUG - G1_oemof_create_model - Restore the energy system and the results.
-2020-07-22 11:22:26,509 - INFO - energy_system - Restoring attributes will overwrite existing attributes.
-2020-07-22 11:22:26,522 - DEBUG - energy_system - Attributes restored from: simulation_results/test/oemof/pv-diesel-storage-mg_s_pv_cost_investment_1000.0.oemof
-2020-07-22 11:22:26,531 - DEBUG - G3_oemof_evaluate - Evaluate flow: demand
-2020-07-22 11:22:26,539 - DEBUG - G3_oemof_evaluate - Evaluate flow: shortage
-2020-07-22 11:22:26,548 - DEBUG - G3_oemof_evaluate - Evaluate excess: 
-2020-07-22 11:22:26,556 - DEBUG - G3_oemof_evaluate - Evaluate flow: fuel
-2020-07-22 11:22:26,558 - DEBUG - G3_oemof_evaluate - Evaluate flow: genset
-2020-07-22 11:22:26,563 - DEBUG - G3_oemof_evaluate - Evaluate flow: main grid
-2020-07-22 11:22:26,569 - DEBUG - G3_oemof_evaluate - Evaluate flow: wind
-2020-07-22 11:22:26,569 - DEBUG - G3_oemof_evaluate - Evaluate flow: pv
-2020-07-22 11:22:26,574 - DEBUG - G3_oemof_evaluate - Evaluate flow: storage
-2020-07-22 11:22:26,601 - DEBUG - G3_oemof_evaluate - Evaluate flow: rectifier
-2020-07-22 11:22:26,607 - DEBUG - G3_oemof_evaluate - Evaluate flow: rectifier
-2020-07-22 11:22:26,612 - DEBUG - G3_oemof_evaluate - Evaluate: res share
-2020-07-22 11:22:26,613 - DEBUG - G3b_plausability_tests - Plausibility test: Charge/Discharge
-2020-07-22 11:22:26,618 - DEBUG - G3b_plausability_tests - Plausibility test: Demand/Supply/Shortage
-2020-07-22 11:22:26,633 - DEBUG - G3b_plausability_tests - Plausibility test: Feedin/Consumption
-2020-07-22 11:22:26,633 - DEBUG - G3b_plausability_tests - Plausibility test: Grid availability consumption
-2020-07-22 11:22:26,633 - DEBUG - G3b_plausability_tests - Plausibility test: Grid availability/Feedin
-2020-07-22 11:22:26,633 - DEBUG - G3b_plausability_tests - Plausibility test: Excess/shortage
-2020-07-22 11:22:26,633 - DEBUG - G3b_plausability_tests - Plausibility test: Excess/Feedin
-2020-07-22 11:22:26,702 - WARNING - G2b_constraints_custom - Stability criterion is strictly not fullfilled, but deviation is less then e6.
-2020-07-22 11:22:26,702 - DEBUG - G4_output_functions - Saving flows MG.
-2020-07-22 11:22:26,972 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:27,137 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:27,222 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:27,273 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:27,362 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:27,400 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:27,431 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:27,495 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:27,927 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:27,980 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:28,054 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:28,205 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:28,258 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:28,284 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:28,308 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:28,364 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:28,578 - DEBUG - G4_output_functions - Saving flows storage.
-2020-07-22 11:22:28,584 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating investment costs over analysed timeframe.
-2020-07-22 11:22:28,584 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating O&M costs over analysed timeframe.
-2020-07-22 11:22:28,585 - DEBUG - G3a_economic_evaluation - Economic evaluation. Scaling investment costs and O&M to year.
-2020-07-22 11:22:28,585 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating present costs.
-2020-07-22 11:22:28,585 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating fuel consumption and expenditures.
-2020-07-22 11:22:28,585 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating shortage and expenditures.
-2020-07-22 11:22:28,585 - INFO - G0_oemof_simulate - Simulation of case "pv-diesel-storage-mg" resulted in : 
-                  0.259 currency/kWh, at a renewable share of 41.75 percent with a reliability of 100.0 percent
-2020-07-22 11:22:28,585 - INFO - G0_oemof_simulate -     Initial simulation time (s): 0.07 / Actual evaluation time (s): 10.11
-2020-07-22 11:22:28,586 - DEBUG - G0_oemof_simulate -     Exact OEM results of case "pv-diesel-storage-mg" : 
-                  47.806 kWh battery, 45.168 kWp PV, 0 kW wind, 51.034 kW genset at a renewable share of 41.75 percent with a reliability of 100.0 percent
-2020-07-22 11:22:28,586 - DEBUG - G0_oemof_simulate -     Simulation of case pv-diesel-storage-mg complete.
-2020-07-22 11:22:28,586 - DEBUG - G0_oemof_simulate - 
+2020-07-22 12:45:26,333 - INFO - E_blackouts_central_grid - Blackout experiment 1: Blackout duration 0 hrs, blackout frequency 0 per month
+2020-07-22 12:45:26,334 - INFO - E_blackouts_central_grid - Number of blackouts in simulated timeframe: 0
+2020-07-22 12:45:26,334 - INFO - E_blackouts_central_grid - Grid is not operational for 0 hours, with a reliability of 100.0 percent. 
 
-2020-07-22 11:22:28,710 - INFO - Offgridders -     Estimated simulation time left: 0.6 minutes.
-2020-07-22 11:22:28,710 - INFO - Offgridders - Starting simulation of case pv-wind-storage-diesel-mg, project site test_site, experiment no. 3/6...
-2020-07-22 11:22:28,710 - DEBUG - G1_oemof_create_model - Complete case dictionary:
-2020-07-22 11:22:28,710 - DEBUG - G1_oemof_create_model - {'case_name': 'pv-wind-storage-diesel-mg', 'filename': 'pv-wind-storage-diesel-mg_s_pv_cost_investment_1000.0', 'total_demand_ac': 3671.6819400000004, 'total_demand_dc': 0, 'peak_demand': 74.74342, 'evaluated_days': 7, 'genset_with_minimal_loading': False, 'storage_fixed_capacity': False, 'storage_fixed_power': False, 'genset_fixed_capacity': False, 'pv_fixed_capacity': False, 'pcc_consumption_fixed_capacity': None, 'pcc_feedin_fixed_capacity': None, 'wind_fixed_capacity': False, 'rectifier_ac_dc_fixed_capacity': False, 'inverter_dc_ac_fixed_capacity': False, 'allow_shortage': True, 'max_shortage': 0, 'stability_constraint': 'share_hybrid', 'renewable_share_constraint': False, 'number_of_equal_generators': 1, 'evaluation_perspective': 'AC_system', 'force_charge_from_maingrid': False, 'discharge_only_when_blackout': False, 'enable_inverter_only_at_backout': False}
-2020-07-22 11:22:28,711 - DEBUG - G1_oemof_create_model - Create oemof model by adding case-specific busses and components.
-2020-07-22 11:22:28,711 - DEBUG - G1_oemof_create_model - Added to oemof model: Electricity bus of energy system, AC
-2020-07-22 11:22:28,712 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: demand AC
-2020-07-22 11:22:28,712 - DEBUG - G1_oemof_create_model - Added to oemof model: Fuel bus
-2020-07-22 11:22:28,713 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: source fuel
-2020-07-22 11:22:28,713 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: genset oem no minload
-2020-07-22 11:22:28,714 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: wind
-2020-07-22 11:22:28,715 - DEBUG - G1_oemof_create_model - Added to oemof model: Electricity bus of energy system, DC
-2020-07-22 11:22:28,716 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: demand DC
-2020-07-22 11:22:28,717 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: pv oem
-2020-07-22 11:22:28,718 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: storage oem
-2020-07-22 11:22:28,719 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: rectifier oem
-2020-07-22 11:22:28,720 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: inverter_dc_ac oem
-2020-07-22 11:22:28,721 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: excess
-2020-07-22 11:22:28,722 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: source shortage
-2020-07-22 11:22:28,723 - DEBUG - G1_oemof_create_model - Create oemof model based on created components and busses.
-2020-07-22 11:22:35,135 - INFO - G1_oemof_create_model - Added constraint: Stability though actual generation of diesel generators and backup through batteries.
-2020-07-22 11:22:35,553 - INFO - G1_oemof_create_model - Simulating...
-2020-07-22 11:22:36,253 - INFO - models - Optimization successful...
-2020-07-22 11:22:36,254 - DEBUG - G1_oemof_create_model - Problem solved
-2020-07-22 11:22:36,708 - DEBUG - energy_system - Attributes dumped to: simulation_results/test/oemof/pv-wind-storage-diesel-mg_s_pv_cost_investment_1000.0.oemof
-2020-07-22 11:22:36,709 - DEBUG - G1_oemof_create_model - Stored results in simulation_results/test/oemof/pv-wind-storage-diesel-mg_s_pv_cost_investment_1000.0.oemof
-2020-07-22 11:22:36,709 - DEBUG - G1_oemof_create_model - Restore the energy system and the results.
-2020-07-22 11:22:36,709 - INFO - energy_system - Restoring attributes will overwrite existing attributes.
-2020-07-22 11:22:36,722 - DEBUG - energy_system - Attributes restored from: simulation_results/test/oemof/pv-wind-storage-diesel-mg_s_pv_cost_investment_1000.0.oemof
-2020-07-22 11:22:36,729 - DEBUG - G3_oemof_evaluate - Evaluate flow: demand
-2020-07-22 11:22:36,735 - DEBUG - G3_oemof_evaluate - Evaluate flow: shortage
-2020-07-22 11:22:36,743 - DEBUG - G3_oemof_evaluate - Evaluate excess: 
-2020-07-22 11:22:36,749 - DEBUG - G3_oemof_evaluate - Evaluate flow: fuel
-2020-07-22 11:22:36,751 - DEBUG - G3_oemof_evaluate - Evaluate flow: genset
-2020-07-22 11:22:36,755 - DEBUG - G3_oemof_evaluate - Evaluate flow: main grid
-2020-07-22 11:22:36,760 - DEBUG - G3_oemof_evaluate - Evaluate flow: wind
-2020-07-22 11:22:36,763 - DEBUG - G3_oemof_evaluate - Evaluate flow: pv
-2020-07-22 11:22:36,767 - DEBUG - G3_oemof_evaluate - Evaluate flow: storage
-2020-07-22 11:22:36,789 - DEBUG - G3_oemof_evaluate - Evaluate flow: rectifier
-2020-07-22 11:22:36,793 - DEBUG - G3_oemof_evaluate - Evaluate flow: rectifier
-2020-07-22 11:22:36,799 - DEBUG - G3_oemof_evaluate - Evaluate: res share
-2020-07-22 11:22:36,799 - DEBUG - G3b_plausability_tests - Plausibility test: Charge/Discharge
-2020-07-22 11:22:36,804 - DEBUG - G3b_plausability_tests - Plausibility test: Demand/Supply/Shortage
-2020-07-22 11:22:36,814 - DEBUG - G3b_plausability_tests - Plausibility test: Feedin/Consumption
-2020-07-22 11:22:36,815 - DEBUG - G3b_plausability_tests - Plausibility test: Grid availability consumption
-2020-07-22 11:22:36,815 - DEBUG - G3b_plausability_tests - Plausibility test: Grid availability/Feedin
-2020-07-22 11:22:36,815 - DEBUG - G3b_plausability_tests - Plausibility test: Excess/shortage
-2020-07-22 11:22:36,815 - DEBUG - G3b_plausability_tests - Plausibility test: Excess/Feedin
-2020-07-22 11:22:36,878 - WARNING - G2b_constraints_custom - Stability criterion is strictly not fullfilled, but deviation is less then e6.
-2020-07-22 11:22:36,879 - DEBUG - G4_output_functions - Saving flows MG.
-2020-07-22 11:22:37,137 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:37,296 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:37,373 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:37,408 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:37,479 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:37,513 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:37,538 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:37,616 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:38,043 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:38,109 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:38,212 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:38,252 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:38,316 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:38,346 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:38,370 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:38,429 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:38,648 - DEBUG - G4_output_functions - Saving flows storage.
-2020-07-22 11:22:38,655 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating investment costs over analysed timeframe.
-2020-07-22 11:22:38,655 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating O&M costs over analysed timeframe.
-2020-07-22 11:22:38,655 - DEBUG - G3a_economic_evaluation - Economic evaluation. Scaling investment costs and O&M to year.
-2020-07-22 11:22:38,655 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating present costs.
-2020-07-22 11:22:38,655 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating fuel consumption and expenditures.
-2020-07-22 11:22:38,655 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating shortage and expenditures.
-2020-07-22 11:22:38,656 - INFO - G0_oemof_simulate - Simulation of case "pv-wind-storage-diesel-mg" resulted in : 
-                  0.241 currency/kWh, at a renewable share of 58.86 percent with a reliability of 100.0 percent
-2020-07-22 11:22:38,656 - INFO - G0_oemof_simulate -     Initial simulation time (s): 0.05 / Actual evaluation time (s): 9.95
-2020-07-22 11:22:38,656 - DEBUG - G0_oemof_simulate -     Exact OEM results of case "pv-wind-storage-diesel-mg" : 
-                  57.588 kWh battery, 39.278 kWp PV, 25.121 kW wind, 45.619 kW genset at a renewable share of 58.86 percent with a reliability of 100.0 percent
-2020-07-22 11:22:38,656 - DEBUG - G0_oemof_simulate -     Simulation of case pv-wind-storage-diesel-mg complete.
-2020-07-22 11:22:38,656 - DEBUG - G0_oemof_simulate - 
+2020-07-22 12:45:26,336 - INFO - E_blackouts_central_grid - Missing blackout timeseries added through auto-generation.
+2020-07-22 12:45:26,338 - DEBUG - Offgridders - Using grid availability timeseries that was randomly generated.
+2020-07-22 12:45:26,339 - INFO - Offgridders - Starting simulation of case pv-diesel-mg, project site test_site, experiment no. 1/6...
+2020-07-22 12:45:26,339 - DEBUG - G1_oemof_create_model - Complete case dictionary:
+2020-07-22 12:45:26,339 - DEBUG - G1_oemof_create_model - {'case_name': 'pv-diesel-mg', 'filename': 'pv-diesel-mg_s_pv_cost_investment_1000.0', 'total_demand_ac': 3671.6819400000004, 'total_demand_dc': 0, 'peak_demand': 74.74342, 'evaluated_days': 7, 'genset_with_minimal_loading': False, 'storage_fixed_capacity': None, 'storage_fixed_power': None, 'genset_fixed_capacity': False, 'pv_fixed_capacity': False, 'pcc_consumption_fixed_capacity': None, 'pcc_feedin_fixed_capacity': None, 'wind_fixed_capacity': None, 'rectifier_ac_dc_fixed_capacity': False, 'inverter_dc_ac_fixed_capacity': False, 'allow_shortage': True, 'max_shortage': 0, 'stability_constraint': 'share_hybrid', 'renewable_share_constraint': False, 'number_of_equal_generators': 1, 'evaluation_perspective': 'AC_system', 'force_charge_from_maingrid': False, 'discharge_only_when_blackout': False, 'enable_inverter_only_at_backout': False}
+2020-07-22 12:45:26,339 - DEBUG - G1_oemof_create_model - Create oemof model by adding case-specific busses and components.
+2020-07-22 12:45:26,340 - DEBUG - G1_oemof_create_model - Added to oemof model: Electricity bus of energy system, AC
+2020-07-22 12:45:26,341 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: demand AC
+2020-07-22 12:45:26,349 - DEBUG - G1_oemof_create_model - Added to oemof model: Fuel bus
+2020-07-22 12:45:26,353 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: source fuel
+2020-07-22 12:45:26,354 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: genset oem no minload
+2020-07-22 12:45:26,358 - DEBUG - G1_oemof_create_model - Added to oemof model: Electricity bus of energy system, DC
+2020-07-22 12:45:26,362 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: demand DC
+2020-07-22 12:45:26,362 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: pv oem
+2020-07-22 12:45:26,363 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: rectifier oem
+2020-07-22 12:45:26,364 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: inverter_dc_ac oem
+2020-07-22 12:45:26,365 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: excess
+2020-07-22 12:45:26,365 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: source shortage
+2020-07-22 12:45:26,366 - DEBUG - G1_oemof_create_model - Create oemof model based on created components and busses.
+2020-07-22 12:45:31,320 - INFO - G1_oemof_create_model - Added constraint: Stability though actual generation of diesel generators and backup through batteries.
+2020-07-22 12:45:31,494 - INFO - G1_oemof_create_model - Simulating...
+2020-07-22 12:45:32,289 - INFO - models - Optimization successful...
+2020-07-22 12:45:32,290 - DEBUG - G1_oemof_create_model - Problem solved
+2020-07-22 12:45:32,622 - DEBUG - energy_system - Attributes dumped to: simulation_results/test/oemof/pv-diesel-mg_s_pv_cost_investment_1000.0.oemof
+2020-07-22 12:45:32,622 - DEBUG - G1_oemof_create_model - Stored results in simulation_results/test/oemof/pv-diesel-mg_s_pv_cost_investment_1000.0.oemof
+2020-07-22 12:45:32,622 - DEBUG - G1_oemof_create_model - Restore the energy system and the results.
+2020-07-22 12:45:32,623 - INFO - energy_system - Restoring attributes will overwrite existing attributes.
+2020-07-22 12:45:32,632 - DEBUG - energy_system - Attributes restored from: simulation_results/test/oemof/pv-diesel-mg_s_pv_cost_investment_1000.0.oemof
+2020-07-22 12:45:32,639 - DEBUG - G3_oemof_evaluate - Evaluate flow: demand
+2020-07-22 12:45:32,644 - DEBUG - G3_oemof_evaluate - Evaluate flow: shortage
+2020-07-22 12:45:32,651 - DEBUG - G3_oemof_evaluate - Evaluate excess: 
+2020-07-22 12:45:32,661 - DEBUG - G3_oemof_evaluate - Evaluate flow: fuel
+2020-07-22 12:45:32,664 - DEBUG - G3_oemof_evaluate - Evaluate flow: genset
+2020-07-22 12:45:32,668 - DEBUG - G3_oemof_evaluate - Evaluate flow: main grid
+2020-07-22 12:45:32,675 - DEBUG - G3_oemof_evaluate - Evaluate flow: wind
+2020-07-22 12:45:32,675 - DEBUG - G3_oemof_evaluate - Evaluate flow: pv
+2020-07-22 12:45:32,681 - DEBUG - G3_oemof_evaluate - Evaluate flow: storage
+2020-07-22 12:45:32,683 - DEBUG - G3_oemof_evaluate - Evaluate flow: rectifier
+2020-07-22 12:45:32,688 - DEBUG - G3_oemof_evaluate - Evaluate flow: rectifier
+2020-07-22 12:45:32,692 - DEBUG - G3_oemof_evaluate - Evaluate: res share
+2020-07-22 12:45:32,693 - DEBUG - G3b_plausability_tests - Plausibility test: Charge/Discharge
+2020-07-22 12:45:32,693 - DEBUG - G3b_plausability_tests - Plausibility test: Demand/Supply/Shortage
+2020-07-22 12:45:32,702 - DEBUG - G3b_plausability_tests - Plausibility test: Feedin/Consumption
+2020-07-22 12:45:32,702 - DEBUG - G3b_plausability_tests - Plausibility test: Grid availability consumption
+2020-07-22 12:45:32,702 - DEBUG - G3b_plausability_tests - Plausibility test: Grid availability/Feedin
+2020-07-22 12:45:32,703 - DEBUG - G3b_plausability_tests - Plausibility test: Excess/shortage
+2020-07-22 12:45:32,703 - DEBUG - G3b_plausability_tests - Plausibility test: Excess/Feedin
+2020-07-22 12:45:32,770 - WARNING - G2b_constraints_custom - Stability criterion is strictly not fullfilled, but deviation is less then e6.
+2020-07-22 12:45:32,770 - DEBUG - G4_output_functions - Saving flows MG.
+2020-07-22 12:45:33,046 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:33,085 - DEBUG - font_manager - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('/home/local/RL-INSTITUT/santiago.infantino/miniconda3/envs/offgridders/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf') with score of 0.050000.
+2020-07-22 12:45:33,204 - DEBUG - font_manager - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=12.0 to DejaVu Sans ('/home/local/RL-INSTITUT/santiago.infantino/miniconda3/envs/offgridders/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf') with score of 0.050000.
+2020-07-22 12:45:33,251 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:33,307 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:33,338 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:33,731 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:33,805 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:33,852 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:33,879 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:34,075 - DEBUG - G4_output_functions - Saving flows storage.
+2020-07-22 12:45:34,076 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating investment costs over analysed timeframe.
+2020-07-22 12:45:34,076 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating O&M costs over analysed timeframe.
+2020-07-22 12:45:34,076 - DEBUG - G3a_economic_evaluation - Economic evaluation. Scaling investment costs and O&M to year.
+2020-07-22 12:45:34,076 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating present costs.
+2020-07-22 12:45:34,076 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating fuel consumption and expenditures.
+2020-07-22 12:45:34,076 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating shortage and expenditures.
+2020-07-22 12:45:34,076 - DEBUG - G3a_economic_evaluation - Calculated CO2 emissions.
+2020-07-22 12:45:34,076 - INFO - G0_oemof_simulate - Simulation of case "pv-diesel-mg" resulted in : 
+                  0.281 currency/kWh, at a renewable share of 26.63 percent with a reliability of 100.0 percent
+2020-07-22 12:45:34,077 - INFO - G0_oemof_simulate -     Initial simulation time (s): 0.03 / Actual evaluation time (s): 7.74
+2020-07-22 12:45:34,077 - DEBUG - G0_oemof_simulate -     Exact OEM results of case "pv-diesel-mg" : 
+                  0 kWh battery, 28.77 kWp PV, 0 kW wind, 74.743 kW genset at a renewable share of 26.63 percent with a reliability of 100.0 percent
+2020-07-22 12:45:34,077 - DEBUG - G0_oemof_simulate -     Simulation of case pv-diesel-mg complete.
+2020-07-22 12:45:34,077 - DEBUG - G0_oemof_simulate - 
 
-2020-07-22 11:22:38,774 - INFO - Offgridders -     Estimated simulation time left: 0.5 minutes.
-2020-07-22 11:22:38,774 - DEBUG - Offgridders - Using grid availability timeseries that was randomly generated.
-2020-07-22 11:22:38,774 - INFO - Offgridders - Starting simulation of case pv-diesel-mg, project site test_site, experiment no. 4/6...
-2020-07-22 11:22:38,774 - DEBUG - G1_oemof_create_model - Complete case dictionary:
-2020-07-22 11:22:38,774 - DEBUG - G1_oemof_create_model - {'case_name': 'pv-diesel-mg', 'filename': 'pv-diesel-mg_s_pv_cost_investment_1100.0', 'total_demand_ac': 3671.6819400000004, 'total_demand_dc': 0, 'peak_demand': 74.74342, 'evaluated_days': 7, 'genset_with_minimal_loading': False, 'storage_fixed_capacity': None, 'storage_fixed_power': None, 'genset_fixed_capacity': False, 'pv_fixed_capacity': False, 'pcc_consumption_fixed_capacity': None, 'pcc_feedin_fixed_capacity': None, 'wind_fixed_capacity': None, 'rectifier_ac_dc_fixed_capacity': False, 'inverter_dc_ac_fixed_capacity': False, 'allow_shortage': True, 'max_shortage': 0, 'stability_constraint': 'share_hybrid', 'renewable_share_constraint': False, 'number_of_equal_generators': 1, 'evaluation_perspective': 'AC_system', 'force_charge_from_maingrid': False, 'discharge_only_when_blackout': False, 'enable_inverter_only_at_backout': False}
-2020-07-22 11:22:38,774 - DEBUG - G1_oemof_create_model - Create oemof model by adding case-specific busses and components.
-2020-07-22 11:22:38,775 - DEBUG - G1_oemof_create_model - Added to oemof model: Electricity bus of energy system, AC
-2020-07-22 11:22:38,775 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: demand AC
-2020-07-22 11:22:38,776 - DEBUG - G1_oemof_create_model - Added to oemof model: Fuel bus
-2020-07-22 11:22:38,776 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: source fuel
-2020-07-22 11:22:38,777 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: genset oem no minload
-2020-07-22 11:22:38,778 - DEBUG - G1_oemof_create_model - Added to oemof model: Electricity bus of energy system, DC
-2020-07-22 11:22:38,778 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: demand DC
-2020-07-22 11:22:38,779 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: pv oem
-2020-07-22 11:22:38,780 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: rectifier oem
-2020-07-22 11:22:38,781 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: inverter_dc_ac oem
-2020-07-22 11:22:38,782 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: excess
-2020-07-22 11:22:38,782 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: source shortage
-2020-07-22 11:22:38,783 - DEBUG - G1_oemof_create_model - Create oemof model based on created components and busses.
-2020-07-22 11:22:43,895 - INFO - G1_oemof_create_model - Added constraint: Stability though actual generation of diesel generators and backup through batteries.
-2020-07-22 11:22:44,086 - INFO - G1_oemof_create_model - Simulating...
-2020-07-22 11:22:44,675 - INFO - models - Optimization successful...
-2020-07-22 11:22:44,676 - DEBUG - G1_oemof_create_model - Problem solved
-2020-07-22 11:22:45,145 - DEBUG - energy_system - Attributes dumped to: simulation_results/test/oemof/pv-diesel-mg_s_pv_cost_investment_1100.0.oemof
-2020-07-22 11:22:45,146 - DEBUG - G1_oemof_create_model - Stored results in simulation_results/test/oemof/pv-diesel-mg_s_pv_cost_investment_1100.0.oemof
-2020-07-22 11:22:45,146 - DEBUG - G1_oemof_create_model - Restore the energy system and the results.
-2020-07-22 11:22:45,147 - INFO - energy_system - Restoring attributes will overwrite existing attributes.
-2020-07-22 11:22:45,164 - DEBUG - energy_system - Attributes restored from: simulation_results/test/oemof/pv-diesel-mg_s_pv_cost_investment_1100.0.oemof
-2020-07-22 11:22:45,174 - DEBUG - G3_oemof_evaluate - Evaluate flow: demand
-2020-07-22 11:22:45,181 - DEBUG - G3_oemof_evaluate - Evaluate flow: shortage
-2020-07-22 11:22:45,191 - DEBUG - G3_oemof_evaluate - Evaluate excess: 
-2020-07-22 11:22:45,199 - DEBUG - G3_oemof_evaluate - Evaluate flow: fuel
-2020-07-22 11:22:45,201 - DEBUG - G3_oemof_evaluate - Evaluate flow: genset
-2020-07-22 11:22:45,205 - DEBUG - G3_oemof_evaluate - Evaluate flow: main grid
-2020-07-22 11:22:45,212 - DEBUG - G3_oemof_evaluate - Evaluate flow: wind
-2020-07-22 11:22:45,213 - DEBUG - G3_oemof_evaluate - Evaluate flow: pv
-2020-07-22 11:22:45,218 - DEBUG - G3_oemof_evaluate - Evaluate flow: storage
-2020-07-22 11:22:45,221 - DEBUG - G3_oemof_evaluate - Evaluate flow: rectifier
-2020-07-22 11:22:45,226 - DEBUG - G3_oemof_evaluate - Evaluate flow: rectifier
-2020-07-22 11:22:45,232 - DEBUG - G3_oemof_evaluate - Evaluate: res share
-2020-07-22 11:22:45,232 - DEBUG - G3b_plausability_tests - Plausibility test: Charge/Discharge
-2020-07-22 11:22:45,232 - DEBUG - G3b_plausability_tests - Plausibility test: Demand/Supply/Shortage
-2020-07-22 11:22:45,245 - DEBUG - G3b_plausability_tests - Plausibility test: Feedin/Consumption
-2020-07-22 11:22:45,245 - DEBUG - G3b_plausability_tests - Plausibility test: Grid availability consumption
-2020-07-22 11:22:45,246 - DEBUG - G3b_plausability_tests - Plausibility test: Grid availability/Feedin
-2020-07-22 11:22:45,246 - DEBUG - G3b_plausability_tests - Plausibility test: Excess/shortage
-2020-07-22 11:22:45,246 - DEBUG - G3b_plausability_tests - Plausibility test: Excess/Feedin
-2020-07-22 11:22:45,327 - WARNING - G2b_constraints_custom - Stability criterion is strictly not fullfilled, but deviation is less then e6.
-2020-07-22 11:22:45,327 - DEBUG - G4_output_functions - Saving flows MG.
-2020-07-22 11:22:45,526 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:45,700 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:45,751 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:45,780 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:46,192 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:46,287 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:46,351 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:46,386 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:46,636 - DEBUG - G4_output_functions - Saving flows storage.
-2020-07-22 11:22:46,637 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating investment costs over analysed timeframe.
-2020-07-22 11:22:46,637 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating O&M costs over analysed timeframe.
-2020-07-22 11:22:46,637 - DEBUG - G3a_economic_evaluation - Economic evaluation. Scaling investment costs and O&M to year.
-2020-07-22 11:22:46,637 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating present costs.
-2020-07-22 11:22:46,637 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating fuel consumption and expenditures.
-2020-07-22 11:22:46,638 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating shortage and expenditures.
-2020-07-22 11:22:46,638 - INFO - G0_oemof_simulate - Simulation of case "pv-diesel-mg" resulted in : 
-                  0.278 currency/kWh, at a renewable share of 26.96 percent with a reliability of 100.0 percent
-2020-07-22 11:22:46,638 - INFO - G0_oemof_simulate -     Initial simulation time (s): 0.04 / Actual evaluation time (s): 7.86
-2020-07-22 11:22:46,638 - DEBUG - G0_oemof_simulate -     Exact OEM results of case "pv-diesel-mg" : 
-                  0 kWh battery, 29.195 kWp PV, 0 kW wind, 74.743 kW genset at a renewable share of 26.96 percent with a reliability of 100.0 percent
-2020-07-22 11:22:46,638 - DEBUG - G0_oemof_simulate -     Simulation of case pv-diesel-mg complete.
-2020-07-22 11:22:46,639 - DEBUG - G0_oemof_simulate - 
-
-2020-07-22 11:22:46,782 - INFO - Offgridders -     Estimated simulation time left: 0.3 minutes.
-2020-07-22 11:22:46,782 - INFO - Offgridders - Starting simulation of case pv-diesel-storage-mg, project site test_site, experiment no. 5/6...
-2020-07-22 11:22:46,783 - DEBUG - G1_oemof_create_model - Complete case dictionary:
-2020-07-22 11:22:46,783 - DEBUG - G1_oemof_create_model - {'case_name': 'pv-diesel-storage-mg', 'filename': 'pv-diesel-storage-mg_s_pv_cost_investment_1100.0', 'total_demand_ac': 3671.6819400000004, 'total_demand_dc': 0, 'peak_demand': 74.74342, 'evaluated_days': 7, 'genset_with_minimal_loading': False, 'storage_fixed_capacity': False, 'storage_fixed_power': False, 'genset_fixed_capacity': False, 'pv_fixed_capacity': False, 'pcc_consumption_fixed_capacity': None, 'pcc_feedin_fixed_capacity': None, 'wind_fixed_capacity': None, 'rectifier_ac_dc_fixed_capacity': False, 'inverter_dc_ac_fixed_capacity': False, 'allow_shortage': True, 'max_shortage': 0, 'stability_constraint': 'share_hybrid', 'renewable_share_constraint': False, 'number_of_equal_generators': 1, 'evaluation_perspective': 'AC_system', 'force_charge_from_maingrid': False, 'discharge_only_when_blackout': False, 'enable_inverter_only_at_backout': False}
-2020-07-22 11:22:46,783 - DEBUG - G1_oemof_create_model - Create oemof model by adding case-specific busses and components.
-2020-07-22 11:22:46,784 - DEBUG - G1_oemof_create_model - Added to oemof model: Electricity bus of energy system, AC
-2020-07-22 11:22:46,784 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: demand AC
-2020-07-22 11:22:46,785 - DEBUG - G1_oemof_create_model - Added to oemof model: Fuel bus
-2020-07-22 11:22:46,785 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: source fuel
-2020-07-22 11:22:46,786 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: genset oem no minload
-2020-07-22 11:22:46,787 - DEBUG - G1_oemof_create_model - Added to oemof model: Electricity bus of energy system, DC
-2020-07-22 11:22:46,788 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: demand DC
-2020-07-22 11:22:46,789 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: pv oem
-2020-07-22 11:22:46,790 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: storage oem
-2020-07-22 11:22:46,791 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: rectifier oem
-2020-07-22 11:22:46,792 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: inverter_dc_ac oem
-2020-07-22 11:22:46,793 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: excess
-2020-07-22 11:22:46,795 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: source shortage
-2020-07-22 11:22:46,796 - DEBUG - G1_oemof_create_model - Create oemof model based on created components and busses.
-2020-07-22 11:22:53,524 - INFO - G1_oemof_create_model - Added constraint: Stability though actual generation of diesel generators and backup through batteries.
-2020-07-22 11:22:54,008 - INFO - G1_oemof_create_model - Simulating...
-2020-07-22 11:22:54,879 - INFO - models - Optimization successful...
-2020-07-22 11:22:54,880 - DEBUG - G1_oemof_create_model - Problem solved
-2020-07-22 11:22:55,477 - DEBUG - energy_system - Attributes dumped to: simulation_results/test/oemof/pv-diesel-storage-mg_s_pv_cost_investment_1100.0.oemof
-2020-07-22 11:22:55,477 - DEBUG - G1_oemof_create_model - Stored results in simulation_results/test/oemof/pv-diesel-storage-mg_s_pv_cost_investment_1100.0.oemof
-2020-07-22 11:22:55,477 - DEBUG - G1_oemof_create_model - Restore the energy system and the results.
-2020-07-22 11:22:55,478 - INFO - energy_system - Restoring attributes will overwrite existing attributes.
-2020-07-22 11:22:55,495 - DEBUG - energy_system - Attributes restored from: simulation_results/test/oemof/pv-diesel-storage-mg_s_pv_cost_investment_1100.0.oemof
-2020-07-22 11:22:55,505 - DEBUG - G3_oemof_evaluate - Evaluate flow: demand
-2020-07-22 11:22:55,515 - DEBUG - G3_oemof_evaluate - Evaluate flow: shortage
-2020-07-22 11:22:55,525 - DEBUG - G3_oemof_evaluate - Evaluate excess: 
-2020-07-22 11:22:55,534 - DEBUG - G3_oemof_evaluate - Evaluate flow: fuel
-2020-07-22 11:22:55,536 - DEBUG - G3_oemof_evaluate - Evaluate flow: genset
-2020-07-22 11:22:55,541 - DEBUG - G3_oemof_evaluate - Evaluate flow: main grid
-2020-07-22 11:22:55,550 - DEBUG - G3_oemof_evaluate - Evaluate flow: wind
-2020-07-22 11:22:55,550 - DEBUG - G3_oemof_evaluate - Evaluate flow: pv
-2020-07-22 11:22:55,557 - DEBUG - G3_oemof_evaluate - Evaluate flow: storage
-2020-07-22 11:22:55,599 - DEBUG - G3_oemof_evaluate - Evaluate flow: rectifier
-2020-07-22 11:22:55,607 - DEBUG - G3_oemof_evaluate - Evaluate flow: rectifier
-2020-07-22 11:22:55,616 - DEBUG - G3_oemof_evaluate - Evaluate: res share
-2020-07-22 11:22:55,616 - DEBUG - G3b_plausability_tests - Plausibility test: Charge/Discharge
-2020-07-22 11:22:55,624 - DEBUG - G3b_plausability_tests - Plausibility test: Demand/Supply/Shortage
-2020-07-22 11:22:55,640 - DEBUG - G3b_plausability_tests - Plausibility test: Feedin/Consumption
-2020-07-22 11:22:55,640 - DEBUG - G3b_plausability_tests - Plausibility test: Grid availability consumption
-2020-07-22 11:22:55,640 - DEBUG - G3b_plausability_tests - Plausibility test: Grid availability/Feedin
-2020-07-22 11:22:55,640 - DEBUG - G3b_plausability_tests - Plausibility test: Excess/shortage
-2020-07-22 11:22:55,640 - DEBUG - G3b_plausability_tests - Plausibility test: Excess/Feedin
-2020-07-22 11:22:55,727 - WARNING - G2b_constraints_custom - Stability criterion is strictly not fullfilled, but deviation is less then e6.
-2020-07-22 11:22:55,727 - DEBUG - G4_output_functions - Saving flows MG.
-2020-07-22 11:22:56,109 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:56,277 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:56,412 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:56,486 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:56,595 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:56,647 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:56,689 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:56,788 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:57,439 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:57,502 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:57,587 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:57,623 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:57,701 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:57,736 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:57,766 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:57,824 - DEBUG - _base - update_title_pos
-2020-07-22 11:22:58,041 - DEBUG - G4_output_functions - Saving flows storage.
-2020-07-22 11:22:58,050 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating investment costs over analysed timeframe.
-2020-07-22 11:22:58,050 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating O&M costs over analysed timeframe.
-2020-07-22 11:22:58,051 - DEBUG - G3a_economic_evaluation - Economic evaluation. Scaling investment costs and O&M to year.
-2020-07-22 11:22:58,051 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating present costs.
-2020-07-22 11:22:58,051 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating fuel consumption and expenditures.
-2020-07-22 11:22:58,052 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating shortage and expenditures.
-2020-07-22 11:22:58,052 - INFO - G0_oemof_simulate - Simulation of case "pv-diesel-storage-mg" resulted in : 
-                  0.262 currency/kWh, at a renewable share of 41.45 percent with a reliability of 100.0 percent
-2020-07-22 11:22:58,052 - INFO - G0_oemof_simulate -     Initial simulation time (s): 0.08 / Actual evaluation time (s): 11.27
-2020-07-22 11:22:58,052 - DEBUG - G0_oemof_simulate -     Exact OEM results of case "pv-diesel-storage-mg" : 
+2020-07-22 12:45:34,194 - INFO - Offgridders -     Estimated simulation time left: 0.6 minutes.
+2020-07-22 12:45:34,194 - INFO - Offgridders - Starting simulation of case pv-diesel-storage-mg, project site test_site, experiment no. 2/6...
+2020-07-22 12:45:34,195 - DEBUG - G1_oemof_create_model - Complete case dictionary:
+2020-07-22 12:45:34,195 - DEBUG - G1_oemof_create_model - {'case_name': 'pv-diesel-storage-mg', 'filename': 'pv-diesel-storage-mg_s_pv_cost_investment_1000.0', 'total_demand_ac': 3671.6819400000004, 'total_demand_dc': 0, 'peak_demand': 74.74342, 'evaluated_days': 7, 'genset_with_minimal_loading': False, 'storage_fixed_capacity': False, 'storage_fixed_power': False, 'genset_fixed_capacity': False, 'pv_fixed_capacity': False, 'pcc_consumption_fixed_capacity': None, 'pcc_feedin_fixed_capacity': None, 'wind_fixed_capacity': None, 'rectifier_ac_dc_fixed_capacity': False, 'inverter_dc_ac_fixed_capacity': False, 'allow_shortage': True, 'max_shortage': 0, 'stability_constraint': 'share_hybrid', 'renewable_share_constraint': False, 'number_of_equal_generators': 1, 'evaluation_perspective': 'AC_system', 'force_charge_from_maingrid': False, 'discharge_only_when_blackout': False, 'enable_inverter_only_at_backout': False}
+2020-07-22 12:45:34,195 - DEBUG - G1_oemof_create_model - Create oemof model by adding case-specific busses and components.
+2020-07-22 12:45:34,196 - DEBUG - G1_oemof_create_model - Added to oemof model: Electricity bus of energy system, AC
+2020-07-22 12:45:34,196 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: demand AC
+2020-07-22 12:45:34,198 - DEBUG - G1_oemof_create_model - Added to oemof model: Fuel bus
+2020-07-22 12:45:34,198 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: source fuel
+2020-07-22 12:45:34,199 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: genset oem no minload
+2020-07-22 12:45:34,199 - DEBUG - G1_oemof_create_model - Added to oemof model: Electricity bus of energy system, DC
+2020-07-22 12:45:34,200 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: demand DC
+2020-07-22 12:45:34,201 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: pv oem
+2020-07-22 12:45:34,202 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: storage oem
+2020-07-22 12:45:34,203 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: rectifier oem
+2020-07-22 12:45:34,208 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: inverter_dc_ac oem
+2020-07-22 12:45:34,209 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: excess
+2020-07-22 12:45:34,209 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: source shortage
+2020-07-22 12:45:34,210 - DEBUG - G1_oemof_create_model - Create oemof model based on created components and busses.
+2020-07-22 12:45:39,436 - INFO - G1_oemof_create_model - Added constraint: Stability though actual generation of diesel generators and backup through batteries.
+2020-07-22 12:45:39,744 - INFO - G1_oemof_create_model - Simulating...
+2020-07-22 12:45:40,296 - INFO - models - Optimization successful...
+2020-07-22 12:45:40,297 - DEBUG - G1_oemof_create_model - Problem solved
+2020-07-22 12:45:40,711 - DEBUG - energy_system - Attributes dumped to: simulation_results/test/oemof/pv-diesel-storage-mg_s_pv_cost_investment_1000.0.oemof
+2020-07-22 12:45:40,711 - DEBUG - G1_oemof_create_model - Stored results in simulation_results/test/oemof/pv-diesel-storage-mg_s_pv_cost_investment_1000.0.oemof
+2020-07-22 12:45:40,711 - DEBUG - G1_oemof_create_model - Restore the energy system and the results.
+2020-07-22 12:45:40,712 - INFO - energy_system - Restoring attributes will overwrite existing attributes.
+2020-07-22 12:45:40,723 - DEBUG - energy_system - Attributes restored from: simulation_results/test/oemof/pv-diesel-storage-mg_s_pv_cost_investment_1000.0.oemof
+2020-07-22 12:45:40,729 - DEBUG - G3_oemof_evaluate - Evaluate flow: demand
+2020-07-22 12:45:40,735 - DEBUG - G3_oemof_evaluate - Evaluate flow: shortage
+2020-07-22 12:45:40,743 - DEBUG - G3_oemof_evaluate - Evaluate excess: 
+2020-07-22 12:45:40,748 - DEBUG - G3_oemof_evaluate - Evaluate flow: fuel
+2020-07-22 12:45:40,750 - DEBUG - G3_oemof_evaluate - Evaluate flow: genset
+2020-07-22 12:45:40,753 - DEBUG - G3_oemof_evaluate - Evaluate flow: main grid
+2020-07-22 12:45:40,758 - DEBUG - G3_oemof_evaluate - Evaluate flow: wind
+2020-07-22 12:45:40,759 - DEBUG - G3_oemof_evaluate - Evaluate flow: pv
+2020-07-22 12:45:40,764 - DEBUG - G3_oemof_evaluate - Evaluate flow: storage
+2020-07-22 12:45:40,787 - DEBUG - G3_oemof_evaluate - Evaluate flow: rectifier
+2020-07-22 12:45:40,792 - DEBUG - G3_oemof_evaluate - Evaluate flow: rectifier
+2020-07-22 12:45:40,798 - DEBUG - G3_oemof_evaluate - Evaluate: res share
+2020-07-22 12:45:40,798 - DEBUG - G3b_plausability_tests - Plausibility test: Charge/Discharge
+2020-07-22 12:45:40,802 - DEBUG - G3b_plausability_tests - Plausibility test: Demand/Supply/Shortage
+2020-07-22 12:45:40,812 - DEBUG - G3b_plausability_tests - Plausibility test: Feedin/Consumption
+2020-07-22 12:45:40,812 - DEBUG - G3b_plausability_tests - Plausibility test: Grid availability consumption
+2020-07-22 12:45:40,812 - DEBUG - G3b_plausability_tests - Plausibility test: Grid availability/Feedin
+2020-07-22 12:45:40,812 - DEBUG - G3b_plausability_tests - Plausibility test: Excess/shortage
+2020-07-22 12:45:40,812 - DEBUG - G3b_plausability_tests - Plausibility test: Excess/Feedin
+2020-07-22 12:45:40,868 - WARNING - G2b_constraints_custom - Stability criterion is strictly not fullfilled, but deviation is less then e6.
+2020-07-22 12:45:40,868 - DEBUG - G4_output_functions - Saving flows MG.
+2020-07-22 12:45:41,098 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:41,228 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:41,313 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:41,345 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:41,407 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:41,437 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:41,462 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:41,514 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:41,889 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:41,934 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:41,994 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:42,114 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:42,164 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:42,190 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:42,212 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:42,255 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:42,412 - DEBUG - G4_output_functions - Saving flows storage.
+2020-07-22 12:45:42,417 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating investment costs over analysed timeframe.
+2020-07-22 12:45:42,417 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating O&M costs over analysed timeframe.
+2020-07-22 12:45:42,417 - DEBUG - G3a_economic_evaluation - Economic evaluation. Scaling investment costs and O&M to year.
+2020-07-22 12:45:42,418 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating present costs.
+2020-07-22 12:45:42,418 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating fuel consumption and expenditures.
+2020-07-22 12:45:42,418 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating shortage and expenditures.
+2020-07-22 12:45:42,418 - DEBUG - G3a_economic_evaluation - Calculated CO2 emissions.
+2020-07-22 12:45:42,418 - INFO - G0_oemof_simulate - Simulation of case "pv-diesel-storage-mg" resulted in : 
+                  0.267 currency/kWh, at a renewable share of 41.45 percent with a reliability of 100.0 percent
+2020-07-22 12:45:42,418 - INFO - G0_oemof_simulate -     Initial simulation time (s): 0.05 / Actual evaluation time (s): 8.22
+2020-07-22 12:45:42,418 - DEBUG - G0_oemof_simulate -     Exact OEM results of case "pv-diesel-storage-mg" : 
                   47.806 kWh battery, 44.731 kWp PV, 0 kW wind, 51.034 kW genset at a renewable share of 41.45 percent with a reliability of 100.0 percent
-2020-07-22 11:22:58,052 - DEBUG - G0_oemof_simulate -     Simulation of case pv-diesel-storage-mg complete.
-2020-07-22 11:22:58,053 - DEBUG - G0_oemof_simulate - 
+2020-07-22 12:45:42,418 - DEBUG - G0_oemof_simulate -     Simulation of case pv-diesel-storage-mg complete.
+2020-07-22 12:45:42,419 - DEBUG - G0_oemof_simulate - 
 
-2020-07-22 11:22:58,188 - INFO - Offgridders -     Estimated simulation time left: 0.2 minutes.
-2020-07-22 11:22:58,188 - INFO - Offgridders - Starting simulation of case pv-wind-storage-diesel-mg, project site test_site, experiment no. 6/6...
-2020-07-22 11:22:58,189 - DEBUG - G1_oemof_create_model - Complete case dictionary:
-2020-07-22 11:22:58,189 - DEBUG - G1_oemof_create_model - {'case_name': 'pv-wind-storage-diesel-mg', 'filename': 'pv-wind-storage-diesel-mg_s_pv_cost_investment_1100.0', 'total_demand_ac': 3671.6819400000004, 'total_demand_dc': 0, 'peak_demand': 74.74342, 'evaluated_days': 7, 'genset_with_minimal_loading': False, 'storage_fixed_capacity': False, 'storage_fixed_power': False, 'genset_fixed_capacity': False, 'pv_fixed_capacity': False, 'pcc_consumption_fixed_capacity': None, 'pcc_feedin_fixed_capacity': None, 'wind_fixed_capacity': False, 'rectifier_ac_dc_fixed_capacity': False, 'inverter_dc_ac_fixed_capacity': False, 'allow_shortage': True, 'max_shortage': 0, 'stability_constraint': 'share_hybrid', 'renewable_share_constraint': False, 'number_of_equal_generators': 1, 'evaluation_perspective': 'AC_system', 'force_charge_from_maingrid': False, 'discharge_only_when_blackout': False, 'enable_inverter_only_at_backout': False}
-2020-07-22 11:22:58,189 - DEBUG - G1_oemof_create_model - Create oemof model by adding case-specific busses and components.
-2020-07-22 11:22:58,190 - DEBUG - G1_oemof_create_model - Added to oemof model: Electricity bus of energy system, AC
-2020-07-22 11:22:58,190 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: demand AC
-2020-07-22 11:22:58,191 - DEBUG - G1_oemof_create_model - Added to oemof model: Fuel bus
-2020-07-22 11:22:58,192 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: source fuel
-2020-07-22 11:22:58,192 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: genset oem no minload
-2020-07-22 11:22:58,193 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: wind
-2020-07-22 11:22:58,195 - DEBUG - G1_oemof_create_model - Added to oemof model: Electricity bus of energy system, DC
-2020-07-22 11:22:58,195 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: demand DC
-2020-07-22 11:22:58,196 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: pv oem
-2020-07-22 11:22:58,197 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: storage oem
-2020-07-22 11:22:58,198 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: rectifier oem
-2020-07-22 11:22:58,199 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: inverter_dc_ac oem
-2020-07-22 11:22:58,201 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: excess
-2020-07-22 11:22:58,202 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: source shortage
-2020-07-22 11:22:58,203 - DEBUG - G1_oemof_create_model - Create oemof model based on created components and busses.
-2020-07-22 11:23:05,876 - INFO - G1_oemof_create_model - Added constraint: Stability though actual generation of diesel generators and backup through batteries.
-2020-07-22 11:23:06,333 - INFO - G1_oemof_create_model - Simulating...
-2020-07-22 11:23:07,218 - INFO - models - Optimization successful...
-2020-07-22 11:23:07,219 - DEBUG - G1_oemof_create_model - Problem solved
-2020-07-22 11:23:07,833 - DEBUG - energy_system - Attributes dumped to: simulation_results/test/oemof/pv-wind-storage-diesel-mg_s_pv_cost_investment_1100.0.oemof
-2020-07-22 11:23:07,833 - DEBUG - G1_oemof_create_model - Stored results in simulation_results/test/oemof/pv-wind-storage-diesel-mg_s_pv_cost_investment_1100.0.oemof
-2020-07-22 11:23:07,833 - DEBUG - G1_oemof_create_model - Restore the energy system and the results.
-2020-07-22 11:23:07,834 - INFO - energy_system - Restoring attributes will overwrite existing attributes.
-2020-07-22 11:23:07,852 - DEBUG - energy_system - Attributes restored from: simulation_results/test/oemof/pv-wind-storage-diesel-mg_s_pv_cost_investment_1100.0.oemof
-2020-07-22 11:23:07,862 - DEBUG - G3_oemof_evaluate - Evaluate flow: demand
-2020-07-22 11:23:07,870 - DEBUG - G3_oemof_evaluate - Evaluate flow: shortage
-2020-07-22 11:23:07,879 - DEBUG - G3_oemof_evaluate - Evaluate excess: 
-2020-07-22 11:23:07,886 - DEBUG - G3_oemof_evaluate - Evaluate flow: fuel
-2020-07-22 11:23:07,888 - DEBUG - G3_oemof_evaluate - Evaluate flow: genset
-2020-07-22 11:23:07,891 - DEBUG - G3_oemof_evaluate - Evaluate flow: main grid
-2020-07-22 11:23:07,897 - DEBUG - G3_oemof_evaluate - Evaluate flow: wind
-2020-07-22 11:23:07,900 - DEBUG - G3_oemof_evaluate - Evaluate flow: pv
-2020-07-22 11:23:07,905 - DEBUG - G3_oemof_evaluate - Evaluate flow: storage
-2020-07-22 11:23:07,930 - DEBUG - G3_oemof_evaluate - Evaluate flow: rectifier
-2020-07-22 11:23:07,935 - DEBUG - G3_oemof_evaluate - Evaluate flow: rectifier
-2020-07-22 11:23:07,941 - DEBUG - G3_oemof_evaluate - Evaluate: res share
-2020-07-22 11:23:07,941 - DEBUG - G3b_plausability_tests - Plausibility test: Charge/Discharge
-2020-07-22 11:23:07,946 - DEBUG - G3b_plausability_tests - Plausibility test: Demand/Supply/Shortage
-2020-07-22 11:23:07,956 - DEBUG - G3b_plausability_tests - Plausibility test: Feedin/Consumption
-2020-07-22 11:23:07,956 - DEBUG - G3b_plausability_tests - Plausibility test: Grid availability consumption
-2020-07-22 11:23:07,956 - DEBUG - G3b_plausability_tests - Plausibility test: Grid availability/Feedin
-2020-07-22 11:23:07,956 - DEBUG - G3b_plausability_tests - Plausibility test: Excess/shortage
-2020-07-22 11:23:07,956 - DEBUG - G3b_plausability_tests - Plausibility test: Excess/Feedin
-2020-07-22 11:23:08,020 - WARNING - G2b_constraints_custom - Stability criterion is strictly not fullfilled, but deviation is less then e6.
-2020-07-22 11:23:08,020 - DEBUG - G4_output_functions - Saving flows MG.
-2020-07-22 11:23:08,370 - DEBUG - _base - update_title_pos
-2020-07-22 11:23:08,533 - DEBUG - _base - update_title_pos
-2020-07-22 11:23:08,640 - DEBUG - _base - update_title_pos
-2020-07-22 11:23:08,696 - DEBUG - _base - update_title_pos
-2020-07-22 11:23:08,805 - DEBUG - _base - update_title_pos
-2020-07-22 11:23:08,852 - DEBUG - _base - update_title_pos
-2020-07-22 11:23:08,894 - DEBUG - _base - update_title_pos
-2020-07-22 11:23:08,981 - DEBUG - _base - update_title_pos
-2020-07-22 11:23:09,554 - DEBUG - _base - update_title_pos
-2020-07-22 11:23:09,629 - DEBUG - _base - update_title_pos
-2020-07-22 11:23:09,724 - DEBUG - _base - update_title_pos
-2020-07-22 11:23:09,768 - DEBUG - _base - update_title_pos
-2020-07-22 11:23:09,852 - DEBUG - _base - update_title_pos
-2020-07-22 11:23:09,891 - DEBUG - _base - update_title_pos
-2020-07-22 11:23:09,937 - DEBUG - _base - update_title_pos
-2020-07-22 11:23:10,021 - DEBUG - _base - update_title_pos
-2020-07-22 11:23:10,295 - DEBUG - G4_output_functions - Saving flows storage.
-2020-07-22 11:23:10,302 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating investment costs over analysed timeframe.
-2020-07-22 11:23:10,303 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating O&M costs over analysed timeframe.
-2020-07-22 11:23:10,303 - DEBUG - G3a_economic_evaluation - Economic evaluation. Scaling investment costs and O&M to year.
-2020-07-22 11:23:10,303 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating present costs.
-2020-07-22 11:23:10,303 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating fuel consumption and expenditures.
-2020-07-22 11:23:10,303 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating shortage and expenditures.
-2020-07-22 11:23:10,303 - INFO - G0_oemof_simulate - Simulation of case "pv-wind-storage-diesel-mg" resulted in : 
-                  0.243 currency/kWh, at a renewable share of 58.88 percent with a reliability of 100.0 percent
-2020-07-22 11:23:10,304 - INFO - G0_oemof_simulate -     Initial simulation time (s): 0.07 / Actual evaluation time (s): 12.11
-2020-07-22 11:23:10,304 - DEBUG - G0_oemof_simulate -     Exact OEM results of case "pv-wind-storage-diesel-mg" : 
-                  57.679 kWh battery, 37.687 kWp PV, 26.698 kW wind, 45.482 kW genset at a renewable share of 58.88 percent with a reliability of 100.0 percent
-2020-07-22 11:23:10,304 - DEBUG - G0_oemof_simulate -     Simulation of case pv-wind-storage-diesel-mg complete.
-2020-07-22 11:23:10,304 - DEBUG - G0_oemof_simulate - 
+2020-07-22 12:45:42,520 - INFO - Offgridders -     Estimated simulation time left: 0.5 minutes.
+2020-07-22 12:45:42,520 - INFO - Offgridders - Starting simulation of case pv-wind-storage-diesel-mg, project site test_site, experiment no. 3/6...
+2020-07-22 12:45:42,520 - DEBUG - G1_oemof_create_model - Complete case dictionary:
+2020-07-22 12:45:42,520 - DEBUG - G1_oemof_create_model - {'case_name': 'pv-wind-storage-diesel-mg', 'filename': 'pv-wind-storage-diesel-mg_s_pv_cost_investment_1000.0', 'total_demand_ac': 3671.6819400000004, 'total_demand_dc': 0, 'peak_demand': 74.74342, 'evaluated_days': 7, 'genset_with_minimal_loading': False, 'storage_fixed_capacity': False, 'storage_fixed_power': False, 'genset_fixed_capacity': False, 'pv_fixed_capacity': False, 'pcc_consumption_fixed_capacity': None, 'pcc_feedin_fixed_capacity': None, 'wind_fixed_capacity': False, 'rectifier_ac_dc_fixed_capacity': False, 'inverter_dc_ac_fixed_capacity': False, 'allow_shortage': True, 'max_shortage': 0, 'stability_constraint': 'share_hybrid', 'renewable_share_constraint': False, 'number_of_equal_generators': 1, 'evaluation_perspective': 'AC_system', 'force_charge_from_maingrid': False, 'discharge_only_when_blackout': False, 'enable_inverter_only_at_backout': False}
+2020-07-22 12:45:42,521 - DEBUG - G1_oemof_create_model - Create oemof model by adding case-specific busses and components.
+2020-07-22 12:45:42,521 - DEBUG - G1_oemof_create_model - Added to oemof model: Electricity bus of energy system, AC
+2020-07-22 12:45:42,521 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: demand AC
+2020-07-22 12:45:42,522 - DEBUG - G1_oemof_create_model - Added to oemof model: Fuel bus
+2020-07-22 12:45:42,522 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: source fuel
+2020-07-22 12:45:42,523 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: genset oem no minload
+2020-07-22 12:45:42,523 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: wind
+2020-07-22 12:45:42,525 - DEBUG - G1_oemof_create_model - Added to oemof model: Electricity bus of energy system, DC
+2020-07-22 12:45:42,525 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: demand DC
+2020-07-22 12:45:42,525 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: pv oem
+2020-07-22 12:45:42,526 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: storage oem
+2020-07-22 12:45:42,527 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: rectifier oem
+2020-07-22 12:45:42,528 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: inverter_dc_ac oem
+2020-07-22 12:45:42,529 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: excess
+2020-07-22 12:45:42,530 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: source shortage
+2020-07-22 12:45:42,530 - DEBUG - G1_oemof_create_model - Create oemof model based on created components and busses.
+2020-07-22 12:45:47,856 - INFO - G1_oemof_create_model - Added constraint: Stability though actual generation of diesel generators and backup through batteries.
+2020-07-22 12:45:48,167 - INFO - G1_oemof_create_model - Simulating...
+2020-07-22 12:45:48,791 - INFO - models - Optimization successful...
+2020-07-22 12:45:48,792 - DEBUG - G1_oemof_create_model - Problem solved
+2020-07-22 12:45:49,218 - DEBUG - energy_system - Attributes dumped to: simulation_results/test/oemof/pv-wind-storage-diesel-mg_s_pv_cost_investment_1000.0.oemof
+2020-07-22 12:45:49,218 - DEBUG - G1_oemof_create_model - Stored results in simulation_results/test/oemof/pv-wind-storage-diesel-mg_s_pv_cost_investment_1000.0.oemof
+2020-07-22 12:45:49,218 - DEBUG - G1_oemof_create_model - Restore the energy system and the results.
+2020-07-22 12:45:49,219 - INFO - energy_system - Restoring attributes will overwrite existing attributes.
+2020-07-22 12:45:49,230 - DEBUG - energy_system - Attributes restored from: simulation_results/test/oemof/pv-wind-storage-diesel-mg_s_pv_cost_investment_1000.0.oemof
+2020-07-22 12:45:49,237 - DEBUG - G3_oemof_evaluate - Evaluate flow: demand
+2020-07-22 12:45:49,243 - DEBUG - G3_oemof_evaluate - Evaluate flow: shortage
+2020-07-22 12:45:49,250 - DEBUG - G3_oemof_evaluate - Evaluate excess: 
+2020-07-22 12:45:49,256 - DEBUG - G3_oemof_evaluate - Evaluate flow: fuel
+2020-07-22 12:45:49,258 - DEBUG - G3_oemof_evaluate - Evaluate flow: genset
+2020-07-22 12:45:49,261 - DEBUG - G3_oemof_evaluate - Evaluate flow: main grid
+2020-07-22 12:45:49,266 - DEBUG - G3_oemof_evaluate - Evaluate flow: wind
+2020-07-22 12:45:49,269 - DEBUG - G3_oemof_evaluate - Evaluate flow: pv
+2020-07-22 12:45:49,275 - DEBUG - G3_oemof_evaluate - Evaluate flow: storage
+2020-07-22 12:45:49,299 - DEBUG - G3_oemof_evaluate - Evaluate flow: rectifier
+2020-07-22 12:45:49,303 - DEBUG - G3_oemof_evaluate - Evaluate flow: rectifier
+2020-07-22 12:45:49,308 - DEBUG - G3_oemof_evaluate - Evaluate: res share
+2020-07-22 12:45:49,308 - DEBUG - G3b_plausability_tests - Plausibility test: Charge/Discharge
+2020-07-22 12:45:49,312 - DEBUG - G3b_plausability_tests - Plausibility test: Demand/Supply/Shortage
+2020-07-22 12:45:49,322 - DEBUG - G3b_plausability_tests - Plausibility test: Feedin/Consumption
+2020-07-22 12:45:49,322 - DEBUG - G3b_plausability_tests - Plausibility test: Grid availability consumption
+2020-07-22 12:45:49,323 - DEBUG - G3b_plausability_tests - Plausibility test: Grid availability/Feedin
+2020-07-22 12:45:49,323 - DEBUG - G3b_plausability_tests - Plausibility test: Excess/shortage
+2020-07-22 12:45:49,323 - DEBUG - G3b_plausability_tests - Plausibility test: Excess/Feedin
+2020-07-22 12:45:49,380 - WARNING - G2b_constraints_custom - Stability criterion is strictly not fullfilled, but deviation is less then e6.
+2020-07-22 12:45:49,381 - DEBUG - G4_output_functions - Saving flows MG.
+2020-07-22 12:45:49,632 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:49,786 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:49,860 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:49,895 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:49,962 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:49,995 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:50,022 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:50,081 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:50,469 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:50,541 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:50,615 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:50,646 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:50,722 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:50,752 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:50,778 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:50,832 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:51,015 - DEBUG - G4_output_functions - Saving flows storage.
+2020-07-22 12:45:51,021 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating investment costs over analysed timeframe.
+2020-07-22 12:45:51,021 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating O&M costs over analysed timeframe.
+2020-07-22 12:45:51,021 - DEBUG - G3a_economic_evaluation - Economic evaluation. Scaling investment costs and O&M to year.
+2020-07-22 12:45:51,021 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating present costs.
+2020-07-22 12:45:51,022 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating fuel consumption and expenditures.
+2020-07-22 12:45:51,022 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating shortage and expenditures.
+2020-07-22 12:45:51,022 - DEBUG - G3a_economic_evaluation - Calculated CO2 emissions.
+2020-07-22 12:45:51,022 - INFO - G0_oemof_simulate - Simulation of case "pv-wind-storage-diesel-mg" resulted in : 
+                  0.249 currency/kWh, at a renewable share of 58.79 percent with a reliability of 100.0 percent
+2020-07-22 12:45:51,022 - INFO - G0_oemof_simulate -     Initial simulation time (s): 0.06 / Actual evaluation time (s): 8.5
+2020-07-22 12:45:51,022 - DEBUG - G0_oemof_simulate -     Exact OEM results of case "pv-wind-storage-diesel-mg" : 
+                  57.766 kWh battery, 36.043 kWp PV, 28.199 kW wind, 45.351 kW genset at a renewable share of 58.79 percent with a reliability of 100.0 percent
+2020-07-22 12:45:51,022 - DEBUG - G0_oemof_simulate -     Simulation of case pv-wind-storage-diesel-mg complete.
+2020-07-22 12:45:51,022 - DEBUG - G0_oemof_simulate - 
 
-2020-07-22 11:23:10,456 - INFO - Offgridders -     Estimated simulation time left: 0.0 minutes.
-2020-07-22 11:23:10,456 - INFO - Offgridders - 
+2020-07-22 12:45:51,140 - INFO - Offgridders -     Estimated simulation time left: 0.4 minutes.
+2020-07-22 12:45:51,140 - DEBUG - Offgridders - Using grid availability timeseries that was randomly generated.
+2020-07-22 12:45:51,140 - INFO - Offgridders - Starting simulation of case pv-diesel-mg, project site test_site, experiment no. 4/6...
+2020-07-22 12:45:51,140 - DEBUG - G1_oemof_create_model - Complete case dictionary:
+2020-07-22 12:45:51,140 - DEBUG - G1_oemof_create_model - {'case_name': 'pv-diesel-mg', 'filename': 'pv-diesel-mg_s_pv_cost_investment_1100.0', 'total_demand_ac': 3671.6819400000004, 'total_demand_dc': 0, 'peak_demand': 74.74342, 'evaluated_days': 7, 'genset_with_minimal_loading': False, 'storage_fixed_capacity': None, 'storage_fixed_power': None, 'genset_fixed_capacity': False, 'pv_fixed_capacity': False, 'pcc_consumption_fixed_capacity': None, 'pcc_feedin_fixed_capacity': None, 'wind_fixed_capacity': None, 'rectifier_ac_dc_fixed_capacity': False, 'inverter_dc_ac_fixed_capacity': False, 'allow_shortage': True, 'max_shortage': 0, 'stability_constraint': 'share_hybrid', 'renewable_share_constraint': False, 'number_of_equal_generators': 1, 'evaluation_perspective': 'AC_system', 'force_charge_from_maingrid': False, 'discharge_only_when_blackout': False, 'enable_inverter_only_at_backout': False}
+2020-07-22 12:45:51,140 - DEBUG - G1_oemof_create_model - Create oemof model by adding case-specific busses and components.
+2020-07-22 12:45:51,141 - DEBUG - G1_oemof_create_model - Added to oemof model: Electricity bus of energy system, AC
+2020-07-22 12:45:51,141 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: demand AC
+2020-07-22 12:45:51,142 - DEBUG - G1_oemof_create_model - Added to oemof model: Fuel bus
+2020-07-22 12:45:51,142 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: source fuel
+2020-07-22 12:45:51,143 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: genset oem no minload
+2020-07-22 12:45:51,144 - DEBUG - G1_oemof_create_model - Added to oemof model: Electricity bus of energy system, DC
+2020-07-22 12:45:51,144 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: demand DC
+2020-07-22 12:45:51,145 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: pv oem
+2020-07-22 12:45:51,146 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: rectifier oem
+2020-07-22 12:45:51,147 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: inverter_dc_ac oem
+2020-07-22 12:45:51,148 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: excess
+2020-07-22 12:45:51,149 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: source shortage
+2020-07-22 12:45:51,150 - DEBUG - G1_oemof_create_model - Create oemof model based on created components and busses.
+2020-07-22 12:45:55,995 - INFO - G1_oemof_create_model - Added constraint: Stability though actual generation of diesel generators and backup through batteries.
+2020-07-22 12:45:56,136 - INFO - G1_oemof_create_model - Simulating...
+2020-07-22 12:45:56,581 - INFO - models - Optimization successful...
+2020-07-22 12:45:56,582 - DEBUG - G1_oemof_create_model - Problem solved
+2020-07-22 12:45:56,935 - DEBUG - energy_system - Attributes dumped to: simulation_results/test/oemof/pv-diesel-mg_s_pv_cost_investment_1100.0.oemof
+2020-07-22 12:45:56,936 - DEBUG - G1_oemof_create_model - Stored results in simulation_results/test/oemof/pv-diesel-mg_s_pv_cost_investment_1100.0.oemof
+2020-07-22 12:45:56,936 - DEBUG - G1_oemof_create_model - Restore the energy system and the results.
+2020-07-22 12:45:56,937 - INFO - energy_system - Restoring attributes will overwrite existing attributes.
+2020-07-22 12:45:56,946 - DEBUG - energy_system - Attributes restored from: simulation_results/test/oemof/pv-diesel-mg_s_pv_cost_investment_1100.0.oemof
+2020-07-22 12:45:56,953 - DEBUG - G3_oemof_evaluate - Evaluate flow: demand
+2020-07-22 12:45:56,959 - DEBUG - G3_oemof_evaluate - Evaluate flow: shortage
+2020-07-22 12:45:56,967 - DEBUG - G3_oemof_evaluate - Evaluate excess: 
+2020-07-22 12:45:56,973 - DEBUG - G3_oemof_evaluate - Evaluate flow: fuel
+2020-07-22 12:45:56,974 - DEBUG - G3_oemof_evaluate - Evaluate flow: genset
+2020-07-22 12:45:56,978 - DEBUG - G3_oemof_evaluate - Evaluate flow: main grid
+2020-07-22 12:45:56,983 - DEBUG - G3_oemof_evaluate - Evaluate flow: wind
+2020-07-22 12:45:56,983 - DEBUG - G3_oemof_evaluate - Evaluate flow: pv
+2020-07-22 12:45:56,989 - DEBUG - G3_oemof_evaluate - Evaluate flow: storage
+2020-07-22 12:45:56,992 - DEBUG - G3_oemof_evaluate - Evaluate flow: rectifier
+2020-07-22 12:45:56,996 - DEBUG - G3_oemof_evaluate - Evaluate flow: rectifier
+2020-07-22 12:45:57,000 - DEBUG - G3_oemof_evaluate - Evaluate: res share
+2020-07-22 12:45:57,000 - DEBUG - G3b_plausability_tests - Plausibility test: Charge/Discharge
+2020-07-22 12:45:57,000 - DEBUG - G3b_plausability_tests - Plausibility test: Demand/Supply/Shortage
+2020-07-22 12:45:57,011 - DEBUG - G3b_plausability_tests - Plausibility test: Feedin/Consumption
+2020-07-22 12:45:57,011 - DEBUG - G3b_plausability_tests - Plausibility test: Grid availability consumption
+2020-07-22 12:45:57,012 - DEBUG - G3b_plausability_tests - Plausibility test: Grid availability/Feedin
+2020-07-22 12:45:57,012 - DEBUG - G3b_plausability_tests - Plausibility test: Excess/shortage
+2020-07-22 12:45:57,012 - DEBUG - G3b_plausability_tests - Plausibility test: Excess/Feedin
+2020-07-22 12:45:57,074 - WARNING - G2b_constraints_custom - Stability criterion is strictly not fullfilled, but deviation is less then e6.
+2020-07-22 12:45:57,075 - DEBUG - G4_output_functions - Saving flows MG.
+2020-07-22 12:45:57,249 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:57,414 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:57,462 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:57,489 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:57,811 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:57,877 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:57,921 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:57,947 - DEBUG - _base - update_title_pos
+2020-07-22 12:45:58,116 - DEBUG - G4_output_functions - Saving flows storage.
+2020-07-22 12:45:58,116 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating investment costs over analysed timeframe.
+2020-07-22 12:45:58,116 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating O&M costs over analysed timeframe.
+2020-07-22 12:45:58,116 - DEBUG - G3a_economic_evaluation - Economic evaluation. Scaling investment costs and O&M to year.
+2020-07-22 12:45:58,116 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating present costs.
+2020-07-22 12:45:58,116 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating fuel consumption and expenditures.
+2020-07-22 12:45:58,116 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating shortage and expenditures.
+2020-07-22 12:45:58,117 - DEBUG - G3a_economic_evaluation - Calculated CO2 emissions.
+2020-07-22 12:45:58,117 - INFO - G0_oemof_simulate - Simulation of case "pv-diesel-mg" resulted in : 
+                  0.284 currency/kWh, at a renewable share of 26.12 percent with a reliability of 100.0 percent
+2020-07-22 12:45:58,117 - INFO - G0_oemof_simulate -     Initial simulation time (s): 0.03 / Actual evaluation time (s): 6.98
+2020-07-22 12:45:58,117 - DEBUG - G0_oemof_simulate -     Exact OEM results of case "pv-diesel-mg" : 
+                  0 kWh battery, 28.13 kWp PV, 0 kW wind, 74.743 kW genset at a renewable share of 26.12 percent with a reliability of 100.0 percent
+2020-07-22 12:45:58,117 - DEBUG - G0_oemof_simulate -     Simulation of case pv-diesel-mg complete.
+2020-07-22 12:45:58,117 - DEBUG - G0_oemof_simulate - 
+
+2020-07-22 12:45:58,227 - INFO - Offgridders -     Estimated simulation time left: 0.3 minutes.
+2020-07-22 12:45:58,227 - INFO - Offgridders - Starting simulation of case pv-diesel-storage-mg, project site test_site, experiment no. 5/6...
+2020-07-22 12:45:58,227 - DEBUG - G1_oemof_create_model - Complete case dictionary:
+2020-07-22 12:45:58,227 - DEBUG - G1_oemof_create_model - {'case_name': 'pv-diesel-storage-mg', 'filename': 'pv-diesel-storage-mg_s_pv_cost_investment_1100.0', 'total_demand_ac': 3671.6819400000004, 'total_demand_dc': 0, 'peak_demand': 74.74342, 'evaluated_days': 7, 'genset_with_minimal_loading': False, 'storage_fixed_capacity': False, 'storage_fixed_power': False, 'genset_fixed_capacity': False, 'pv_fixed_capacity': False, 'pcc_consumption_fixed_capacity': None, 'pcc_feedin_fixed_capacity': None, 'wind_fixed_capacity': None, 'rectifier_ac_dc_fixed_capacity': False, 'inverter_dc_ac_fixed_capacity': False, 'allow_shortage': True, 'max_shortage': 0, 'stability_constraint': 'share_hybrid', 'renewable_share_constraint': False, 'number_of_equal_generators': 1, 'evaluation_perspective': 'AC_system', 'force_charge_from_maingrid': False, 'discharge_only_when_blackout': False, 'enable_inverter_only_at_backout': False}
+2020-07-22 12:45:58,227 - DEBUG - G1_oemof_create_model - Create oemof model by adding case-specific busses and components.
+2020-07-22 12:45:58,228 - DEBUG - G1_oemof_create_model - Added to oemof model: Electricity bus of energy system, AC
+2020-07-22 12:45:58,228 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: demand AC
+2020-07-22 12:45:58,229 - DEBUG - G1_oemof_create_model - Added to oemof model: Fuel bus
+2020-07-22 12:45:58,229 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: source fuel
+2020-07-22 12:45:58,230 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: genset oem no minload
+2020-07-22 12:45:58,231 - DEBUG - G1_oemof_create_model - Added to oemof model: Electricity bus of energy system, DC
+2020-07-22 12:45:58,231 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: demand DC
+2020-07-22 12:45:58,232 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: pv oem
+2020-07-22 12:45:58,233 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: storage oem
+2020-07-22 12:45:58,234 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: rectifier oem
+2020-07-22 12:45:58,235 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: inverter_dc_ac oem
+2020-07-22 12:45:58,236 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: excess
+2020-07-22 12:45:58,237 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: source shortage
+2020-07-22 12:45:58,238 - DEBUG - G1_oemof_create_model - Create oemof model based on created components and busses.
+2020-07-22 12:46:03,497 - INFO - G1_oemof_create_model - Added constraint: Stability though actual generation of diesel generators and backup through batteries.
+2020-07-22 12:46:03,828 - INFO - G1_oemof_create_model - Simulating...
+2020-07-22 12:46:04,423 - INFO - models - Optimization successful...
+2020-07-22 12:46:04,424 - DEBUG - G1_oemof_create_model - Problem solved
+2020-07-22 12:46:04,854 - DEBUG - energy_system - Attributes dumped to: simulation_results/test/oemof/pv-diesel-storage-mg_s_pv_cost_investment_1100.0.oemof
+2020-07-22 12:46:04,854 - DEBUG - G1_oemof_create_model - Stored results in simulation_results/test/oemof/pv-diesel-storage-mg_s_pv_cost_investment_1100.0.oemof
+2020-07-22 12:46:04,854 - DEBUG - G1_oemof_create_model - Restore the energy system and the results.
+2020-07-22 12:46:04,855 - INFO - energy_system - Restoring attributes will overwrite existing attributes.
+2020-07-22 12:46:04,867 - DEBUG - energy_system - Attributes restored from: simulation_results/test/oemof/pv-diesel-storage-mg_s_pv_cost_investment_1100.0.oemof
+2020-07-22 12:46:04,874 - DEBUG - G3_oemof_evaluate - Evaluate flow: demand
+2020-07-22 12:46:04,880 - DEBUG - G3_oemof_evaluate - Evaluate flow: shortage
+2020-07-22 12:46:04,888 - DEBUG - G3_oemof_evaluate - Evaluate excess: 
+2020-07-22 12:46:04,894 - DEBUG - G3_oemof_evaluate - Evaluate flow: fuel
+2020-07-22 12:46:04,896 - DEBUG - G3_oemof_evaluate - Evaluate flow: genset
+2020-07-22 12:46:04,899 - DEBUG - G3_oemof_evaluate - Evaluate flow: main grid
+2020-07-22 12:46:04,905 - DEBUG - G3_oemof_evaluate - Evaluate flow: wind
+2020-07-22 12:46:04,905 - DEBUG - G3_oemof_evaluate - Evaluate flow: pv
+2020-07-22 12:46:04,912 - DEBUG - G3_oemof_evaluate - Evaluate flow: storage
+2020-07-22 12:46:04,937 - DEBUG - G3_oemof_evaluate - Evaluate flow: rectifier
+2020-07-22 12:46:04,941 - DEBUG - G3_oemof_evaluate - Evaluate flow: rectifier
+2020-07-22 12:46:04,946 - DEBUG - G3_oemof_evaluate - Evaluate: res share
+2020-07-22 12:46:04,946 - DEBUG - G3b_plausability_tests - Plausibility test: Charge/Discharge
+2020-07-22 12:46:04,950 - DEBUG - G3b_plausability_tests - Plausibility test: Demand/Supply/Shortage
+2020-07-22 12:46:04,961 - DEBUG - G3b_plausability_tests - Plausibility test: Feedin/Consumption
+2020-07-22 12:46:04,961 - DEBUG - G3b_plausability_tests - Plausibility test: Grid availability consumption
+2020-07-22 12:46:04,961 - DEBUG - G3b_plausability_tests - Plausibility test: Grid availability/Feedin
+2020-07-22 12:46:04,961 - DEBUG - G3b_plausability_tests - Plausibility test: Excess/shortage
+2020-07-22 12:46:04,961 - DEBUG - G3b_plausability_tests - Plausibility test: Excess/Feedin
+2020-07-22 12:46:05,022 - WARNING - G2b_constraints_custom - Stability criterion is strictly not fullfilled, but deviation is less then e6.
+2020-07-22 12:46:05,023 - DEBUG - G4_output_functions - Saving flows MG.
+2020-07-22 12:46:05,278 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:05,436 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:05,531 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:05,573 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:05,648 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:05,693 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:05,723 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:05,786 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:06,282 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:06,344 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:06,410 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:06,443 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:06,507 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:06,535 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:06,559 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:06,608 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:06,795 - DEBUG - G4_output_functions - Saving flows storage.
+2020-07-22 12:46:06,800 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating investment costs over analysed timeframe.
+2020-07-22 12:46:06,801 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating O&M costs over analysed timeframe.
+2020-07-22 12:46:06,801 - DEBUG - G3a_economic_evaluation - Economic evaluation. Scaling investment costs and O&M to year.
+2020-07-22 12:46:06,801 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating present costs.
+2020-07-22 12:46:06,801 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating fuel consumption and expenditures.
+2020-07-22 12:46:06,801 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating shortage and expenditures.
+2020-07-22 12:46:06,801 - DEBUG - G3a_economic_evaluation - Calculated CO2 emissions.
+2020-07-22 12:46:06,801 - INFO - G0_oemof_simulate - Simulation of case "pv-diesel-storage-mg" resulted in : 
+                  0.271 currency/kWh, at a renewable share of 41.39 percent with a reliability of 100.0 percent
+2020-07-22 12:46:06,802 - INFO - G0_oemof_simulate -     Initial simulation time (s): 0.05 / Actual evaluation time (s): 8.57
+2020-07-22 12:46:06,802 - DEBUG - G0_oemof_simulate -     Exact OEM results of case "pv-diesel-storage-mg" : 
+                  47.806 kWh battery, 44.647 kWp PV, 0 kW wind, 51.034 kW genset at a renewable share of 41.39 percent with a reliability of 100.0 percent
+2020-07-22 12:46:06,802 - DEBUG - G0_oemof_simulate -     Simulation of case pv-diesel-storage-mg complete.
+2020-07-22 12:46:06,802 - DEBUG - G0_oemof_simulate - 
+
+2020-07-22 12:46:06,909 - INFO - Offgridders -     Estimated simulation time left: 0.1 minutes.
+2020-07-22 12:46:06,910 - INFO - Offgridders - Starting simulation of case pv-wind-storage-diesel-mg, project site test_site, experiment no. 6/6...
+2020-07-22 12:46:06,910 - DEBUG - G1_oemof_create_model - Complete case dictionary:
+2020-07-22 12:46:06,910 - DEBUG - G1_oemof_create_model - {'case_name': 'pv-wind-storage-diesel-mg', 'filename': 'pv-wind-storage-diesel-mg_s_pv_cost_investment_1100.0', 'total_demand_ac': 3671.6819400000004, 'total_demand_dc': 0, 'peak_demand': 74.74342, 'evaluated_days': 7, 'genset_with_minimal_loading': False, 'storage_fixed_capacity': False, 'storage_fixed_power': False, 'genset_fixed_capacity': False, 'pv_fixed_capacity': False, 'pcc_consumption_fixed_capacity': None, 'pcc_feedin_fixed_capacity': None, 'wind_fixed_capacity': False, 'rectifier_ac_dc_fixed_capacity': False, 'inverter_dc_ac_fixed_capacity': False, 'allow_shortage': True, 'max_shortage': 0, 'stability_constraint': 'share_hybrid', 'renewable_share_constraint': False, 'number_of_equal_generators': 1, 'evaluation_perspective': 'AC_system', 'force_charge_from_maingrid': False, 'discharge_only_when_blackout': False, 'enable_inverter_only_at_backout': False}
+2020-07-22 12:46:06,910 - DEBUG - G1_oemof_create_model - Create oemof model by adding case-specific busses and components.
+2020-07-22 12:46:06,911 - DEBUG - G1_oemof_create_model - Added to oemof model: Electricity bus of energy system, AC
+2020-07-22 12:46:06,911 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: demand AC
+2020-07-22 12:46:06,912 - DEBUG - G1_oemof_create_model - Added to oemof model: Fuel bus
+2020-07-22 12:46:06,912 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: source fuel
+2020-07-22 12:46:06,913 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: genset oem no minload
+2020-07-22 12:46:06,913 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: wind
+2020-07-22 12:46:06,915 - DEBUG - G1_oemof_create_model - Added to oemof model: Electricity bus of energy system, DC
+2020-07-22 12:46:06,915 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: demand DC
+2020-07-22 12:46:06,916 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: pv oem
+2020-07-22 12:46:06,917 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: storage oem
+2020-07-22 12:46:06,919 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: rectifier oem
+2020-07-22 12:46:06,920 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: inverter_dc_ac oem
+2020-07-22 12:46:06,921 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: excess
+2020-07-22 12:46:06,922 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: source shortage
+2020-07-22 12:46:06,924 - DEBUG - G1_oemof_create_model - Create oemof model based on created components and busses.
+2020-07-22 12:46:13,055 - INFO - G1_oemof_create_model - Added constraint: Stability though actual generation of diesel generators and backup through batteries.
+2020-07-22 12:46:13,443 - INFO - G1_oemof_create_model - Simulating...
+2020-07-22 12:46:14,300 - INFO - models - Optimization successful...
+2020-07-22 12:46:14,302 - DEBUG - G1_oemof_create_model - Problem solved
+2020-07-22 12:46:14,839 - DEBUG - energy_system - Attributes dumped to: simulation_results/test/oemof/pv-wind-storage-diesel-mg_s_pv_cost_investment_1100.0.oemof
+2020-07-22 12:46:14,839 - DEBUG - G1_oemof_create_model - Stored results in simulation_results/test/oemof/pv-wind-storage-diesel-mg_s_pv_cost_investment_1100.0.oemof
+2020-07-22 12:46:14,839 - DEBUG - G1_oemof_create_model - Restore the energy system and the results.
+2020-07-22 12:46:14,840 - INFO - energy_system - Restoring attributes will overwrite existing attributes.
+2020-07-22 12:46:14,854 - DEBUG - energy_system - Attributes restored from: simulation_results/test/oemof/pv-wind-storage-diesel-mg_s_pv_cost_investment_1100.0.oemof
+2020-07-22 12:46:14,862 - DEBUG - G3_oemof_evaluate - Evaluate flow: demand
+2020-07-22 12:46:14,869 - DEBUG - G3_oemof_evaluate - Evaluate flow: shortage
+2020-07-22 12:46:14,877 - DEBUG - G3_oemof_evaluate - Evaluate excess: 
+2020-07-22 12:46:14,885 - DEBUG - G3_oemof_evaluate - Evaluate flow: fuel
+2020-07-22 12:46:14,887 - DEBUG - G3_oemof_evaluate - Evaluate flow: genset
+2020-07-22 12:46:14,890 - DEBUG - G3_oemof_evaluate - Evaluate flow: main grid
+2020-07-22 12:46:14,896 - DEBUG - G3_oemof_evaluate - Evaluate flow: wind
+2020-07-22 12:46:14,899 - DEBUG - G3_oemof_evaluate - Evaluate flow: pv
+2020-07-22 12:46:14,906 - DEBUG - G3_oemof_evaluate - Evaluate flow: storage
+2020-07-22 12:46:14,935 - DEBUG - G3_oemof_evaluate - Evaluate flow: rectifier
+2020-07-22 12:46:14,939 - DEBUG - G3_oemof_evaluate - Evaluate flow: rectifier
+2020-07-22 12:46:14,945 - DEBUG - G3_oemof_evaluate - Evaluate: res share
+2020-07-22 12:46:14,945 - DEBUG - G3b_plausability_tests - Plausibility test: Charge/Discharge
+2020-07-22 12:46:14,950 - DEBUG - G3b_plausability_tests - Plausibility test: Demand/Supply/Shortage
+2020-07-22 12:46:14,962 - DEBUG - G3b_plausability_tests - Plausibility test: Feedin/Consumption
+2020-07-22 12:46:14,962 - DEBUG - G3b_plausability_tests - Plausibility test: Grid availability consumption
+2020-07-22 12:46:14,962 - DEBUG - G3b_plausability_tests - Plausibility test: Grid availability/Feedin
+2020-07-22 12:46:14,962 - DEBUG - G3b_plausability_tests - Plausibility test: Excess/shortage
+2020-07-22 12:46:14,962 - DEBUG - G3b_plausability_tests - Plausibility test: Excess/Feedin
+2020-07-22 12:46:15,029 - WARNING - G2b_constraints_custom - Stability criterion is strictly not fullfilled, but deviation is less then e6.
+2020-07-22 12:46:15,030 - DEBUG - G4_output_functions - Saving flows MG.
+2020-07-22 12:46:15,295 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:15,441 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:15,535 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:15,580 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:15,671 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:15,724 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:15,756 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:15,913 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:16,332 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:16,391 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:16,468 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:16,503 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:16,574 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:16,610 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:16,641 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:16,701 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:16,911 - DEBUG - G4_output_functions - Saving flows storage.
+2020-07-22 12:46:16,918 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating investment costs over analysed timeframe.
+2020-07-22 12:46:16,918 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating O&M costs over analysed timeframe.
+2020-07-22 12:46:16,918 - DEBUG - G3a_economic_evaluation - Economic evaluation. Scaling investment costs and O&M to year.
+2020-07-22 12:46:16,919 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating present costs.
+2020-07-22 12:46:16,919 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating fuel consumption and expenditures.
+2020-07-22 12:46:16,919 - DEBUG - G3a_economic_evaluation - Economic evaluation. Calculating shortage and expenditures.
+2020-07-22 12:46:16,919 - DEBUG - G3a_economic_evaluation - Calculated CO2 emissions.
+2020-07-22 12:46:16,919 - INFO - G0_oemof_simulate - Simulation of case "pv-wind-storage-diesel-mg" resulted in : 
+                  0.252 currency/kWh, at a renewable share of 58.47 percent with a reliability of 100.0 percent
+2020-07-22 12:46:16,920 - INFO - G0_oemof_simulate -     Initial simulation time (s): 0.06 / Actual evaluation time (s): 10.01
+2020-07-22 12:46:16,920 - DEBUG - G0_oemof_simulate -     Exact OEM results of case "pv-wind-storage-diesel-mg" : 
+                  57.833 kWh battery, 34.405 kWp PV, 29.356 kW wind, 45.251 kW genset at a renewable share of 58.47 percent with a reliability of 100.0 percent
+2020-07-22 12:46:16,920 - DEBUG - G0_oemof_simulate -     Simulation of case pv-wind-storage-diesel-mg complete.
+2020-07-22 12:46:16,920 - DEBUG - G0_oemof_simulate - 
+
+2020-07-22 12:46:17,049 - INFO - Offgridders -     Estimated simulation time left: 0.0 minutes.
+2020-07-22 12:46:17,049 - INFO - Offgridders - 
  Simulation complete. Resulting parameters saved in "results.csv". 
  Overview over results:
-2020-07-22 11:23:10,479 - INFO - Offgridders - Performing multicriteria analysis
-2020-07-22 11:23:10,493 - DEBUG - H1_multicriteria_functions - All cases are equal for this criterion. Therefore, criterion weight is turned into 0
-2020-07-22 11:23:10,493 - DEBUG - H1_multicriteria_functions - All cases are equal for this criterion. Therefore, criterion weight is turned into 0
-2020-07-22 11:23:10,494 - DEBUG - H1_multicriteria_functions - All cases are equal for this criterion. Therefore, criterion weight is turned into 0
-2020-07-22 11:23:10,494 - DEBUG - H1_multicriteria_functions - All cases are equal for this criterion. Therefore, criterion weight is turned into 0
-2020-07-22 11:23:10,494 - DEBUG - H1_multicriteria_functions - All cases are equal for this criterion. Therefore, criterion weight is turned into 0
-2020-07-22 11:23:10,494 - DEBUG - H1_multicriteria_functions - All cases are equal for this criterion. Therefore, criterion weight is turned into 0
-2020-07-22 11:23:10,494 - DEBUG - H1_multicriteria_functions - All cases are equal for this criterion. Therefore, criterion weight is turned into 0
-2020-07-22 11:23:10,494 - DEBUG - H1_multicriteria_functions - All cases are equal for this criterion. Therefore, criterion weight is turned into 0
-2020-07-22 11:23:10,494 - DEBUG - H1_multicriteria_functions - All cases are equal for this criterion. Therefore, criterion weight is turned into 0
-2020-07-22 11:23:10,494 - DEBUG - H1_multicriteria_functions - All cases are equal for this criterion. Therefore, criterion weight is turned into 0
-2020-07-22 11:23:10,494 - DEBUG - H1_multicriteria_functions - All cases are equal for this criterion. Therefore, criterion weight is turned into 0
-2020-07-22 11:23:10,495 - DEBUG - H1_multicriteria_functions - All cases are equal for this criterion. Therefore, criterion weight is turned into 0
-2020-07-22 11:23:10,495 - DEBUG - H1_multicriteria_functions - All cases are equal for this criterion. Therefore, criterion weight is turned into 0
-2020-07-22 11:23:10,495 - DEBUG - H1_multicriteria_functions - All cases are equal for this criterion. Therefore, criterion weight is turned into 0
-2020-07-22 11:23:10,495 - DEBUG - H1_multicriteria_functions - All cases are equal for this criterion. Therefore, criterion weight is turned into 0
-2020-07-22 11:23:10,495 - DEBUG - H1_multicriteria_functions - All cases are equal for this criterion. Therefore, criterion weight is turned into 0
-2020-07-22 11:23:10,495 - DEBUG - H1_multicriteria_functions - All cases are equal for this criterion. Therefore, criterion weight is turned into 0
-2020-07-22 11:23:10,495 - DEBUG - H1_multicriteria_functions - All cases are equal for this criterion. Therefore, criterion weight is turned into 0
-2020-07-22 11:23:10,716 - DEBUG - _base - update_title_pos
-2020-07-22 11:23:10,869 - DEBUG - _base - update_title_pos
-2020-07-22 11:23:10,932 - DEBUG - _base - update_title_pos
-2020-07-22 11:23:10,973 - DEBUG - _base - update_title_pos
-2020-07-22 11:23:11,584 - DEBUG - _base - update_title_pos
-2020-07-22 11:23:11,735 - DEBUG - _base - update_title_pos
-2020-07-22 11:23:11,805 - DEBUG - _base - update_title_pos
-2020-07-22 11:23:11,844 - DEBUG - _base - update_title_pos
-2020-07-22 11:23:12,084 - INFO - Offgridders - Multicriteria analysis was successfully performed
+2020-07-22 12:46:17,069 - INFO - Offgridders - Performing multicriteria analysis
+2020-07-22 12:46:17,082 - DEBUG - H1_multicriteria_functions - All cases are equal for this criterion. Therefore, criterion weight is turned into 0
+2020-07-22 12:46:17,082 - DEBUG - H1_multicriteria_functions - All cases are equal for this criterion. Therefore, criterion weight is turned into 0
+2020-07-22 12:46:17,083 - DEBUG - H1_multicriteria_functions - All cases are equal for this criterion. Therefore, criterion weight is turned into 0
+2020-07-22 12:46:17,083 - DEBUG - H1_multicriteria_functions - All cases are equal for this criterion. Therefore, criterion weight is turned into 0
+2020-07-22 12:46:17,083 - DEBUG - H1_multicriteria_functions - All cases are equal for this criterion. Therefore, criterion weight is turned into 0
+2020-07-22 12:46:17,083 - DEBUG - H1_multicriteria_functions - All cases are equal for this criterion. Therefore, criterion weight is turned into 0
+2020-07-22 12:46:17,083 - DEBUG - H1_multicriteria_functions - All cases are equal for this criterion. Therefore, criterion weight is turned into 0
+2020-07-22 12:46:17,083 - DEBUG - H1_multicriteria_functions - All cases are equal for this criterion. Therefore, criterion weight is turned into 0
+2020-07-22 12:46:17,083 - DEBUG - H1_multicriteria_functions - All cases are equal for this criterion. Therefore, criterion weight is turned into 0
+2020-07-22 12:46:17,083 - DEBUG - H1_multicriteria_functions - All cases are equal for this criterion. Therefore, criterion weight is turned into 0
+2020-07-22 12:46:17,083 - DEBUG - H1_multicriteria_functions - All cases are equal for this criterion. Therefore, criterion weight is turned into 0
+2020-07-22 12:46:17,083 - DEBUG - H1_multicriteria_functions - All cases are equal for this criterion. Therefore, criterion weight is turned into 0
+2020-07-22 12:46:17,084 - DEBUG - H1_multicriteria_functions - All cases are equal for this criterion. Therefore, criterion weight is turned into 0
+2020-07-22 12:46:17,084 - DEBUG - H1_multicriteria_functions - All cases are equal for this criterion. Therefore, criterion weight is turned into 0
+2020-07-22 12:46:17,084 - DEBUG - H1_multicriteria_functions - All cases are equal for this criterion. Therefore, criterion weight is turned into 0
+2020-07-22 12:46:17,084 - DEBUG - H1_multicriteria_functions - All cases are equal for this criterion. Therefore, criterion weight is turned into 0
+2020-07-22 12:46:17,084 - DEBUG - H1_multicriteria_functions - All cases are equal for this criterion. Therefore, criterion weight is turned into 0
+2020-07-22 12:46:17,084 - DEBUG - H1_multicriteria_functions - All cases are equal for this criterion. Therefore, criterion weight is turned into 0
+2020-07-22 12:46:17,253 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:17,349 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:17,401 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:17,432 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:17,896 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:17,975 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:18,021 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:18,049 - DEBUG - _base - update_title_pos
+2020-07-22 12:46:18,221 - INFO - Offgridders - Multicriteria analysis was successfully performed
