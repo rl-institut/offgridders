@@ -1,16 +1,6 @@
 import logging
 
-try:
-    import src.H1_multicriteria_functions as multicriteria_functions
-
-except ModuleNotFoundError:
-    print("Module error at H0")
-    from src.H1_multicriteria_functions import (
-        calculations,
-        calculation_helpers,
-        mca_representation,
-    )
-
+import src.H1_multicriteria_functions as multicriteria_functions
 
 def main_analysis(overallresults, multicriteria_data, settings):
     """
