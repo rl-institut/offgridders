@@ -189,7 +189,7 @@ def availability(
             + " per month"
         )
 
-        number_of_blackouts = number_of_blackouts(
+        number_of_blackouts = get_number_of_blackouts(
             settings[MAX_EVALUATED_DAYS], blackout_experiment_s[experiment]
         )
 
