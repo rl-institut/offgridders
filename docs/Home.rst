@@ -4,7 +4,7 @@ Home
 
 *Welcome to the simulator_grid-connected_micro_grid wiki!*
 
-**Offgridders**, based on python3, simulates an user-defined electricity supply system and performs an optimization of the system's capacities as well as a dispatch-optimization of the optimized assets, utilizing the Open Energy Modelling Framework ([Website](https://oemof.org/)) ([Code](https://github.com/oemof)). The system can be defined using:
+**Offgridders**, based on python3, simulates an user-defined electricity supply system and performs an optimization of the system's capacities as well as a dispatch-optimization of the optimized assets, utilizing the Open Energy Modelling Framework (`Website <https://oemof.org/>`_ , `Code <https://github.com/oemof>`_). The system can be defined using:
 
 * AC- and DC-demand
 * Inverters and rectifiers connecting AC- and DC-bus
