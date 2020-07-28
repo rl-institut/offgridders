@@ -17,11 +17,10 @@ The input data is then pre-processed, e.g. the specific CAPEX and OPEX of each a
 
 The simulation tool outline is provided with the graph below:
 
-Flowchart of the micro grid simulation tool
-.. figure:: ../github_wiki/mg_tool_overview.jpg
-    :width: 200px
+.. figure:: ../github_wiki/mg_tool_overview.png
+    :width: 5000px
     :align: center
-    :height: 100px
+    :height: 300px
     :alt: alternate text
     :figclass: align-center
 
