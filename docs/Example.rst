@@ -7,7 +7,7 @@ Following input values are used for simulating Micro Grids in Zambia:
 
 * Demand profile: Profile provided by RLI (min, median, max)
 
-* Weather data: from [https://www.renewables.ninja/](https://www.renewables.ninja/), country profile of Zambia, land area weighted, MERRA-2
+* Weather data: from `https://www.renewables.ninja/ <https://www.renewables.ninja/>`_, country profile of Zambia, land area weighted, MERRA-2
 
 Cost data
 ---------------------------------------
