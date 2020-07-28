@@ -29,7 +29,7 @@ Components
 
 * **pv_oem** (_micro_grid_system, bus_electricity_mg, pv_generation_per_kWp, experiment_): Creates PV generation source "source_pv" with for OEM, using the normed PV generation profile per kWp, investment costs and variable costs.
 
-* **genset_fix**(_micro_grid_system, bus_fuel, bus_electricity_mg, capacity_fuel_gen, experiment_): Generates fossil-fueled genset "transformer_fuel_generator" with nonconvex flow (min and max loading), generator efficiency, fixed capacity and variable costs. If minimal loading = 0, the generator is modeled without a nonconvex flow (which would result in an error due to constraint 'NonConvexFlow.min').
+* **genset_fix** (_micro_grid_system, bus_fuel, bus_electricity_mg, capacity_fuel_gen, experiment_): Generates fossil-fueled genset "transformer_fuel_generator" with nonconvex flow (min and max loading), generator efficiency, fixed capacity and variable costs. If minimal loading = 0, the generator is modeled without a nonconvex flow (which would result in an error due to constraint 'NonConvexFlow.min').
 
 * **genset_oem** (_micro_grid_system, bus_fuel, bus_electricity_mg, experiment_):  Generates fossil-fueled genset "transformer_fuel_generator" for OEM with generator efficiency, investment and variable costs.
 
