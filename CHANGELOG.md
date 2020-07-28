@@ -12,7 +12,8 @@ Here is a template for new release sections
 ### Added
 -
 ### Changed
--
+Readthedocs corrected
+
 ### Removed
 -
 ### Fixed
