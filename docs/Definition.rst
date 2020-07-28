@@ -17,7 +17,14 @@ The input data is then pre-processed, e.g. the specific CAPEX and OPEX of each a
 
 The simulation tool outline is provided with the graph below:
 
-Flowchart of the micro grid simulation tool(https://github.com/smartie2076/simulator_grid-connected_micro_grid/blob/master/github_wiki/mg_tool_overview.png)
+.. figure:: ../github_wiki/mg_tool_overview.png
+    :width: 5000px
+    :align: center
+    :height: 300px
+    :alt: alternate text
+    :figclass: align-center
+
+    Flowchart of the micro grid simulation tool
 
 Electricity supply system components
 ------------------------------------
