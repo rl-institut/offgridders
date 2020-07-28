@@ -64,4 +64,11 @@ of an energy system with or without connection to a central grid. It is not poss
 define the used component capacities, apart from the diesel generator and the PCC, both of
 which can be sized based on a ratio of peak demand.
 
-![Electricity supply system, almost all assets can be de-activated](https://github.com/smartie2076/simulator_grid-connected_micro_grid/blob/master/github_wiki/oemof_diagram_ac_dc_bus.jpg)
+In th Electricity supply system, almost all assets can be de-activated. The assest can be seeing in following figure:
+
+.. figure:: ../github_wiki/oemof_diagram_ac_dc_bus.jpg
+    :width: 5000px
+    :align: center
+    :height: 400px
+    :alt: alternate text
+    :figclass: align-center
