@@ -14,7 +14,8 @@ Here is a template for new release sections
 ### Changed
 -
 ### Removed
--
+- Try/Except clauses at module import
+
 ### Fixed
 -
 ```
