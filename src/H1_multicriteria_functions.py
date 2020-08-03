@@ -44,7 +44,7 @@ from src.constants import (
     LOCAL_LS,
     CASES_AND_EXPERIMENTS,
     EVALUATION,
-    DIMENSIONS_W, EC1, EC2,T1,T2,T3,T4
+    DIMENSIONS_W, EC1, EC2,T1,T2,T3,T4, ENVIROMENTAL,
 )
 
 
@@ -661,7 +661,7 @@ def representation(
         )
         worksheet.merge_range(
             "A" + str(row + 10) + ":B" + str(row + 12),
-            "Environmental",
+            ENVIROMENTAL,
             format_highlight,
         )
         for dimension in all_data[EVALUATIONS][n + 1]:
