@@ -96,15 +96,15 @@ def evaluate_criteria(all_results, qualitative_punctuations, multicriteria_data)
             case_evaluations = {}
 
             # economic evaluation
-            EC1 = case[FIRST_INVESTMENT]
-            EC2 = case[OPERATION_MAINTAINANCE_EXPENDITURES]
+            EC1_RESULT = case[FIRST_INVESTMENT]
+            EC2_RESULT = case[OPERATION_MAINTAINANCE_EXPENDITURES]
             if REVENUE_MAIN_GRID_FEEDIN_ANNUAL in case.keys() and isinstance(
                 REVENUE_MAIN_GRID_FEEDIN_ANNUAL, float
             ):
-                EC2 = EC2 - case[REVENUE_MAIN_GRID_FEEDIN_ANNUAL]
+                EC2_RESULT = EC2_RESULT - case[REVENUE_MAIN_GRID_FEEDIN_ANNUAL]
             economic = {
-                "EC1": EC1,
-                "EC2": EC2,
+                "EC1": EC1_RESULT,
+                "EC2": EC2_RESULT,
             }  # Here str are conserved as a variable is prevously declarated with the same name
             case_evaluations[ECONOMIC] = economic
 
