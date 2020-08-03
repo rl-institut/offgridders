@@ -44,7 +44,7 @@ from src.constants import (
     LOCAL_LS,
     CASES_AND_EXPERIMENTS,
     EVALUATION,
-    DIMENSIONS_W, EC1, EC2
+    DIMENSIONS_W, EC1, EC2,T1,T2,T3,T4
 )
 
 
@@ -109,15 +109,15 @@ def evaluate_criteria(all_results, qualitative_punctuations, multicriteria_data)
             case_evaluations[ECONOMIC] = economic
 
             # technical evaluation
-            T1 = case[AUTONOMY_FACTOR]
-            T2 = case[SUPPLY_RELIABILITY_KWH]
-            T3 = linear_evaluation(
-                qualitative_punctuations, generation_components, case, "T3"
+            T1_Result = case[AUTONOMY_FACTOR]
+            T2_Result = case[SUPPLY_RELIABILITY_KWH]
+            T3_Results = linear_evaluation(
+                qualitative_punctuations, generation_components, case, T3
             )
-            T4 = linear_evaluation(
-                qualitative_punctuations, generation_components, case, "T4"
+            T4_Results = linear_evaluation(
+                qualitative_punctuations, generation_components, case, T4
             )
-            technical = {"T1": T1, "T2": T2, "T3": T3, "T4": T4}
+            technical = {T1: T1_Result, T2: T2_Result, T3: T3_Results, T4: T4_Results}
             case_evaluations[TECHNICAL] = technical
 
             # socioinstitutional evaluation
@@ -358,7 +358,7 @@ def create_diccionary(self):
     a template of the dictionary for the multicriteria analysis
     """
     economic_eval = {EC1: [], EC2: []}
-    technical_eval = {"T1": [], "T2": [], "T3": [], "T4": []}
+    technical_eval = {T1: [], T2: [], T3: [], T4: []}
     socioinstitutional_eval = {"S1": [], "S2": [], "S3": []}
     environmental_eval = {"EN1": [], "EN2": [], "EN3": []}
 
@@ -386,7 +386,7 @@ def change_weights(weights_criteria, dimension, criterion):
     if dimension == ECONOMIC:
         criteria = [EC1, EC2]
     elif dimension == TECHNICAL:
-        criteria = ["T1", "T2", "T3", "T4"]
+        criteria = [T1, T2, T3, T4]
     elif dimension == SOCIOINSTITUTIONAL:
         criteria = ["S1", "S2", "S3"]
     elif dimension == ENVIROMENTAL:
