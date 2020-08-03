@@ -767,7 +767,7 @@ def representation(
         )
         row += 1
         worksheet.write(row, 3, L1, format_highlight)
-        worksheet.write(row + 1, 3, "Linf", format_highlight)
+        worksheet.write(row + 1, 3, LINF, format_highlight)
         worksheet.write(row + 2, 3, "L", format_highlight)
         for j in range(len(all_data[GLOBAL_LS][n + 1])):
             L = all_data[GLOBAL_LS][n + 1][j]
@@ -812,7 +812,7 @@ def representation(
             start_row = row
             start_col, i = 4, 0
             worksheet.write(row, 3, L1, format_highlight)
-            worksheet.write(row + 1, 3, "Linf", format_highlight)
+            worksheet.write(row + 1, 3, LINF, format_highlight)
             worksheet.write(row + 2, 3, "L", format_highlight)
             for j in range(len(all_data[LOCAL_LS][n + 1])):
                 combinations = all_data[LOCAL_LS][n + 1][j]
