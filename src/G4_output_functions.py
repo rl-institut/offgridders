@@ -52,7 +52,7 @@ from src.constants import (
     SAVE_TO_PNG_FLOWS_STORAGE,
     WIND,
     PV,
-)
+    FEED_INTO_MAIN_GRID_MG_SIDE)
 
 
 def print_oemof_meta_main_invest(experiment, meta, electricity_bus, case_name):
@@ -88,7 +88,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
         WIND_GENERATION,
         EXCESS_GENERATION,
         CONSUMPTION_MAIN_GRID_MG_SIDE,
-        "Feed into main grid (MG side)",
+        FEED_INTO_MAIN_GRID_MG_SIDE,
         STORAGE_DISCHARGE,
         STORAGE_DISCHARGE_AC,
         STORAGE_DISCHARGE_DC,
@@ -107,7 +107,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
         STORAGE_DISCHARGE,
         STORAGE_DISCHARGE_AC,
         STORAGE_DISCHARGE_DC,
-        "Feed into main grid (MG side)",
+        FEED_INTO_MAIN_GRID_MG_SIDE,
     ]
 
     droplist = [
@@ -139,7 +139,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
 
                 if entry in negative_list:
                     # Display those values as negative in graphs/files
-                    if entry == "Feed into main grid (MG side)":
+                    if entry == FEED_INTO_MAIN_GRID_MG_SIDE:
                         new_column = pd.DataFrame(
                             -e_flows_df[entry].values,
                             columns=[FEED_INTO_MAIN_GRID],

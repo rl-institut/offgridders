@@ -111,7 +111,7 @@ from src.constants import (
     TOTAL_PCOUPLING_THROUGHPUT_KWH,
     MAINGRID_RENEWABLE_SHARE,
     RES_SHARE,
-    AC_SYSTEM)
+    AC_SYSTEM, FEED_INTO_MAIN_GRID_MG_SIDE)
 
 import matplotlib.pyplot as plt
 
@@ -672,7 +672,7 @@ def get_national_grid(case_dict, oemof_results, results, e_flows_df, grid_availa
             ((BUS_ELECTRICITY_AC, TRANSFORMER_PCC_FEEDIN), FLOW)
         ]
         e_flows_df = join_e_flows_df(
-            feedin_mg_side, "Feed into main grid (MG side)", e_flows_df
+            feedin_mg_side, FEED_INTO_MAIN_GRID_MG_SIDE, e_flows_df
         )
         annual_value(
             FEEDIN_MAIN_GRID_MG_SIDE_ANNUAL_KWH,
