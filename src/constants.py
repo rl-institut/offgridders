@@ -59,6 +59,7 @@ EVALUATION_PERSPECTIVE = "evaluation_perspective"
 DEFAULT = "default"
 DC_SYSTEM = "DC_system"
 SEPARATOR = "seperator"
+GRID_AVAILABILITY_CSV = "grid_availability.csv"
 
 # C_SENSITIVITY_EXPERIMENTS
 BLACKOUT_DURATION = "blackout_duration"

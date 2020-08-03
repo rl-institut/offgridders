@@ -45,7 +45,7 @@ from src.constants import (
     SAVE_TO_CSV_FLOWS_ELECTRICITY_MG,
     SAVE_TO_PNG_FLOWS_ELECTRICITY_MG,
     FILE_INDEX,
-    EVALUATION_PERSPECTIVE, DEFAULT, AC_SYSTEM, DC_SYSTEM, SEPARATOR
+    EVALUATION_PERSPECTIVE, DEFAULT, AC_SYSTEM, DC_SYSTEM, SEPARATOR,GRID_AVAILABILITY_CSV
 )
 
 # requires xlrd
@@ -429,7 +429,7 @@ def check_output_directory(settings, input_excel_file):
         for root, dirs, files in os.walk(output_folder):
             for file in files:
                 if (
-                    file == "grid_availability.csv"
+                    file == GRID_AVAILABILITY_CSV
                     and settings[RESTORE_BLACKOUTS_IF_EXISTENT] == False
                 ):
                     os.remove(root + "/" + file)
