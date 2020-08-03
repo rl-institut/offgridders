@@ -79,7 +79,7 @@ from src.constants import (
     FEEDIN_MAIN_GRID_MG_SIDE_ANNUAL_KWH,
     MAINGRID_FEEDIN_TARIFF,
     REVENUE_MAIN_GRID_FEEDIN_TOTAL,
-)
+    CO2_EMISSIONS_KGC02EQ)
 
 try:
     import matplotlib.pyplot as plt
@@ -348,7 +348,7 @@ def calculate_co2_emissions(oemof_results, experiment):
             oemof_results["consumption_main_grid_utility_side_annual_kWh"]
             * experiment["maingrid_co2_emission_factor"]
         )
-    oemof_results.update({"co2_emissions_kgCO2eq": co2_emissions})
+    oemof_results.update({CO2_EMISSIONS_KGC02EQ: co2_emissions})
     logging.debug("Calculated CO2 emissions.")
     return
 
