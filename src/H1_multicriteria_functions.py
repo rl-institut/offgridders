@@ -44,7 +44,7 @@ from src.constants import (
     LOCAL_LS,
     CASES_AND_EXPERIMENTS,
     EVALUATION,
-    DIMENSIONS_W,
+    DIMENSIONS_W, EC1, EC2
 )
 
 
@@ -103,8 +103,8 @@ def evaluate_criteria(all_results, qualitative_punctuations, multicriteria_data)
             ):
                 EC2_RESULT = EC2_RESULT - case[REVENUE_MAIN_GRID_FEEDIN_ANNUAL]
             economic = {
-                "EC1": EC1_RESULT,
-                "EC2": EC2_RESULT,
+                EC1: EC1_RESULT,
+                EC2: EC2_RESULT,
             }  # Here str are conserved as a variable is prevously declarated with the same name
             case_evaluations[ECONOMIC] = economic
 
@@ -180,7 +180,7 @@ def normalize_evaluations(global_evaluations, weights_criteria, type):
                 ideal_values[criterion] = "None"
                 antiideal_values[criterion] = "None"
             else:
-                if criterion in ["EC1", "EC2", "S2", "EN1"]:
+                if criterion in [EC1, EC2, "S2", "EN1"]:
                     ideal_values[criterion] = min(values)
                     antiideal_values[criterion] = max(values)
                 else:
@@ -289,7 +289,7 @@ def prepare_local_evaluations(global_evaluations, cases):
     """
     local_evaluations = []
     start = 0
-    for j in range(int(len(global_evaluations[ECONOMIC]["EC1"]) / len(cases))):
+    for j in range(int(len(global_evaluations[ECONOMIC][EC1]) / len(cases))):
         local_evaluation = create_diccionary([])
         for dimension in global_evaluations:
             for criterion in global_evaluations[dimension]:
@@ -357,7 +357,7 @@ def create_diccionary(self):
     :return:
     a template of the dictionary for the multicriteria analysis
     """
-    economic_eval = {"EC1": [], "EC2": []}
+    economic_eval = {EC1: [], EC2: []}
     technical_eval = {"T1": [], "T2": [], "T3": [], "T4": []}
     socioinstitutional_eval = {"S1": [], "S2": [], "S3": []}
     environmental_eval = {"EN1": [], "EN2": [], "EN3": []}
@@ -384,7 +384,7 @@ def change_weights(weights_criteria, dimension, criterion):
     """
     weights_criteria[criterion] = 0
     if dimension == ECONOMIC:
-        criteria = ["EC1", "EC2"]
+        criteria = [EC1, EC2]
     elif dimension == TECHNICAL:
         criteria = ["T1", "T2", "T3", "T4"]
     elif dimension == SOCIOINSTITUTIONAL:
