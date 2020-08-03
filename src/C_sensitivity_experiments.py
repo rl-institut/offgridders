@@ -183,7 +183,7 @@ from src.constants import (
     CAPACITY_RECTIFIER_AC_DC_KW,
     CAPACITY_WIND_KW,
     CAPACITY_GENSET_KW,
-    CO2_EMISSIONS_KGC02EQ)
+    CO2_EMISSIONS_KGC02EQ, TOTAL_EXCESS_ANNUAL_KWH)
 
 # Generate names for blackout sensitivity_experiment_s, used in sensitivity.blackoutexperiments and in maintool
 def get_blackout_experiment_name(blackout_experiment):
@@ -916,7 +916,7 @@ def overall_results_title(settings, number_of_project_sites, sensitivity_array_d
                     RES_SHARE,
                     AUTONOMY_FACTOR,
                     CO2_EMISSIONS_KGC02EQ,
-                    "total_excess_annual_kWh",
+                    TOTAL_EXCESS_ANNUAL_KWH,
                 ]
             ),
         ],
