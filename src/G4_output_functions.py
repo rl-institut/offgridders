@@ -52,7 +52,7 @@ from src.constants import (
     SAVE_TO_PNG_FLOWS_STORAGE,
     WIND,
     PV,
-    FEED_INTO_MAIN_GRID_MG_SIDE)
+    FEED_INTO_MAIN_GRID_MG_SIDE, DEMAND_AC, DEMAND_DC)
 
 
 def print_oemof_meta_main_invest(experiment, meta, electricity_bus, case_name):
@@ -76,8 +76,8 @@ def print_oemof_meta_main_invest(experiment, meta, electricity_bus, case_name):
 def save_mg_flows(experiment, case_dict, e_flows_df, filename):
     logging.debug("Saving flows MG.")
     flows_connected_to_electricity_mg_bus = [
-        "Demand AC",
-        "Demand DC",
+        DEMAND_AC,
+        DEMAND_DC,
         DEMAND_SHORTAGE,
         DEMAND_SHORTAGE_AC,
         DEMAND_SHORTAGE_DC,
@@ -111,8 +111,8 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
     ]
 
     droplist = [
-        "Demand AC",
-        "Demand DC",
+        DEMAND_AC,
+        DEMAND_DC,
         DEMAND_SHORTAGE_AC,
         DEMAND_SHORTAGE_DC,
         PV_GENERATION_AC,

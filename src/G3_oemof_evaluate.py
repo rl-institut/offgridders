@@ -111,7 +111,7 @@ from src.constants import (
     TOTAL_PCOUPLING_THROUGHPUT_KWH,
     MAINGRID_RENEWABLE_SHARE,
     RES_SHARE,
-    AC_SYSTEM, FEED_INTO_MAIN_GRID_MG_SIDE)
+    AC_SYSTEM, FEED_INTO_MAIN_GRID_MG_SIDE, DEMAND_AC, DEMAND_DC)
 
 import matplotlib.pyplot as plt
 
@@ -143,7 +143,7 @@ def get_demand(
     demand_ac = electricity_bus_ac[SEQUENCES][
         ((BUS_ELECTRICITY_AC, SINK_DEMAND_AC), FLOW)
     ]
-    e_flows_df = join_e_flows_df(demand_ac, "Demand AC", e_flows_df)
+    e_flows_df = join_e_flows_df(demand_ac, DEMAND_AC, e_flows_df)
     if case_dict[EVALUATION_PERSPECTIVE] == AC_SYSTEM:
         e_flows_df[DEMAND] += demand_ac
     else:
@@ -155,7 +155,7 @@ def get_demand(
     demand_dc = electricity_bus_dc[SEQUENCES][
         ((BUS_ELECTRICITY_DC, SINK_DEMAND_DC), FLOW)
     ]
-    e_flows_df = join_e_flows_df(demand_dc, "Demand DC", e_flows_df)
+    e_flows_df = join_e_flows_df(demand_dc, DEMAND_DC, e_flows_df)
     if case_dict[EVALUATION_PERSPECTIVE] == AC_SYSTEM:
         e_flows_df[DEMAND] += demand_dc / experiment[RECTIFIER_AC_DC_EFFICIENCY]
     else:
