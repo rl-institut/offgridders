@@ -1,5 +1,5 @@
 #Offgriders.py
-"micro_grid_design_logfile.log"
+MICRO_GRID_DESIGN_LOGFILE_LOG = "micro_grid_design_logfile.log"
 
 # A1_GENERAL_FUNCTIONS
 CAPACITY_PV_KWP = "capacity_pv_kWp"

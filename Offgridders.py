@@ -33,14 +33,14 @@ from src.constants import (
     CASE,
     LCOE,
     RES_SHARE,
-)
+    MICRO_GRID_DESIGN_LOGFILE_LOG)
 
 
 def main():
     # Logging
     logger.define_logging(
         logpath="./",
-        logfile="micro_grid_design_logfile.log",
+        logfile=MICRO_GRID_DESIGN_LOGFILE_LOG,
         screen_level=logging.INFO,
         # screen_level=logging.DEBUG,
         file_level=logging.DEBUG,
