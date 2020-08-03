@@ -165,8 +165,6 @@ def get_parameters_constant(file, sheet_input_constant):
     parameters_constant = parameters_constant.to_dict(orient="dict")
     parameters_constant_units = parameters_constant[UNIT]
     parameters_constant_values = parameters_constant[VALUE]
-    parameters_constant_units = parameters_constant["Unit"]
-    parameters_constant_values = parameters_constant["Value"]
 
     if "fuel_co2_emission_factor" not in parameters_constant_values.keys():
         parameters_constant_values.update({"fuel_co2_emission_factor": 2.68})

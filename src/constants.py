@@ -1,3 +1,6 @@
+#Offgriders.py
+"micro_grid_design_logfile.log"
+
 # A1_GENERAL_FUNCTIONS
 CAPACITY_PV_KWP = "capacity_pv_kWp"
 CAPACITY_WIND_KW = "capacity_wind_kW"
