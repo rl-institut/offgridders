@@ -183,7 +183,7 @@ from src.constants import (
     CAPACITY_RECTIFIER_AC_DC_KW,
     CAPACITY_WIND_KW,
     CAPACITY_GENSET_KW,
-    CO2_EMISSIONS_KGC02EQ, TOTAL_EXCESS_ANNUAL_KWH)
+    CO2_EMISSIONS_KGC02EQ, TOTAL_EXCESS_ANNUAL_KWH, CONSUMPTION_FUEL_ANNUAL_KWH)
 
 # Generate names for blackout sensitivity_experiment_s, used in sensitivity.blackoutexperiments and in maintool
 def get_blackout_experiment_name(blackout_experiment):
@@ -983,7 +983,7 @@ def overall_results_title(settings, number_of_project_sites, sensitivity_array_d
                     TOTAL_PV_GENERATION_KWH,
                     TOTAL_WIND_GENERATION_KWH,
                     TOTAL_GENSET_GENERATION_KWH,
-                    "consumption_fuel_annual_kWh",
+                    CONSUMPTION_FUEL_ANNUAL_KWH,
                     CONSUMPTION_FUEL_ANNUAL_L,
                     CONSUMPTION_MAIN_GRID_MG_SIDE_ANNUAL_KWH,
                     FEEDIN_MAIN_GRID_MG_SIDE_ANNUAL_KWH,
