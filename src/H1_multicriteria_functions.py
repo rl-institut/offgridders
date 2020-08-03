@@ -44,7 +44,7 @@ from src.constants import (
     LOCAL_LS,
     CASES_AND_EXPERIMENTS,
     EVALUATION,
-    DIMENSIONS_W, EC1, EC2,T1,T2,T3,T4, ENVIROMENTAL,
+    DIMENSIONS_W, EC1, EC2,T1,T2,T3,T4, WEIGHTS
 )
 
 
@@ -689,9 +689,9 @@ def representation(
         row += 1
         col = 0
         worksheet.write(row, col, DIMENSIONS_W, format_highlight)
-        worksheet.write(row, col + 1, "Weights", format_highlight)
+        worksheet.write(row, col + 1, WEIGHTS, format_highlight)
         worksheet.write(row, col + 2, CRITERIA, format_highlight)
-        worksheet.write(row, col + 3, "Weights", format_highlight)
+        worksheet.write(row, col + 3, WEIGHTS, format_highlight)
         col = 4
         worksheet.merge_range(
             str(columns[col])
