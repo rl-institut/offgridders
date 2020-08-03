@@ -45,7 +45,7 @@ from src.constants import (
     SAVE_TO_CSV_FLOWS_ELECTRICITY_MG,
     SAVE_TO_PNG_FLOWS_ELECTRICITY_MG,
     FILE_INDEX,
-    EVALUATION_PERSPECTIVE,
+    EVALUATION_PERSPECTIVE, DEFAULT
 )
 
 # requires xlrd
@@ -231,7 +231,7 @@ def get_case_definitions(file, sheet_project_sites):
             case_definitions[case][key] = identify_true_false(
                 case_definitions[case][key]
             )
-        if case_definitions[case][MAX_SHORTAGE] != "default":
+        if case_definitions[case][MAX_SHORTAGE] != DEFAULT:
             case_definitions[case].update(
                 {MAX_SHORTAGE: float(case_definitions[case][MAX_SHORTAGE])}
             )

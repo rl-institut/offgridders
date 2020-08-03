@@ -56,6 +56,8 @@ SAVE_TO_CSV_FLOWS_ELECTRICITY_MG = "save_to_csv_flows_electricity_mg"
 SAVE_TO_PNG_FLOWS_ELECTRICITY_MG = "save_to_png_flows_electricity_mg"
 EVALUATION_PERSPECTIVE = "evaluation_perspective"
 
+DEFAULT = "default"
+
 # C_SENSITIVITY_EXPERIMENTS
 BLACKOUT_DURATION = "blackout_duration"
 BLACKOUT_DURATION_STD_DEVIATION = "blackout_duration_std_deviation"

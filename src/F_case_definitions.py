@@ -68,7 +68,7 @@ from src.constants import (
     PCOUPLING_EFFICIENCY,
     SHARE_BACKUP,
     SHARE_USAGE,
-    SHARE_HYBRID,
+    SHARE_HYBRID, DEFAULT
 )
 
 # This is not really a necessary class, as the whole experiement could be given to the function, but it ensures, that
@@ -176,7 +176,7 @@ def update_dict(capacities_oem, specific_case, experiment):
     ###########################################
     # Allowing shortage, define max. shortage #
     ###########################################
-    if specific_case[ALLOW_SHORTAGE] == "default":
+    if specific_case[ALLOW_SHORTAGE] == DEFAULT:
         experiment_case_dict.update({ALLOW_SHORTAGE: experiment[ALLOW_SHORTAGE]})
         experiment_case_dict.update({MAX_SHORTAGE: experiment[SHORTAGE_MAX_ALLOWED]})
 
@@ -186,7 +186,7 @@ def update_dict(capacities_oem, specific_case, experiment):
 
     elif (
         specific_case[ALLOW_SHORTAGE] == True
-        and specific_case[MAX_SHORTAGE] == "default"
+        and specific_case[MAX_SHORTAGE] == DEFAULT
     ):
         experiment_case_dict.update({ALLOW_SHORTAGE: True})
         experiment_case_dict.update({MAX_SHORTAGE: experiment[SHORTAGE_MAX_ALLOWED]})
@@ -229,7 +229,7 @@ def update_dict(capacities_oem, specific_case, experiment):
     # Include renewable constraint            #
     ###########################################
 
-    if specific_case[RENEWABLE_CONSTRAINT] == "default":
+    if specific_case[RENEWABLE_CONSTRAINT] == DEFAULT:
         if experiment[MIN_RENEWABLE_SHARE] == 0:
             experiment_case_dict.update({RENEWABLE_SHARE_CONSTRAINT: False})
         else:
