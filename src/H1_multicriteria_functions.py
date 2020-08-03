@@ -44,7 +44,7 @@ from src.constants import (
     LOCAL_LS,
     CASES_AND_EXPERIMENTS,
     EVALUATION,
-    DIMENSIONS_W, EC1, EC2,T1,T2,T3,T4, WEIGHTS
+    DIMENSIONS_W, EC1, EC2,T1,T2,T3,T4, WEIGHTS,L1
 )
 
 
@@ -766,7 +766,7 @@ def representation(
             format_title,
         )
         row += 1
-        worksheet.write(row, 3, "L1", format_highlight)
+        worksheet.write(row, 3, L1, format_highlight)
         worksheet.write(row + 1, 3, "Linf", format_highlight)
         worksheet.write(row + 2, 3, "L", format_highlight)
         for j in range(len(all_data[GLOBAL_LS][n + 1])):
@@ -811,7 +811,7 @@ def representation(
             row += 1
             start_row = row
             start_col, i = 4, 0
-            worksheet.write(row, 3, "L1", format_highlight)
+            worksheet.write(row, 3, L1, format_highlight)
             worksheet.write(row + 1, 3, "Linf", format_highlight)
             worksheet.write(row + 2, 3, "L", format_highlight)
             for j in range(len(all_data[LOCAL_LS][n + 1])):
