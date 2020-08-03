@@ -58,6 +58,7 @@ EVALUATION_PERSPECTIVE = "evaluation_perspective"
 
 DEFAULT = "default"
 DC_SYSTEM = "DC_system"
+SEPARATOR = "seperator"
 
 # C_SENSITIVITY_EXPERIMENTS
 BLACKOUT_DURATION = "blackout_duration"

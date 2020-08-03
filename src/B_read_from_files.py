@@ -45,7 +45,7 @@ from src.constants import (
     SAVE_TO_CSV_FLOWS_ELECTRICITY_MG,
     SAVE_TO_PNG_FLOWS_ELECTRICITY_MG,
     FILE_INDEX,
-    EVALUATION_PERSPECTIVE, DEFAULT, AC_SYSTEM, DC_SYSTEM
+    EVALUATION_PERSPECTIVE, DEFAULT, AC_SYSTEM, DC_SYSTEM, SEPARATOR
 )
 
 # requires xlrd
@@ -325,7 +325,7 @@ def from_file(project_site, path_from):
     ##########################################################
     # Reads timeseries from files connected to project sites #
     ##########################################################
-    data_set = pd.read_csv(path_from, sep=project_site["seperator"])
+    data_set = pd.read_csv(path_from, sep=project_site[SEPARATOR])
 
     list_columns = [
         TITLE_TIME,
