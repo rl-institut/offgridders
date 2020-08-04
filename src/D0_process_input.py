@@ -63,7 +63,7 @@ from src.constants import (
     WHITE_NOISE_DEMAND,
     WHITE_NOISE_PV,
     WHITE_NOISE_WIND,
-    SUFFIX_COST_INVESTMENT, SUFFIX_LIFETIME, SUFFIX_COST_OPEX)
+    SUFFIX_COST_INVESTMENT, SUFFIX_LIFETIME, SUFFIX_COST_OPEX, SUFFIX_COST_ANNUITY)
 
 
 def list_of_cases(case_definitions):
@@ -167,7 +167,7 @@ def economic_values(experiment):
         experiment.update(
             {
                 item
-                + "_cost_annuity": economics.annuity(
+                + SUFFIX_COST_ANNUITY: economics.annuity(
                     experiment[item + "_cost_capex"], experiment[CRF]
                 )
                 + experiment[item + SUFFIX_COST_OPEX]
@@ -183,7 +183,7 @@ def economic_values(experiment):
         experiment.update(
             {
                 item
-                + "_cost_annuity": experiment[item + "_cost_annuity"]
+                + SUFFIX_COST_ANNUITY: experiment[item + SUFFIX_COST_ANNUITY]
                 / 365
                 * experiment[EVALUATED_DAYS]
             }

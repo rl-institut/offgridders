@@ -151,7 +151,7 @@ def annuities_365(case_dict, oemof_results, experiment):
 
     list_fix = [PROJECT, DISTRIBUTION_GRID]
     for item in list_fix:
-        interval_annuity.update({"annuity_" + item: experiment[item + "_cost_annuity"]})
+        interval_annuity.update({"annuity_" + item: experiment[item + SUFFIX_COST_ANNUITY]})
 
     if (
         case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] != None
