@@ -14,7 +14,7 @@ Here is a template for new release sections
 ### Changed
 -
 ### Removed
-- Try/Except clauses at module import (Fixed PR #103)
+- Try/Except clauses at module import (#103)
 
 ### Fixed
 -
@@ -165,5 +165,4 @@ Major changes:
 - 1 hr timesteps, 1 to 365 days evaluation time
 - All input data via excel sheet
 - Easy case definition
-
 
