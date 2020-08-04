@@ -405,6 +405,7 @@ STORAGE = "storage"
 
 SUFFIX_COST_VAR = "_cost_var"
 SUFFIX_KW = "_kW"
+SUFFIX_GENERATION_KWH = "_generation_kWh"
 
 # G3b
 CONSUMPTION_FROM_MAIN_GRID = "Consumption from main grid"
