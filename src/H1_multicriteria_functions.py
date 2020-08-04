@@ -31,7 +31,7 @@ from src.constants import (
     TARIFF,
     CASE,
     SOCIOINSTITUTIONAL,
-    ENVIROMENTAL,
+    ENVIRONMENTAL,
     FILENAME,
     OUTPUT_FOLDER,
     EVALUATIONS,
@@ -44,8 +44,8 @@ from src.constants import (
     LOCAL_LS,
     CASES_AND_EXPERIMENTS,
     EVALUATION,
-    DIMENSIONS_W, EC1, EC2,T1,T2,T3,T4, WEIGHTS,L1, LINF
-)
+    DIMENSIONS_W, EC1, EC2, T1, T2, T3, T4, WEIGHTS, L1, LINF,
+    ENVIRONMENTAL_W)
 
 
 def evaluate_criteria(all_results, qualitative_punctuations, multicriteria_data):
@@ -142,7 +142,7 @@ def evaluate_criteria(all_results, qualitative_punctuations, multicriteria_data)
                 qualitative_punctuations, capacities_components, case, "EN3"
             )
             environmental = {"EN1": EN1, "EN2": EN2, "EN3": EN3}
-            case_evaluations[ENVIROMENTAL] = environmental
+            case_evaluations[ENVIRONMENTAL] = environmental
 
             project_evaluations[case[FILENAME]] = case_evaluations
 
@@ -225,7 +225,7 @@ def rank(normalized_evaluations, weights_dimensions, weights_criteria):
         ECONOMIC: [],
         TECHNICAL: [],
         SOCIOINSTITUTIONAL: [],
-        ENVIROMENTAL: [],
+        ENVIRONMENTAL: [],
     }
     for dimension in normalized_evaluations:
         first = True
@@ -366,7 +366,7 @@ def create_diccionary(self):
         ECONOMIC: economic_eval,
         TECHNICAL: technical_eval,
         SOCIOINSTITUTIONAL: socioinstitutional_eval,
-        ENVIROMENTAL: environmental_eval,
+        ENVIRONMENTAL: environmental_eval,
     }
 
     return dictionary
@@ -389,7 +389,7 @@ def change_weights(weights_criteria, dimension, criterion):
         criteria = [T1, T2, T3, T4]
     elif dimension == SOCIOINSTITUTIONAL:
         criteria = ["S1", "S2", "S3"]
-    elif dimension == ENVIROMENTAL:
+    elif dimension == ENVIRONMENTAL:
         criteria = ["EN1", "EN2", "EN3"]
 
     total = 0
@@ -661,7 +661,7 @@ def representation(
         )
         worksheet.merge_range(
             "A" + str(row + 10) + ":B" + str(row + 12),
-            ENVIROMENTAL,
+            ENVIRONMENTAL,
             format_highlight,
         )
         for dimension in all_data[EVALUATIONS][n + 1]:
@@ -732,7 +732,7 @@ def representation(
         )
         worksheet.merge_range(
             "B" + str(row + 10) + ":" + "B" + str(row + 12),
-            weights_dimensions[ENVIROMENTAL],
+            weights_dimensions[ENVIRONMENTAL_W],
             format_highlight,
         )
         for dimension in all_data[NORMALIZED_EVALUATIONS][n + 1]:
