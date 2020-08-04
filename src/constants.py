@@ -220,6 +220,7 @@ COMMENTS = "comments"
 CO2_EMISSIONS_KGC02EQ = "co2_emissions_kgCO2eq"
 TOTAL_EXCESS_ANNUAL_KWH = "total_excess_annual_kWh"
 
+SENSITIVITY_EXPERIMENTS_CSV = "/sensitivity_experiments.csv"
 
 # D0_process_input
 PERFORM_SIMULATION = "perform_simulation"
