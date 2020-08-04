@@ -661,7 +661,7 @@ def representation(
         )
         worksheet.merge_range(
             "A" + str(row + 10) + ":B" + str(row + 12),
-            ENVIRONMENTAL,
+            ENVIRONMENTAL_W,
             format_highlight,
         )
         for dimension in all_data[EVALUATIONS][n + 1]:
@@ -732,7 +732,7 @@ def representation(
         )
         worksheet.merge_range(
             "B" + str(row + 10) + ":" + "B" + str(row + 12),
-            weights_dimensions[ENVIRONMENTAL_W],
+            weights_dimensions[ENVIRONMENTAL],
             format_highlight,
         )
         for dimension in all_data[NORMALIZED_EVALUATIONS][n + 1]:
