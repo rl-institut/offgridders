@@ -405,6 +405,7 @@ MAINGRID_EXTENSION_COST_ANNUITY = "maingrid_extension_cost_annuity"
 STORAGE = "storage"
 FUEL_CO2_EMISSION_FACTOR = "fuel_co2_emission_factor"
 MAINGRID_CO2_EMISSION_FACTOR = "maingrid_co2_emission_factor"
+INCLUDE_SHORTAGE_PENALTY_COSTS_IN_LCOE = "include_shortage_penalty_costs_in_lcoe"
 
 PREFIX_ANNUITY = "annuity_"
 PREFIX_CAPACITY = "capacity_"

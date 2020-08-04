@@ -82,7 +82,7 @@ from src.constants import (
     CO2_EMISSIONS_KGC02EQ, SUFFIX_COST_INVESTMENT, SUFFIX_LIFETIME, SUFFIX_COST_OPEX, SUFFIX_COST_VAR, SUFFIX_KW,
     SUFFIX_GENERATION_KWH, SUFFIX_THROUGHPUT_KWH, SUFFIX_COST_ANNUITY, PREFIX_ANNUITY, PREFIX_CAPACITY, PREFIX_OM_VAR,
     PREFIX_TOTAL, PREFIX_COSTS, FUEL_CO2_EMISSION_FACTOR, CONSUMPTION_MAIN_GRID_UTILITY_SIDE_ANNUAL_KWH,
-    MAINGRID_CO2_EMISSION_FACTOR)
+    MAINGRID_CO2_EMISSION_FACTOR, INCLUDE_SHORTAGE_PENALTY_COSTS_IN_LCOE)
 
 try:
     import matplotlib.pyplot as plt
@@ -463,7 +463,7 @@ def expenditures_shortage(oemof_results, experiment):
         }
     )
 
-    if experiment["include_shortage_penalty_costs_in_lcoe"] == True:
+    if experiment[INCLUDE_SHORTAGE_PENALTY_COSTS_IN_LCOE] == True:
         oemof_results.update(
             {
                 ANNUITY: oemof_results[ANNUITY]
