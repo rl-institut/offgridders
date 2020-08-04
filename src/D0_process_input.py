@@ -170,7 +170,7 @@ def economic_values(experiment):
                 + "_cost_annuity": economics.annuity(
                     experiment[item + "_cost_capex"], experiment[CRF]
                 )
-                + experiment[item + "_cost_opex"]
+                + experiment[item + SUFFIX_COST_OPEX]
             }
         )
 
