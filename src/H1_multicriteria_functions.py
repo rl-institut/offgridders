@@ -45,7 +45,7 @@ from src.constants import (
     CASES_AND_EXPERIMENTS,
     EVALUATION,
     DIMENSIONS_W, EC1, EC2, T1, T2, T3, T4, WEIGHTS, L1, LINF,
-    ENVIRONMENTAL_W)
+    ENVIRONMENTAL_W, MCA_PLOTS)
 
 
 def evaluate_criteria(all_results, qualitative_punctuations, multicriteria_data):
@@ -866,10 +866,10 @@ def plot_evaluations(
     for i in range(combinations):
         cases_exp.append("case_" + str(i + 1))
 
-    if os.path.isdir(settings[OUTPUT_FOLDER] + "/mca_plots"):
-        shutil.rmtree(settings[OUTPUT_FOLDER] + "/mca_plots", ignore_errors=True)
+    if os.path.isdir(settings[OUTPUT_FOLDER] + MCA_PLOTS):
+        shutil.rmtree(settings[OUTPUT_FOLDER] + MCA_PLOTS, ignore_errors=True)
     if len(plot_criteria) > 0:
-        os.mkdir(settings[OUTPUT_FOLDER] + "/mca_plots")
+        os.mkdir(settings[OUTPUT_FOLDER] + MCA_PLOTS)
 
     # a bar chart is created for the evaluations of each required criteria and for each project
     for project in evaluations:
@@ -894,7 +894,7 @@ def plot_evaluations(
 
                     plt.savefig(
                         settings[OUTPUT_FOLDER]
-                        + "/mca_plots"
+                        + MCA_PLOTS
                         + "/evaluation_"
                         + criterion
                         + "_"
