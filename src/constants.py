@@ -408,6 +408,7 @@ STORAGE = "storage"
 PREFIX_ANNUITY = "annuity_"
 PREFIX_CAPACITY = "capacity_"
 PREFIX_OM_VAR = "om_var_"
+PREFIX_TOTAL = "total_"
 
 SUFFIX_COST_VAR = "_cost_var"
 SUFFIX_KW = "_kW"
