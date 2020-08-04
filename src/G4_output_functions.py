@@ -52,7 +52,7 @@ from src.constants import (
     SAVE_TO_PNG_FLOWS_STORAGE,
     WIND,
     PV,
-    FEED_INTO_MAIN_GRID_MG_SIDE, DEMAND_AC, DEMAND_DC)
+    FEED_INTO_MAIN_GRID_MG_SIDE, DEMAND_AC, DEMAND_DC, SUFFIX_GRAPH)
 
 
 def print_oemof_meta_main_invest(experiment, meta, electricity_bus, case_name):
@@ -386,7 +386,7 @@ def save_storage(experiment, case_dict, e_flows_df, filename):
 def save_network_graph(energysystem, case_name):
     logging.debug("Generate networkx diagram")
     energysystem_graph = graph.create_nx_graph(energysystem)
-    graph_file_name = case_name + "_graph"
+    graph_file_name = case_name + SUFFIX_GRAPH
     graph_path = "./simulation_results/" + graph_file_name
     nx.readwrite.write_gpickle(G=energysystem_graph, path=graph_path)
     energysystem_graph = nx.readwrite.read_gpickle(graph_path)

@@ -416,6 +416,8 @@ DISPLAY_META = "display_meta"
 DISPLAY_MAIN = "display_main"
 DISPLAY_INVEST = "display_invest"
 
+SUFFIX_GRAPH = "_graph"
+
 # H0
 CAPACITIES = "capacities"
 EVALUATIONS = "evaluations"
