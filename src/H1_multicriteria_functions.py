@@ -195,7 +195,7 @@ def normalize_evaluations(global_evaluations, weights_criteria, type):
             for value in values:
                 if ideal_values[criterion] == antiideal_values[criterion]:
                     normalized_evaluations[dimension][criterion].append("None")
-                    if type == "global":
+                    if type == GLOBAL:
                         logging.debug(
                             "All cases are equal for this criterion. Therefore, criterion weight is turned into 0"
                         )

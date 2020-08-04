@@ -79,7 +79,7 @@ def main_analysis(overallresults, multicriteria_data, settings):
             # first, a global ranking, for all solutions, is calculated
             # evaluations are normalized
             global_normalized_evaluations = multicriteria_functions.normalize_evaluations(
-                global_evaluations, weights_criteria, "global"
+                global_evaluations, weights_criteria, GLOBAL
             )
             all_projects_MCA_data[NORMALIZED_EVALUATIONS][
                 project
