@@ -45,7 +45,7 @@ from src.constants import (
     CASES_AND_EXPERIMENTS,
     EVALUATION,
     DIMENSIONS_W, EC1, EC2, T1, T2, T3, T4, WEIGHTS, L1, LINF,
-    ENVIRONMENTAL_W, MCA_PLOTS)
+    ENVIRONMENTAL_W, MCA_PLOTS, S1, S3, S2, EN1, EN2, EN3)
 
 
 def evaluate_criteria(all_results, qualitative_punctuations, multicriteria_data):
@@ -121,27 +121,27 @@ def evaluate_criteria(all_results, qualitative_punctuations, multicriteria_data)
             case_evaluations[TECHNICAL] = technical
 
             # socioinstitutional evaluation
-            S1 = linear_evaluation(
-                qualitative_punctuations, generation_components, case, "S1"
+            S1_Results = linear_evaluation(
+                qualitative_punctuations, generation_components, case, S1
             )
-            S2 = multicriteria_data[TARIFF][case[CASE]]
-            S3 = linear_evaluation(
-                qualitative_punctuations, generation_components, case, "S3"
+            S2_Results = multicriteria_data[TARIFF][case[CASE]]
+            S3_Results = linear_evaluation(
+                qualitative_punctuations, generation_components, case, S3
             )
-            socioinstitutional = {"S1": S1, "S2": S2, "S3": S3}
+            socioinstitutional = {S1: S1_Results, S2: S2_Results, S3: S3_Results}
             case_evaluations[SOCIOINSTITUTIONAL] = socioinstitutional
 
             # environmental evaluation
-            EN1 = linear_evaluation(
-                qualitative_punctuations, generation_components, case, "EN1"
+            EN1_Results = linear_evaluation(
+                qualitative_punctuations, generation_components, case, EN1
             )
-            EN2 = linear_evaluation(
-                qualitative_punctuations, capacities_components, case, "EN2"
+            EN2_Results = linear_evaluation(
+                qualitative_punctuations, capacities_components, case, EN2
             )
-            EN3 = linear_evaluation(
-                qualitative_punctuations, capacities_components, case, "EN3"
+            EN3_Results = linear_evaluation(
+                qualitative_punctuations, capacities_components, case, EN3
             )
-            environmental = {"EN1": EN1, "EN2": EN2, "EN3": EN3}
+            environmental = {EN1: EN1_Results, EN2: EN2_Results, EN3: EN3_Results}
             case_evaluations[ENVIRONMENTAL] = environmental
 
             project_evaluations[case[FILENAME]] = case_evaluations
@@ -180,7 +180,7 @@ def normalize_evaluations(global_evaluations, weights_criteria, type):
                 ideal_values[criterion] = "None"
                 antiideal_values[criterion] = "None"
             else:
-                if criterion in [EC1, EC2, "S2", "EN1"]:
+                if criterion in [EC1, EC2, S2, EN1]:
                     ideal_values[criterion] = min(values)
                     antiideal_values[criterion] = max(values)
                 else:
@@ -322,7 +322,7 @@ def linear_evaluation(qualitative_punctuations, components, case, criterion):
     Num = 0
     Den = 0
 
-    if criterion == "EN3":
+    if criterion == EN3:
         for component in components:
             if component == STORAGE:
                 punc = punctuations[PV]
@@ -359,8 +359,8 @@ def create_diccionary(self):
     """
     economic_eval = {EC1: [], EC2: []}
     technical_eval = {T1: [], T2: [], T3: [], T4: []}
-    socioinstitutional_eval = {"S1": [], "S2": [], "S3": []}
-    environmental_eval = {"EN1": [], "EN2": [], "EN3": []}
+    socioinstitutional_eval = {S1: [], S2: [], S3: []}
+    environmental_eval = {EN1: [], EN2: [], EN3: []}
 
     dictionary = {
         ECONOMIC: economic_eval,
@@ -388,9 +388,9 @@ def change_weights(weights_criteria, dimension, criterion):
     elif dimension == TECHNICAL:
         criteria = [T1, T2, T3, T4]
     elif dimension == SOCIOINSTITUTIONAL:
-        criteria = ["S1", "S2", "S3"]
+        criteria = [S1, S2, S3]
     elif dimension == ENVIRONMENTAL:
-        criteria = ["EN1", "EN2", "EN3"]
+        criteria = [EN1, EN2, EN3]
 
     total = 0
     for criterion in criteria:

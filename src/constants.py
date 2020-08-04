@@ -459,6 +459,7 @@ ENVIRONMENTAL = "environmental"
 ENVIRONMENTAL_W = "Environmental"
 CASES_AND_EXPERIMENTS = "cases and experiments"
 EVALUATION = "evaluation"
+
 EC1 = "EC1"
 EC2 = "EC2"
 
@@ -466,6 +467,14 @@ T1 = "T1"
 T2 = "T2"
 T3 = "T3"
 T4 = "T4"
+
+S1 = "S1"
+S2 = "S2"
+S3 = "S3"
+
+EN1 = "EN1"
+EN2 = "EN2"
+EN3 = "EN3"
 
 WEIGHTS =  "Weights"
 L1 = "L1"
