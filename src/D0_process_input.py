@@ -63,7 +63,7 @@ from src.constants import (
     WHITE_NOISE_DEMAND,
     WHITE_NOISE_PV,
     WHITE_NOISE_WIND,
-    SUFFIX_COST_INVESTMENT, SUFFIX_LIFETIME)
+    SUFFIX_COST_INVESTMENT, SUFFIX_LIFETIME, SUFFIX_COST_OPEX)
 
 
 def list_of_cases(case_definitions):
@@ -170,7 +170,7 @@ def economic_values(experiment):
                 + "_cost_annuity": economics.annuity(
                     experiment[item + "_cost_capex"], experiment[CRF]
                 )
-                + experiment[item + "_cost_opex"]
+                + experiment[item + SUFFIX_COST_OPEX]
             }
         )
 

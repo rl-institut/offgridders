@@ -79,7 +79,7 @@ from src.constants import (
     FEEDIN_MAIN_GRID_MG_SIDE_ANNUAL_KWH,
     MAINGRID_FEEDIN_TARIFF,
     REVENUE_MAIN_GRID_FEEDIN_TOTAL,
-    CO2_EMISSIONS_KGC02EQ, SUFFIX_COST_INVESTMENT, SUFFIX_LIFETIME)
+    CO2_EMISSIONS_KGC02EQ, SUFFIX_COST_INVESTMENT, SUFFIX_LIFETIME, SUFFIX_COST_OPEX)
 
 try:
     import matplotlib.pyplot as plt
@@ -271,7 +271,7 @@ def annuities_365(case_dict, oemof_results, experiment):
                 experiment[STORAGE_POWER_COST_OPEX] * experiment[STORAGE_POWER_LIFETIME]
             )
         else:
-            om += experiment[item + "_cost_opex"] * experiment[item + SUFFIX_LIFETIME]
+            om += experiment[item + SUFFIX_COST_OPEX] * experiment[item + SUFFIX_LIFETIME]
 
     oemof_results.update({OPERATION_MAINTAINANCE_EXPENDITURES: om})
 
