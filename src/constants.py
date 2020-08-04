@@ -312,6 +312,8 @@ SHARE_USAGE = "share_usage"
 SHARE_HYBRID = "share_hybrid"
 BUS_FUEL = "bus_fuel"
 
+PREFIX_RESULTS = "results_"
+
 # G2a_oemof_busses_and_components
 SOURCE_FUEL = "source_fuel"
 SOURCE_SHORTAGE = "source_shortage"
