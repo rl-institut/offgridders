@@ -264,8 +264,6 @@ SUFFIX_COST_INVESTMENT = "_cost_investment"
 SUFFIX_LIFETIME = "_lifetime"
 SUFFIX_COST_OPEX = "_cost_opex"
 
-
-
 # E_blackouts_central_grid
 TIMESTEP = "timestep"
 MAX_DATE_TIME_INDEX = "max_date_time_index"
