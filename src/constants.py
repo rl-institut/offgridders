@@ -264,6 +264,7 @@ SUFFIX_COST_INVESTMENT = "_cost_investment"
 SUFFIX_LIFETIME = "_lifetime"
 SUFFIX_COST_OPEX = "_cost_opex"
 SUFFIX_COST_ANNUITY = "_cost_annuity"
+SUFFIX_COST_CAPEX = "_cost_capex"
 
 
 # E_blackouts_central_grid
