@@ -80,7 +80,7 @@ from src.constants import (
     MAINGRID_FEEDIN_TARIFF,
     REVENUE_MAIN_GRID_FEEDIN_TOTAL,
     CO2_EMISSIONS_KGC02EQ, SUFFIX_COST_INVESTMENT, SUFFIX_LIFETIME, SUFFIX_COST_OPEX, SUFFIX_COST_VAR, SUFFIX_KW,
-    SUFFIX_GENERATION_KWH)
+    SUFFIX_GENERATION_KWH, SUFFIX_THROUGHPUT_KWH)
 
 try:
     import matplotlib.pyplot as plt
@@ -252,12 +252,12 @@ def annuities_365(case_dict, oemof_results, experiment):
         om_var_interval.update(
             {
                 "om_var_"
-                + item: oemof_results["total_" + item + "_throughput_kWh"]
+                + item: oemof_results["total_" + item + SUFFIX_THROUGHPUT_KWH]
                 * experiment[item + SUFFIX_COST_VAR]
             }
         )
         om += (
-            oemof_results["total_" + item + "_throughput_kWh"]
+            oemof_results["total_" + item + SUFFIX_THROUGHPUT_KWH]
             * experiment[item + SUFFIX_COST_VAR]
         )
 
