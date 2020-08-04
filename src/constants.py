@@ -405,6 +405,7 @@ WIND_COST_ANNUITY = "wind_cost_annuity"
 MAINGRID_EXTENSION_COST_ANNUITY = "maingrid_extension_cost_annuity"
 STORAGE = "storage"
 PREFIX_ANNUITY = "annuity_"
+PREFIX_CAPACITY = "capacity_"
 
 SUFFIX_COST_VAR = "_cost_var"
 SUFFIX_KW = "_kW"
