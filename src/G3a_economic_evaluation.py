@@ -80,7 +80,7 @@ from src.constants import (
     MAINGRID_FEEDIN_TARIFF,
     REVENUE_MAIN_GRID_FEEDIN_TOTAL,
     CO2_EMISSIONS_KGC02EQ, SUFFIX_COST_INVESTMENT, SUFFIX_LIFETIME, SUFFIX_COST_OPEX, SUFFIX_COST_VAR, SUFFIX_KW,
-    SUFFIX_GENERATION_KWH, SUFFIX_THROUGHPUT_KWH, SUFFIX_COST_ANNUITY, PREFIX_ANNUITY, PREFIX_CAPACITY)
+    SUFFIX_GENERATION_KWH, SUFFIX_THROUGHPUT_KWH, SUFFIX_COST_ANNUITY, PREFIX_ANNUITY, PREFIX_CAPACITY, PREFIX_OM_VAR)
 
 try:
     import matplotlib.pyplot as plt
@@ -238,7 +238,7 @@ def annuities_365(case_dict, oemof_results, experiment):
     for item in [PV, WIND, GENSET]:
         om_var_interval.update(
             {
-                "om_var_"
+                PREFIX_OM_VAR
                 + item: oemof_results["total_" + item + SUFFIX_GENERATION_KWH]
                 * experiment[item + SUFFIX_COST_VAR]
             }
@@ -251,7 +251,7 @@ def annuities_365(case_dict, oemof_results, experiment):
     for item in [PCOUPLING, STORAGE, RECTIFIER_AC_DC, INVERTER_DC_AC]:
         om_var_interval.update(
             {
-                "om_var_"
+                PREFIX_OM_VAR
                 + item: oemof_results["total_" + item + SUFFIX_THROUGHPUT_KWH]
                 * experiment[item + SUFFIX_COST_VAR]
             }
@@ -293,7 +293,7 @@ def annuities_365(case_dict, oemof_results, experiment):
                     PREFIX_ANNUITY
                     + item: (
                         interval_annuity[PREFIX_ANNUITY + item]
-                        + om_var_interval["om_var_" + item]
+                        + om_var_interval[PREFIX_OM_VAR + item]
                     )
                     * 365
                     / evaluated_days
