@@ -259,6 +259,8 @@ PEAK_MEAN_DEMAND_RATIO_AC = "peak/mean_demand_ratio_ac"
 PEAK_MEAN_DEMAND_RATIO_DC = "peak/mean_demand_ratio_dc"
 ABS_PEAK_DEMAND_AC_SIDE = "abs_peak_demand_ac_side"
 
+SUFFIX_COST_INVESTMENT = "_cost_investment"
+
 # E_blackouts_central_grid
 TIMESTEP = "timestep"
 MAX_DATE_TIME_INDEX = "max_date_time_index"

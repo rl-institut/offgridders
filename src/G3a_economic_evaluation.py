@@ -79,7 +79,7 @@ from src.constants import (
     FEEDIN_MAIN_GRID_MG_SIDE_ANNUAL_KWH,
     MAINGRID_FEEDIN_TARIFF,
     REVENUE_MAIN_GRID_FEEDIN_TOTAL,
-    CO2_EMISSIONS_KGC02EQ)
+    CO2_EMISSIONS_KGC02EQ, SUFFIX_COST_INVESTMENT)
 
 try:
     import matplotlib.pyplot as plt
@@ -221,10 +221,10 @@ def annuities_365(case_dict, oemof_results, experiment):
                 * experiment[MAINGRID_DISTANCE]
             )
         elif item in [DISTRIBUTION_GRID, PROJECT]:
-            investment += experiment[item + "_cost_investment"]
+            investment += experiment[item + SUFFIX_COST_INVESTMENT]
         else:
             investment += (
-                experiment[item + "_cost_investment"]
+                experiment[item + SUFFIX_COST_INVESTMENT]
                 * oemof_results["capacity_" + item + "_kW"]
             )
 

@@ -63,7 +63,7 @@ from src.constants import (
     WHITE_NOISE_DEMAND,
     WHITE_NOISE_PV,
     WHITE_NOISE_WIND,
-)
+    SUFFIX_COST_INVESTMENT)
 
 
 def list_of_cases(case_definitions):
@@ -152,7 +152,7 @@ def economic_values(experiment):
             {
                 item
                 + "_cost_capex": economics.capex_from_investment(
-                    experiment[item + "_cost_investment"],
+                    experiment[item + SUFFIX_COST_INVESTMENT],
                     experiment[item + "_lifetime"],
                     experiment[PROJECT_LIFETIME],
                     experiment[WACC],
