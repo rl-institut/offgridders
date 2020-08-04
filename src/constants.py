@@ -391,9 +391,8 @@ STORAGE_CHARGE_AC = "Storage charge AC"
 STORAGE_DISCHARGE_AC = "Storage discharge AC"
 STORAGE_CHARGE = "Storage charge"
 STORAGE_SOC = "Storage SOC"
-CONSUMPTION_MAIN_GRID_UTILITY_SIDE_ANNUAL_KWH = (
-    "consumption_main_grid_utility_side_annual_kWh"
-)
+CONSUMPTION_MAIN_GRID_UTILITY_SIDE_ANNUAL_KWH = "consumption_main_grid_utility_side_annual_kWh"
+
 BUS_ELECTRICITY_NG_FEEDIN = "bus_electricity_ng_feedin"
 FEEDIN_MAIN_GRID_UTILITY_SIDE_ANNUAL_KWH = "feedin_main_grid_utility_side_annual_kWh"
 TOTAL_PCOUPLING_THROUGHPUT_KWH = "total_pcoupling_throughput_kWh"
