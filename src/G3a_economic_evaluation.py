@@ -80,7 +80,7 @@ from src.constants import (
     MAINGRID_FEEDIN_TARIFF,
     REVENUE_MAIN_GRID_FEEDIN_TOTAL,
     CO2_EMISSIONS_KGC02EQ, SUFFIX_COST_INVESTMENT, SUFFIX_LIFETIME, SUFFIX_COST_OPEX, SUFFIX_COST_VAR, SUFFIX_KW,
-    SUFFIX_GENERATION_KWH, SUFFIX_THROUGHPUT_KWH, SUFFIX_COST_ANNUITY)
+    SUFFIX_GENERATION_KWH, SUFFIX_THROUGHPUT_KWH, SUFFIX_COST_ANNUITY, PREFIX_ANNUITY)
 
 try:
     import matplotlib.pyplot as plt
@@ -152,7 +152,7 @@ def annuities_365(case_dict, oemof_results, experiment):
 
     list_fix = [PROJECT, DISTRIBUTION_GRID]
     for item in list_fix:
-        interval_annuity.update({"annuity_" + item: experiment[item + SUFFIX_COST_ANNUITY]})
+        interval_annuity.update({PREFIX_ANNUITY + item: experiment[item + SUFFIX_COST_ANNUITY]})
 
     if (
         case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] != None
@@ -283,16 +283,16 @@ def annuities_365(case_dict, oemof_results, experiment):
         if item in [PROJECT, MAINGRID_EXTENSION, DISTRIBUTION_GRID]:
             oemof_results.update(
                 {
-                    "annuity_"
-                    + item: (interval_annuity["annuity_" + item]) * 365 / evaluated_days
+                    PREFIX_ANNUITY
+                    + item: (interval_annuity[PREFIX_ANNUITY + item]) * 365 / evaluated_days
                 }
             )
         else:
             oemof_results.update(
                 {
-                    "annuity_"
+                    PREFIX_ANNUITY
                     + item: (
-                        interval_annuity["annuity_" + item]
+                        interval_annuity[PREFIX_ANNUITY + item]
                         + om_var_interval["om_var_" + item]
                     )
                     * 365
@@ -304,7 +304,7 @@ def annuities_365(case_dict, oemof_results, experiment):
 
     for item in component_list:
         oemof_results.update(
-            {ANNUITY: oemof_results[ANNUITY] + oemof_results["annuity_" + item]}
+            {ANNUITY: oemof_results[ANNUITY] + oemof_results[PREFIX_ANNUITY + item]}
         )
 
     return
@@ -330,7 +330,7 @@ def costs(oemof_results, experiment):
         oemof_results.update(
             {
                 "costs_"
-                + item: oemof_results["annuity_" + item] * experiment[ANNUITY_FACTOR]
+                + item: oemof_results[PREFIX_ANNUITY + item] * experiment[ANNUITY_FACTOR]
             }
         )
 
