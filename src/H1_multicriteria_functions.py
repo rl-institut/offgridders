@@ -45,7 +45,7 @@ from src.constants import (
     CASES_AND_EXPERIMENTS,
     EVALUATION,
     DIMENSIONS_W, EC1, EC2, T1, T2, T3, T4, WEIGHTS, L1, LINF,
-    ENVIRONMENTAL_W, MCA_PLOTS, S1, S3, S2, EN1, EN2, EN3)
+    ENVIRONMENTAL_W, MCA_PLOTS, S1, S3, S2, EN1, EN2, EN3, GLOBAL)
 
 
 def evaluate_criteria(all_results, qualitative_punctuations, multicriteria_data):
