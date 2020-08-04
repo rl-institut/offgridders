@@ -46,7 +46,7 @@ from src.constants import (
     SAVE_TO_PNG_FLOWS_ELECTRICITY_MG,
     FILE_INDEX,
     EVALUATION_PERSPECTIVE, DEFAULT, AC_SYSTEM, DC_SYSTEM, SEPARATOR, GRID_AVAILABILITY_CSV,
-    FUEL_CO2_EMISSION_FACTOR)
+    FUEL_CO2_EMISSION_FACTOR, MAINGRID_CO2_EMISSION_FACTOR)
 
 # requires xlrd
 
@@ -174,9 +174,9 @@ def get_parameters_constant(file, sheet_input_constant):
             "The CO2 emissions will be calculated with the default value of 2.68 kgCO2/l diesel"
         )
 
-    if "maingrid_co2_emission_factor" not in parameters_constant_values.keys():
-        parameters_constant_values.update({"maingrid_co2_emission_factor": 0.9})
-        parameters_constant_units.update({"maingrid_co2_emission_factor": "kgCO2/kWh"})
+    if MAINGRID_CO2_EMISSION_FACTOR not in parameters_constant_values.keys():
+        parameters_constant_values.update({MAINGRID_CO2_EMISSION_FACTOR: 0.9})
+        parameters_constant_units.update({MAINGRID_CO2_EMISSION_FACTOR: "kgCO2/kWh"})
         logging.warning(
             "Optional parameter `maingrid_co2_emission_factor` was not included in the input parameters."
             "The CO2 emissions will be calculated with the default value of 0.9 kgCO2/ kWh "

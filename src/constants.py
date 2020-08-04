@@ -404,6 +404,7 @@ WIND_COST_ANNUITY = "wind_cost_annuity"
 MAINGRID_EXTENSION_COST_ANNUITY = "maingrid_extension_cost_annuity"
 STORAGE = "storage"
 FUEL_CO2_EMISSION_FACTOR = "fuel_co2_emission_factor"
+MAINGRID_CO2_EMISSION_FACTOR = "maingrid_co2_emission_factor"
 
 PREFIX_ANNUITY = "annuity_"
 PREFIX_CAPACITY = "capacity_"
