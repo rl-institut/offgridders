@@ -79,7 +79,7 @@ from src.constants import (
     FEEDIN_MAIN_GRID_MG_SIDE_ANNUAL_KWH,
     MAINGRID_FEEDIN_TARIFF,
     REVENUE_MAIN_GRID_FEEDIN_TOTAL,
-    CO2_EMISSIONS_KGC02EQ, SUFFIX_COST_INVESTMENT, SUFFIX_LIFETIME, SUFFIX_COST_OPEX)
+    CO2_EMISSIONS_KGC02EQ, SUFFIX_COST_INVESTMENT, SUFFIX_LIFETIME, SUFFIX_COST_OPEX, SUFFIX_COST_VAR)
 
 try:
     import matplotlib.pyplot as plt
@@ -239,12 +239,12 @@ def annuities_365(case_dict, oemof_results, experiment):
             {
                 "om_var_"
                 + item: oemof_results["total_" + item + "_generation_kWh"]
-                * experiment[item + "_cost_var"]
+                * experiment[item + SUFFIX_COST_VAR]
             }
         )
         om += (
             oemof_results["total_" + item + "_generation_kWh"]
-            * experiment[item + "_cost_var"]
+            * experiment[item + SUFFIX_COST_VAR]
         )
 
     for item in [PCOUPLING, STORAGE, RECTIFIER_AC_DC, INVERTER_DC_AC]:
@@ -252,12 +252,12 @@ def annuities_365(case_dict, oemof_results, experiment):
             {
                 "om_var_"
                 + item: oemof_results["total_" + item + "_throughput_kWh"]
-                * experiment[item + "_cost_var"]
+                * experiment[item + SUFFIX_COST_VAR]
             }
         )
         om += (
             oemof_results["total_" + item + "_throughput_kWh"]
-            * experiment[item + "_cost_var"]
+            * experiment[item + SUFFIX_COST_VAR]
         )
 
     # include opex costs
