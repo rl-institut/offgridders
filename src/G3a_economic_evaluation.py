@@ -81,7 +81,7 @@ from src.constants import (
     REVENUE_MAIN_GRID_FEEDIN_TOTAL,
     CO2_EMISSIONS_KGC02EQ, SUFFIX_COST_INVESTMENT, SUFFIX_LIFETIME, SUFFIX_COST_OPEX, SUFFIX_COST_VAR, SUFFIX_KW,
     SUFFIX_GENERATION_KWH, SUFFIX_THROUGHPUT_KWH, SUFFIX_COST_ANNUITY, PREFIX_ANNUITY, PREFIX_CAPACITY, PREFIX_OM_VAR,
-    PREFIX_TOTAL, PREFIX_COSTS)
+    PREFIX_TOTAL, PREFIX_COSTS, FUEL_CO2_EMISSION_FACTOR)
 
 try:
     import matplotlib.pyplot as plt
@@ -343,7 +343,7 @@ def calculate_co2_emissions(oemof_results, experiment):
     if CONSUMPTION_FUEL_ANNUAL_L in oemof_results:
         co2_emissions += (
             oemof_results[CONSUMPTION_FUEL_ANNUAL_L]
-            * experiment["fuel_co2_emission_factor"]
+            * experiment[FUEL_CO2_EMISSION_FACTOR]
         )
     if "consumption_main_grid_utility_side_annual_kWh" in oemof_results:
         co2_emissions += (
