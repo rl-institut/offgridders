@@ -4,19 +4,8 @@ import oemof.solph as solph
 import oemof.outputlib as outputlib
 
 # todo this is called both from G0 and here
-try:
-    import src.G2a_oemof_busses_and_componets as generate
-    import src.G2b_constraints_custom as constraints_custom
-
-except ModuleNotFoundError:
-    print("Module error at G1")
-    from src.G2a_oemof_busses_and_componets import generate
-    from src.G2b_constraints_custom import (
-        stability_criterion,
-        renewable_criterion,
-        battery_management,
-        ac_dc_bus,
-    )
+import src.G2a_oemof_busses_and_componets as generate
+import src.G2b_constraints_custom as constraints_custom
 
 
 def load_energysystem_lp():

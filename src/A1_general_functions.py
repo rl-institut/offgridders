@@ -7,11 +7,8 @@ import pandas as pd
 from oemof.tools import logger
 import logging
 
-try:
-    import matplotlib.pyplot as plt
-except ImportError:
-    print("Matplotlib.pyplot could not be loaded")
-    plt = None
+import matplotlib.pyplot as plt
+
 
 
 def plot_results(pandas_dataframe, title, xaxis, yaxis):
