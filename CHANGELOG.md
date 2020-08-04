@@ -14,7 +14,7 @@ Here is a template for new release sections
 ### Changed
 -
 ### Removed
-- Try/Except clauses at module import
+- Try/Except clauses at module import (Fixed PR #103)
 
 ### Fixed
 -
