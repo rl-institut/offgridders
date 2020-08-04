@@ -81,7 +81,7 @@ from src.constants import (
     REVENUE_MAIN_GRID_FEEDIN_TOTAL,
     CO2_EMISSIONS_KGC02EQ, SUFFIX_COST_INVESTMENT, SUFFIX_LIFETIME, SUFFIX_COST_OPEX, SUFFIX_COST_VAR, SUFFIX_KW,
     SUFFIX_GENERATION_KWH, SUFFIX_THROUGHPUT_KWH, SUFFIX_COST_ANNUITY, PREFIX_ANNUITY, PREFIX_CAPACITY, PREFIX_OM_VAR,
-    PREFIX_TOTAL)
+    PREFIX_TOTAL, PREFIX_COSTS)
 
 try:
     import matplotlib.pyplot as plt
@@ -330,7 +330,7 @@ def costs(oemof_results, experiment):
     for item in component_list:
         oemof_results.update(
             {
-                "costs_"
+                PREFIX_COSTS
                 + item: oemof_results[PREFIX_ANNUITY + item] * experiment[ANNUITY_FACTOR]
             }
         )
