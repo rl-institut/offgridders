@@ -109,15 +109,15 @@ def evaluate_criteria(all_results, qualitative_punctuations, multicriteria_data)
             case_evaluations[ECONOMIC] = economic
 
             # technical evaluation
-            T1_Result = case[AUTONOMY_FACTOR]
-            T2_Result = case[SUPPLY_RELIABILITY_KWH]
+            T1_Results = case[AUTONOMY_FACTOR]
+            T2_Results = case[SUPPLY_RELIABILITY_KWH]
             T3_Results = linear_evaluation(
                 qualitative_punctuations, generation_components, case, T3
             )
             T4_Results = linear_evaluation(
                 qualitative_punctuations, generation_components, case, T4
             )
-            technical = {T1: T1_Result, T2: T2_Result, T3: T3_Results, T4: T4_Results}
+            technical = {T1: T1_Results, T2: T2_Results, T3: T3_Results, T4: T4_Results}
             case_evaluations[TECHNICAL] = technical
 
             # socioinstitutional evaluation
