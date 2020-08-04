@@ -225,7 +225,7 @@ def annuities_365(case_dict, oemof_results, experiment):
         else:
             investment += (
                 experiment[item + SUFFIX_COST_INVESTMENT]
-                * oemof_results["capacity_" + item + "_kW"]
+                * oemof_results["capacity_" + item + SUFFIX_KW]
             )
 
     oemof_results.update({FIRST_INVESTMENT: investment})

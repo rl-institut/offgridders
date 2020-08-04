@@ -404,6 +404,7 @@ MAINGRID_EXTENSION_COST_ANNUITY = "maingrid_extension_cost_annuity"
 STORAGE = "storage"
 
 SUFFIX_COST_VAR = "_cost_var"
+SUFFIX_KW = "_kW"
 
 # G3b
 CONSUMPTION_FROM_MAIN_GRID = "Consumption from main grid"
