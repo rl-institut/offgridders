@@ -340,9 +340,9 @@ def costs(oemof_results, experiment):
 
 def calculate_co2_emissions(oemof_results, experiment):
     co2_emissions = 0
-    if "consumption_fuel_annual_l" in oemof_results:
+    if CONSUMPTION_FUEL_ANNUAL_L in oemof_results:
         co2_emissions += (
-            oemof_results["consumption_fuel_annual_l"]
+            oemof_results[CONSUMPTION_FUEL_ANNUAL_L]
             * experiment["fuel_co2_emission_factor"]
         )
     if "consumption_main_grid_utility_side_annual_kWh" in oemof_results:
