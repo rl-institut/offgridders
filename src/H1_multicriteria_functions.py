@@ -866,7 +866,7 @@ def plot_evaluations(
     for i in range(combinations):
         cases_exp.append(PREFIX_CASE + str(i + 1))
 
-    if os.path.isdir(settings[OUTPUT_FOLDER] + MCA_PLOTS):
+    if os.path.isdir(os.path.join(settings[OUTPUT_FOLDER] + MCA_PLOTS)):
         shutil.rmtree(settings[OUTPUT_FOLDER] + MCA_PLOTS, ignore_errors=True)
     if len(plot_criteria) > 0:
         os.mkdir(settings[OUTPUT_FOLDER] + MCA_PLOTS)

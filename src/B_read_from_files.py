@@ -443,7 +443,7 @@ def check_output_directory(settings, input_excel_file):
     os.mkdir(output_folder + INPUTS_FOLDER)
 
     path_from = os.path.abspath(input_excel_file)
-    path_to = os.path.abspath(output_folder + INPUT_TEMPLATE_EXCEL_XLSX)
+    path_to = os.path.abspath(os.path.join(output_folder + INPUT_TEMPLATE_EXCEL_XLSX))
     shutil.copy(path_from, path_to)
 
     if settings[SAVE_LP_FILE] == True or settings[LP_FILE_FOR_ONLY_3_TIMESTEPS] == True:

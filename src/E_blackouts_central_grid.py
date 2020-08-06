@@ -34,18 +34,18 @@ def get_blackouts(settings, blackout_experiment_s):
     # Search, if file is existant (and should be used)
 
     if (
-        os.path.isfile(settings[OUTPUT_FOLDER] + GRID_AVAILABILITY_CSV)
-        or os.path.isfile(settings[INPUT_FOLDER_TIMESERIES] + GRID_AVAILABILITY_CSV)
+        os.path.isfile(os.path.join(settings[OUTPUT_FOLDER] + GRID_AVAILABILITY_CSV))
+        or os.path.isfile(os.path.join(settings[INPUT_FOLDER_TIMESERIES] + GRID_AVAILABILITY_CSV))
     ) and settings[RESTORE_BLACKOUTS_IF_EXISTENT] == True:
 
         # ? read to csv: timestamp as first row -> not equal column number, date time without index
-        if os.path.isfile(settings[OUTPUT_FOLDER] + GRID_AVAILABILITY_CSV):
+        if os.path.isfile(os.path.join(settings[OUTPUT_FOLDER] + GRID_AVAILABILITY_CSV)):
             data_set = pd.read_csv(settings[OUTPUT_FOLDER] + GRID_AVAILABILITY_CSV)
         elif os.path.isfile(
-            settings[INPUT_FOLDER_TIMESERIES] + GRID_AVAILABILITY_CSV
+            os.path(settings[INPUT_FOLDER_TIMESERIES] + GRID_AVAILABILITY_CSV)
         ):
             data_set = pd.read_csv(
-                settings[INPUT_FOLDER_TIMESERIES] + GRID_AVAILABILITY_CSV
+                os.path(settings[INPUT_FOLDER_TIMESERIES] + GRID_AVAILABILITY_CSV)
             )
 
         index = pd.DatetimeIndex(data_set[TIMESTEP].values)
