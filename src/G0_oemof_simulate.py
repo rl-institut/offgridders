@@ -315,7 +315,7 @@ def run(experiment, case_dict):
     logging.debug("    Simulation of case " + case_dict[CASE_NAME] + " complete.")
     logging.debug("\n")
 
-    if experiment["save_oemofresults"] == False:
+    if experiment[SAVE_OEMOFRESULTS] == False:
         os.remove(experiment[OUTPUT_FOLDER] + "/oemof/" + file_name + ".oemof")
 
     return oemof_results
