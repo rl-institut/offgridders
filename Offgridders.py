@@ -230,7 +230,7 @@ def main():
             overall_results.to_csv(
                 sensitivity_experiment_s[experiment][OUTPUT_FOLDER]
                 + "/"
-                + sensitivity_experiment_s[experiment]["output_file"]
+                + sensitivity_experiment_s[experiment][OUTPUT_FILE]
                 + ".csv"
             )  # moved from below
 
