@@ -4,6 +4,24 @@ import logging
 import os.path
 from copy import deepcopy
 
+from src.constants import (
+    OUTPUT_FOLDER,
+    INPUT_FOLDER_TIMESERIES,
+    RESTORE_BLACKOUTS_IF_EXISTENT,
+    TIMESTEP,
+    MAX_DATE_TIME_INDEX,
+    EXPERIMENT_NAME,
+    GRID_TOTAL_BLACKOUT_DURATION,
+    GRID_NUMBER_OF_BLACKOUTS,
+    GRID_RELIABILITY,
+    BLACKOUT_DURATION,
+    BLACKOUT_FREQUENCY,
+    MAX_EVALUATED_DAYS,
+    BLACKOUT_FREQUENCY_STD_DEVIATION,
+    NATIONAL_GRID_RELIABILITY_H,
+    NATIONAL_GRID_TOTAL_BLACKOUT_DURATION,
+    NATIONAL_GRID_NUMBER_OF_BLACKOUTS,
+)
 
 # Check for saved blackout scenarios/grid availability, else continue randomization of backout events
 def get_blackouts(settings, blackout_experiment_s):
@@ -16,38 +34,36 @@ def get_blackouts(settings, blackout_experiment_s):
     # Search, if file is existant (and should be used)
 
     if (
-        os.path.isfile(settings["output_folder"] + "/grid_availability.csv")
-        or os.path.isfile(
-            settings["input_folder_timeseries"] + "/grid_availability.csv"
-        )
-    ) and settings["restore_blackouts_if_existant"] == True:
+        os.path.isfile(settings[OUTPUT_FOLDER] + "/grid_availability.csv")
+        or os.path.isfile(settings[INPUT_FOLDER_TIMESERIES] + "/grid_availability.csv")
+    ) and settings[RESTORE_BLACKOUTS_IF_EXISTENT] == True:
 
         # ? read to csv: timestamp as first row -> not equal column number, date time without index
-        if os.path.isfile(settings["output_folder"] + "/grid_availability.csv"):
-            data_set = pd.read_csv(settings["output_folder"] + "/grid_availability.csv")
+        if os.path.isfile(settings[OUTPUT_FOLDER] + "/grid_availability.csv"):
+            data_set = pd.read_csv(settings[OUTPUT_FOLDER] + "/grid_availability.csv")
         elif os.path.isfile(
-            settings["input_folder_timeseries"] + "/grid_availability.csv"
+            settings[INPUT_FOLDER_TIMESERIES] + "/grid_availability.csv"
         ):
             data_set = pd.read_csv(
-                settings["input_folder_timeseries"] + "/grid_availability.csv"
+                settings[INPUT_FOLDER_TIMESERIES] + "/grid_availability.csv"
             )
 
-        index = pd.DatetimeIndex(data_set["timestep"].values)
+        index = pd.DatetimeIndex(data_set[TIMESTEP].values)
         index = [
-            item + pd.DateOffset(year=settings["max_date_time_index"][0].year)
+            item + pd.DateOffset(year=settings[MAX_DATE_TIME_INDEX][0].year)
             for item in index
         ]
-        data_set = data_set.drop(columns=["timestep"])
+        data_set = data_set.drop(columns=[TIMESTEP])
         grid_availability_df = pd.DataFrame(
             data_set.values, index=index, columns=data_set.columns.values
         )
 
         all_blackout_experiment_names = [
-            blackout_experiment_s[experiment]["experiment_name"]
+            blackout_experiment_s[experiment][EXPERIMENT_NAME]
             for experiment in blackout_experiment_s
         ]
 
-        if len(settings["max_date_time_index"]) > len(grid_availability_df.index):
+        if len(settings[MAX_DATE_TIME_INDEX]) > len(grid_availability_df.index):
             data_complete = False
             logging.WARNING(
                 "Saved blackout series can not be used (timestamps not compatible). Auto-generated timeseries will be used."
@@ -58,14 +74,14 @@ def get_blackouts(settings, blackout_experiment_s):
             for experiment in blackout_experiment_s:
 
                 if (
-                    blackout_experiment_s[experiment]["experiment_name"]
+                    blackout_experiment_s[experiment][EXPERIMENT_NAME]
                     in grid_availability_df.columns
                 ):
                     count_of_red_data = count_of_red_data + 1
                     name_of_experiment_requested_from_file_dataset = blackout_experiment_s[
                         experiment
                     ][
-                        "experiment_name"
+                        EXPERIMENT_NAME
                     ]
                     blackout_result = oemof_extension_for_blackouts(
                         grid_availability_df[
@@ -74,28 +90,28 @@ def get_blackouts(settings, blackout_experiment_s):
                     )
                     logging.info(
                         'Blackout experiment "'
-                        + blackout_experiment_s[experiment]["experiment_name"]
+                        + blackout_experiment_s[experiment][EXPERIMENT_NAME]
                         + '": '
                         + "Total blackout duration "
-                        + str(blackout_result["grid_total_blackout_duration"])
+                        + str(blackout_result[GRID_TOTAL_BLACKOUT_DURATION])
                         + " hrs,"
                         + " total number of blackouts "
-                        + str(blackout_result["grid_number_of_blackouts"])
+                        + str(blackout_result[GRID_NUMBER_OF_BLACKOUTS])
                         + " with grid reliability of "
-                        + str(blackout_result["grid_reliability"])
+                        + str(blackout_result[GRID_RELIABILITY])
                     )
 
                     blackout_result_s.update(
                         {
                             blackout_experiment_s[experiment][
-                                "experiment_name"
+                                EXPERIMENT_NAME
                             ]: blackout_result.copy()
                         }
                     )
                     del blackout_experiments_left[experiment]
                     logging.info(
                         "Previous blackout timeseries restored: "
-                        + blackout_experiment_s[experiment]["experiment_name"]
+                        + blackout_experiment_s[experiment][EXPERIMENT_NAME]
                     )
 
                 # are all availability timeseries from file?
@@ -104,7 +120,7 @@ def get_blackouts(settings, blackout_experiment_s):
                     logging.info("All necessary blackout timeseries restored.\n \n")
 
     else:
-        grid_availability_df = pd.DataFrame(index=settings["max_date_time_index"])
+        grid_availability_df = pd.DataFrame(index=settings[MAX_DATE_TIME_INDEX])
 
     # if data not saved, generate blackouts
     if data_complete == False:
@@ -117,8 +133,8 @@ def get_blackouts(settings, blackout_experiment_s):
         )
         logging.info("Missing blackout timeseries added through auto-generation.")
 
-    grid_availability_df.index.name = "timestep"
-    grid_availability_df.to_csv(settings["output_folder"] + "/grid_availability.csv")
+    grid_availability_df.index.name = TIMESTEP
+    grid_availability_df.to_csv(settings[OUTPUT_FOLDER] + "/grid_availability.csv")
 
     return grid_availability_df, blackout_result_s
 
@@ -140,9 +156,9 @@ def oemof_extension_for_blackouts(grid_availability):
                 number_of_blackouts = number_of_blackouts + 1
 
     blackout_result = {
-        "grid_reliability": grid_reliability,
-        "grid_total_blackout_duration": total_grid_blackout_duration,
-        "grid_number_of_blackouts": number_of_blackouts,
+        GRID_RELIABILITY: grid_reliability,
+        GRID_TOTAL_BLACKOUT_DURATION: total_grid_blackout_duration,
+        GRID_NUMBER_OF_BLACKOUTS: number_of_blackouts,
     }
 
     return blackout_result
@@ -152,7 +168,7 @@ def availability(
     settings, blackout_experiment_s, blackout_result_s, grid_availability_df
 ):
 
-    date_time_index = settings["max_date_time_index"]
+    date_time_index = settings[MAX_DATE_TIME_INDEX]
 
     # get timestep frequency: timestep = date_time_index.freq()
     timestep = 1
@@ -166,15 +182,15 @@ def availability(
             + str(experiment_count)
             + ": "
             + "Blackout duration "
-            + str(blackout_experiment_s[experiment]["blackout_duration"])
+            + str(blackout_experiment_s[experiment][BLACKOUT_DURATION])
             + " hrs, "
             "blackout frequency "
-            + str(blackout_experiment_s[experiment]["blackout_frequency"])
+            + str(blackout_experiment_s[experiment][BLACKOUT_FREQUENCY])
             + " per month"
         )
 
         number_of_blackouts = get_number_of_blackouts(
-            settings["max_evaluated_days"], blackout_experiment_s[experiment]
+            settings[MAX_EVALUATED_DAYS], blackout_experiment_s[experiment]
         )
 
         # 0-1-Series for grid availability
@@ -228,13 +244,13 @@ def availability(
             + " percent. \n"
         )
 
-        blackout_name = blackout_experiment_s[experiment]["experiment_name"]
+        blackout_name = blackout_experiment_s[experiment][EXPERIMENT_NAME]
         blackout_result_s.update(
             {
                 blackout_name: {
-                    "grid_reliability": grid_reliability,
-                    "grid_total_blackout_duration": total_grid_blackout_duration,
-                    "grid_number_of_blackouts": actual_number_of_blackouts,
+                    GRID_RELIABILITY: grid_reliability,
+                    GRID_TOTAL_BLACKOUT_DURATION: total_grid_blackout_duration,
+                    GRID_NUMBER_OF_BLACKOUTS: actual_number_of_blackouts,
                 }
             }
         )
@@ -253,9 +269,9 @@ def availability(
 def get_number_of_blackouts(evaluated_days, experiment):
     # Calculation of expected blackouts per analysed timeframe
     blackout_events_per_month = np.random.normal(
-        loc=experiment["blackout_frequency"],  # median value: blackout duration
-        scale=experiment["blackout_frequency_std_deviation"]
-        * experiment["blackout_frequency"],  # Standard deviation
+        loc=experiment[BLACKOUT_FREQUENCY],  # median value: blackout duration
+        scale=experiment[BLACKOUT_FREQUENCY_STD_DEVIATION]
+        * experiment[BLACKOUT_FREQUENCY],  # Standard deviation
         size=12,
     )  # random values for number of blackouts
     blackout_events_per_timeframe = int(
@@ -296,9 +312,9 @@ def get_time_of_blackout_events(blackout_events_per_timeframe, date_time_index):
 def get_blackout_event_durations(experiment, timestep, number_of_blackouts):
     # Generating blackout durations for the number of events
     blackout_event_durations = np.random.normal(
-        loc=experiment["blackout_duration"],  # median value: blackout duration
-        scale=experiment["blackout_frequency_std_deviation"]
-        * experiment["blackout_duration"],  # Standard deviation
+        loc=experiment[BLACKOUT_DURATION],  # median value: blackout duration
+        scale=experiment[BLACKOUT_FREQUENCY_STD_DEVIATION]
+        * experiment[BLACKOUT_DURATION],  # Standard deviation
         size=number_of_blackouts,
     )  # random values for number of blackouts
 
@@ -361,12 +377,12 @@ def availability_series(
 def extend_oemof_results(oemof_results, blackout_results):
     oemof_results.update(
         {
-            "national_grid_reliability_h": blackout_results["grid_reliability"],
-            "national_grid_total_blackout_duration": blackout_results[
-                "grid_total_blackout_duration"
+            NATIONAL_GRID_RELIABILITY_H: blackout_results[GRID_RELIABILITY],
+            NATIONAL_GRID_TOTAL_BLACKOUT_DURATION: blackout_results[
+                GRID_TOTAL_BLACKOUT_DURATION
             ],
-            "national_grid_number_of_blackouts": blackout_results[
-                "grid_number_of_blackouts"
+            NATIONAL_GRID_NUMBER_OF_BLACKOUTS: blackout_results[
+                GRID_NUMBER_OF_BLACKOUTS
             ],
         }
     )

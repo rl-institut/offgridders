@@ -14,24 +14,195 @@ from copy import deepcopy
 # todo: this module should not be called here
 import src.D0_process_input as process_input_parameters
 
+from src.constants import (
+    BLACKOUT_DURATION,
+    BLACKOUT_DURATION_STD_DEVIATION,
+    BLACKOUT_FREQUENCY,
+    BLACKOUT_FREQUENCY_STD_DEVIATION,
+    SENSITIVITY_ALL_COMBINATIONS,
+    DEMAND_AC_SCALING_FACTOR,
+    DEMAND_DC_SCALING_FACTOR,
+    STORAGE_SOC_INITIAL,
+    TOTAL_NUMBER_OF_EXPERIMENTS,
+    PROJECT_SITE_NAME,
+    EXPERIMENT_NAME,
+    MIN,
+    MAX,
+    STEP,
+    COMBUSTION_VALUE_FUEL,
+    DISTRIBUTION_GRID_COST_INVESTMENT,
+    DISTRIBUTION_GRID_COST_OPEX,
+    DISTRIBUTION_GRID_LIFETIME,
+    GENSET_BATCH,
+    GENSET_COST_INVESTMENT,
+    GENSET_COST_OPEX,
+    GENSET_COST_VAR,
+    GENSET_EFFICIENCY,
+    GENSET_LIFETIME,
+    GENSET_MAX_LOADING,
+    GENSET_MIN_LOADING,
+    GENSET_OVERSIZE_FACTOR,
+    INVERTER_DC_AC_BATCH,
+    INVERTER_DC_AC_COST_INVESTMENT,
+    INVERTER_DC_AC_COST_OPEX,
+    INVERTER_DC_AC_COST_VAR,
+    INVERTER_DC_AC_EFFICIENCY,
+    INVERTER_DC_AC_LIFETIME,
+    MAINGRID_DISTANCE,
+    MAINGRID_ELECTRICITY_PRICE,
+    MAINGRID_EXTENSION_COST_INVESTMENT,
+    MAINGRID_EXTENSION_COST_OPEX,
+    MAINGRID_EXTENSION_LIFETIME,
+    MAINGRID_FEEDIN_TARIFF,
+    MAINGRID_RENEWABLE_SHARE,
+    MIN_RENEWABLE_SHARE,
+    PCOUPLING_BATCH,
+    PCOUPLING_COST_INVESTMENT,
+    PCOUPLING_COST_OPEX,
+    PCOUPLING_COST_VAR,
+    PCOUPLING_EFFICIENCY,
+    PCOUPLING_LIFETIME,
+    PCOUPLING_OVERSIZE_FACTOR,
+    PRICE_FUEL,
+    PROJECT_COST_INVESTMENT,
+    PROJECT_COST_OPEX,
+    PROJECT_LIFETIME,
+    PV_BATCH,
+    PV_COST_INVESTMENT,
+    PV_COST_OPEX,
+    PV_COST_VAR,
+    PV_LIFETIME,
+    RECTIFIER_AC_DC_BATCH,
+    RECTIFIER_AC_DC_COST_INVESTMENT,
+    RECTIFIER_AC_DC_COST_OPEX,
+    RECTIFIER_AC_DC_COST_VAR,
+    RECTIFIER_AC_DC_EFFICIENCY,
+    RECTIFIER_AC_DC_LIFETIME,
+    SHORTAGE_MAX_ALLOWED,
+    SHORTAGE_MAX_TIMESTEP,
+    SHORTAGE_PENALTY_COST,
+    SHORTAGE_LIMIT,
+    SHORTAGE_BATCH_CAPACITY,
+    SHORTAGE_BATCH_POWER,
+    SHORTAGE_CAPACITY_COST_INVESTMENT,
+    SHORTAGE_CAPACITY_COST_OPEX,
+    STORAGE_CAPACITY_LIFETIME,
+    STORAGE_COST_VAR,
+    STORAGE_CRATE_CHARGE,
+    STORAGE_CRATE_DISCHARGE,
+    STORAGE_EFFICIENCY_CHARGE,
+    STORAGE_EFFICIENCY_DISCHARGE,
+    STORAGE_LOSS_TIMESTEP,
+    STORAGE_POWER_COST_INVESTMENT,
+    STORAGE_POWER_COST_OPEX,
+    STORAGE_POWER_LIFETIME,
+    STORAGE_SOC_MAX,
+    STORAGE_SOC_MIN,
+    TAX,
+    WACC,
+    WHITE_NOISE_DEMAND,
+    WHITE_NOISE_PV,
+    WHITE_NOISE_WIND,
+    WIND_BATCH,
+    WIND_COST_INVESTMENT,
+    WIND_COST_OPEX,
+    WIND_COST_VAR,
+    WIND_LIFETIME,
+    FUEL_PRICE,
+    FUEL_PRICE_CHANGE_ANNUAL,
+    CASE,
+    RESULTS_DEMAND_CHARACTERISTICS,
+    RESULTS_BLACKOUT_CHARACTERISTICS,
+    CAPACITY_INVERTER_KW,
+    LCOE,
+    ANNUITY,
+    NPV,
+    SUPPLY_RELIABILITY_KWH,
+    RES_SHARE,
+    AUTONOMY_FACTOR,
+    TOTAL_DEMAND_ANNUAL_KWH,
+    DEMAND_PEAK_KW,
+    TOTAL_DEMAND_SUPPLIED_ANNUAL_KWH,
+    TOTAL_DEMAND_SHORTAGE_ANNUAL_KWH,
+    NATIONAL_GRID_RELIABILITY_H,
+    NATIONAL_GRID_TOTAL_BLACKOUT_DURATION,
+    NATIONAL_GRID_NUMBER_OF_BLACKOUTS,
+    TOTAL_PV_GENERATION_KWH,
+    TOTAL_WIND_GENERATION_KWH,
+    TOTAL_GENSET_GENERATION_KWH,
+    CONSUMPTION_FUEL_ANNUAL_L,
+    CONSUMPTION_MAIN_GRID_MG_SIDE_ANNUAL_KWH,
+    FEEDIN_MAIN_GRID_MG_SIDE_ANNUAL_KWH,
+    RESULTS_ANNUITIES,
+    ANNUITY_PV,
+    ANNUITY_STORAGE,
+    ANNUITY_RECTIFIER_AC_DC,
+    ANNUITY_INVERTER_DC_AC,
+    ANNUITY_WIND,
+    ANNUITY_GENSET,
+    ANNUITY_PCOUPLING,
+    ANNUITY_DISTRIBUTION_GRID,
+    ANNUITY_PROJECT,
+    ANNUITY_MAINGRID_EXTENSION,
+    EXPENDITURES_FUEL_ANNUAL,
+    EXPENDITURES_MAIN_GRID_CONSUMPTION_ANNUAL,
+    EXPENDITURES_SHORTAGE_ANNUAL,
+    REVENUE_MAIN_GRID_FEEDIN_ANNUAL,
+    RESULTS_COSTS,
+    COSTS_PV,
+    COSTS_STORAGE,
+    COSTS_RECTIFIER_AC_DC,
+    COSTS_INVERTER_DC_AC,
+    COSTS_WIND,
+    COSTS_GENSET,
+    COSTS_PCOUPLING,
+    COSTS_DISTRIBUTION_GRID,
+    COSTS_PROJECT,
+    FIRST_INVESTMENT,
+    OPERATION_MAINTAINANCE_EXPENDITURES,
+    COSTS_MAINGRID_EXTENSION,
+    EXPENDITURES_FUEL_TOTAL,
+    EXPENDITURES_MAIN_GRID_CONSUMPTION_TOTAL,
+    EXPENDITURES_SHORTAGE_TOTAL,
+    REVENUE_MAIN_GRID_FEEDIN_TOTAL,
+    OBJECTIVE_VALUE,
+    SIMULATION_TIME,
+    EVALUATION_TIME,
+    FILENAME,
+    COMMENTS,
+    CAPACITY_PCOUPLING_KW,
+    DEMAND_AC,
+    DEMAND_DC,
+    PV_GENERATION_PER_KWP,
+    WIND_GENERATION_PER_KW,
+    GRID_AVAILABILITY,
+    OUTPUT_FOLDER,
+    CAPACITY_PV_KWP,
+    CAPACITY_STORAGE_KWH,
+    POWER_STORAGE_KW,
+    CAPACITY_RECTIFIER_AC_DC_KW,
+    CAPACITY_WIND_KW,
+    CAPACITY_GENSET_KW,
+    CO2_EMISSIONS_KGC02EQ, TOTAL_EXCESS_ANNUAL_KWH, CONSUMPTION_FUEL_ANNUAL_KWH, SENSITIVITY_EXPERIMENTS_CSV)
+
 # Generate names for blackout sensitivity_experiment_s, used in sensitivity.blackoutexperiments and in maintool
 def get_blackout_experiment_name(blackout_experiment):
     blackout_experiment_name = (
         "blackout_dur"
         + "_"
-        + str(round(float(blackout_experiment["blackout_duration"]), 3))
+        + str(round(float(blackout_experiment[BLACKOUT_DURATION]), 3))
         + "_"
         + "dur_dev"
         + "_"
-        + str(round(float(blackout_experiment["blackout_duration_std_deviation"]), 3))
+        + str(round(float(blackout_experiment[BLACKOUT_DURATION_STD_DEVIATION]), 3))
         + "_"
         + "freq"
         + "_"
-        + str(round(float(blackout_experiment["blackout_frequency"]), 3))
+        + str(round(float(blackout_experiment[BLACKOUT_FREQUENCY]), 3))
         + "_"
         + "freq_dev"
         + "_"
-        + str(round(float(blackout_experiment["blackout_frequency_std_deviation"]), 3))
+        + str(round(float(blackout_experiment[BLACKOUT_FREQUENCY_STD_DEVIATION]), 3))
     )
     return blackout_experiment_name
 
@@ -41,7 +212,7 @@ def get(settings, parameters_constant_values, parameters_sensitivity, project_si
     #######################################################
     # Get sensitivity_experiment_s for sensitivity analysis            #
     #######################################################
-    if settings["sensitivity_all_combinations"] == True:
+    if settings[SENSITIVITY_ALL_COMBINATIONS] == True:
         (
             sensitivitiy_experiment_s,
             number_of_project_sites,
@@ -51,7 +222,7 @@ def get(settings, parameters_constant_values, parameters_sensitivity, project_si
             settings, parameters_constant_values, parameters_sensitivity, project_sites,
         )
 
-    elif settings["sensitivity_all_combinations"] == False:
+    elif settings[SENSITIVITY_ALL_COMBINATIONS] == False:
         (
             sensitivitiy_experiment_s,
             number_of_project_sites,
@@ -63,7 +234,7 @@ def get(settings, parameters_constant_values, parameters_sensitivity, project_si
 
     else:
         logging.warning(
-            'Setting "sensitivity_all_combinations" not valid! Has to be TRUE or FALSE.'
+            "Setting SENSITIVITY_ALL_COMBINATIONS not valid! Has to be TRUE or FALSE."
         )
 
     names_sensitivities = [key for key in sensitivity_array_dict.keys()]
@@ -82,14 +253,14 @@ def get(settings, parameters_constant_values, parameters_sensitivity, project_si
         # scaling demand according to scaling factor - used for tests regarding tool application
         sensitivitiy_experiment_s[experiment].update(
             {
-                "demand_ac": sensitivitiy_experiment_s[experiment]["demand_ac"]
-                * sensitivitiy_experiment_s[experiment]["demand_ac_scaling_factor"]
+                DEMAND_AC: sensitivitiy_experiment_s[experiment][DEMAND_AC]
+                * sensitivitiy_experiment_s[experiment][DEMAND_AC_SCALING_FACTOR]
             }
         )
         sensitivitiy_experiment_s[experiment].update(
             {
-                "demand_dc": sensitivitiy_experiment_s[experiment]["demand_dc"]
-                * sensitivitiy_experiment_s[experiment]["demand_dc_scaling_factor"]
+                DEMAND_DC: sensitivitiy_experiment_s[experiment][DEMAND_DC]
+                * sensitivitiy_experiment_s[experiment][DEMAND_DC_SCALING_FACTOR]
             }
         )
 
@@ -102,11 +273,11 @@ def get(settings, parameters_constant_values, parameters_sensitivity, project_si
             number_of_project_sites,
         )
 
-        if "comments" not in sensitivitiy_experiment_s[experiment]:
-            sensitivitiy_experiment_s[experiment].update({"comments": ""})
+        if COMMENTS not in sensitivitiy_experiment_s[experiment]:
+            sensitivitiy_experiment_s[experiment].update({COMMENTS: ""})
 
-        if sensitivitiy_experiment_s[experiment]["storage_soc_initial"] == "None":
-            sensitivitiy_experiment_s[experiment].update({"storage_soc_initial": None})
+        if sensitivitiy_experiment_s[experiment][STORAGE_SOC_INITIAL] == "None":
+            sensitivitiy_experiment_s[experiment].update({STORAGE_SOC_INITIAL: None})
     #######################################################
     # Get blackout_experiment_s for sensitvitiy           #
     #######################################################
@@ -119,11 +290,11 @@ def get(settings, parameters_constant_values, parameters_sensitivity, project_si
     csv_dict = deepcopy(sensitivitiy_experiment_s)
     # delete timeseries to make file readable
     timeseries_names = [
-        "demand_ac",
-        "demand_dc",
-        "pv_generation_per_kWp",
-        "wind_generation_per_kW",
-        "grid_availability",
+        DEMAND_AC,
+        DEMAND_DC,
+        PV_GENERATION_PER_KWP,
+        WIND_GENERATION_PER_KW,
+        GRID_AVAILABILITY,
     ]
     for entry in csv_dict:
         for series in timeseries_names:
@@ -132,17 +303,17 @@ def get(settings, parameters_constant_values, parameters_sensitivity, project_si
 
     experiments_dataframe = pd.DataFrame.from_dict(csv_dict, orient="index")
     experiments_dataframe.to_csv(
-        settings["output_folder"] + "/simulation_experiments.csv"
+        settings[OUTPUT_FOLDER] + "/simulation_experiments.csv"
     )
 
     for item in experiments_dataframe.columns:
         if (item not in parameters_sensitivity.keys()) and (
-            item not in ["project_site_name"]
+            item not in [PROJECT_SITE_NAME]
         ):
             experiments_dataframe = experiments_dataframe.drop(columns=item)
 
     experiments_dataframe.to_csv(
-        settings["output_folder"] + "/sensitivity_experiments.csv"
+        settings[OUTPUT_FOLDER] + SENSITIVITY_EXPERIMENTS_CSV
     )
 
     # Generate a overall title of the oemof-results DataFrame
@@ -164,7 +335,7 @@ def get(settings, parameters_constant_values, parameters_sensitivity, project_si
 
     logging.info(message)
 
-    settings.update({"total_number_of_experiments": total_number_of_experiments})
+    settings.update({TOTAL_NUMBER_OF_EXPERIMENTS: total_number_of_experiments})
 
     return (
         sensitivitiy_experiment_s,
@@ -194,7 +365,7 @@ def all_possible(
         parameters_sensitivity, project_site_s
     )
 
-    project_site_dict = {"project_site_name": [key for key in project_site_s.keys()]}
+    project_site_dict = {PROJECT_SITE_NAME: [key for key in project_site_s.keys()]}
     (
         sensitivity_experiment_s,
         total_number_of_experiments,
@@ -204,9 +375,7 @@ def all_possible(
         sensitivity_experiment_s[experiment].update(deepcopy(universal_parameters))
         sensitivity_experiment_s[experiment].update(
             deepcopy(
-                project_site_s[
-                    sensitivity_experiment_s[experiment]["project_site_name"]
-                ]
+                project_site_s[sensitivity_experiment_s[experiment][PROJECT_SITE_NAME]]
             )
         )
 
@@ -251,25 +420,25 @@ def blackout(sensitivity_array_dict, parameters_constants, settings):
     blackout_parameters = deepcopy(sensitivity_array_dict)
     for parameter in sensitivity_array_dict:
         if (
-            parameter != "blackout_duration"
-            and parameter != "blackout_frequency"
-            and parameter != "blackout_duration_std_deviation"
-            and parameter != "blackout_frequency_std_deviation"
+            parameter != BLACKOUT_DURATION
+            and parameter != BLACKOUT_FREQUENCY
+            and parameter != BLACKOUT_DURATION_STD_DEVIATION
+            and parameter != BLACKOUT_FREQUENCY_STD_DEVIATION
         ):
             del blackout_parameters[parameter]
 
     blackout_constants = deepcopy(parameters_constants)
     for parameter in parameters_constants:
         if (
-            parameter != "blackout_duration"
-            and parameter != "blackout_frequency"
-            and parameter != "blackout_duration_std_deviation"
-            and parameter != "blackout_frequency_std_deviation"
+            parameter != BLACKOUT_DURATION
+            and parameter != BLACKOUT_FREQUENCY
+            and parameter != BLACKOUT_DURATION_STD_DEVIATION
+            and parameter != BLACKOUT_FREQUENCY_STD_DEVIATION
             and parameter not in sensitivity_array_dict
         ):
             del blackout_constants[parameter]
 
-    if settings["sensitivity_all_combinations"] == True:
+    if settings[SENSITIVITY_ALL_COMBINATIONS] == True:
         (
             blackout_experiment_s,
             blackout_experiments_count,
@@ -279,7 +448,7 @@ def blackout(sensitivity_array_dict, parameters_constants, settings):
                 deepcopy(blackout_constants)
             )
 
-    elif settings["sensitivity_all_combinations"] == False:
+    elif settings[SENSITIVITY_ALL_COMBINATIONS] == False:
         blackout_experiment_s = {}
         blackout_experiments_count = 0
         defined_base = False
@@ -323,7 +492,7 @@ def blackout(sensitivity_array_dict, parameters_constants, settings):
 
     else:
         logging.warning(
-            'Setting "sensitivity_all_combinations" not valid! Has to be TRUE or FALSE.'
+            "Setting SENSITIVITY_ALL_COMBINATIONS not valid! Has to be TRUE or FALSE."
         )
 
     # define file item to save simulation / get grid availabilities
@@ -332,7 +501,7 @@ def blackout(sensitivity_array_dict, parameters_constants, settings):
             blackout_experiment_s[blackout_experiment]
         )
         blackout_experiment_s[blackout_experiment].update(
-            {"experiment_name": blackout_experiment_name}
+            {EXPERIMENT_NAME: blackout_experiment_name}
         )
 
     # delete all doubled entries -> could also be applied to experiments!
@@ -343,8 +512,8 @@ def blackout(sensitivity_array_dict, parameters_constants, settings):
 
             if (
                 i != e
-                and experiment_copy[i]["experiment_name"]
-                == experiment_copy[e]["experiment_name"]
+                and experiment_copy[i][EXPERIMENT_NAME]
+                == experiment_copy[e][EXPERIMENT_NAME]
             ):
                 if i in blackout_experiment_s and e in blackout_experiment_s:
                     del blackout_experiment_s[e]
@@ -377,18 +546,18 @@ def get_dict_sensitivies_arrays(parameters_sensitivity, project_sites):
     # ! do not use a key two times, as it will be overwritten by new information
     sensitivity_array_dict = {}
     for keys in parameters_sensitivity:
-        if parameters_sensitivity[keys]["Min"] == parameters_sensitivity[keys]["Max"]:
+        if parameters_sensitivity[keys][MIN] == parameters_sensitivity[keys][MAX]:
             sensitivity_array_dict.update(
-                {keys: np.array([parameters_sensitivity[keys]["Min"]])}
+                {keys: np.array([parameters_sensitivity[keys][MIN]])}
             )
         else:
             sensitivity_array_dict.update(
                 {
                     keys: np.arange(
-                        parameters_sensitivity[keys]["Min"],
-                        parameters_sensitivity[keys]["Max"]
-                        + parameters_sensitivity[keys]["Step"] / 2,
-                        parameters_sensitivity[keys]["Step"],
+                        parameters_sensitivity[keys][MIN],
+                        parameters_sensitivity[keys][MAX]
+                        + parameters_sensitivity[keys][STEP] / 2,
+                        parameters_sensitivity[keys][STEP],
                     )
                 }
             )
@@ -433,7 +602,7 @@ def get_combinations_around_base(
                 {experiment_number: deepcopy(universal_parameters)}
             )
             sensitivity_experiment_s[experiment_number].update(
-                {"project_site_name": project_site}
+                {PROJECT_SITE_NAME: project_site}
             )
             sensitivity_experiment_s[experiment_number].update(
                 deepcopy(project_site_s[project_site])
@@ -461,7 +630,7 @@ def get_combinations_around_base(
                             {experiment_number: deepcopy(universal_parameters)}
                         )
                         sensitivity_experiment_s[experiment_number].update(
-                            {"project_site_name": project_site}
+                            {PROJECT_SITE_NAME: project_site}
                         )
                         sensitivity_experiment_s[experiment_number].update(
                             deepcopy(project_site_s[project_site])
@@ -484,14 +653,14 @@ def get_combinations_around_base(
                             {key: key_value}
                         )
                         sensitivity_experiment_s[experiment_number].update(
-                            {"project_site_name": project_site}
+                            {PROJECT_SITE_NAME: project_site}
                         )
                         sensitivity_experiment_s[experiment_number].update(
                             deepcopy(project_site_s[project_site])
                         )
                         defined_base = True
                         sensitivity_experiment_s[experiment_number].update(
-                            {"comments": "Base case, "}
+                            {COMMENTS: "Base case, "}
                         )
 
     total_number_of_experiments = experiment_number
@@ -509,7 +678,7 @@ def project_site_experiments(sensitivity_experiment_s, project_sites):
             {number_of_experiments: deepcopy(sensitivity_experiment_s[experiment])}
         )
         experiment_s[number_of_experiments].update(
-            deepcopy(project_sites[experiment_s[experiment]["project_site_name"]])
+            deepcopy(project_sites[experiment_s[experiment][PROJECT_SITE_NAME]])
         )
 
     return experiment_s, number_of_experiments
@@ -519,10 +688,10 @@ def experiment_name(experiment, sensitivity_array_dict, number_of_project_sites)
     # define file postfix to save simulation
     filename = "_s"
     if number_of_project_sites > 1:
-        if isinstance(experiment["project_site_name"], str):
-            filename = filename + "_" + experiment["project_site_name"]
+        if isinstance(experiment[PROJECT_SITE_NAME], str):
+            filename = filename + "_" + experiment[PROJECT_SITE_NAME]
         else:
-            filename = filename + "_" + str(experiment["project_site_name"])
+            filename = filename + "_" + str(experiment[PROJECT_SITE_NAME])
     else:
         filename = filename
 
@@ -544,7 +713,7 @@ def experiment_name(experiment, sensitivity_array_dict, number_of_project_sites)
     # is no sensitivity analysis performed, do not add filename
     if filename == "_s":
         filename = ""
-    experiment.update({"filename": filename})
+    experiment.update({FILENAME: filename})
     return
 
 
@@ -611,102 +780,102 @@ def constants_senstivity(parameters_constant_values, parameters_sensitivity):
 
 def test_techno_economical_parameters_complete(experiment):
     parameter_list = {
-        "blackout_duration": 0,
-        "blackout_duration_std_deviation": 0,
-        "blackout_frequency": 0,
-        "blackout_frequency_std_deviation": 0,
-        "combustion_value_fuel": 9.8,
-        "demand_ac_scaling_factor": 1,
-        "demand_dc_scaling_factor": 1,
-        "distribution_grid_cost_investment": 0,
-        "distribution_grid_cost_opex": 0,
-        "distribution_grid_lifetime": 0,
+        BLACKOUT_DURATION: 0,
+        BLACKOUT_DURATION_STD_DEVIATION: 0,
+        BLACKOUT_FREQUENCY: 0,
+        BLACKOUT_FREQUENCY_STD_DEVIATION: 0,
+        COMBUSTION_VALUE_FUEL: 9.8,
+        DEMAND_AC_SCALING_FACTOR: 1,
+        DEMAND_DC_SCALING_FACTOR: 1,
+        DISTRIBUTION_GRID_COST_INVESTMENT: 0,
+        DISTRIBUTION_GRID_COST_OPEX: 0,
+        DISTRIBUTION_GRID_LIFETIME: 0,
         #'fuel_price': 0.76,
         #'fuel_price_change_annual': 0,
-        "genset_batch": 1,
-        "genset_cost_investment": 0,
-        "genset_cost_opex": 0,
-        "genset_cost_var": 0,
-        "genset_efficiency": 0.33,
-        "genset_lifetime": 15,
-        "genset_max_loading": 1,
-        "genset_min_loading": 0,
-        "genset_oversize_factor": 1.2,
-        "inverter_dc_ac_batch": 1,
-        "inverter_dc_ac_cost_investment": 0,
-        "inverter_dc_ac_cost_opex": 0,
-        "inverter_dc_ac_cost_var": 0,
-        "inverter_dc_ac_efficiency": 1,
-        "inverter_dc_ac_lifetime": 15,
-        "maingrid_distance": 0,
-        "maingrid_electricity_price": 0.15,
-        "maingrid_extension_cost_investment": 0,
-        "maingrid_extension_cost_opex": 0,
-        "maingrid_extension_lifetime": 40,
-        "maingrid_feedin_tariff": 0,
-        "maingrid_renewable_share": 0,
-        "min_renewable_share": 0,
-        "pcoupling_batch": 1,
-        "pcoupling_cost_investment": 0,
-        "pcoupling_cost_opex": 0,
-        "pcoupling_cost_var": 0,
-        "pcoupling_efficiency": 1,
-        "pcoupling_lifetime": 15,
-        "pcoupling_oversize_factor": 1.05,
-        "price_fuel": 0.76,
-        "project_cost_investment": 0,
-        "project_cost_opex": 0,
-        "project_lifetime": 20,
-        "pv_batch": 1,
-        "pv_cost_investment": 0,
-        "pv_cost_opex": 0,
-        "pv_cost_var": 0,
-        "pv_lifetime": 20,
-        "rectifier_ac_dc_batch": 1,
-        "rectifier_ac_dc_cost_investment": 0,
-        "rectifier_ac_dc_cost_opex": 0,
-        "rectifier_ac_dc_cost_var": 0,
-        "rectifier_ac_dc_efficiency": 1,
-        "rectifier_ac_dc_lifetime": 15,
-        "shortage_max_allowed": 0,
-        "shortage_max_timestep": 1,
-        "shortage_penalty_costs": 0.2,
-        "stability_limit": 0.4,
-        "storage_batch_capacity": 1,
-        "storage_batch_power": 1,
-        "storage_capacity_cost_investment": 0,
-        "storage_capacity_cost_opex": 0,
-        "storage_capacity_lifetime": 5,
-        "storage_cost_var": 0,
-        "storage_Crate_charge": 1,
-        "storage_Crate_discharge": 1,
-        "storage_efficiency_charge": 0.8,
-        "storage_efficiency_discharge": 1,
-        "storage_loss_timestep": 0,
-        "storage_power_cost_investment": 0,
-        "storage_power_cost_opex": 0,
-        "storage_power_lifetime": 5,
-        "storage_soc_initial": None,
-        "storage_soc_max": 0.95,
-        "storage_soc_min": 0.3,
-        "tax": 0,
-        "wacc": 0.09,
-        "white_noise_demand": 0,
-        "white_noise_pv": 0,
-        "white_noise_wind": 0,
-        "wind_batch": 1,
-        "wind_cost_investment": 0,
-        "wind_cost_opex": 0,
-        "wind_cost_var": 0,
-        "wind_lifetime": 15,
+        GENSET_BATCH: 1,
+        GENSET_COST_INVESTMENT: 0,
+        GENSET_COST_OPEX: 0,
+        GENSET_COST_VAR: 0,
+        GENSET_EFFICIENCY: 0.33,
+        GENSET_LIFETIME: 15,
+        GENSET_MAX_LOADING: 1,
+        GENSET_MIN_LOADING: 0,
+        GENSET_OVERSIZE_FACTOR: 1.2,
+        INVERTER_DC_AC_BATCH: 1,
+        INVERTER_DC_AC_COST_INVESTMENT: 0,
+        INVERTER_DC_AC_COST_OPEX: 0,
+        INVERTER_DC_AC_COST_VAR: 0,
+        INVERTER_DC_AC_EFFICIENCY: 1,
+        INVERTER_DC_AC_LIFETIME: 15,
+        MAINGRID_DISTANCE: 0,
+        MAINGRID_ELECTRICITY_PRICE: 0.15,
+        MAINGRID_EXTENSION_COST_INVESTMENT: 0,
+        MAINGRID_EXTENSION_COST_OPEX: 0,
+        MAINGRID_EXTENSION_LIFETIME: 40,
+        MAINGRID_FEEDIN_TARIFF: 0,
+        MAINGRID_RENEWABLE_SHARE: 0,
+        MIN_RENEWABLE_SHARE: 0,
+        PCOUPLING_BATCH: 1,
+        PCOUPLING_COST_INVESTMENT: 0,
+        PCOUPLING_COST_OPEX: 0,
+        PCOUPLING_COST_VAR: 0,
+        PCOUPLING_EFFICIENCY: 1,
+        PCOUPLING_LIFETIME: 15,
+        PCOUPLING_OVERSIZE_FACTOR: 1.05,
+        PRICE_FUEL: 0.76,
+        PROJECT_COST_INVESTMENT: 0,
+        PROJECT_COST_OPEX: 0,
+        PROJECT_LIFETIME: 20,
+        PV_BATCH: 1,
+        PV_COST_INVESTMENT: 0,
+        PV_COST_OPEX: 0,
+        PV_COST_VAR: 0,
+        PV_LIFETIME: 20,
+        RECTIFIER_AC_DC_BATCH: 1,
+        RECTIFIER_AC_DC_COST_INVESTMENT: 0,
+        RECTIFIER_AC_DC_COST_OPEX: 0,
+        RECTIFIER_AC_DC_COST_VAR: 0,
+        RECTIFIER_AC_DC_EFFICIENCY: 1,
+        RECTIFIER_AC_DC_LIFETIME: 15,
+        SHORTAGE_MAX_ALLOWED: 0,
+        SHORTAGE_MAX_TIMESTEP: 1,
+        SHORTAGE_PENALTY_COST: 0.2,
+        SHORTAGE_LIMIT: 0.4,
+        SHORTAGE_BATCH_CAPACITY: 1,
+        SHORTAGE_BATCH_POWER: 1,
+        SHORTAGE_CAPACITY_COST_INVESTMENT: 0,
+        SHORTAGE_CAPACITY_COST_OPEX: 0,
+        STORAGE_CAPACITY_LIFETIME: 5,
+        STORAGE_COST_VAR: 0,
+        STORAGE_CRATE_CHARGE: 1,
+        STORAGE_CRATE_DISCHARGE: 1,
+        STORAGE_EFFICIENCY_CHARGE: 0.8,
+        STORAGE_EFFICIENCY_DISCHARGE: 1,
+        STORAGE_LOSS_TIMESTEP: 0,
+        STORAGE_POWER_COST_INVESTMENT: 0,
+        STORAGE_POWER_COST_OPEX: 0,
+        STORAGE_POWER_LIFETIME: 5,
+        STORAGE_SOC_INITIAL: None,
+        STORAGE_SOC_MAX: 0.95,
+        STORAGE_SOC_MIN: 0.3,
+        TAX: 0,
+        WACC: 0.09,
+        WHITE_NOISE_DEMAND: 0,
+        WHITE_NOISE_PV: 0,
+        WHITE_NOISE_WIND: 0,
+        WIND_BATCH: 1,
+        WIND_COST_INVESTMENT: 0,
+        WIND_COST_OPEX: 0,
+        WIND_COST_VAR: 0,
+        WIND_LIFETIME: 15,
     }
 
     for parameter in parameter_list:
         if parameter not in experiment:
             if (
-                (parameter == "price_fuel")
-                and ("fuel_price" in experiment)
-                and ("fuel_price_change_annual" in experiment)
+                (parameter == PRICE_FUEL)
+                and (FUEL_PRICE in experiment)
+                and (FUEL_PRICE_CHANGE_ANNUAL in experiment)
             ):
                 pass
             else:
@@ -728,7 +897,7 @@ def test_techno_economical_parameters_complete(experiment):
 
 def overall_results_title(settings, number_of_project_sites, sensitivity_array_dict):
     logging.debug("Generating header for results.csv")
-    title_overall_results = pd.DataFrame(columns=["case", "project_site_name"])
+    title_overall_results = pd.DataFrame(columns=[CASE, PROJECT_SITE_NAME])
 
     for keys in sensitivity_array_dict:
         title_overall_results = pd.concat(
@@ -740,14 +909,14 @@ def overall_results_title(settings, number_of_project_sites, sensitivity_array_d
             title_overall_results,
             pd.DataFrame(
                 columns=[
-                    "lcoe",
-                    "annuity",
-                    "npv",
-                    "supply_reliability_kWh",
-                    "res_share",
-                    "autonomy_factor",
-                    "co2_emissions_kgCO2eq",
-                    "total_excess_annual_kWh",
+                    LCOE,
+                    ANNUITY,
+                    NPV,
+                    SUPPLY_RELIABILITY_KWH,
+                    RES_SHARE,
+                    AUTONOMY_FACTOR,
+                    CO2_EMISSIONS_KGC02EQ,
+                    TOTAL_EXCESS_ANNUAL_KWH,
                 ]
             ),
         ],
@@ -755,16 +924,16 @@ def overall_results_title(settings, number_of_project_sites, sensitivity_array_d
         sort=False,
     )
 
-    if settings["results_demand_characteristics"] == True:
+    if settings[RESULTS_DEMAND_CHARACTERISTICS] == True:
         title_overall_results = pd.concat(
             [
                 title_overall_results,
                 pd.DataFrame(
                     columns=[
-                        "total_demand_annual_kWh",
-                        "demand_peak_kW",
-                        "total_demand_supplied_annual_kWh",
-                        "total_demand_shortage_annual_kWh",
+                        TOTAL_DEMAND_ANNUAL_KWH,
+                        DEMAND_PEAK_KW,
+                        TOTAL_DEMAND_SUPPLIED_ANNUAL_KWH,
+                        TOTAL_DEMAND_SHORTAGE_ANNUAL_KWH,
                     ]
                 ),
             ],
@@ -782,15 +951,15 @@ def overall_results_title(settings, number_of_project_sites, sensitivity_array_d
         'peak/mean_demand_ratio_dc'
         """
 
-    if settings["results_blackout_characteristics"] == True:
+    if settings[RESULTS_BLACKOUT_CHARACTERISTICS] == True:
         title_overall_results = pd.concat(
             [
                 title_overall_results,
                 pd.DataFrame(
                     columns=[
-                        "national_grid_reliability_h",
-                        "national_grid_total_blackout_duration",
-                        "national_grid_number_of_blackouts",
+                        NATIONAL_GRID_RELIABILITY_H,
+                        NATIONAL_GRID_TOTAL_BLACKOUT_DURATION,
+                        NATIONAL_GRID_NUMBER_OF_BLACKOUTS,
                     ]
                 ),
             ],
@@ -803,21 +972,21 @@ def overall_results_title(settings, number_of_project_sites, sensitivity_array_d
             title_overall_results,
             pd.DataFrame(
                 columns=[
-                    "capacity_pv_kWp",
-                    "capacity_storage_kWh",
-                    "power_storage_kW",
-                    "capacity_rectifier_ac_dc_kW",
-                    "capacity_inverter_dc_ac_kW",
-                    "capacity_wind_kW",
-                    "capacity_genset_kW",
-                    "capacity_pcoupling_kW",
-                    "total_pv_generation_kWh",
-                    "total_wind_generation_kWh",
-                    "total_genset_generation_kWh",
-                    "consumption_fuel_annual_kWh",
-                    "consumption_fuel_annual_l",
-                    "consumption_main_grid_mg_side_annual_kWh",
-                    "feedin_main_grid_mg_side_annual_kWh",
+                    CAPACITY_PV_KWP,
+                    CAPACITY_STORAGE_KWH,
+                    POWER_STORAGE_KW,
+                    CAPACITY_RECTIFIER_AC_DC_KW,
+                    CAPACITY_INVERTER_KW,
+                    CAPACITY_WIND_KW,
+                    CAPACITY_GENSET_KW,
+                    CAPACITY_PCOUPLING_KW,
+                    TOTAL_PV_GENERATION_KWH,
+                    TOTAL_WIND_GENERATION_KWH,
+                    TOTAL_GENSET_GENERATION_KWH,
+                    CONSUMPTION_FUEL_ANNUAL_KWH,
+                    CONSUMPTION_FUEL_ANNUAL_L,
+                    CONSUMPTION_MAIN_GRID_MG_SIDE_ANNUAL_KWH,
+                    FEEDIN_MAIN_GRID_MG_SIDE_ANNUAL_KWH,
                 ]
             ),
         ],
@@ -825,22 +994,22 @@ def overall_results_title(settings, number_of_project_sites, sensitivity_array_d
         sort=False,
     )
 
-    if settings["results_annuities"] == True:
+    if settings[RESULTS_ANNUITIES] == True:
         title_overall_results = pd.concat(
             [
                 title_overall_results,
                 pd.DataFrame(
                     columns=[
-                        "annuity_pv",
-                        "annuity_storage",
-                        "annuity_rectifier_ac_dc",
-                        "annuity_inverter_dc_ac",
-                        "annuity_wind",
-                        "annuity_genset",
-                        "annuity_pcoupling",
-                        "annuity_distribution_grid",
-                        "annuity_project",
-                        "annuity_maingrid_extension",
+                        ANNUITY_PV,
+                        ANNUITY_STORAGE,
+                        ANNUITY_RECTIFIER_AC_DC,
+                        ANNUITY_INVERTER_DC_AC,
+                        ANNUITY_WIND,
+                        ANNUITY_GENSET,
+                        ANNUITY_PCOUPLING,
+                        ANNUITY_DISTRIBUTION_GRID,
+                        ANNUITY_PROJECT,
+                        ANNUITY_MAINGRID_EXTENSION,
                     ]
                 ),
             ],
@@ -853,10 +1022,10 @@ def overall_results_title(settings, number_of_project_sites, sensitivity_array_d
             title_overall_results,
             pd.DataFrame(
                 columns=[
-                    "expenditures_fuel_annual",
-                    "expenditures_main_grid_consumption_annual",
-                    "expenditures_shortage_annual",
-                    "revenue_main_grid_feedin_annual",
+                    EXPENDITURES_FUEL_ANNUAL,
+                    EXPENDITURES_MAIN_GRID_CONSUMPTION_ANNUAL,
+                    EXPENDITURES_SHORTAGE_ANNUAL,
+                    REVENUE_MAIN_GRID_FEEDIN_ANNUAL,
                 ]
             ),
         ],
@@ -866,28 +1035,28 @@ def overall_results_title(settings, number_of_project_sites, sensitivity_array_d
 
     # Called costs because they include the operation, while they are also not the present value because
     # the variable costs are included in the oem
-    if settings["results_costs"] == True:
+    if settings[RESULTS_COSTS] == True:
         title_overall_results = pd.concat(
             [
                 title_overall_results,
                 pd.DataFrame(
                     columns=[
-                        "costs_pv",
-                        "costs_storage",
-                        "costs_rectifier_ac_dc",
-                        "costs_inverter_dc_ac",
-                        "costs_wind",
-                        "costs_genset",
-                        "costs_pcoupling",
-                        "costs_distribution_grid",
-                        "costs_project",
-                        "costs_maingrid_extension",
-                        "expenditures_fuel_total",
-                        "expenditures_main_grid_consumption_total",
-                        "expenditures_shortage_total",
-                        "revenue_main_grid_feedin_total",
-                        "first_investment",
-                        "operation_maintenance_expenditures",
+                        COSTS_PV,
+                        COSTS_STORAGE,
+                        COSTS_RECTIFIER_AC_DC,
+                        COSTS_INVERTER_DC_AC,
+                        COSTS_WIND,
+                        COSTS_GENSET,
+                        COSTS_PCOUPLING,
+                        COSTS_DISTRIBUTION_GRID,
+                        COSTS_PROJECT,
+                        FIRST_INVESTMENT,
+                        OPERATION_MAINTAINANCE_EXPENDITURES,
+                        COSTS_MAINGRID_EXTENSION,
+                        EXPENDITURES_FUEL_TOTAL,
+                        EXPENDITURES_MAIN_GRID_CONSUMPTION_TOTAL,
+                        EXPENDITURES_SHORTAGE_TOTAL,
+                        REVENUE_MAIN_GRID_FEEDIN_TOTAL,
                     ]
                 ),
             ],
@@ -900,11 +1069,11 @@ def overall_results_title(settings, number_of_project_sites, sensitivity_array_d
             title_overall_results,
             pd.DataFrame(
                 columns=[
-                    "objective_value",
-                    "simulation_time",
-                    "evaluation_time",
-                    "filename",
-                    "comments",
+                    OBJECTIVE_VALUE,
+                    SIMULATION_TIME,
+                    EVALUATION_TIME,
+                    FILENAME,
+                    COMMENTS,
                 ]
             ),
         ],

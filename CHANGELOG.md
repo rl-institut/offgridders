@@ -14,19 +14,20 @@ Here is a template for new release sections
 ### Changed
 -
 ### Removed
-- Try/Except clauses at module import (#103)
-
+-
 ### Fixed
 -
 ```
 ## [Unreleased]
 
 ### Added
--
+-Constant variables for strings in constants.py (#89)
+
 ### Changed
 -
 ### Removed
--
+-Constant variables for strings in constants.py (#89)
+
 ### Fixed
 -
 
@@ -165,4 +166,5 @@ Major changes:
 - 1 hr timesteps, 1 to 365 days evaluation time
 - All input data via excel sheet
 - Easy case definition
+
 

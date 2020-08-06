@@ -19,13 +19,28 @@ import src.E_blackouts_central_grid as central_grid
 import src.F_case_definitions as cases
 import src.G0_oemof_simulate as oemof_simulate
 import src.H0_multicriteria_analysis as multicriteria_analysis
+from src.constants import (
+    TOTAL_NUMBER_OF_EXPERIMENTS,
+    MAX_DATE_TIME_INDEX,
+    MAX_EVALUATED_DAYS,
+    NECESSITY_FOR_BLACKOUT_TIMESERIES_GENERATION,
+    GRID_AVAILABILITY,
+    PROJECT_SITE_NAME,
+    BASED_ON_CASE,
+    CASE_NAME,
+    OUTPUT_FOLDER,
+    EVALUATION_TIME,
+    CASE,
+    LCOE,
+    RES_SHARE,
+    MICRO_GRID_DESIGN_LOGFILE_LOG)
 
 
 def main():
     # Logging
     logger.define_logging(
         logpath="./",
-        logfile="micro_grid_design_logfile.log",
+        logfile=MICRO_GRID_DESIGN_LOGFILE_LOG,
         screen_level=logging.INFO,
         # screen_level=logging.DEBUG,
         file_level=logging.DEBUG,
@@ -86,7 +101,7 @@ def main():
 
     logging.info(
         "With these cases, a total of "
-        + str(settings["total_number_of_experiments"] * len(case_list))
+        + str(settings[TOTAL_NUMBER_OF_EXPERIMENTS] * len(case_list))
         + " simulations will be performed. \n"
     )
 
@@ -97,8 +112,8 @@ def main():
     max_date_time_index, max_evaluated_days = process_input.add_timeseries(
         sensitivity_experiment_s
     )
-    settings.update({"max_date_time_index": max_date_time_index})
-    settings.update({"max_evaluated_days": max_evaluated_days})
+    settings.update({MAX_DATE_TIME_INDEX: max_date_time_index})
+    settings.update({MAX_EVALUATED_DAYS: max_evaluated_days})
 
     # -----------Apply noise to timeseries of each experiment --------------------#
     # This results in unique timeseries for each experiment! For comparability    #
@@ -110,7 +125,7 @@ def main():
     process_input.apply_noise(sensitivity_experiment_s)  # Applies white noise
 
     # Calculation of grid_availability with randomized blackouts
-    if settings["necessity_for_blackout_timeseries_generation"] == True:
+    if settings[NECESSITY_FOR_BLACKOUT_TIMESERIES_GENERATION] == True:
         sensitivity_grid_availability, blackout_results = central_grid.get_blackouts(
             settings, blackout_experiment_s
         )
@@ -120,15 +135,13 @@ def main():
     # -----------------------------------------------------------------------------#
     # import all scripts necessary for loop
     experiment_count = 0
-    total_number_of_simulations = settings["total_number_of_experiments"] * len(
-        case_list
-    )
+    total_number_of_simulations = settings[TOTAL_NUMBER_OF_EXPERIMENTS] * len(case_list)
 
     for experiment in sensitivity_experiment_s:
 
         capacities_oem = {}
 
-        if "grid_availability" in sensitivity_experiment_s[experiment].keys():
+        if GRID_AVAILABILITY in sensitivity_experiment_s[experiment].keys():
             logging.debug(
                 "Using grid availability as included in timeseries file of project location."
             )
@@ -143,7 +156,7 @@ def main():
             )
             sensitivity_experiment_s[experiment].update(
                 {
-                    "grid_availability": sensitivity_grid_availability[
+                    GRID_AVAILABILITY: sensitivity_grid_availability[
                         blackout_experiment_name
                     ]
                 }
@@ -171,7 +184,7 @@ def main():
                 + specific_case
                 + ", "
                 + "project site "
-                + sensitivity_experiment_s[experiment]["project_site_name"]
+                + sensitivity_experiment_s[experiment][PROJECT_SITE_NAME]
                 + ", "
                 + "experiment no. "
                 + str(experiment_count)
@@ -186,19 +199,19 @@ def main():
             )
 
             # Extend base capacities for cases utilizing these values, only valid for specific experiment
-            if case_definitions[specific_case]["based_on_case"] == False:
+            if case_definitions[specific_case][BASED_ON_CASE] == False:
                 capacities_oem.update(
                     {
-                        experiment_case_dict[
-                            "case_name"
-                        ]: helpers.define_base_capacities(oemof_results)
+                        experiment_case_dict[CASE_NAME]: helpers.define_base_capacities(
+                            oemof_results
+                        )
                     }
                 )
 
             # Extend oemof_results by blackout characteristics
-            if "grid_availability" in sensitivity_experiment_s[experiment].keys():
+            if GRID_AVAILABILITY in sensitivity_experiment_s[experiment].keys():
                 blackout_result = central_grid.oemof_extension_for_blackouts(
-                    sensitivity_experiment_s[experiment]["grid_availability"]
+                    sensitivity_experiment_s[experiment][GRID_AVAILABILITY]
                 )
                 oemof_results = central_grid.extend_oemof_results(
                     oemof_results, blackout_result
@@ -214,7 +227,7 @@ def main():
             )
             # Writing DataFrame with all results to csv file
             overall_results.to_csv(
-                sensitivity_experiment_s[experiment]["output_folder"]
+                sensitivity_experiment_s[experiment][OUTPUT_FOLDER]
                 + "/"
                 + sensitivity_experiment_s[experiment]["output_file"]
                 + ".csv"
@@ -225,7 +238,7 @@ def main():
                 "    Estimated simulation time left: "
                 + str(
                     round(
-                        sum(overall_results["evaluation_time"][:])
+                        sum(overall_results[EVALUATION_TIME][:])
                         * (total_number_of_simulations - experiment_count)
                         / experiment_count
                         / 60,
@@ -241,9 +254,9 @@ def main():
             pp.pprint(sensitivity_experiment_s[experiment])
 
     # display all results
-    output_names = ["project_site_name", "case"]
+    output_names = [PROJECT_SITE_NAME, CASE]
     output_names.extend(names_sensitivities)
-    output_names.extend(["lcoe", "res_share"])
+    output_names.extend([LCOE, RES_SHARE])
     logging.info(
         '\n Simulation complete. Resulting parameters saved in "results.csv". \n Overview over results:'
     )
@@ -260,7 +273,7 @@ def main():
     logging.shutdown()
     path_from = os.path.abspath("./micro_grid_design_logfile.log")
     path_to = os.path.abspath(
-        settings["output_folder"] + "/micro_grid_design_logfile.log"
+        settings[OUTPUT_FOLDER] + "/micro_grid_design_logfile.log"
     )
     shutil.move(path_from, path_to)
 

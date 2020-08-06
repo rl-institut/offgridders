@@ -1,5 +1,18 @@
 import logging
 
+from src.constants import (
+    STORAGE_DISCHARGE,
+    STORAGE_CHARGE,
+    COMMENTS,
+    DEMAND_SUPPLIED,
+    DEMAND,
+    DEMAND_SHORTAGE,
+    CONSUMPTION_FROM_MAIN_GRID,
+    FEED_INTO_MAIN_GRID,
+    GRID_AVAILABILITY,
+    EXCESS_ELECTRICITY,
+    CAPACITY_PCC,
+)
 
 """
 e_flows_df can include columns with titles...
@@ -46,16 +59,13 @@ def run(oemof_results, e_flows_df):
 
 def charge_discharge(oemof_results, e_flows_df):
     logging.debug("Plausibility test: Charge/Discharge")
-    if (
-        "Storage discharge" in e_flows_df.columns
-        and "Storage charge" in e_flows_df.columns
-    ):
+    if STORAGE_DISCHARGE in e_flows_df.columns and STORAGE_CHARGE in e_flows_df.columns:
         boolean = True
 
         test = [
             (
-                e_flows_df["Storage discharge"][t] != 0
-                and e_flows_df["Storage charge"][t] == 0
+                e_flows_df[STORAGE_DISCHARGE][t] != 0
+                and e_flows_df[STORAGE_CHARGE][t] == 0
             )
             for t in e_flows_df.index
         ]
@@ -69,7 +79,7 @@ def charge_discharge(oemof_results, e_flows_df):
             )
             oemof_results.update(
                 {
-                    "comments": oemof_results["comments"]
+                    COMMENTS: oemof_results[COMMENTS]
                     + "Charge and discharge of batteries at the same time. "
                 }
             )
@@ -79,9 +89,9 @@ def charge_discharge(oemof_results, e_flows_df):
 def demand_supply_shortage(oemof_results, e_flows_df):
     logging.debug("Plausibility test: Demand/Supply/Shortage")
     if (
-        ("Demand supplied" in e_flows_df.columns)
-        and ("Demand" in e_flows_df.columns)
-        and ("Demand shortage" in e_flows_df.columns)
+        (DEMAND_SUPPLIED in e_flows_df.columns)
+        and (DEMAND in e_flows_df.columns)
+        and (DEMAND_SHORTAGE in e_flows_df.columns)
     ):
 
         boolean = True
@@ -89,13 +99,13 @@ def demand_supply_shortage(oemof_results, e_flows_df):
         test = [
             (
                 (
-                    e_flows_df["Demand supplied"][t] == e_flows_df["Demand"][t]
-                    and e_flows_df["Demand shortage"][t] == 0
+                    e_flows_df[DEMAND_SUPPLIED][t] == e_flows_df[DEMAND][t]
+                    and e_flows_df[DEMAND_SHORTAGE][t] == 0
                 )
                 or (
                     (
-                        e_flows_df["Demand supplied"][t] != e_flows_df["Demand"][t]
-                        and e_flows_df["Demand shortage"][t] != 0
+                        e_flows_df[DEMAND_SUPPLIED][t] != e_flows_df[DEMAND][t]
+                        and e_flows_df[DEMAND_SHORTAGE][t] != 0
                     )
                 )
             )
@@ -111,7 +121,7 @@ def demand_supply_shortage(oemof_results, e_flows_df):
             )
             oemof_results.update(
                 {
-                    "comments": oemof_results["comments"]
+                    COMMENTS: oemof_results[COMMENTS]
                     + "Demand not fully supplied but no shortage. "
                 }
             )
@@ -121,16 +131,16 @@ def demand_supply_shortage(oemof_results, e_flows_df):
 
 def feedin_consumption(oemof_results, e_flows_df):
     logging.debug("Plausibility test: Feedin/Consumption")
-    if ("Consumption from main grid" in e_flows_df.columns) and (
-        "Feed into main grid" in e_flows_df.columns
+    if (CONSUMPTION_FROM_MAIN_GRID in e_flows_df.columns) and (
+        FEED_INTO_MAIN_GRID in e_flows_df.columns
     ):
 
         boolean = True
 
         test = [
             (
-                e_flows_df["Consumption from main grid"][t] != 0
-                and e_flows_df["Feed into main grid"][t] != 0
+                e_flows_df[CONSUMPTION_FROM_MAIN_GRID][t] != 0
+                and e_flows_df[FEED_INTO_MAIN_GRID][t] != 0
             )
             for t in e_flows_df.index
         ]
@@ -144,7 +154,7 @@ def feedin_consumption(oemof_results, e_flows_df):
             )
             oemof_results.update(
                 {
-                    "comments": oemof_results["comments"]
+                    COMMENTS: oemof_results[COMMENTS]
                     + "Feedin to and consumption from national grid at the same time. "
                 }
             )
@@ -154,16 +164,16 @@ def feedin_consumption(oemof_results, e_flows_df):
 
 def gridavailability_feedin(oemof_results, e_flows_df):
     logging.debug("Plausibility test: Grid availability/Feedin")
-    if ("Consumption from main grid" in e_flows_df.columns) and (
-        "Feed into main grid" in e_flows_df.columns
+    if (CONSUMPTION_FROM_MAIN_GRID in e_flows_df.columns) and (
+        FEED_INTO_MAIN_GRID in e_flows_df.columns
     ):
 
         boolean = True
 
         test = [
             (
-                e_flows_df["Feed into main grid"][t] != 0
-                and e_flows_df["Grid availability"][t] == 0
+                e_flows_df[FEED_INTO_MAIN_GRID][t] != 0
+                and e_flows_df[GRID_AVAILABILITY][t] == 0
             )
             for t in e_flows_df.index
         ]
@@ -177,7 +187,7 @@ def gridavailability_feedin(oemof_results, e_flows_df):
             )
             oemof_results.update(
                 {
-                    "comments": oemof_results["comments"]
+                    COMMENTS: oemof_results[COMMENTS]
                     + "Feedin to national grid during blackout. "
                 }
             )
@@ -187,16 +197,16 @@ def gridavailability_feedin(oemof_results, e_flows_df):
 
 def gridavailability_consumption(oemof_results, e_flows_df):
     logging.debug("Plausibility test: Grid availability consumption")
-    if ("Consumption from main grid" in e_flows_df.columns) and (
-        "Grid availability" in e_flows_df.columns
+    if (CONSUMPTION_FROM_MAIN_GRID in e_flows_df.columns) and (
+        GRID_AVAILABILITY in e_flows_df.columns
     ):
 
         boolean = True
 
         test = [
             (
-                e_flows_df["Consumption from main grid"][t] != 0
-                and e_flows_df["Grid availability"][t] == 0
+                e_flows_df[CONSUMPTION_FROM_MAIN_GRID][t] != 0
+                and e_flows_df[GRID_AVAILABILITY][t] == 0
             )
             for t in e_flows_df.index
         ]
@@ -210,7 +220,7 @@ def gridavailability_consumption(oemof_results, e_flows_df):
             )
             oemof_results.update(
                 {
-                    "comments": oemof_results["comments"]
+                    COMMENTS: oemof_results[COMMENTS]
                     + "Consumption from national grid during blackout. "
                 }
             )
@@ -220,16 +230,16 @@ def gridavailability_consumption(oemof_results, e_flows_df):
 
 def excess_shortage(oemof_results, e_flows_df):
     logging.debug("Plausibility test: Excess/shortage")
-    if ("Excess electricity" in e_flows_df.columns) and (
-        "Demand shortage" in e_flows_df.columns
+    if (EXCESS_ELECTRICITY in e_flows_df.columns) and (
+        DEMAND_SHORTAGE in e_flows_df.columns
     ):
 
         boolean = True
 
         test = [
             (
-                e_flows_df["Excess electricity"][t] != 0
-                and e_flows_df["Demand shortage"][t] != 0
+                e_flows_df[EXCESS_ELECTRICITY][t] != 0
+                and e_flows_df[DEMAND_SHORTAGE][t] != 0
             )
             for t in e_flows_df.index
         ]
@@ -243,7 +253,7 @@ def excess_shortage(oemof_results, e_flows_df):
             )
             oemof_results.update(
                 {
-                    "comments": oemof_results["comments"]
+                    COMMENTS: oemof_results[COMMENTS]
                     + "Excess and shortage at the same time. "
                 }
             )
@@ -254,9 +264,9 @@ def excess_shortage(oemof_results, e_flows_df):
 def excess_feedin(oemof_results, e_flows_df):
     logging.debug("Plausibility test: Excess/Feedin")
     if (
-        ("Excess electricity" in e_flows_df.columns)
-        and ("Grid availability" in e_flows_df.columns)
-        and ("Feed into main grid" in e_flows_df.columns)
+        (EXCESS_ELECTRICITY in e_flows_df.columns)
+        and (GRID_AVAILABILITY in e_flows_df.columns)
+        and (FEED_INTO_MAIN_GRID in e_flows_df.columns)
     ):
 
         boolean = True
@@ -264,15 +274,15 @@ def excess_feedin(oemof_results, e_flows_df):
         test = [
             (
                 (
-                    (e_flows_df["Excess electricity"][t] != 0)
+                    (e_flows_df[EXCESS_ELECTRICITY][t] != 0)
                     and (
-                        e_flows_df["Feed into main grid"][t]
-                        != oemof_results["capacity pcc"][t]
+                        e_flows_df[FEED_INTO_MAIN_GRID][t]
+                        != oemof_results[CAPACITY_PCC][t]
                     )
                 )  # actual item!
                 or (
-                    (e_flows_df["Excess electricity"][t] != 0)
-                    and (e_flows_df["Grid availability"][t] == 0)
+                    (e_flows_df[EXCESS_ELECTRICITY][t] != 0)
+                    and (e_flows_df[GRID_AVAILABILITY][t] == 0)
                 )
             )
             for t in e_flows_df.index
@@ -286,10 +296,7 @@ def excess_feedin(oemof_results, e_flows_df):
                 "PLAUSABILITY TEST FAILED: Excess while feedin to national grid not maximal (PCC capacity)!"
             )
             oemof_results.update(
-                {
-                    "comments": oemof_results["comments"]
-                    + "Excess while feedin not maximal."
-                }
+                {COMMENTS: oemof_results[COMMENTS] + "Excess while feedin not maximal."}
             )
 
     return
