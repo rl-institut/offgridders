@@ -38,7 +38,7 @@ from src.constants import (
     OUTPUT_FOLDER,
     MAIN,
     META,
-)
+    SOLVER_VERBOSE, CMDLINE_OPTION, CMDLINE_OPTION_VALUE, SYMBOLIC_SOLVER_LABELS, OEMOF)
 
 
 def load_energysystem_lp():
@@ -485,10 +485,10 @@ def simulate(experiment, micro_grid_system, model, file_name):
     model.solve(
         solver=experiment[SOLVER],
         solve_kwargs={
-            "tee": experiment["solver_verbose"]
+            "tee": experiment[SOLVER_VERBOSE]
         },  # if tee_switch is true solver messages will be displayed
         cmdline_options={
-            experiment["cmdline_option"]: str(experiment["cmdline_option_value"])
+            experiment[CMDLINE_OPTION]: str(experiment[CMDLINE_OPTION_VALUE])
         },
     )  # ratioGap allowedGap mipgap
     logging.debug("Problem solved")
@@ -497,7 +497,7 @@ def simulate(experiment, micro_grid_system, model, file_name):
         logging.debug("Saving lp-file to folder.")
         model.write(
             experiment[OUTPUT_FOLDER] + "/lp_files/model_" + file_name + ".lp",
-            io_options={"symbolic_solver_labels": True},
+            io_options={SYMBOLIC_SOLVER_LABELS: True},
         )
 
     # add results to the energy system to make it possible to store them.
@@ -509,10 +509,10 @@ def simulate(experiment, micro_grid_system, model, file_name):
 def store_results(micro_grid_system, file_name, output_folder):
     # store energy system with results
     micro_grid_system.dump(
-        dpath=output_folder + "/oemof", filename=file_name + ".oemof"
+        dpath=output_folder + OEMOF, filename=file_name + ".oemof"
     )
     logging.debug(
-        "Stored results in " + output_folder + "/oemof" + "/" + file_name + ".oemof"
+        "Stored results in " + output_folder + OEMOF + "/" + file_name + ".oemof"
     )
     return micro_grid_system
 
@@ -521,6 +521,6 @@ def load_oemof_results(output_folder, file_name):
     logging.debug("Restore the energy system and the results.")
     micro_grid_system = solph.EnergySystem()
     micro_grid_system.restore(
-        dpath=output_folder + "/oemof", filename=file_name + ".oemof"
+        dpath=output_folder + OEMOF, filename=file_name + ".oemof"
     )
     return micro_grid_system

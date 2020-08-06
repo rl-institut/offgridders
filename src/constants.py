@@ -319,6 +319,13 @@ BUS_FUEL = "bus_fuel"
 PREFIX_RESULTS = "results_"
 SAVE_OEMOFRESULTS = "save_oemofresults"
 
+#G1_oemof_create_model
+SOLVER_VERBOSE = "solver_verbose"
+CMDLINE_OPTION = "cmdline_option"
+CMDLINE_OPTION_VALUE = "cmdline_option_value"
+SYMBOLIC_SOLVER_LABELS = "symbolic_solver_labels"
+OEMOF = "/oemof"
+
 # G2a_oemof_busses_and_components
 SOURCE_FUEL = "source_fuel"
 SOURCE_SHORTAGE = "source_shortage"

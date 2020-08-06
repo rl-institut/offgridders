@@ -46,7 +46,7 @@ from src.constants import (
     SAVE_TO_PNG_FLOWS_ELECTRICITY_MG,
     FILE_INDEX,
     EVALUATION_PERSPECTIVE, DEFAULT, AC_SYSTEM, DC_SYSTEM, SEPARATOR, GRID_AVAILABILITY_CSV,
-    FUEL_CO2_EMISSION_FACTOR, MAINGRID_CO2_EMISSION_FACTOR, INPUT_TEMPLATE_EXCEL_XLSX)
+    FUEL_CO2_EMISSION_FACTOR, MAINGRID_CO2_EMISSION_FACTOR, INPUT_TEMPLATE_EXCEL_XLSX, OEMOF)
 
 # requires xlrd
 
@@ -402,13 +402,13 @@ def check_output_directory(settings, input_excel_file):
     import shutil
 
     output_folder = settings[OUTPUT_FOLDER]
-    folder_list = ["/lp_files", "/storage", "/electricity_mg", "/inputs", "/oemof"]
+    folder_list = ["/lp_files", "/storage", "/electricity_mg", "/inputs", OEMOF]
 
     if os.path.isdir(output_folder) == True:
         # Empty folders with previous result, except oemof results if simulation restart
         for folder in folder_list:
             # Delete all folders. Special case: oemof folder
-            if folder == "/oemof" and os.path.isdir(output_folder + folder) == True:
+            if folder == OEMOF and os.path.isdir(output_folder + folder) == True:
                 # dont delete oemof folder if necessary for restoring results
                 if settings[RESTORE_OEMOF_IF_EXISTENT] == True:
                     pass
@@ -416,10 +416,10 @@ def check_output_directory(settings, input_excel_file):
                 else:
                     path_removed = os.path.abspath(output_folder + folder)
                     shutil.rmtree(path_removed, ignore_errors=True)
-                    os.mkdir(output_folder + "/oemof")
+                    os.mkdir(output_folder + OEMOF)
 
-            elif folder == "/oemof" and os.path.isdir(output_folder + folder) == False:
-                os.mkdir(output_folder + "/oemof")
+            elif folder == OEMOF and os.path.isdir(output_folder + folder) == False:
+                os.mkdir(output_folder + OEMOF)
 
             elif os.path.isdir(output_folder + folder):
                 path_removed = os.path.abspath(output_folder + folder)
@@ -437,7 +437,7 @@ def check_output_directory(settings, input_excel_file):
                     pass
     else:
         os.mkdir(output_folder)
-        os.mkdir(output_folder + "/oemof")
+        os.mkdir(output_folder + OEMOF)
 
     os.mkdir(output_folder + "/inputs")
 
