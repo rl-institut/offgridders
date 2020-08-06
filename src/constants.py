@@ -470,6 +470,7 @@ PARAMETER = "parameter"
 SHOW = "show"
 
 DIMENSIONS_W = "Dimensions"  # dimension_weights
+LOCAL = "local"
 
 # H1
 ECONOMIC = "economic"
