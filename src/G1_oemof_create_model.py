@@ -38,7 +38,7 @@ from src.constants import (
     OUTPUT_FOLDER,
     MAIN,
     META,
-    SOLVER_VERBOSE, CMDLINE_OPTION, CMDLINE_OPTION_VALUE, SYMBOLIC_SOLVER_LABELS, OEMOF)
+    SOLVER_VERBOSE, CMDLINE_OPTION, CMDLINE_OPTION_VALUE, SYMBOLIC_SOLVER_LABELS, OEMOF_FOLDER)
 
 
 def load_energysystem_lp():
@@ -509,10 +509,10 @@ def simulate(experiment, micro_grid_system, model, file_name):
 def store_results(micro_grid_system, file_name, output_folder):
     # store energy system with results
     micro_grid_system.dump(
-        dpath=output_folder + OEMOF, filename=file_name + ".oemof"
+        dpath=output_folder + OEMOF_FOLDER, filename=file_name + ".oemof"
     )
     logging.debug(
-        "Stored results in " + output_folder + OEMOF + "/" + file_name + ".oemof"
+        "Stored results in " + output_folder + OEMOF_FOLDER + "/" + file_name + ".oemof"
     )
     return micro_grid_system
 
@@ -521,6 +521,6 @@ def load_oemof_results(output_folder, file_name):
     logging.debug("Restore the energy system and the results.")
     micro_grid_system = solph.EnergySystem()
     micro_grid_system.restore(
-        dpath=output_folder + OEMOF, filename=file_name + ".oemof"
+        dpath=output_folder + OEMOF_FOLDER, filename=file_name + ".oemof"
     )
     return micro_grid_system
