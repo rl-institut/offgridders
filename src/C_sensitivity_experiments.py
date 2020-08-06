@@ -183,7 +183,8 @@ from src.constants import (
     CAPACITY_RECTIFIER_AC_DC_KW,
     CAPACITY_WIND_KW,
     CAPACITY_GENSET_KW,
-    CO2_EMISSIONS_KGC02EQ, TOTAL_EXCESS_ANNUAL_KWH, CONSUMPTION_FUEL_ANNUAL_KWH, SENSITIVITY_EXPERIMENTS_CSV)
+    CO2_EMISSIONS_KGC02EQ, TOTAL_EXCESS_ANNUAL_KWH, CONSUMPTION_FUEL_ANNUAL_KWH, SENSITIVITY_EXPERIMENTS_CSV,
+    SIMULATION_EXPERIMENTS_CSV)
 
 # Generate names for blackout sensitivity_experiment_s, used in sensitivity.blackoutexperiments and in maintool
 def get_blackout_experiment_name(blackout_experiment):
@@ -303,7 +304,7 @@ def get(settings, parameters_constant_values, parameters_sensitivity, project_si
 
     experiments_dataframe = pd.DataFrame.from_dict(csv_dict, orient="index")
     experiments_dataframe.to_csv(
-        settings[OUTPUT_FOLDER] + "/simulation_experiments.csv"
+        settings[OUTPUT_FOLDER] + SIMULATION_EXPERIMENTS_CSV
     )
 
     for item in experiments_dataframe.columns:
