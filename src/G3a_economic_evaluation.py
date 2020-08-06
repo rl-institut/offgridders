@@ -5,6 +5,12 @@
 import logging
 
 # Try to import matplotlib librar
+try:
+    import matplotlib.pyplot as plt
+except ImportError:
+    logging.warning("Attention! matplotlib could not be imported.")
+    plt = None
+
 from src.constants import (
     PCC_CONSUMPTION_FIXED_CAPACITY,
     PCC_FEEDIN_FIXED_CAPACITY,
@@ -84,11 +90,6 @@ from src.constants import (
     PREFIX_TOTAL, PREFIX_COSTS, FUEL_CO2_EMISSION_FACTOR, CONSUMPTION_MAIN_GRID_UTILITY_SIDE_ANNUAL_KWH,
     MAINGRID_CO2_EMISSION_FACTOR, INCLUDE_SHORTAGE_PENALTY_COSTS_IN_LCOE)
 
-try:
-    import matplotlib.pyplot as plt
-except ImportError:
-    logging.warning("Attention! matplotlib could not be imported.")
-    plt = None
 
 ###############################################################################
 #
