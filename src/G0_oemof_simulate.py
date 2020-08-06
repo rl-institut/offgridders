@@ -57,7 +57,7 @@ from src.constants import (
     CAPACITY_GENSET_KW,
     RES_SHARE,
     SUPPLY_RELIABILITY_KWH,
-    PREFIX_RESULTS)
+    PREFIX_RESULTS, SAVE_OEMOFRESULTS)
 
 # This is not really a necessary class, as the whole experiement could be given to the function, but it ensures, that
 # only correct input data is included
