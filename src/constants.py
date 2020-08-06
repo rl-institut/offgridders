@@ -285,6 +285,8 @@ GRID_NUMBER_OF_BLACKOUTS = "grid_number_of_blackouts"
 GRID_RELIABILITY = "grid_reliability"
 MAX_EVALUATED_DAYS = "max_evaluated_days"
 
+GRID_AVAILABILITY_CSV = "/grid_availability.csv"
+
 # F_case_definitions
 PEAK_DEMAND = "peak_demand"
 GENSET_WITH_MINIMAL_LOADING = "genset_with_minimal_loading"
