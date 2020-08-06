@@ -1,6 +1,7 @@
 import logging
 
 import src.H1_multicriteria_functions as multicriteria_functions
+
 from src.constants import (
     EVALUATIONS,
     NORMALIZED_EVALUATIONS,

@@ -5,6 +5,7 @@ Small scripts to keep the main file clean
 import pandas as pd
 import sys
 import logging
+import src.D1_economic_functions as economics
 
 import src.D1_economic_functions as economics
 
@@ -90,8 +91,8 @@ def list_of_cases(case_definitions):
 
         if len(case_list) == 0:
             logging.error(
-                "No cases defined to be simulated. \n "
-                "Did you set any PERFORM_SIMULATION=True in excel template, tab CASE_DEFINITIONS?"
+                f"No cases defined to be simulated. \n "
+                f"Did you set any {PERFORM_SIMULATION}=True in excel template, tab CASE_DEFINITIONS?"
             )
             sys.exit()
 
@@ -123,11 +124,11 @@ def economic_values(experiment):
         experiment.update({PRICE_FUEL: present_value_changing_fuel_price})
     else:
         logging.warning(
-            "You used decrepated value PRICE_FUEL in your excel input file. \n "
+            f"You used decrepated value {PRICE_FUEL} in your excel input file. \n "
             + "    "
             + "    "
             + "    "
-            + "This still works, but with values FUEL_PRICE and FUEL_PRICE_CHANGE_ANNUAL you could take into account price changes."
+            + f"This still works, but with values {FUEL_PRICE} and {FUEL_PRICE_CHANGE_ANNUAL} you could take into account price changes."
         )
 
     component_list = [
@@ -334,7 +335,7 @@ def add_timeseries(experiment_s):
                 )
 
         else:
-            logging.warning("Project site value FILE_INDEX neither None not non-None.")
+            logging.warning(f"Project site value {FILE_INDEX} neither None not non-None.")
 
         # Used for generation of lp file with only 3-timesteps = Useful to verify optimized equations
         if experiment_s[experiment][LP_FILE_FOR_ONLY_3_TIMESTEPS] == True:
