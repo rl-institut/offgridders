@@ -40,7 +40,7 @@ from src.constants import (
     OUTPUT_FOLDER,
     MAIN,
     META,
-    SOLVER_VERBOSE, CMDLINE_OPTION, CMDLINE_OPTION_VALUE, SYMBOLIC_SOLVER_LABELS, OEMOF_FOLDER)
+    SOLVER_VERBOSE, CMDLINE_OPTION, CMDLINE_OPTION_VALUE, SYMBOLIC_SOLVER_LABELS, OEMOF_FOLDER,CASE_DEFINITIONS)
 
 
 def load_energysystem_lp():
@@ -88,7 +88,7 @@ def build(experiment, case_dict):
                 + "    "
                 + "    "
                 + "    "
-                + "Please set GENSET_WITH_MINIMAL_LOADING=False for this case on tab CASE_DEFINITIONS in the excel template."
+                + f"Please set {GENSET_WITH_MINIMAL_LOADING}=False for this case on tab {CASE_DEFINITIONS} in the excel template."
             )
             sys.exit()
             # genset = generate.genset_oem_minload(micro_grid_system, bus_fuel, bus_electricity_ac, experiment, case_dict['number_of_equal_generators'])
