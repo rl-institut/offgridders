@@ -442,6 +442,14 @@ DISPLAY_MAIN = "display_main"
 DISPLAY_INVEST = "display_invest"
 
 SUFFIX_GRAPH = "_graph"
+BASE_OEM = "base_oem"
+BASE_OEM_WITH_MIN_LOADING = "base_oem_with_min_loading"
+SUFFIX_ELECTRICITY_MG_CSV = "_electricity_mg.csv"
+SUFFIX_ELECTRICITY_MG_PNG = "_electricity_mg.png"
+SUFFIX_ELECTRICITY_MG_4DAYS_PNG = "_electricity_mg_4days.png"
+SUFFIX_STORAGE_CSV = "_storage.csv"
+SUFFIX_STORAGE_PNG = "_storage.png"
+SUFFIX_STORAGE_4DAYS_PNG =  "_storage_4days.png"
 
 # H0
 CAPACITIES = "capacities"
