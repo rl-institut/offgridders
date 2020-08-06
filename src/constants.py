@@ -64,6 +64,12 @@ GRID_AVAILABILITY_CSV = "grid_availability.csv"
 
 INPUT_TEMPLATE_EXCEL_XLSX = "/inputs/input_template_excel.xlsx"
 
+OEMOF_FOLDER = "/oemof"
+INPUTS_FOLDER = "/inputs"
+ELECTRICITY_MG_FOLDER = "/electricity_mg"
+STORAGE_FOLDER = "/storage"
+LP_FILES_FOLDER = "/lp_files"
+
 # C_SENSITIVITY_EXPERIMENTS
 BLACKOUT_DURATION = "blackout_duration"
 BLACKOUT_DURATION_STD_DEVIATION = "blackout_duration_std_deviation"
