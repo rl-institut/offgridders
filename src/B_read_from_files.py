@@ -46,7 +46,7 @@ from src.constants import (
     SAVE_TO_PNG_FLOWS_ELECTRICITY_MG,
     FILE_INDEX,
     EVALUATION_PERSPECTIVE, DEFAULT, AC_SYSTEM, DC_SYSTEM, SEPARATOR, GRID_AVAILABILITY_CSV,
-    FUEL_CO2_EMISSION_FACTOR, MAINGRID_CO2_EMISSION_FACTOR)
+    FUEL_CO2_EMISSION_FACTOR, MAINGRID_CO2_EMISSION_FACTOR, INPUT_TEMPLATE_EXCEL_XLSX)
 
 # requires xlrd
 
@@ -442,7 +442,7 @@ def check_output_directory(settings, input_excel_file):
     os.mkdir(output_folder + "/inputs")
 
     path_from = os.path.abspath(input_excel_file)
-    path_to = os.path.abspath(output_folder + "/inputs/input_template_excel.xlsx")
+    path_to = os.path.abspath(output_folder + INPUT_TEMPLATE_EXCEL_XLSX)
     shutil.copy(path_from, path_to)
 
     if settings[SAVE_LP_FILE] == True or settings[LP_FILE_FOR_ONLY_3_TIMESTEPS] == True:

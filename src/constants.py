@@ -61,6 +61,9 @@ DC_SYSTEM = "DC_system"
 SEPARATOR = "seperator"
 GRID_AVAILABILITY_CSV = "grid_availability.csv"
 
+
+INPUT_TEMPLATE_EXCEL_XLSX = "/inputs/input_template_excel.xlsx"
+
 # C_SENSITIVITY_EXPERIMENTS
 BLACKOUT_DURATION = "blackout_duration"
 BLACKOUT_DURATION_STD_DEVIATION = "blackout_duration_std_deviation"
