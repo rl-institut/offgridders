@@ -21,7 +21,6 @@ import logging
 import matplotlib.pyplot as plt
 
 
-
 def plot_results(pandas_dataframe, title, xaxis, yaxis):
     """ general function for plots"""
     if plt is not None:

@@ -33,7 +33,12 @@ from src.constants import (
     CASE,
     LCOE,
     RES_SHARE,
-    MICRO_GRID_DESIGN_LOGFILE_LOG)
+    MICRO_GRID_DESIGN_LOGFILE_LOG,
+    DISPLAY_EXPERIMENT,
+    PERFORM_MULTICRITERIA_ANALYSIS,
+    PATH_MICRO_GRID_DESIGN_LOGFILE_LOG,
+    OUTPUT_FILE,
+)
 
 
 def main():
@@ -229,7 +234,7 @@ def main():
             overall_results.to_csv(
                 sensitivity_experiment_s[experiment][OUTPUT_FOLDER]
                 + "/"
-                + sensitivity_experiment_s[experiment]["output_file"]
+                + sensitivity_experiment_s[experiment][OUTPUT_FILE]
                 + ".csv"
             )  # moved from below
 
@@ -249,7 +254,7 @@ def main():
             )
             print("\n")
 
-        if settings["display_experiment"] == True:
+        if settings[DISPLAY_EXPERIMENT] == True:
             logging.info("The experiment with following parameters has been analysed:")
             pp.pprint(sensitivity_experiment_s[experiment])
 
@@ -263,7 +268,7 @@ def main():
     pp.pprint(overall_results[output_names])
 
     # Calculate multicriteria analysis
-    if settings["perform_multicriteria_analysis"] == True:
+    if settings[PERFORM_MULTICRITERIA_ANALYSIS] == True:
         logging.info("Performing multicriteria analysis")
         multicriteria_analysis.main_analysis(
             overall_results, multicriteria_data, settings
@@ -273,7 +278,7 @@ def main():
     logging.shutdown()
     path_from = os.path.abspath("./micro_grid_design_logfile.log")
     path_to = os.path.abspath(
-        settings[OUTPUT_FOLDER] + "/micro_grid_design_logfile.log"
+        os.path.join(settings[OUTPUT_FOLDER] + PATH_MICRO_GRID_DESIGN_LOGFILE_LOG)
     )
     shutil.move(path_from, path_to)
 

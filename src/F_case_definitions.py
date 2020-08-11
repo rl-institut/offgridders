@@ -68,7 +68,8 @@ from src.constants import (
     PCOUPLING_EFFICIENCY,
     SHARE_BACKUP,
     SHARE_USAGE,
-    SHARE_HYBRID, DEFAULT
+    SHARE_HYBRID,
+    DEFAULT,
 )
 
 # This is not really a necessary class, as the whole experiement could be given to the function, but it ensures, that
@@ -185,8 +186,7 @@ def update_dict(capacities_oem, specific_case, experiment):
         experiment_case_dict.update({MAX_SHORTAGE: 0})
 
     elif (
-        specific_case[ALLOW_SHORTAGE] == True
-        and specific_case[MAX_SHORTAGE] == DEFAULT
+        specific_case[ALLOW_SHORTAGE] == True and specific_case[MAX_SHORTAGE] == DEFAULT
     ):
         experiment_case_dict.update({ALLOW_SHORTAGE: True})
         experiment_case_dict.update({MAX_SHORTAGE: experiment[SHORTAGE_MAX_ALLOWED]})
@@ -201,7 +201,7 @@ def update_dict(capacities_oem, specific_case, experiment):
     else:
         logging.warning(
             warning_string
-            + " values ALLOW_SHORTAGE (True/False/default) and MAX_SHORTAGE (float/default) not defined properly: "
+            + f" values {ALLOW_SHORTAGE} (True/False/default) and {MAX_SHORTAGE} (float/default) not defined properly: "
             + str(specific_case[ALLOW_SHORTAGE])
             + str(isinstance(specific_case[ALLOW_SHORTAGE], str))
         )
@@ -222,7 +222,7 @@ def update_dict(capacities_oem, specific_case, experiment):
     else:
         logging.warning(
             warning_string
-            + " value STABILITY_CONSTRAINT (False/share_backup/share_usage) not defined properly"
+            + f" value {STABILITY_CONSTRAINT} (False/share_backup/share_usage) not defined properly"
         )
 
     ###########################################
@@ -243,7 +243,7 @@ def update_dict(capacities_oem, specific_case, experiment):
     else:
         logging.warning(
             warning_string
-            + " value RENEWABLE_SHARE_CONSTRAINT (True/False/default) not defined properly"
+            + f" value {RENEWABLE_SHARE_CONSTRAINT} (True/False/default) not defined properly"
         )
 
     experiment_case_dict[NUMBER_OF_EQUAL_GENERATORS] = specific_case[

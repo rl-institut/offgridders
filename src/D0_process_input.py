@@ -64,7 +64,12 @@ from src.constants import (
     WHITE_NOISE_DEMAND,
     WHITE_NOISE_PV,
     WHITE_NOISE_WIND,
-    SUFFIX_COST_INVESTMENT, SUFFIX_LIFETIME, SUFFIX_COST_OPEX, SUFFIX_COST_ANNUITY, SUFFIX_COST_CAPEX)
+    SUFFIX_COST_INVESTMENT,
+    SUFFIX_LIFETIME,
+    SUFFIX_COST_OPEX,
+    SUFFIX_COST_ANNUITY,
+    SUFFIX_COST_CAPEX,
+)
 
 
 def list_of_cases(case_definitions):
@@ -335,7 +340,9 @@ def add_timeseries(experiment_s):
                 )
 
         else:
-            logging.warning(f"Project site value {FILE_INDEX} neither None not non-None.")
+            logging.warning(
+                f"Project site value {FILE_INDEX} neither None not non-None."
+            )
 
         # Used for generation of lp file with only 3-timesteps = Useful to verify optimized equations
         if experiment_s[experiment][LP_FILE_FOR_ONLY_3_TIMESTEPS] == True:
