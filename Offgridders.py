@@ -33,8 +33,12 @@ from src.constants import (
     CASE,
     LCOE,
     RES_SHARE,
-    MICRO_GRID_DESIGN_LOGFILE_LOG, DISPLAY_EXPERIMENT, PERFORM_MULTICRITERIA_ANALYSIS,
-    PATH_MICRO_GRID_DESIGN_LOGFILE_LOG, OUTPUT_FILE)
+    MICRO_GRID_DESIGN_LOGFILE_LOG,
+    DISPLAY_EXPERIMENT,
+    PERFORM_MULTICRITERIA_ANALYSIS,
+    PATH_MICRO_GRID_DESIGN_LOGFILE_LOG,
+    OUTPUT_FILE,
+)
 
 
 def main():
@@ -273,9 +277,9 @@ def main():
 
     logging.shutdown()
     path_from = os.path.abspath("./micro_grid_design_logfile.log")
-    path_to = os.path.abspath(os.path.join(
-        settings[OUTPUT_FOLDER] + PATH_MICRO_GRID_DESIGN_LOGFILE_LOG
-    ))
+    path_to = os.path.abspath(
+        os.path.join(settings[OUTPUT_FOLDER] + PATH_MICRO_GRID_DESIGN_LOGFILE_LOG)
+    )
     shutil.move(path_from, path_to)
 
     print(

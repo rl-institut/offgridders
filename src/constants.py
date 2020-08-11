@@ -1,4 +1,4 @@
-#Offgriders.py
+# Offgriders.py
 MICRO_GRID_DESIGN_LOGFILE_LOG = "micro_grid_design_logfile.log"
 PATH_MICRO_GRID_DESIGN_LOGFILE_LOG = "/micro_grid_design_logfile.log"
 DISPLAY_EXPERIMENT = "display_experiment"
@@ -332,7 +332,7 @@ BUS_FUEL = "bus_fuel"
 PREFIX_RESULTS = "results_"
 SAVE_OEMOFRESULTS = "save_oemofresults"
 
-#G1_oemof_create_model
+# G1_oemof_create_model
 SOLVER_VERBOSE = "solver_verbose"
 CMDLINE_OPTION = "cmdline_option"
 CMDLINE_OPTION_VALUE = "cmdline_option_value"
@@ -416,7 +416,9 @@ STORAGE_CHARGE_AC = "Storage charge AC"
 STORAGE_DISCHARGE_AC = "Storage discharge AC"
 STORAGE_CHARGE = "Storage charge"
 STORAGE_SOC = "Storage SOC"
-CONSUMPTION_MAIN_GRID_UTILITY_SIDE_ANNUAL_KWH = "consumption_main_grid_utility_side_annual_kWh"
+CONSUMPTION_MAIN_GRID_UTILITY_SIDE_ANNUAL_KWH = (
+    "consumption_main_grid_utility_side_annual_kWh"
+)
 
 BUS_ELECTRICITY_NG_FEEDIN = "bus_electricity_ng_feedin"
 FEEDIN_MAIN_GRID_UTILITY_SIDE_ANNUAL_KWH = "feedin_main_grid_utility_side_annual_kWh"
@@ -462,7 +464,7 @@ SUFFIX_ELECTRICITY_MG_PNG = "_electricity_mg.png"
 SUFFIX_ELECTRICITY_MG_4DAYS_PNG = "_electricity_mg_4days.png"
 SUFFIX_STORAGE_CSV = "_storage.csv"
 SUFFIX_STORAGE_PNG = "_storage.png"
-SUFFIX_STORAGE_4DAYS_PNG =  "_storage_4days.png"
+SUFFIX_STORAGE_4DAYS_PNG = "_storage_4days.png"
 
 # H0
 CAPACITIES = "capacities"
@@ -510,7 +512,7 @@ EN1 = "EN1"
 EN2 = "EN2"
 EN3 = "EN3"
 
-WEIGHTS =  "Weights"
+WEIGHTS = "Weights"
 L1 = "L1"
 LINF = "Linf"
 MCA_PLOTS = "/mca_plots"

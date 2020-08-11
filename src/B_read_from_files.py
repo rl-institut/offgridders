@@ -45,9 +45,21 @@ from src.constants import (
     SAVE_TO_CSV_FLOWS_ELECTRICITY_MG,
     SAVE_TO_PNG_FLOWS_ELECTRICITY_MG,
     FILE_INDEX,
-    EVALUATION_PERSPECTIVE, DEFAULT, AC_SYSTEM, DC_SYSTEM, SEPARATOR, GRID_AVAILABILITY_CSV,
-    FUEL_CO2_EMISSION_FACTOR, MAINGRID_CO2_EMISSION_FACTOR, INPUT_TEMPLATE_EXCEL_XLSX, OEMOF_FOLDER, INPUTS_FOLDER,
-    ELECTRICITY_MG_FOLDER, STORAGE_FOLDER, LP_FILES_FOLDER)
+    EVALUATION_PERSPECTIVE,
+    DEFAULT,
+    AC_SYSTEM,
+    DC_SYSTEM,
+    SEPARATOR,
+    GRID_AVAILABILITY_CSV,
+    FUEL_CO2_EMISSION_FACTOR,
+    MAINGRID_CO2_EMISSION_FACTOR,
+    INPUT_TEMPLATE_EXCEL_XLSX,
+    OEMOF_FOLDER,
+    INPUTS_FOLDER,
+    ELECTRICITY_MG_FOLDER,
+    STORAGE_FOLDER,
+    LP_FILES_FOLDER,
+)
 
 # requires xlrd
 
@@ -403,7 +415,13 @@ def check_output_directory(settings, input_excel_file):
     import shutil
 
     output_folder = settings[OUTPUT_FOLDER]
-    folder_list = [LP_FILES_FOLDER, STORAGE_FOLDER, ELECTRICITY_MG_FOLDER, INPUTS_FOLDER, OEMOF_FOLDER]
+    folder_list = [
+        LP_FILES_FOLDER,
+        STORAGE_FOLDER,
+        ELECTRICITY_MG_FOLDER,
+        INPUTS_FOLDER,
+        OEMOF_FOLDER,
+    ]
 
     if os.path.isdir(output_folder) == True:
         # Empty folders with previous result, except oemof results if simulation restart
@@ -419,7 +437,10 @@ def check_output_directory(settings, input_excel_file):
                     shutil.rmtree(path_removed, ignore_errors=True)
                     os.mkdir(output_folder + OEMOF_FOLDER)
 
-            elif folder == OEMOF_FOLDER and os.path.isdir(output_folder + folder) == False:
+            elif (
+                folder == OEMOF_FOLDER
+                and os.path.isdir(output_folder + folder) == False
+            ):
                 os.mkdir(output_folder + OEMOF_FOLDER)
 
             elif os.path.isdir(output_folder + folder):

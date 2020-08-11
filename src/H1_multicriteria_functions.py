@@ -44,8 +44,27 @@ from src.constants import (
     LOCAL_LS,
     CASES_AND_EXPERIMENTS,
     EVALUATION,
-    DIMENSIONS_W, EC1, EC2, T1, T2, T3, T4, WEIGHTS, L1, LINF,
-    ENVIRONMENTAL_W, MCA_PLOTS, S1, S3, S2, EN1, EN2, EN3, GLOBAL, PREFIX_CASE)
+    DIMENSIONS_W,
+    EC1,
+    EC2,
+    T1,
+    T2,
+    T3,
+    T4,
+    WEIGHTS,
+    L1,
+    LINF,
+    ENVIRONMENTAL_W,
+    MCA_PLOTS,
+    S1,
+    S3,
+    S2,
+    EN1,
+    EN2,
+    EN3,
+    GLOBAL,
+    PREFIX_CASE,
+)
 
 
 def evaluate_criteria(all_results, qualitative_punctuations, multicriteria_data):
@@ -591,7 +610,9 @@ def representation(
                     j += 1
                 else:
                     worksheet.write(row, col, case, format_highlight2)
-                    worksheet.write(row + 1, col, PREFIX_CASE + str(j), format_highlight2)
+                    worksheet.write(
+                        row + 1, col, PREFIX_CASE + str(j), format_highlight2
+                    )
                     j += 1
                 col += 1
             i += 1

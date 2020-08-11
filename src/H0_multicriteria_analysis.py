@@ -30,7 +30,9 @@ from src.constants import (
     SHOW,
     DIMENSIONS_W,
     PLOT,
-    GLOBAL, LOCAL)
+    GLOBAL,
+    LOCAL,
+)
 
 
 def main_analysis(overallresults, multicriteria_data, settings):

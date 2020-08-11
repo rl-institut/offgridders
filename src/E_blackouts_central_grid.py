@@ -21,7 +21,8 @@ from src.constants import (
     NATIONAL_GRID_RELIABILITY_H,
     NATIONAL_GRID_TOTAL_BLACKOUT_DURATION,
     NATIONAL_GRID_NUMBER_OF_BLACKOUTS,
-    GRID_AVAILABILITY_CSV)
+    GRID_AVAILABILITY_CSV,
+)
 
 # Check for saved blackout scenarios/grid availability, else continue randomization of backout events
 def get_blackouts(settings, blackout_experiment_s):
@@ -35,11 +36,15 @@ def get_blackouts(settings, blackout_experiment_s):
 
     if (
         os.path.isfile(os.path.join(settings[OUTPUT_FOLDER] + GRID_AVAILABILITY_CSV))
-        or os.path.isfile(os.path.join(settings[INPUT_FOLDER_TIMESERIES] + GRID_AVAILABILITY_CSV))
+        or os.path.isfile(
+            os.path.join(settings[INPUT_FOLDER_TIMESERIES] + GRID_AVAILABILITY_CSV)
+        )
     ) and settings[RESTORE_BLACKOUTS_IF_EXISTENT] == True:
 
         # ? read to csv: timestamp as first row -> not equal column number, date time without index
-        if os.path.isfile(os.path.join(settings[OUTPUT_FOLDER] + GRID_AVAILABILITY_CSV)):
+        if os.path.isfile(
+            os.path.join(settings[OUTPUT_FOLDER] + GRID_AVAILABILITY_CSV)
+        ):
             data_set = pd.read_csv(settings[OUTPUT_FOLDER] + GRID_AVAILABILITY_CSV)
         elif os.path.isfile(
             os.path(settings[INPUT_FOLDER_TIMESERIES] + GRID_AVAILABILITY_CSV)

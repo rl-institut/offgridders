@@ -68,7 +68,8 @@ from src.constants import (
     PCOUPLING_EFFICIENCY,
     SHARE_BACKUP,
     SHARE_USAGE,
-    SHARE_HYBRID, DEFAULT
+    SHARE_HYBRID,
+    DEFAULT,
 )
 
 # This is not really a necessary class, as the whole experiement could be given to the function, but it ensures, that
@@ -185,8 +186,7 @@ def update_dict(capacities_oem, specific_case, experiment):
         experiment_case_dict.update({MAX_SHORTAGE: 0})
 
     elif (
-        specific_case[ALLOW_SHORTAGE] == True
-        and specific_case[MAX_SHORTAGE] == DEFAULT
+        specific_case[ALLOW_SHORTAGE] == True and specific_case[MAX_SHORTAGE] == DEFAULT
     ):
         experiment_case_dict.update({ALLOW_SHORTAGE: True})
         experiment_case_dict.update({MAX_SHORTAGE: experiment[SHORTAGE_MAX_ALLOWED]})
