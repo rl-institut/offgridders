@@ -22,6 +22,7 @@ Here is a template for new release sections
 
 ### Added
 -Constant variables for strings in constants.py (#89)
+-CSV,PNG files and paths added (#117)
 
 ### Changed
 -
