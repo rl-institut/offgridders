@@ -9,7 +9,7 @@ To set-up Offgridders, follow the steps below:
 
 * Download latest `Offgridders release <https://github.com/rl-institut/offgridders>`_
 
-* Open Anaconda prompt, create and activate environment
+* Open Anaconda prompt, create and activate an environment
 
     `conda create -n [your_env_name] python=3.5`
     `activate [your env_name]`

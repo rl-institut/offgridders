@@ -33,13 +33,13 @@ The features of the simulation tool can be summarized with:
 * **Versatile application and scenario definition**.
     Through scenario definitions, a \
     multitude of energy system models (cases) can be defined. The energy system model’s \
-    capacity and their dispatch are optimized. All energy systems can be simulated that \
+    capacity and their dispatch are optimized. All possible simulations of the energy system, \
     can be reduced to a combination of the following components: AC and/or DC demand, \
     generator, photovoltaic (PV) panels, storage, inverters, rectifiers, wind plant and connection to a national grid.
 
 * **User-friendly interface**.
     All simulation parameters, project locations and scenarios
-    can be defined within a single excel file (see Configuration). The time series connected to one or multiple project locations can be defined in one or multiple .csv file(s). Even though it
+    can be defined within a single excel file (see Configuration). **The time series linked to one or multiple project locations can be defined in one or multiple .csv file(s)** (This is not really clear, means parallel simulation of diferent cases with different time-series?). Even though it
     is necessary to install Python as well as required packages and execute the tool via a
     command-line interface (e.g. miniconda), this should enable users without programming
     experience to use the tool without having to edit any of the provided code.
@@ -47,7 +47,7 @@ The features of the simulation tool can be summarized with:
 * **Multitude of input parameters, sensitivity analysis**.
     Numerous parameters can
     be defined to characterize the electricity solution to be simulated, including many
-    techno-economical parameters (see  **Input Values**. A sensitivity analysis of any parameter can evaluate its influence on the overall optimization results. The simulation can run for any time
+    techno-economical parameters (see  **Input Values**). A sensitivity analysis of any parameter can evaluate its influence on the overall optimization results. The simulation can run for any time
     period between one day and a year with hourly time steps.
 
 * **Multiple project sites**.
