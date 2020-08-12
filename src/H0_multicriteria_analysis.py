@@ -1,6 +1,7 @@
 import logging
 
 import src.H1_multicriteria_functions as multicriteria_functions
+
 from src.constants import (
     EVALUATIONS,
     NORMALIZED_EVALUATIONS,
@@ -29,7 +30,9 @@ from src.constants import (
     SHOW,
     DIMENSIONS_W,
     PLOT,
-    GLOBAL)
+    GLOBAL,
+    LOCAL,
+)
 
 
 def main_analysis(overallresults, multicriteria_data, settings):
@@ -102,7 +105,7 @@ def main_analysis(overallresults, multicriteria_data, settings):
                 local_Ls = []
                 for evaluation in local_evaluations:
                     local_normalized_evaluation = multicriteria_functions.normalize_evaluations(
-                        evaluation, weights_criteria, "local"
+                        evaluation, weights_criteria, LOCAL
                     )
                     local_Ls_each = multicriteria_functions.rank(
                         local_normalized_evaluation,

@@ -1,5 +1,10 @@
-#Offgriders.py
+# Offgriders.py
 MICRO_GRID_DESIGN_LOGFILE_LOG = "micro_grid_design_logfile.log"
+PATH_MICRO_GRID_DESIGN_LOGFILE_LOG = "/micro_grid_design_logfile.log"
+DISPLAY_EXPERIMENT = "display_experiment"
+PERFORM_MULTICRITERIA_ANALYSIS = "perform_multicriteria_analysis"
+OUTPUT_FILE = "output_file"
+
 
 # A1_GENERAL_FUNCTIONS
 CAPACITY_PV_KWP = "capacity_pv_kWp"
@@ -60,6 +65,15 @@ DEFAULT = "default"
 DC_SYSTEM = "DC_system"
 SEPARATOR = "seperator"
 GRID_AVAILABILITY_CSV = "grid_availability.csv"
+
+
+INPUT_TEMPLATE_EXCEL_XLSX = "/inputs/input_template_excel.xlsx"
+
+OEMOF_FOLDER = "/oemof"
+INPUTS_FOLDER = "/inputs"
+ELECTRICITY_MG_FOLDER = "/electricity_mg"
+STORAGE_FOLDER = "/storage"
+LP_FILES_FOLDER = "/lp_files"
 
 # C_SENSITIVITY_EXPERIMENTS
 BLACKOUT_DURATION = "blackout_duration"
@@ -221,6 +235,7 @@ CO2_EMISSIONS_KGC02EQ = "co2_emissions_kgCO2eq"
 TOTAL_EXCESS_ANNUAL_KWH = "total_excess_annual_kWh"
 
 SENSITIVITY_EXPERIMENTS_CSV = "/sensitivity_experiments.csv"
+SIMULATION_EXPERIMENTS_CSV = "/simulation_experiments.csv"
 
 # D0_process_input
 PERFORM_SIMULATION = "perform_simulation"
@@ -275,6 +290,8 @@ GRID_NUMBER_OF_BLACKOUTS = "grid_number_of_blackouts"
 GRID_RELIABILITY = "grid_reliability"
 MAX_EVALUATED_DAYS = "max_evaluated_days"
 
+GRID_AVAILABILITY_CSV = "/grid_availability.csv"
+
 # F_case_definitions
 PEAK_DEMAND = "peak_demand"
 GENSET_WITH_MINIMAL_LOADING = "genset_with_minimal_loading"
@@ -313,6 +330,14 @@ SHARE_HYBRID = "share_hybrid"
 BUS_FUEL = "bus_fuel"
 
 PREFIX_RESULTS = "results_"
+SAVE_OEMOFRESULTS = "save_oemofresults"
+
+# G1_oemof_create_model
+SOLVER_VERBOSE = "solver_verbose"
+CMDLINE_OPTION = "cmdline_option"
+CMDLINE_OPTION_VALUE = "cmdline_option_value"
+SYMBOLIC_SOLVER_LABELS = "symbolic_solver_labels"
+OEMOF = "/oemof"
 
 # G2a_oemof_busses_and_components
 SOURCE_FUEL = "source_fuel"
@@ -391,7 +416,9 @@ STORAGE_CHARGE_AC = "Storage charge AC"
 STORAGE_DISCHARGE_AC = "Storage discharge AC"
 STORAGE_CHARGE = "Storage charge"
 STORAGE_SOC = "Storage SOC"
-CONSUMPTION_MAIN_GRID_UTILITY_SIDE_ANNUAL_KWH = "consumption_main_grid_utility_side_annual_kWh"
+CONSUMPTION_MAIN_GRID_UTILITY_SIDE_ANNUAL_KWH = (
+    "consumption_main_grid_utility_side_annual_kWh"
+)
 
 BUS_ELECTRICITY_NG_FEEDIN = "bus_electricity_ng_feedin"
 FEEDIN_MAIN_GRID_UTILITY_SIDE_ANNUAL_KWH = "feedin_main_grid_utility_side_annual_kWh"
@@ -430,6 +457,14 @@ DISPLAY_MAIN = "display_main"
 DISPLAY_INVEST = "display_invest"
 
 SUFFIX_GRAPH = "_graph"
+BASE_OEM = "base_oem"
+BASE_OEM_WITH_MIN_LOADING = "base_oem_with_min_loading"
+SUFFIX_ELECTRICITY_MG_CSV = "_electricity_mg.csv"
+SUFFIX_ELECTRICITY_MG_PNG = "_electricity_mg.png"
+SUFFIX_ELECTRICITY_MG_4DAYS_PNG = "_electricity_mg_4days.png"
+SUFFIX_STORAGE_CSV = "_storage.csv"
+SUFFIX_STORAGE_PNG = "_storage.png"
+SUFFIX_STORAGE_4DAYS_PNG = "_storage_4days.png"
 
 # H0
 CAPACITIES = "capacities"
@@ -450,6 +485,7 @@ PARAMETER = "parameter"
 SHOW = "show"
 
 DIMENSIONS_W = "Dimensions"  # dimension_weights
+LOCAL = "local"
 
 # H1
 ECONOMIC = "economic"
@@ -476,8 +512,9 @@ EN1 = "EN1"
 EN2 = "EN2"
 EN3 = "EN3"
 
-WEIGHTS =  "Weights"
+WEIGHTS = "Weights"
 L1 = "L1"
 LINF = "Linf"
 MCA_PLOTS = "/mca_plots"
 GLOBAL = "global"
+PREFIX_CASE = "case_"

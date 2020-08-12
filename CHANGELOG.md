@@ -10,19 +10,19 @@ Here is a template for new release sections
 ## [_._._] - 20XX-MM-DD
 
 ### Added
--Constant variables for strings in constants.py (#89, #117, #118)
-
+-
 ### Changed
 -
 ### Removed
-
+-
 ### Fixed
 -
-```
 ## [Unreleased]
 
 ### Added
--
+-Constant variables for strings in constants.py (#89, #117, #118)
+-CSV,PNG files and paths now defined by variables in `constants.py` (#117)
+
 ### Changed
 -
 ### Removed
@@ -165,5 +165,4 @@ Major changes:
 - 1 hr timesteps, 1 to 365 days evaluation time
 - All input data via excel sheet
 - Easy case definition
-
 

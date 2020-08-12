@@ -12,11 +12,7 @@ import oemof.solph as solph
 import logging
 
 # Try to import matplotlib librar
-try:
-    import matplotlib.pyplot as plt
-except ImportError:
-    logging.warning("Attention! matplotlib could not be imported.")
-    plt = None
+import matplotlib.pyplot as plt
 
 from src.constants import (
     SOURCE_FUEL,

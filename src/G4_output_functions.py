@@ -52,7 +52,19 @@ from src.constants import (
     SAVE_TO_PNG_FLOWS_STORAGE,
     WIND,
     PV,
-    FEED_INTO_MAIN_GRID_MG_SIDE, DEMAND_AC, DEMAND_DC, SUFFIX_GRAPH)
+    FEED_INTO_MAIN_GRID_MG_SIDE,
+    DEMAND_AC,
+    DEMAND_DC,
+    SUFFIX_GRAPH,
+    BASE_OEM,
+    BASE_OEM_WITH_MIN_LOADING,
+    SUFFIX_ELECTRICITY_MG_CSV,
+    SUFFIX_ELECTRICITY_MG_PNG,
+    SUFFIX_ELECTRICITY_MG_4DAYS_PNG,
+    SUFFIX_STORAGE_CSV,
+    SUFFIX_STORAGE_PNG,
+    SUFFIX_STORAGE_4DAYS_PNG,
+)
 
 
 def print_oemof_meta_main_invest(experiment, meta, electricity_bus, case_name):
@@ -66,7 +78,7 @@ def print_oemof_meta_main_invest(experiment, meta, electricity_bus, case_name):
         pp.pprint(electricity_bus[SEQUENCES].sum(axis=0))
 
     # print the scalars of investment optimization (not equal to capacities!)
-    if case_name == "base_oem" or case_name == "base_oem_with_min_loading":
+    if case_name == BASE_OEM or case_name == BASE_OEM_WITH_MIN_LOADING:
         if experiment[DISPLAY_INVEST] == True:
             logging.info("********* Invest results *********")
             pp.pprint(electricity_bus[SCALARS])
@@ -172,7 +184,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
             + "/electricity_mg/"
             + case_dict[CASE_NAME]
             + filename
-            + "_electricity_mg.csv"
+            + SUFFIX_ELECTRICITY_MG_CSV
         )
 
     if experiment[SAVE_TO_PNG_FLOWS_ELECTRICITY_MG] == True:
@@ -203,7 +215,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
                     + "/electricity_mg/"
                     + case_dict[CASE_NAME]
                     + filename
-                    + "_electricity_mg.png",
+                    + SUFFIX_ELECTRICITY_MG_PNG,
                     bbox_inches="tight",
                 )
 
@@ -220,7 +232,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
                     + "/electricity_mg/"
                     + case_dict[CASE_NAME]
                     + filename
-                    + "_electricity_mg_4days.png",
+                    + SUFFIX_ELECTRICITY_MG_4DAYS_PNG,
                     bbox_inches="tight",
                 )
             plt.close()
@@ -337,7 +349,7 @@ def save_storage(experiment, case_dict, e_flows_df, filename):
                 + "/storage/"
                 + case_dict[CASE_NAME]
                 + filename
-                + "_storage.csv"
+                + SUFFIX_STORAGE_CSV
             )
 
         if experiment[SAVE_TO_PNG_FLOWS_STORAGE] == True:
@@ -354,7 +366,7 @@ def save_storage(experiment, case_dict, e_flows_df, filename):
                 + "/storage/"
                 + case_dict[CASE_NAME]
                 + filename
-                + "_storage.png",
+                + SUFFIX_STORAGE_PNG,
                 bbox_inches="tight",
             )
             plt.close()
@@ -374,7 +386,7 @@ def save_storage(experiment, case_dict, e_flows_df, filename):
                     + "/storage/"
                     + case_dict[CASE_NAME]
                     + filename
-                    + "_storage_4days.png",
+                    + SUFFIX_STORAGE_4DAYS_PNG,
                     bbox_inches="tight",
                 )
                 plt.close()
@@ -403,8 +415,8 @@ def save_network_graph(energysystem, case_name):
             "lignite": "#56201d",
             "bel": "#9a9da1",
             "bth": "#cd3333",
-            WIND: "#4ca7c3",
-            PV: "#ffde32",
+            "wind": "#4ca7c3",
+            "pv": "#ffde32",
             "demand_el": "#9a9da1",
             "excess_el": "#9a9da1",
             "demand_th": "#cd3333",
