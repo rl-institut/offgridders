@@ -15,7 +15,7 @@ Home
 * Connection to a central electricity grid (optional: intermittent blackouts)
 * Contraints: supply shortage, renewable share, stability constraint
 
-A detailed description of all components defining an electricity system in Offgridders is provided in  `Github wiki: Definition of an electricity supply system <https://github.com/smartie2076/simulator_grid-connected_micro_grid/wiki/Definition-of-an-electricity-supply-system>`_. Based on these components,
+A detailed description of all components defining an electricity system in Offgridders is provided in **Definition of an electricity supply system** . Based on these components,
 exemplary electricity systems that can be simulated are:
 
 * Fossil-fuelled micro grid
@@ -24,9 +24,7 @@ exemplary electricity systems that can be simulated are:
 * Standalone solutions with low capacity (eg. SHS)
 * Backup electricity supply systems ensuring reliable supply of consumers connected to weak grids
 
-A description of these different electricity systems is provided in `Github wiki: Exemplary electricity supply systems <https://github.com/smartie2076/simulator_grid-connected_micro_grid/wiki/Exemplary-electricity-supply-systems>`_ .
-
-For setting-up **Offgridders** on your operating system, please check the `Github wiki: Installation <https://github.com/smartie2076/simulator_grid-connected_micro_grid/wiki/Installation>`_.
+A description of these different electricity systems is provided in **Exemplary electricity supply systems**.
 
 Features of Offgridders
 ------------------------
@@ -41,7 +39,7 @@ The features of the simulation tool can be summarized with:
 
 * **User-friendly interface**.
     All simulation parameters, project locations and scenarios
-    can be defined within a single excel file (see `Github wiki: Configurations <https://github.com/smartie2076/simulator_grid-connected_micro_grid/wiki/Configuration-file>`_). The time series connected to one or multiple project locations can be defined in one or multiple .csv file(s). Even though it
+    can be defined within a single excel file (see Configuration). The time series connected to one or multiple project locations can be defined in one or multiple .csv file(s). Even though it
     is necessary to install Python as well as required packages and execute the tool via a
     command-line interface (e.g. miniconda), this should enable users without programming
     experience to use the tool without having to edit any of the provided code.
@@ -49,7 +47,7 @@ The features of the simulation tool can be summarized with:
 * **Multitude of input parameters, sensitivity analysis**.
     Numerous parameters can
     be defined to characterize the electricity solution to be simulated, including many
-    techno-economical parameters (see  `Github wiki: Input parameters <https://github.com/smartie2076/simulator_grid-connected_micro_grid/wiki/Input-values>`_). A sensitivity analysis of any parameter can evaluate its influence on the overall optimization results. The simulation can run for any time
+    techno-economical parameters (see  **Input Values**. A sensitivity analysis of any parameter can evaluate its influence on the overall optimization results. The simulation can run for any time
     period between one day and a year with hourly time steps.
 
 * **Multiple project sites**.

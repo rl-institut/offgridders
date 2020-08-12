@@ -96,9 +96,9 @@ To make sure this rule is applied to every timestep, you can either explicitly l
 
         model.stability_constraint = po.Constraint(model.TIMESTEPS, rule=stability_rule)
 
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Sidenotes: Indirectly accessing attributes of Flows of an oemof-model (1)
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 Calling constant attributes of Flows or InvestmentFlows indirectly makes most sense, if a certain class of components/busses is subjected to the constraint and if you can not or do not want to group it's element. Possible classes can be:::
 

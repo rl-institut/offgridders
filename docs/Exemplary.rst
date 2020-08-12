@@ -9,7 +9,7 @@ Currently, following operational modes will be analyzed, mostly with capacities 
 * Off-grid micro grid interconnecting to national grid (consumption and feed-in)
 * Optimal local capacities for off-grid site with national grid access
 
-The results of the oemof-optimizations have to be interpreted considering the evaluated scenario. Further detail on that can be found in `here <https://github.com/smartie2076/simulator_grid-connected_micro_grid/wiki/Evaluation-of-oemof-results>`_.
+The results of the oemof-optimizations have to be interpreted considering the evaluated scenario. Further detail on that can be found in **Evaluation of oemof results**.
 
 * **Dispatch optimization of off-grid micro grid** with base case capacities.
 * **Off-grid micro grid** with base case capacities interconnecting with national grid:

@@ -7,7 +7,7 @@ To set-up Offgridders, follow the steps below:
 
 * Download the `cbc-solver <https://projects.coin-or.org/Cbc>`_ into your system from https://ampl.com/dl/open/cbc/ and integrate it in your system, ie. unzip, place into chosen path, add path to your system variables  (Windows: “System Properties” -->”Advanced”--> “Environment Variables”, requires admin-rights)
 
-* Download latest `Offgridders release <https://github.com/smartie2076/simulator_grid-connected_micro_grid/releases>`_
+* Download latest `Offgridders release <https://github.com/rl-institut/offgridders>`_
 
 * Open Anaconda prompt, create and activate environment
 

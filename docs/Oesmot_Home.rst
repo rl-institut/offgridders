@@ -11,7 +11,7 @@ The Open Electricity System Modelling and Optimization Tool (Offgridders), based
 *  Connection to a central electricity grid (optional: intermittent blackouts)
 *  Contraints: supply shortage, renewable share, stability constraint
 
-A detailed description of all components defining an electricity system in Offgridders is provided in github wiki: Definition of an electricity supply system. Based on these components, exemplary electricity systems that can be simulated are:
+A detailed description of all components defining an electricity system in Offgridders is provided in **Definition of an electricity supply system**. Based on these components, exemplary electricity systems that can be simulated are:
 
 * Fossil-fuelled micro grid
 * Hybridized micro grid, utilizing PV, wind and/or storage
@@ -19,18 +19,18 @@ A detailed description of all components defining an electricity system in Offgr
 * Standalone solutions with low capacity (eg. SHS)
 * Backup electricity supply systems ensuring reliable supply of consumers connected to weak grids
 
-A description of these different electricity systems is provided in github wiki: Exemplary electricity supply systems.
+A description of these different electricity systems is provided in **Exemplary electricity supply systems**.
 
-For setting-up Offgridders on your operating system, please check the github wiki: Installation.
+For setting-up Offgridders on your operating system, please check **Installation**.
 Features of Offgridders
 
 The features of the simulation tool can be summarized with:
 
 *    Versatile application and scenario definition. Through scenario definitions, a multitude of energy system models (cases) can be defined. The energy system model’s capacity and their dispatch are optimized. All energy systems can be simulated that can be reduced to a combination of the following components: AC and/or DC demand, generator, photovoltaic (PV) panels, storage, inverters, rectifiers, wind plant and connection to a national grid.
 
-*    User-friendly interface. All simulation parameters, project locations and scenarios can be defined within a single excel file (see github wiki: Configurations). The time series connected to one or multiple project locations can be defined in one or multiple .csv file(s). Even though it is necessary to install Python as well as required packages and execute the tool via a command-line interface (e.g. miniconda), this should enable users without programming experience to use the tool without having to edit any of the provided code.
+*    User-friendly interface. All simulation parameters, project locations and scenarios can be defined within a single excel file (see **Configurations**). The time series connected to one or multiple project locations can be defined in one or multiple .csv file(s). Even though it is necessary to install Python as well as required packages and execute the tool via a command-line interface (e.g. miniconda), this should enable users without programming experience to use the tool without having to edit any of the provided code.
 
-*    Multitude of input parameters, sensitivity analysis. Numerous parameters can be defined to characterize the electricity solution to be simulated, including many techno-economical parameters (see github wiki: Input parameters). A sensitivity analysis of any parameter can evaluate its influence on the overall optimization results. The simulation can run for any time period between one day and a year with hourly time steps.
+*    Multitude of input parameters, sensitivity analysis. Numerous parameters can be defined to characterize the electricity solution to be simulated, including many techno-economical parameters (see **Input parameters**). A sensitivity analysis of any parameter can evaluate its influence on the overall optimization results. The simulation can run for any time period between one day and a year with hourly time steps.
 
 *    Multiple project sites. Multiple locations with specific time series, e.g. AC or DC demand, renewable generation and grid availability can be defined in the excel template. A location-specific definition of input parameters is possible.
 
