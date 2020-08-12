@@ -20,8 +20,7 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
--Constant variables for strings in constants.py (#89, #117, #118)
--CSV,PNG files and paths now defined by variables in `constants.py` (#117)
+-Constant variables for strings in constants.py (#89,#117, #118)
 
 ### Changed
 -
