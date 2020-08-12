@@ -27,7 +27,7 @@ Here is a template for new release sections
 - Changed path calls to `os.path.join` to enable compatability (#118)
 - Log messages now call variable of parameter name (#117, #118)
 ### Removed
--
+- Try/Except clauses at module import (#103) 
 ### Fixed
 -
 
