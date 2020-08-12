@@ -6,6 +6,7 @@ dictonary, including filenames.
 
 import pandas as pd
 import logging
+import os
 
 import itertools
 import numpy as np
@@ -307,7 +308,7 @@ def get(settings, parameters_constant_values, parameters_sensitivity, project_si
                 del csv_dict[entry][series]
 
     experiments_dataframe = pd.DataFrame.from_dict(csv_dict, orient="index")
-    experiments_dataframe.to_csv(settings[OUTPUT_FOLDER] + SIMULATION_EXPERIMENTS_CSV)
+    experiments_dataframe.to_csv(os.path.join(settings[OUTPUT_FOLDER],SIMULATION_EXPERIMENTS_CSV))
 
     for item in experiments_dataframe.columns:
         if (item not in parameters_sensitivity.keys()) and (
@@ -315,7 +316,7 @@ def get(settings, parameters_constant_values, parameters_sensitivity, project_si
         ):
             experiments_dataframe = experiments_dataframe.drop(columns=item)
 
-    experiments_dataframe.to_csv(settings[OUTPUT_FOLDER] + SENSITIVITY_EXPERIMENTS_CSV)
+    experiments_dataframe.to_csv(os.path.join(settings[OUTPUT_FOLDER],SENSITIVITY_EXPERIMENTS_CSV))
 
     # Generate a overall title of the oemof-results DataFrame
     title_overall_results = overall_results_title(

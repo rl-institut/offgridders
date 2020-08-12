@@ -65,7 +65,6 @@ DC_SYSTEM = "DC_system"
 SEPARATOR = "seperator"
 GRID_AVAILABILITY_CSV = "grid_availability.csv"
 
-
 INPUT_TEMPLATE_EXCEL_XLSX = "inputs/input_template_excel.xlsx"
 
 OEMOF_FOLDER = "/oemof"
@@ -233,8 +232,8 @@ COMMENTS = "comments"
 CO2_EMISSIONS_KGC02EQ = "co2_emissions_kgCO2eq"
 TOTAL_EXCESS_ANNUAL_KWH = "total_excess_annual_kWh"
 
-SENSITIVITY_EXPERIMENTS_CSV = "/sensitivity_experiments.csv"
-SIMULATION_EXPERIMENTS_CSV = "/simulation_experiments.csv"
+SENSITIVITY_EXPERIMENTS_CSV = "sensitivity_experiments.csv"
+SIMULATION_EXPERIMENTS_CSV = "simulation_experiments.csv"
 
 # D0_process_input
 PERFORM_SIMULATION = "perform_simulation"
