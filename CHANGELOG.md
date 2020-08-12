@@ -20,10 +20,12 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
--Constant variables for strings in constants.py (#89,#117, #118)
+- Constant variables for strings are gathered in `constants.py` (#89,#117, #118)
 
 ### Changed
--
+- Replaced parameter strings with variable calls  (#89,#117, #118)
+- Changed path calls to `os.path.join` to enable compatability (#118)
+- Log messages now call variable of parameter name (#117, #118)
 ### Removed
 -
 ### Fixed
@@ -164,4 +166,3 @@ Major changes:
 - 1 hr timesteps, 1 to 365 days evaluation time
 - All input data via excel sheet
 - Easy case definition
-
