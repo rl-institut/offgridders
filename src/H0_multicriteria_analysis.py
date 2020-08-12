@@ -1,15 +1,38 @@
 import logging
 
-try:
-    import src.H1_multicriteria_functions as multicriteria_functions
+import src.H1_multicriteria_functions as multicriteria_functions
 
-except ModuleNotFoundError:
-    print("Module error at H0")
-    from src.H1_multicriteria_functions import (
-        calculations,
-        calculation_helpers,
-        mca_representation,
-    )
+from src.constants import (
+    EVALUATIONS,
+    NORMALIZED_EVALUATIONS,
+    GLOBAL_LS,
+    LOCAL_LS,
+    SENSITIVITY_ALL_COMBINATIONS,
+    CAPACITIES,
+    CASE,
+    PROJECT_SITE_NAME,
+    LEVELS,
+    PREVIOUS_LEVEL,
+    CHANGES,
+    ANALYSE,
+    FILENAME,
+    DIMENSIONS,
+    WEIGHT,
+    CRITERIA,
+    ABREV,
+    PV,
+    WIND,
+    GENSET,
+    MAINGRID,
+    DIESEL,
+    PARAMETERS,
+    PARAMETER,
+    SHOW,
+    DIMENSIONS_W,
+    PLOT,
+    GLOBAL,
+    LOCAL,
+)
 
 
 def main_analysis(overallresults, multicriteria_data, settings):
@@ -23,10 +46,10 @@ def main_analysis(overallresults, multicriteria_data, settings):
     """
 
     all_projects_MCA_data = {
-        "evaluations": {},
-        "normalized_evaluations": {},
-        "global_Ls": {},
-        "local_Ls": {},
+        EVALUATIONS: {},
+        NORMALIZED_EVALUATIONS: {},
+        GLOBAL_LS: {},
+        LOCAL_LS: {},
     }  # it will store all needed data for the representation of the MCA in excel sheet
 
     # information from the multicriteria tab in input excel file is set in the right format
@@ -44,24 +67,24 @@ def main_analysis(overallresults, multicriteria_data, settings):
     )
 
     # the multicriteria analysis with sensibility parameters can only be realised if all combinations have been calculated
-    if settings["sensitivity_all_combinations"] or not sensibility:
+    if settings[SENSITIVITY_ALL_COMBINATIONS] or not sensibility:
         # criteria are evaluated for all cases
         evaluations, capacities = multicriteria_functions.evaluate_criteria(
             all_results, qualitative_punctuations, multicriteria_data
         )
-        all_projects_MCA_data["capacities"] = capacities
+        all_projects_MCA_data[CAPACITIES] = capacities
 
         for project in evaluations:
             # all evaluations for a same criterion are put together, to make easier the following ranking
             global_evaluations = prepare_global_evaluations(evaluations[project])
-            all_projects_MCA_data["evaluations"][project] = global_evaluations
+            all_projects_MCA_data[EVALUATIONS][project] = global_evaluations
 
             # first, a global ranking, for all solutions, is calculated
             # evaluations are normalized
             global_normalized_evaluations = multicriteria_functions.normalize_evaluations(
-                global_evaluations, weights_criteria, "global"
+                global_evaluations, weights_criteria, GLOBAL
             )
-            all_projects_MCA_data["normalized_evaluations"][
+            all_projects_MCA_data[NORMALIZED_EVALUATIONS][
                 project
             ] = global_normalized_evaluations
 
@@ -69,7 +92,7 @@ def main_analysis(overallresults, multicriteria_data, settings):
             global_Ls = multicriteria_functions.rank(
                 global_normalized_evaluations, weights_dimensions, weights_criteria
             )
-            all_projects_MCA_data["global_Ls"][project] = global_Ls
+            all_projects_MCA_data[GLOBAL_LS][project] = global_Ls
 
             # then, a local ranking, for each combinations of parameters (if asked), is calculated
             if sensibility:
@@ -82,7 +105,7 @@ def main_analysis(overallresults, multicriteria_data, settings):
                 local_Ls = []
                 for evaluation in local_evaluations:
                     local_normalized_evaluation = multicriteria_functions.normalize_evaluations(
-                        evaluation, weights_criteria, "local"
+                        evaluation, weights_criteria, LOCAL
                     )
                     local_Ls_each = multicriteria_functions.rank(
                         local_normalized_evaluation,
@@ -90,7 +113,7 @@ def main_analysis(overallresults, multicriteria_data, settings):
                         weights_criteria,
                     )
                     local_Ls.append(local_Ls_each)
-                all_projects_MCA_data["local_Ls"][project] = local_Ls
+                all_projects_MCA_data[LOCAL_LS][project] = local_Ls
 
         # present results of the multicriteria analysis in excel file
         multicriteria_functions.representation(
@@ -106,7 +129,7 @@ def main_analysis(overallresults, multicriteria_data, settings):
 
         # plot criteria evaluations
         multicriteria_functions.plot_evaluations(
-            all_projects_MCA_data["evaluations"],
+            all_projects_MCA_data[EVALUATIONS],
             plot_criteria,
             parameters,
             cases,
@@ -136,7 +159,7 @@ def presentation(overallresults, parameters):
     overallresults = overallresults.to_dict("list")
 
     cases = []
-    for case in overallresults["case"]:
+    for case in overallresults[CASE]:
         if case not in cases:
             cases.append(case)
 
@@ -144,8 +167,8 @@ def presentation(overallresults, parameters):
     overallresults = {}
     previous_project = None
     projects_name = []
-    for i in range(len(results["project_site_name"])):
-        project = results["project_site_name"][i]
+    for i in range(len(results[PROJECT_SITE_NAME])):
+        project = results[PROJECT_SITE_NAME][i]
         if project not in overallresults:
             overallresults[project] = {}
             for element in results:
@@ -159,23 +182,23 @@ def presentation(overallresults, parameters):
     # look at which solved experiments the levels of the parameters of the sensibility analysis change
     for parameter in parameters:
         index = 0
-        parameters[parameter]["levels"] = []
-        parameters[parameter]["previous_level"] = None
-        parameters[parameter]["changes"] = []
+        parameters[parameter][LEVELS] = []
+        parameters[parameter][PREVIOUS_LEVEL] = None
+        parameters[parameter][CHANGES] = []
         for level in overallresults[previous_project][parameter]:
-            if level not in parameters[parameter]["levels"]:
-                parameters[parameter]["levels"].append(level)
-            if level != parameters[parameter]["previous_level"]:
-                parameters[parameter]["changes"].append(index)
-                parameters[parameter]["previous_level"] = level
+            if level not in parameters[parameter][LEVELS]:
+                parameters[parameter][LEVELS].append(level)
+            if level != parameters[parameter][PREVIOUS_LEVEL]:
+                parameters[parameter][CHANGES].append(index)
+                parameters[parameter][PREVIOUS_LEVEL] = level
             index += 1
 
     # selects the solved experiments to keep for the multicriteria analysis (where the parameters levels change)
     experiments2analyse = []
     for parameter in parameters:
-        if parameters[parameter]["analyse"] == True:
+        if parameters[parameter][ANALYSE] == True:
             if len(experiments2analyse) == 0:
-                for change in parameters[parameter]["changes"]:
+                for change in parameters[parameter][CHANGES]:
                     experiments2analyse.append(change)
             else:
                 provisional_experiments2analyse = experiments2analyse.copy()
@@ -183,9 +206,9 @@ def presentation(overallresults, parameters):
                     number_included = 0
                     i = 0
                     while (
-                        number_included < len(parameters[parameter]["levels"]) - 1
-                    ) and i < len(parameters[parameter]["changes"]):
-                        subchange = parameters[parameter]["changes"][i]
+                        number_included < len(parameters[parameter][LEVELS]) - 1
+                    ) and i < len(parameters[parameter][CHANGES]):
+                        subchange = parameters[parameter][CHANGES][i]
                         if subchange > change:
                             experiments2analyse.append(subchange)
                             number_included += 1
@@ -206,7 +229,7 @@ def presentation(overallresults, parameters):
     for project in overallresults:
         all_results[project] = {}
         for experiment in experiments2analyse:
-            filename = overallresults[project]["filename"][experiment]
+            filename = overallresults[project][FILENAME][experiment]
             all_results[project][filename] = {}
             for element in overallresults[project]:
                 all_results[project][filename][element] = overallresults[project][
@@ -225,33 +248,33 @@ def format_punctuations(multicriteria_data):
     """
 
     weights_dimensions = {}
-    for dimension in multicriteria_data["dimensions"]:
-        assessment = multicriteria_data["dimensions"][dimension]
-        weights_dimensions[assessment["Dimensions"]] = assessment["weight"]
+    for dimension in multicriteria_data[DIMENSIONS]:
+        assessment = multicriteria_data[DIMENSIONS][dimension]
+        weights_dimensions[assessment[DIMENSIONS_W]] = assessment[WEIGHT]
 
     weights_criteria = {}
     punctuations = {}
     plot_criteria = []
-    for criterion in multicriteria_data["criteria"]:
-        assessment = multicriteria_data["criteria"][criterion]
-        weights_criteria[assessment["Abrev"]] = assessment["weight"]
-        punctuations[assessment["Abrev"]] = {
-            "pv": assessment["pv"],
-            "wind": assessment["wind"],
-            "genset": assessment["diesel"],
-            "maingrid": assessment["maingrid"],
+    for criterion in multicriteria_data[CRITERIA]:
+        assessment = multicriteria_data[CRITERIA][criterion]
+        weights_criteria[assessment[ABREV]] = assessment[WEIGHT]
+        punctuations[assessment[ABREV]] = {
+            PV: assessment[PV],
+            WIND: assessment[WIND],
+            GENSET: assessment[DIESEL],
+            MAINGRID: assessment[MAINGRID],
         }
-        if assessment["plot"] == "Yes":
-            plot_criteria.append(assessment["Abrev"])
+        if assessment[PLOT] == "Yes":
+            plot_criteria.append(assessment[ABREV])
 
     parameters = {}
-    for parameter in multicriteria_data["parameters"]:
-        assessment = multicriteria_data["parameters"][parameter]
-        if isinstance(assessment["parameter"], str):
-            if assessment["show"] == 1.0:
-                parameters[assessment["parameter"]] = {"analyse": True}
+    for parameter in multicriteria_data[PARAMETERS]:
+        assessment = multicriteria_data[PARAMETERS][parameter]
+        if isinstance(assessment[PARAMETER], str):
+            if assessment[SHOW] == 1.0:
+                parameters[assessment[PARAMETER]] = {ANALYSE: True}
             else:
-                parameters[assessment["parameter"]] = {"analyse": False}
+                parameters[assessment[PARAMETER]] = {ANALYSE: False}
 
     return (
         weights_dimensions,
@@ -265,8 +288,8 @@ def format_punctuations(multicriteria_data):
 def prepare_global_evaluations(evaluations):
     """
     Distributed criteria evaluations together.
-    A dictionary of: {"case_name":{"economic":{"EC1":value_case_1_EC1,"EC2":value_case_2_EC2},"technical:{...},...},"case_name_2":{...}...}
-    is turned into: {"economic"{"EC1":[value_case_1_EC1,value_case_2_EC1,...],"EC2":[...],"technical":[...],...}
+    A dictionary of: {CASE_NAME:{ECONOMIC:{"EC1":value_case_1_EC1,"EC2":value_case_2_EC2},"technical:{...},...},"case_name_2":{...}...}
+    is turned into: {ECONOMIC{"EC1":[value_case_1_EC1,value_case_2_EC1,...],"EC2":[...],TECHNICAL:[...],...}
     This helps the whole multicriteria process.
     :return:
     a dictionary with the new format

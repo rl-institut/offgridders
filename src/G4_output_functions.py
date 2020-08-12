@@ -11,97 +11,150 @@ import logging
 import oemof.graph as graph
 import networkx as nx
 
+from src.constants import (
+    DISPLAY_META,
+    DISPLAY_MAIN,
+    SEQUENCES,
+    DISPLAY_INVEST,
+    SCALARS,
+    DEMAND_SHORTAGE,
+    DEMAND_SHORTAGE_AC,
+    DEMAND_SHORTAGE_DC,
+    DEMAND_SUPPLIED,
+    PV_GENERATION,
+    PV_GENERATION_AC,
+    PV_GENERATION_DC,
+    WIND_GENERATION,
+    EXCESS_GENERATION,
+    CONSUMPTION_MAIN_GRID_MG_SIDE,
+    STORAGE_DISCHARGE,
+    STORAGE_DISCHARGE_AC,
+    STORAGE_DISCHARGE_DC,
+    STORAGE_SOC,
+    STORAGE_CHARGE,
+    STORAGE_CHARGE_AC,
+    STORAGE_CHARGE_DC,
+    GENSET_GENERATION,
+    GRID_AVAILABILITY,
+    DEMAND,
+    FEED_INTO_MAIN_GRID,
+    CONSUMPTION_FROM_MAIN_GRID,
+    SAVE_TO_CSV_FLOWS_ELECTRICITY_MG,
+    OUTPUT_FOLDER,
+    CASE_NAME,
+    SAVE_TO_PNG_FLOWS_ELECTRICITY_MG,
+    STORAGE_FIXED_CAPACITY,
+    PCC_CONSUMPTION_FIXED_CAPACITY,
+    PCC_FEEDIN_FIXED_CAPACITY,
+    PROJECT_SITE_NAME,
+    STORED_CAPACITY,
+    SAVE_TO_CSV_FLOWS_STORAGE,
+    SAVE_TO_PNG_FLOWS_STORAGE,
+    WIND,
+    PV,
+    FEED_INTO_MAIN_GRID_MG_SIDE,
+    DEMAND_AC,
+    DEMAND_DC,
+    SUFFIX_GRAPH,
+    BASE_OEM,
+    BASE_OEM_WITH_MIN_LOADING,
+    SUFFIX_ELECTRICITY_MG_CSV,
+    SUFFIX_ELECTRICITY_MG_PNG,
+    SUFFIX_ELECTRICITY_MG_4DAYS_PNG,
+    SUFFIX_STORAGE_CSV,
+    SUFFIX_STORAGE_PNG,
+    SUFFIX_STORAGE_4DAYS_PNG,
+)
+
 
 def print_oemof_meta_main_invest(experiment, meta, electricity_bus, case_name):
-    if experiment["display_meta"] == True:
+    if experiment[DISPLAY_META] == True:
         logging.info("********* Meta results *********")
         pp.pprint(meta)
 
     # print the sums of the flows around the electricity bus
-    if experiment["display_main"] == True:
+    if experiment[DISPLAY_MAIN] == True:
         logging.info("********* Main results *********")
-        pp.pprint(electricity_bus["sequences"].sum(axis=0))
+        pp.pprint(electricity_bus[SEQUENCES].sum(axis=0))
 
     # print the scalars of investment optimization (not equal to capacities!)
-    if case_name == "base_oem" or case_name == "base_oem_with_min_loading":
-        if experiment["display_invest"] == True:
+    if case_name == BASE_OEM or case_name == BASE_OEM_WITH_MIN_LOADING:
+        if experiment[DISPLAY_INVEST] == True:
             logging.info("********* Invest results *********")
-            pp.pprint(electricity_bus["scalars"])
+            pp.pprint(electricity_bus[SCALARS])
     return
 
 
 def save_mg_flows(experiment, case_dict, e_flows_df, filename):
     logging.debug("Saving flows MG.")
     flows_connected_to_electricity_mg_bus = [
-        "Demand AC",
-        "Demand DC",
-        "Demand shortage",
-        "Demand shortage AC",
-        "Demand shortage DC",
-        "Demand supplied",
-        "PV generation",
-        "PV generation AC",
-        "PV generation DC",
-        "Wind generation",
-        "Excess generation",
-        "Consumption from main grid (MG side)",
-        "Feed into main grid (MG side)",
-        "Storage discharge",
-        "Storage discharge AC",
-        "Storage discharge DC",
-        "Storage SOC",
-        "Storage charge",
-        "Storage charge AC",
-        "Storage charge DC",
-        "Genset generation",
-        "Grid availability",
+        DEMAND_AC,
+        DEMAND_DC,
+        DEMAND_SHORTAGE,
+        DEMAND_SHORTAGE_AC,
+        DEMAND_SHORTAGE_DC,
+        DEMAND_SUPPLIED,
+        PV_GENERATION,
+        PV_GENERATION_AC,
+        PV_GENERATION_DC,
+        WIND_GENERATION,
+        EXCESS_GENERATION,
+        CONSUMPTION_MAIN_GRID_MG_SIDE,
+        FEED_INTO_MAIN_GRID_MG_SIDE,
+        STORAGE_DISCHARGE,
+        STORAGE_DISCHARGE_AC,
+        STORAGE_DISCHARGE_DC,
+        STORAGE_SOC,
+        STORAGE_CHARGE,
+        STORAGE_CHARGE_AC,
+        STORAGE_CHARGE_DC,
+        GENSET_GENERATION,
+        GRID_AVAILABILITY,
     ]
 
     negative_list = [
-        "Demand shortage",
-        "Demand shortage AC",
-        "Demand shortage DC",
-        "Storage discharge",
-        "Storage discharge AC",
-        "Storage discharge DC",
-        "Feed into main grid (MG side)",
+        DEMAND_SHORTAGE,
+        DEMAND_SHORTAGE_AC,
+        DEMAND_SHORTAGE_DC,
+        STORAGE_DISCHARGE,
+        STORAGE_DISCHARGE_AC,
+        STORAGE_DISCHARGE_DC,
+        FEED_INTO_MAIN_GRID_MG_SIDE,
     ]
 
     droplist = [
-        "Demand AC",
-        "Demand DC",
-        "Demand shortage AC",
-        "Demand shortage DC",
-        "PV generation AC",
-        "PV generation DC",
-        "Storage discharge AC",
-        "Storage discharge DC",
-        "Storage charge AC",
-        "Storage charge DC",
+        DEMAND_AC,
+        DEMAND_DC,
+        DEMAND_SHORTAGE_AC,
+        DEMAND_SHORTAGE_DC,
+        PV_GENERATION_AC,
+        PV_GENERATION_DC,
+        STORAGE_DISCHARGE_AC,
+        STORAGE_DISCHARGE_DC,
+        STORAGE_CHARGE_AC,
+        STORAGE_CHARGE_DC,
     ]
 
     mg_flows = pd.DataFrame(
-        e_flows_df["Demand"].values,
-        columns=["Demand"],
-        index=e_flows_df["Demand"].index,
+        e_flows_df[DEMAND].values, columns=[DEMAND], index=e_flows_df[DEMAND].index,
     )
     for entry in flows_connected_to_electricity_mg_bus:
         if entry in e_flows_df.columns:
             # do not add energyflow of shortage/supplied demand, if no shortage occurs
             if not (
-                (entry == "Demand supplied" or entry == "Demand shortage")
+                (entry == DEMAND_SUPPLIED or entry == DEMAND_SHORTAGE)
                 and (
-                    sum(e_flows_df["Demand"].values)
-                    == sum(e_flows_df["Demand supplied"].values)
+                    sum(e_flows_df[DEMAND].values)
+                    == sum(e_flows_df[DEMAND_SUPPLIED].values)
                 )
             ):
 
                 if entry in negative_list:
                     # Display those values as negative in graphs/files
-                    if entry == "Feed into main grid (MG side)":
+                    if entry == FEED_INTO_MAIN_GRID_MG_SIDE:
                         new_column = pd.DataFrame(
                             -e_flows_df[entry].values,
-                            columns=["Feed into main grid"],
+                            columns=[FEED_INTO_MAIN_GRID],
                             index=e_flows_df[entry].index,
                         )
                     else:
@@ -110,10 +163,10 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
                             columns=[entry],
                             index=e_flows_df[entry].index,
                         )  # Display those values as negative in graphs/files
-                elif entry == "Consumption from main grid (MG side)":
+                elif entry == CONSUMPTION_MAIN_GRID_MG_SIDE:
                     new_column = pd.DataFrame(
                         e_flows_df[entry].values,
-                        columns=["Consumption from main grid"],
+                        columns=[CONSUMPTION_FROM_MAIN_GRID],
                         index=e_flows_df[entry].index,
                     )
                 else:
@@ -125,30 +178,30 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
 
                 mg_flows = mg_flows.join(new_column)
 
-    if experiment["save_to_csv_flows_electricity_mg"] == True:
+    if experiment[SAVE_TO_CSV_FLOWS_ELECTRICITY_MG] == True:
         mg_flows.to_csv(
-            experiment["output_folder"]
+            experiment[OUTPUT_FOLDER]
             + "/electricity_mg/"
-            + case_dict["case_name"]
+            + case_dict[CASE_NAME]
             + filename
-            + "_electricity_mg.csv"
+            + SUFFIX_ELECTRICITY_MG_CSV
         )
 
-    if experiment["save_to_png_flows_electricity_mg"] == True:
+    if experiment[SAVE_TO_PNG_FLOWS_ELECTRICITY_MG] == True:
         number_of_subplots = 0
 
         for item in droplist:
             if item in mg_flows.columns:
                 mg_flows = mg_flows.drop([item], axis=1)
 
-        if "Storage SOC" in mg_flows.columns:
-            mg_flows = mg_flows.drop(["Storage SOC"], axis=1)
-            if case_dict["storage_fixed_capacity"] != None:
+        if STORAGE_SOC in mg_flows.columns:
+            mg_flows = mg_flows.drop([STORAGE_SOC], axis=1)
+            if case_dict[STORAGE_FIXED_CAPACITY] != None:
                 number_of_subplots += 1
-        if "Grid availability" in mg_flows.columns:
-            mg_flows = mg_flows.drop(["Grid availability"], axis=1)
-            if (case_dict["pcc_consumption_fixed_capacity"] != None) or (
-                case_dict["pcc_feedin_fixed_capacity"] != None
+        if GRID_AVAILABILITY in mg_flows.columns:
+            mg_flows = mg_flows.drop([GRID_AVAILABILITY], axis=1)
+            if (case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] != None) or (
+                case_dict[PCC_FEEDIN_FIXED_CAPACITY] != None
             ):
                 number_of_subplots += 1
 
@@ -158,15 +211,15 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
                     case_dict, experiment, mg_flows, e_flows_df, number_of_subplots
                 )
                 plt.savefig(
-                    experiment["output_folder"]
+                    experiment[OUTPUT_FOLDER]
                     + "/electricity_mg/"
-                    + case_dict["case_name"]
+                    + case_dict[CASE_NAME]
                     + filename
-                    + "_electricity_mg.png",
+                    + SUFFIX_ELECTRICITY_MG_PNG,
                     bbox_inches="tight",
                 )
 
-            elif timeframe == "days" and (len(mg_flows["Demand"]) >= 5 * 24):
+            elif timeframe == "days" and (len(mg_flows[DEMAND]) >= 5 * 24):
                 plot_flows(
                     case_dict,
                     experiment,
@@ -175,11 +228,11 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
                     number_of_subplots,
                 )
                 plt.savefig(
-                    experiment["output_folder"]
+                    experiment[OUTPUT_FOLDER]
                     + "/electricity_mg/"
-                    + case_dict["case_name"]
+                    + case_dict[CASE_NAME]
                     + filename
-                    + "_electricity_mg_4days.png",
+                    + SUFFIX_ELECTRICITY_MG_4DAYS_PNG,
                     bbox_inches="tight",
                 )
             plt.close()
@@ -199,26 +252,26 @@ def plot_flows(case_dict, experiment, mg_flows, e_flows_df, number_of_subplots):
 
     # website with websafe hexacolours: https://www.colorhexa.com/web-safe-colors
     color_dict = {
-        "Demand": "#33ff00",  # dark green
-        "Demand supplied": "#66cc33",  # grass green
-        "PV generation": "#ffcc00",  # orange
-        "Wind generation": "#33ccff",  # light blue
-        "Genset generation": "#000000",  # black
-        "Consumption from main grid": "#990099",  # violet
-        "Storage charge": "#0033cc",  # light green
-        "Excess generation": "#996600",  # brown
-        "Feed into main grid": "#ff33cc",  # pink
-        "Storage discharge": "#ccccff",  # pidgeon blue
-        "Demand shortage": "#ff3300",  # bright red
-        "Storage SOC": "#0033cc",  # blue
-        "Grid availability": "#cc0000",  # red
+        DEMAND: "#33ff00",  # dark green
+        DEMAND_SUPPLIED: "#66cc33",  # grass green
+        PV_GENERATION: "#ffcc00",  # orange
+        WIND_GENERATION: "#33ccff",  # light blue
+        GENSET_GENERATION: "#000000",  # black
+        CONSUMPTION_FROM_MAIN_GRID: "#990099",  # violet
+        STORAGE_CHARGE: "#0033cc",  # light green
+        EXCESS_GENERATION: "#996600",  # brown
+        FEED_INTO_MAIN_GRID: "#ff33cc",  # pink
+        STORAGE_DISCHARGE: "#ccccff",  # pidgeon blue
+        DEMAND_SHORTAGE: "#ff3300",  # bright red
+        STORAGE_SOC: "#0033cc",  # blue
+        GRID_AVAILABILITY: "#cc0000",  # red
     }
 
     mg_flows.plot(
         title="MG Operation of case "
-        + case_dict["case_name"]
+        + case_dict[CASE_NAME]
         + " in "
-        + experiment["project_site_name"],
+        + experiment[PROJECT_SITE_NAME],
         color=[color_dict.get(x, "#333333") for x in mg_flows.columns],
         ax=axes_mg,
         drawstyle="steps-mid",
@@ -229,28 +282,28 @@ def plot_flows(case_dict, experiment, mg_flows, e_flows_df, number_of_subplots):
     if number_of_subplots >= 1:
         ylabel = ""
         if (
-            (case_dict["pcc_consumption_fixed_capacity"] != None)
-            or (case_dict["pcc_feedin_fixed_capacity"] != None)
-        ) and ("Grid availability" in e_flows_df.columns):
-            e_flows_df["Grid availability"].plot(
+            (case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] != None)
+            or (case_dict[PCC_FEEDIN_FIXED_CAPACITY] != None)
+        ) and (GRID_AVAILABILITY in e_flows_df.columns):
+            e_flows_df[GRID_AVAILABILITY].plot(
                 ax=axes[1],
-                color=color_dict.get("Grid availability", "#333333"),
+                color=color_dict.get(GRID_AVAILABILITY, "#333333"),
                 drawstyle="steps-mid",
             )
-            ylabel += "Grid availability"
+            ylabel += GRID_AVAILABILITY
 
         if number_of_subplots > 1:
             ylabel += ",\n "
 
-        if (case_dict["storage_fixed_capacity"] != None) and (
-            "Storage SOC" in e_flows_df.columns
+        if (case_dict[STORAGE_FIXED_CAPACITY] != None) and (
+            STORAGE_SOC in e_flows_df.columns
         ):
-            e_flows_df["Storage SOC"].plot(
+            e_flows_df[STORAGE_SOC].plot(
                 ax=axes[1],
-                color=color_dict.get("Storage SOC", "#333333"),
+                color=color_dict.get(STORAGE_SOC, "#333333"),
                 drawstyle="steps-mid",
             )
-            ylabel += "Storage SOC"
+            ylabel += STORAGE_SOC
 
         axes[1].set(xlabel="Time", ylabel=ylabel)
         if number_of_subplots > 1:
@@ -261,22 +314,22 @@ def plot_flows(case_dict, experiment, mg_flows, e_flows_df, number_of_subplots):
 
 def save_storage(experiment, case_dict, e_flows_df, filename):
     logging.debug("Saving flows storage.")
-    if case_dict["storage_fixed_capacity"] != None:
+    if case_dict[STORAGE_FIXED_CAPACITY] != None:
 
         flows_connected_to_electricity_mg_bus = [
-            "Storage discharge",
-            "Storage charge",
-            "Storage SOC",
+            STORAGE_DISCHARGE,
+            STORAGE_CHARGE,
+            STORAGE_SOC,
         ]
         storage_flows = pd.DataFrame(
-            e_flows_df["Stored capacity"].values,
-            columns=["Stored capacity"],
-            index=e_flows_df["Stored capacity"].index,
+            e_flows_df[STORED_CAPACITY].values,
+            columns=[STORED_CAPACITY],
+            index=e_flows_df[STORED_CAPACITY].index,
         )
 
         for entry in flows_connected_to_electricity_mg_bus:
             if entry in e_flows_df.columns:
-                if entry == "Storage discharge":
+                if entry == STORAGE_DISCHARGE:
                     new_column = pd.DataFrame(
                         -e_flows_df[entry].values,
                         columns=[entry],
@@ -290,50 +343,50 @@ def save_storage(experiment, case_dict, e_flows_df, filename):
                     )
                 storage_flows = storage_flows.join(new_column)
 
-        if experiment["save_to_csv_flows_storage"] == True:
+        if experiment[SAVE_TO_CSV_FLOWS_STORAGE] == True:
             storage_flows.to_csv(
-                experiment["output_folder"]
+                experiment[OUTPUT_FOLDER]
                 + "/storage/"
-                + case_dict["case_name"]
+                + case_dict[CASE_NAME]
                 + filename
-                + "_storage.csv"
+                + SUFFIX_STORAGE_CSV
             )
 
-        if experiment["save_to_png_flows_storage"] == True:
+        if experiment[SAVE_TO_PNG_FLOWS_STORAGE] == True:
             fig = storage_flows.plot(
                 title="Storage flows of case "
-                + case_dict["case_name"]
+                + case_dict[CASE_NAME]
                 + " in "
-                + experiment["project_site_name"]
+                + experiment[PROJECT_SITE_NAME]
             )
             fig.set(xlabel="Time", ylabel="Electricity flow/stored in kWh")
             fig.legend(loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
             plt.savefig(
-                experiment["output_folder"]
+                experiment[OUTPUT_FOLDER]
                 + "/storage/"
-                + case_dict["case_name"]
+                + case_dict[CASE_NAME]
                 + filename
-                + "_storage.png",
+                + SUFFIX_STORAGE_PNG,
                 bbox_inches="tight",
             )
             plt.close()
             plt.clf()
             plt.cla()
-            if len(storage_flows["Stored capacity"]) >= 5 * 24:
+            if len(storage_flows[STORED_CAPACITY]) >= 5 * 24:
                 fig = storage_flows[24 : 5 * 24].plot(
                     title="Storage flows of case "
-                    + case_dict["case_name"]
+                    + case_dict[CASE_NAME]
                     + " in "
-                    + experiment["project_site_name"]
+                    + experiment[PROJECT_SITE_NAME]
                 )
                 fig.set(xlabel="Time", ylabel="Electricity flow/stored in kWh")
                 fig.legend(loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
                 plt.savefig(
-                    experiment["output_folder"]
+                    experiment[OUTPUT_FOLDER]
                     + "/storage/"
-                    + case_dict["case_name"]
+                    + case_dict[CASE_NAME]
                     + filename
-                    + "_storage_4days.png",
+                    + SUFFIX_STORAGE_4DAYS_PNG,
                     bbox_inches="tight",
                 )
                 plt.close()
@@ -345,7 +398,7 @@ def save_storage(experiment, case_dict, e_flows_df, filename):
 def save_network_graph(energysystem, case_name):
     logging.debug("Generate networkx diagram")
     energysystem_graph = graph.create_nx_graph(energysystem)
-    graph_file_name = case_name + "_graph"
+    graph_file_name = case_name + SUFFIX_GRAPH
     graph_path = "./simulation_results/" + graph_file_name
     nx.readwrite.write_gpickle(G=energysystem_graph, path=graph_path)
     energysystem_graph = nx.readwrite.read_gpickle(graph_path)

@@ -30,11 +30,11 @@ Each important section of the code has been commented to allow full understandin
 Output files
 _____________
 The MCA creates one file (MCA_evaluations.xlsx) and one folder (MCA_plots) to store the plots required. The excel file follows the next structure to present the results:
-1. The solutions analysed are displayed. A different number of solutions are analysed depending on the number of case scenarios and the parameters selected from the sensitivity analysis.
-2. The main outputs of the optimizations (optimal power capacities) are displayed.
-3. Evaluations of the criteria
-4. Normalized evaluations of the criteria. If a criterion does not make any difference between the solutions, and therefore every solution has the same value for that criterion, these evaluations cannot be normalized. In that case, the text "None" will be displayed and the weight of this criterion is turned into 0, and modifying the weights of the other criteria of that dimension accordingly.
-5. The distance from each solution to an ideal utopian solution (L) is calculated. The lower the L value for one alternative, the better the alternative is. A ranking is also displayed.
-6. Finally, the same ranking procedure is repeated for each combination of parameters displayed from the sensitivity analysis. Thus, an analysis within each particular combination is allowed.
+    1. The solutions analysed are displayed. A different number of solutions are analysed depending on the number of case scenarios and the parameters selected from the sensitivity analysis.
+    2. The main outputs of the optimizations (optimal power capacities) are displayed.
+    3. Evaluations of the criteria
+    4. Normalized evaluations of the criteria. If a criterion does not make any difference between the solutions, and therefore every solution has the same value for that criterion, these evaluations cannot be normalized. In that case, the text "None" will be displayed and the weight of this criterion is turned into 0, and modifying the weights of the other criteria of that dimension accordingly.
+    5. The distance from each solution to an ideal utopian solution (L) is calculated. The lower the L value for one alternative, the better the alternative is. A ranking is also displayed.
+    6. Finally, the same ranking procedure is repeated for each combination of parameters displayed from the sensitivity analysis. Thus, an analysis within each particular combination is allowed.
 
 

@@ -6,6 +6,67 @@ import matplotlib.pyplot as plt
 import os
 import shutil
 
+from src.constants import (
+    PV,
+    CAPACITY_PV_KWP,
+    WIND,
+    CAPACITY_WIND_KW,
+    GENSET,
+    CAPACITY_GENSET_KW,
+    STORAGE,
+    CAPACITY_STORAGE_KWH,
+    MAINGRID,
+    TOTAL_PV_GENERATION_KWH,
+    CAPACITY_PCOUPLING_KW,
+    TOTAL_WIND_GENERATION_KWH,
+    CONSUMPTION_MAIN_GRID_MG_SIDE_ANNUAL_KWH,
+    TOTAL_GENSET_GENERATION_KWH,
+    FIRST_INVESTMENT,
+    OPERATION_MAINTAINANCE_EXPENDITURES,
+    REVENUE_MAIN_GRID_FEEDIN_ANNUAL,
+    ECONOMIC,
+    AUTONOMY_FACTOR,
+    SUPPLY_RELIABILITY_KWH,
+    TECHNICAL,
+    TARIFF,
+    CASE,
+    SOCIOINSTITUTIONAL,
+    ENVIRONMENTAL,
+    FILENAME,
+    OUTPUT_FOLDER,
+    EVALUATIONS,
+    ANALYSE,
+    LEVELS,
+    CAPACITIES,
+    CRITERIA,
+    NORMALIZED_EVALUATIONS,
+    GLOBAL_LS,
+    LOCAL_LS,
+    CASES_AND_EXPERIMENTS,
+    EVALUATION,
+    DIMENSIONS_W,
+    EC1,
+    EC2,
+    T1,
+    T2,
+    T3,
+    T4,
+    WEIGHTS,
+    L1,
+    LINF,
+    ENVIRONMENTAL_W,
+    MCA_PLOTS,
+    S1,
+    S3,
+    S2,
+    EN1,
+    EN2,
+    EN3,
+    GLOBAL,
+    PREFIX_CASE,
+    PATH_MCA_EVALUATIONS_XLSX,
+)
+
 
 def evaluate_criteria(all_results, qualitative_punctuations, multicriteria_data):
     """
@@ -19,17 +80,17 @@ def evaluate_criteria(all_results, qualitative_punctuations, multicriteria_data)
     """
 
     capacities_components = {
-        "pv": "capacity_pv_kWp",
-        "wind": "capacity_wind_kW",
-        "genset": "capacity_genset_kW",
-        "storage": "capacity_storage_kWh",
-        "maingrid": "capacity_pcoupling_kW",
+        PV: CAPACITY_PV_KWP,
+        WIND: CAPACITY_WIND_KW,
+        GENSET: CAPACITY_GENSET_KW,
+        STORAGE: CAPACITY_STORAGE_KWH,
+        MAINGRID: CAPACITY_PCOUPLING_KW,
     }
     generation_components = {
-        "pv": "total_pv_generation_kWh",
-        "wind": "total_wind_generation_kWh",
-        "genset": "total_genset_generation_kWh",
-        "maingrid": "consumption_main_grid_mg_side_annual_kWh",
+        PV: TOTAL_PV_GENERATION_KWH,
+        WIND: TOTAL_WIND_GENERATION_KWH,
+        GENSET: TOTAL_GENSET_GENERATION_KWH,
+        MAINGRID: CONSUMPTION_MAIN_GRID_MG_SIDE_ANNUAL_KWH,
     }
 
     evaluations = {}
@@ -39,11 +100,11 @@ def evaluate_criteria(all_results, qualitative_punctuations, multicriteria_data)
     for project_site in all_results:
         project_evaluations = {}
         project_capacities = {
-            "capacity_pv_kWp": [],
-            "capacity_wind_kW": [],
-            "capacity_storage_kWh": [],
-            "capacity_genset_kW": [],
-            "capacity_pcoupling_kW": [],
+            CAPACITY_PV_KWP: [],
+            CAPACITY_WIND_KW: [],
+            CAPACITY_STORAGE_KWH: [],
+            CAPACITY_GENSET_KW: [],
+            CAPACITY_PCOUPLING_KW: [],
         }
 
         for cases in all_results[project_site]:
@@ -55,52 +116,55 @@ def evaluate_criteria(all_results, qualitative_punctuations, multicriteria_data)
             case_evaluations = {}
 
             # economic evaluation
-            EC1 = case["first_investment"]
-            EC2 = case["operation_maintenance_expenditures"]
-            if "revenue_main_grid_feedin_annual" in case.keys() and isinstance(
-                "revenue_main_grid_feedin_annual", float
+            EC1_Result = case[FIRST_INVESTMENT]
+            EC2_Result = case[OPERATION_MAINTAINANCE_EXPENDITURES]
+            if REVENUE_MAIN_GRID_FEEDIN_ANNUAL in case.keys() and isinstance(
+                REVENUE_MAIN_GRID_FEEDIN_ANNUAL, float
             ):
-                EC2 = EC2 - case["revenue_main_grid_feedin_annual"]
-            economic = {"EC1": EC1, "EC2": EC2}
-            case_evaluations["economic"] = economic
+                EC2_Result = EC2_Result - case[REVENUE_MAIN_GRID_FEEDIN_ANNUAL]
+            economic = {
+                EC1: EC1_Result,
+                EC2: EC2_Result,
+            }  # Here str are conserved as a variable is prevously declarated with the same name
+            case_evaluations[ECONOMIC] = economic
 
             # technical evaluation
-            T1 = case["autonomy_factor"]
-            T2 = case["supply_reliability_kWh"]
-            T3 = linear_evaluation(
-                qualitative_punctuations, generation_components, case, "T3"
+            T1_Results = case[AUTONOMY_FACTOR]
+            T2_Results = case[SUPPLY_RELIABILITY_KWH]
+            T3_Results = linear_evaluation(
+                qualitative_punctuations, generation_components, case, T3
             )
-            T4 = linear_evaluation(
-                qualitative_punctuations, generation_components, case, "T4"
+            T4_Results = linear_evaluation(
+                qualitative_punctuations, generation_components, case, T4
             )
-            technical = {"T1": T1, "T2": T2, "T3": T3, "T4": T4}
-            case_evaluations["technical"] = technical
+            technical = {T1: T1_Results, T2: T2_Results, T3: T3_Results, T4: T4_Results}
+            case_evaluations[TECHNICAL] = technical
 
             # socioinstitutional evaluation
-            S1 = linear_evaluation(
-                qualitative_punctuations, generation_components, case, "S1"
+            S1_Results = linear_evaluation(
+                qualitative_punctuations, generation_components, case, S1
             )
-            S2 = multicriteria_data["tariff"][case["case"]]
-            S3 = linear_evaluation(
-                qualitative_punctuations, generation_components, case, "S3"
+            S2_Results = multicriteria_data[TARIFF][case[CASE]]
+            S3_Results = linear_evaluation(
+                qualitative_punctuations, generation_components, case, S3
             )
-            socioinstitutional = {"S1": S1, "S2": S2, "S3": S3}
-            case_evaluations["socioinstitutional"] = socioinstitutional
+            socioinstitutional = {S1: S1_Results, S2: S2_Results, S3: S3_Results}
+            case_evaluations[SOCIOINSTITUTIONAL] = socioinstitutional
 
             # environmental evaluation
-            EN1 = linear_evaluation(
-                qualitative_punctuations, generation_components, case, "EN1"
+            EN1_Results = linear_evaluation(
+                qualitative_punctuations, generation_components, case, EN1
             )
-            EN2 = linear_evaluation(
-                qualitative_punctuations, capacities_components, case, "EN2"
+            EN2_Results = linear_evaluation(
+                qualitative_punctuations, capacities_components, case, EN2
             )
-            EN3 = linear_evaluation(
-                qualitative_punctuations, capacities_components, case, "EN3"
+            EN3_Results = linear_evaluation(
+                qualitative_punctuations, capacities_components, case, EN3
             )
-            environmental = {"EN1": EN1, "EN2": EN2, "EN3": EN3}
-            case_evaluations["environmental"] = environmental
+            environmental = {EN1: EN1_Results, EN2: EN2_Results, EN3: EN3_Results}
+            case_evaluations[ENVIRONMENTAL] = environmental
 
-            project_evaluations[case["filename"]] = case_evaluations
+            project_evaluations[case[FILENAME]] = case_evaluations
 
         evaluations[number] = project_evaluations
         capacities[number] = project_capacities
@@ -136,7 +200,7 @@ def normalize_evaluations(global_evaluations, weights_criteria, type):
                 ideal_values[criterion] = "None"
                 antiideal_values[criterion] = "None"
             else:
-                if criterion in ["EC1", "EC2", "S2", "EN1"]:
+                if criterion in [EC1, EC2, S2, EN1]:
                     ideal_values[criterion] = min(values)
                     antiideal_values[criterion] = max(values)
                 else:
@@ -151,7 +215,7 @@ def normalize_evaluations(global_evaluations, weights_criteria, type):
             for value in values:
                 if ideal_values[criterion] == antiideal_values[criterion]:
                     normalized_evaluations[dimension][criterion].append("None")
-                    if type == "global":
+                    if type == GLOBAL:
                         logging.debug(
                             "All cases are equal for this criterion. Therefore, criterion weight is turned into 0"
                         )
@@ -178,10 +242,10 @@ def rank(normalized_evaluations, weights_dimensions, weights_criteria):
     """
     # first, the evaluations are pondered
     ponderations = {
-        "economic": [],
-        "technical": [],
-        "socioinstitutional": [],
-        "environmental": [],
+        ECONOMIC: [],
+        TECHNICAL: [],
+        SOCIOINSTITUTIONAL: [],
+        ENVIRONMENTAL: [],
     }
     for dimension in normalized_evaluations:
         first = True
@@ -245,7 +309,7 @@ def prepare_local_evaluations(global_evaluations, cases):
     """
     local_evaluations = []
     start = 0
-    for j in range(int(len(global_evaluations["economic"]["EC1"]) / len(cases))):
+    for j in range(int(len(global_evaluations[ECONOMIC][EC1]) / len(cases))):
         local_evaluation = create_diccionary([])
         for dimension in global_evaluations:
             for criterion in global_evaluations[dimension]:
@@ -278,10 +342,10 @@ def linear_evaluation(qualitative_punctuations, components, case, criterion):
     Num = 0
     Den = 0
 
-    if criterion == "EN3":
+    if criterion == EN3:
         for component in components:
-            if component == "storage":
-                punc = punctuations["pv"]
+            if component == STORAGE:
+                punc = punctuations[PV]
             else:
                 punc = punctuations[component]
             if punc == "None":
@@ -300,7 +364,7 @@ def linear_evaluation(qualitative_punctuations, components, case, criterion):
     if Den == 0:
         logging.debug(
             "No component included in this case has capacity over 0: "
-            + case["case"]
+            + case[CASE]
             + ". 1 is returned"
         )
         return 1
@@ -313,16 +377,16 @@ def create_diccionary(self):
     :return:
     a template of the dictionary for the multicriteria analysis
     """
-    economic_eval = {"EC1": [], "EC2": []}
-    technical_eval = {"T1": [], "T2": [], "T3": [], "T4": []}
-    socioinstitutional_eval = {"S1": [], "S2": [], "S3": []}
-    environmental_eval = {"EN1": [], "EN2": [], "EN3": []}
+    economic_eval = {EC1: [], EC2: []}
+    technical_eval = {T1: [], T2: [], T3: [], T4: []}
+    socioinstitutional_eval = {S1: [], S2: [], S3: []}
+    environmental_eval = {EN1: [], EN2: [], EN3: []}
 
     dictionary = {
-        "economic": economic_eval,
-        "technical": technical_eval,
-        "socioinstitutional": socioinstitutional_eval,
-        "environmental": environmental_eval,
+        ECONOMIC: economic_eval,
+        TECHNICAL: technical_eval,
+        SOCIOINSTITUTIONAL: socioinstitutional_eval,
+        ENVIRONMENTAL: environmental_eval,
     }
 
     return dictionary
@@ -339,14 +403,14 @@ def change_weights(weights_criteria, dimension, criterion):
     :return:
     """
     weights_criteria[criterion] = 0
-    if dimension == "economic":
-        criteria = ["EC1", "EC2"]
-    elif dimension == "technical":
-        criteria = ["T1", "T2", "T3", "T4"]
-    elif dimension == "socioinstitutional":
-        criteria = ["S1", "S2", "S3"]
-    elif dimension == "environmental":
-        criteria = ["EN1", "EN2", "EN3"]
+    if dimension == ECONOMIC:
+        criteria = [EC1, EC2]
+    elif dimension == TECHNICAL:
+        criteria = [T1, T2, T3, T4]
+    elif dimension == SOCIOINSTITUTIONAL:
+        criteria = [S1, S2, S3]
+    elif dimension == ENVIRONMENTAL:
+        criteria = [EN1, EN2, EN3]
 
     total = 0
     for criterion in criteria:
@@ -444,9 +508,11 @@ def representation(
         51: "AZ",
     }
 
-    workbook = xlsxwriter.Workbook(settings["output_folder"] + "/MCA_evaluations.xlsx")
+    workbook = xlsxwriter.Workbook(
+        os.path.join(settings[OUTPUT_FOLDER], PATH_MCA_EVALUATIONS_XLSX)
+    )
 
-    for n in range(len(all_data["evaluations"])):
+    for n in range(len(all_data[EVALUATIONS])):
         # there will be a tab for each project
         worksheet = workbook.add_worksheet(projects_name[n])
 
@@ -488,7 +554,7 @@ def representation(
         # write parameters and values of the sensibility analysis that are considered for the multicriteria analysis
         parameters_name = []
         for parameter in parameters:
-            if parameters[parameter]["analyse"] == True:
+            if parameters[parameter][ANALYSE] == True:
                 worksheet.write(row, col, parameter, format_highlight)
                 parameters_name.append(parameter)
                 row += 1
@@ -496,13 +562,13 @@ def representation(
         row, col, final = 0, 4, 4
         first = True
         for parameter in parameters:
-            if parameters[parameter]["analyse"] == True:
+            if parameters[parameter][ANALYSE] == True:
                 del parameters_name[0]
                 cells = len(cases)
                 for param in parameters_name:
-                    cells = cells * len(parameters[param]["levels"])
+                    cells = cells * len(parameters[param][LEVELS])
                 if first:
-                    for level in parameters[parameter]["levels"]:
+                    for level in parameters[parameter][LEVELS]:
                         worksheet.merge_range(
                             str(columns[col])
                             + str(row + 1)
@@ -519,7 +585,7 @@ def representation(
                     first = False
                 else:
                     while col < final:
-                        for level in parameters[parameter]["levels"]:
+                        for level in parameters[parameter][LEVELS]:
                             worksheet.merge_range(
                                 str(columns[col])
                                 + str(row + 1)
@@ -542,12 +608,14 @@ def representation(
                 if i % 2 == 0:
                     worksheet.write(row, col, case, format_highlight)
                     worksheet.write(
-                        row + 1, col, "case_" + str(j), format_highlight
+                        row + 1, col, PREFIX_CASE + str(j), format_highlight
                     )  # easy name to reference case and experiment when plotting
                     j += 1
                 else:
                     worksheet.write(row, col, case, format_highlight2)
-                    worksheet.write(row + 1, col, "case_" + str(j), format_highlight2)
+                    worksheet.write(
+                        row + 1, col, PREFIX_CASE + str(j), format_highlight2
+                    )
                     j += 1
                 col += 1
             i += 1
@@ -566,14 +634,14 @@ def representation(
         )
 
         row += 1
-        for capacity in all_data["capacities"][n + 1]:
+        for capacity in all_data[CAPACITIES][n + 1]:
             worksheet.merge_range(
                 "B" + str(row + 1) + ":D" + str(row + 1), capacity, format_highlight
             )
 
             col = 4
             i = 0
-            for value in all_data["capacities"][n + 1][capacity]:
+            for value in all_data[CAPACITIES][n + 1][capacity]:
                 if i / (len(cases) * 2) < 0.5:
                     worksheet.write(row, col, round(value, 2), format_text)
                 else:
@@ -588,10 +656,10 @@ def representation(
         # write evaluations of criteria
         row += 1
         worksheet.merge_range(
-            "A" + str(row + 1) + ":B" + str(row + 1), "Dimensions", format_highlight
+            "A" + str(row + 1) + ":B" + str(row + 1), DIMENSIONS_W, format_highlight
         )
         worksheet.merge_range(
-            "C" + str(row + 1) + ":D" + str(row + 1), "Criteria", format_highlight
+            "C" + str(row + 1) + ":D" + str(row + 1), CRITERIA, format_highlight
         )
         col = 4
         worksheet.merge_range(
@@ -617,11 +685,11 @@ def representation(
         )
         worksheet.merge_range(
             "A" + str(row + 10) + ":B" + str(row + 12),
-            "Environmental",
+            ENVIRONMENTAL_W,
             format_highlight,
         )
-        for dimension in all_data["evaluations"][n + 1]:
-            for criterion in all_data["evaluations"][n + 1][dimension]:
+        for dimension in all_data[EVALUATIONS][n + 1]:
+            for criterion in all_data[EVALUATIONS][n + 1][dimension]:
                 worksheet.merge_range(
                     "C" + str(row + 1) + ":D" + str(row + 1),
                     criterion,
@@ -629,7 +697,7 @@ def representation(
                 )
                 col = 4
                 i = 0
-                values = all_data["evaluations"][n + 1][dimension][criterion]
+                values = all_data[EVALUATIONS][n + 1][dimension][criterion]
                 for value in values:
                     if i / (len(cases) * 2) < 0.5:
                         worksheet.write(row, col, value, format_text)
@@ -644,10 +712,10 @@ def representation(
         # write normalized evaluations of criteria
         row += 1
         col = 0
-        worksheet.write(row, col, "Dimensions", format_highlight)
-        worksheet.write(row, col + 1, "Weights", format_highlight)
-        worksheet.write(row, col + 2, "Criteria", format_highlight)
-        worksheet.write(row, col + 3, "Weights", format_highlight)
+        worksheet.write(row, col, DIMENSIONS_W, format_highlight)
+        worksheet.write(row, col + 1, WEIGHTS, format_highlight)
+        worksheet.write(row, col + 2, CRITERIA, format_highlight)
+        worksheet.write(row, col + 3, WEIGHTS, format_highlight)
         col = 4
         worksheet.merge_range(
             str(columns[col])
@@ -664,7 +732,7 @@ def representation(
         )
         worksheet.merge_range(
             "B" + str(row + 1) + ":" + "B" + str(row + 2),
-            weights_dimensions["economic"],
+            weights_dimensions[ECONOMIC],
             format_highlight,
         )
         worksheet.merge_range(
@@ -672,7 +740,7 @@ def representation(
         )
         worksheet.merge_range(
             "B" + str(row + 3) + ":" + "B" + str(row + 6),
-            weights_dimensions["technical"],
+            weights_dimensions[TECHNICAL],
             format_highlight,
         )
         worksheet.merge_range(
@@ -680,7 +748,7 @@ def representation(
         )
         worksheet.merge_range(
             "B" + str(row + 7) + ":" + "B" + str(row + 9),
-            weights_dimensions["socioinstitutional"],
+            weights_dimensions[SOCIOINSTITUTIONAL],
             format_highlight,
         )
         worksheet.merge_range(
@@ -688,16 +756,16 @@ def representation(
         )
         worksheet.merge_range(
             "B" + str(row + 10) + ":" + "B" + str(row + 12),
-            weights_dimensions["environmental"],
+            weights_dimensions[ENVIRONMENTAL],
             format_highlight,
         )
-        for dimension in all_data["normalized_evaluations"][n + 1]:
-            for criterion in all_data["normalized_evaluations"][n + 1][dimension]:
+        for dimension in all_data[NORMALIZED_EVALUATIONS][n + 1]:
+            for criterion in all_data[NORMALIZED_EVALUATIONS][n + 1][dimension]:
                 worksheet.write(row, 2, criterion, format_highlight)
                 worksheet.write(row, 3, weights_criteria[criterion], format_highlight)
                 col = 4
                 i = 0
-                values = all_data["normalized_evaluations"][n + 1][dimension][criterion]
+                values = all_data[NORMALIZED_EVALUATIONS][n + 1][dimension][criterion]
                 for value in values:
                     if i / (len(cases) * 2) < 0.5:
                         worksheet.write(row, col, value, format_text)
@@ -722,11 +790,11 @@ def representation(
             format_title,
         )
         row += 1
-        worksheet.write(row, 3, "L1", format_highlight)
-        worksheet.write(row + 1, 3, "Linf", format_highlight)
+        worksheet.write(row, 3, L1, format_highlight)
+        worksheet.write(row + 1, 3, LINF, format_highlight)
         worksheet.write(row + 2, 3, "L", format_highlight)
-        for j in range(len(all_data["global_Ls"][n + 1])):
-            L = all_data["global_Ls"][n + 1][j]
+        for j in range(len(all_data[GLOBAL_LS][n + 1])):
+            L = all_data[GLOBAL_LS][n + 1][j]
             col = 4
             for value in L:
                 worksheet.write(row, col, round(value, 2), format_highlight)
@@ -767,11 +835,11 @@ def representation(
             row += 1
             start_row = row
             start_col, i = 4, 0
-            worksheet.write(row, 3, "L1", format_highlight)
-            worksheet.write(row + 1, 3, "Linf", format_highlight)
+            worksheet.write(row, 3, L1, format_highlight)
+            worksheet.write(row + 1, 3, LINF, format_highlight)
             worksheet.write(row + 2, 3, "L", format_highlight)
-            for j in range(len(all_data["local_Ls"][n + 1])):
-                combinations = all_data["local_Ls"][n + 1][j]
+            for j in range(len(all_data[LOCAL_LS][n + 1])):
+                combinations = all_data[LOCAL_LS][n + 1][j]
                 if i % 2 == 0:
                     for L in combinations:
                         col = start_col
@@ -815,17 +883,17 @@ def plot_evaluations(
     """
     combinations = len(cases)
     for parameter in parameters:
-        if parameters[parameter]["analyse"] == True:
-            combinations = combinations * len(parameters[parameter]["levels"])
+        if parameters[parameter][ANALYSE] == True:
+            combinations = combinations * len(parameters[parameter][LEVELS])
 
     cases_exp = []
     for i in range(combinations):
-        cases_exp.append("case_" + str(i + 1))
+        cases_exp.append(PREFIX_CASE + str(i + 1))
 
-    if os.path.isdir(settings["output_folder"] + "/mca_plots"):
-        shutil.rmtree(settings["output_folder"] + "/mca_plots", ignore_errors=True)
+    if os.path.isdir(os.path.join(settings[OUTPUT_FOLDER] + MCA_PLOTS)):
+        shutil.rmtree(settings[OUTPUT_FOLDER] + MCA_PLOTS, ignore_errors=True)
     if len(plot_criteria) > 0:
-        os.mkdir(settings["output_folder"] + "/mca_plots")
+        os.mkdir(settings[OUTPUT_FOLDER] + MCA_PLOTS)
 
     # a bar chart is created for the evaluations of each required criteria and for each project
     for project in evaluations:
@@ -834,12 +902,12 @@ def plot_evaluations(
                 if criterion in plot_criteria:
                     evaluations_values = evaluations[project][dimension][criterion]
                     df = pd.DataFrame()
-                    df["cases and experiments"] = cases_exp
-                    df["evaluation"] = evaluations_values
+                    df[CASES_AND_EXPERIMENTS] = cases_exp
+                    df[EVALUATION] = evaluations_values
 
                     df.plot.bar(
-                        x="cases and experiments",
-                        y="evaluation",
+                        x=CASES_AND_EXPERIMENTS,
+                        y=EVALUATION,
                         title="Evaluation of the "
                         + dimension
                         + " criterion, "
@@ -849,8 +917,8 @@ def plot_evaluations(
                     )
 
                     plt.savefig(
-                        settings["output_folder"]
-                        + "/mca_plots"
+                        settings[OUTPUT_FOLDER]
+                        + MCA_PLOTS
                         + "/evaluation_"
                         + criterion
                         + "_"

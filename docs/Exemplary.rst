@@ -2,17 +2,17 @@
 Exemplary electricity supply systems
 ==========================================
 
-Currently, following operational modes will be analyzed, mostly with capacities resulting from the [base case](https://github.com/smartie2076/simulator_grid-connected_micro_grid/wiki/Base-case:-Off-grid-micro-grid):
+Currently, following operational modes will be analyzed, mostly with capacities resulting from the `base case <https://github.com/smartie2076/simulator_grid-connected_micro_grid/wiki/Base-case:-Off-grid-micro-grid>`_:
 
 * Off-grid micro grid with fixed capacities
 * Off-grid micro grid interconnecting to national grid (consumption)
 * Off-grid micro grid interconnecting to national grid (consumption and feed-in)
 * Optimal local capacities for off-grid site with national grid access
 
-The results of the oemof-optimizations have to be interpreted considering the evaluated scenario. Further detail on that can be found in [here](https://github.com/smartie2076/simulator_grid-connected_micro_grid/wiki/Evaluation-of-oemof-results).
+The results of the oemof-optimizations have to be interpreted considering the evaluated scenario. Further detail on that can be found in **Evaluation of oemof results**.
 
 * **Dispatch optimization of off-grid micro grid** with base case capacities.
-* **Off-grid micro grid** with base case capacities **interconnecting with national grid**:
+* **Off-grid micro grid** with base case capacities interconnecting with national grid:
     * Only consumption from national grid
     * Consumption from and feed-in to national grid
 
@@ -32,12 +32,47 @@ Optimal local capacities for off-grid site with national grid access
 ---------------------------------------------------------------------
 An optimization of backup-capacities of an off-grid site already connected to a blackout-ridden national grid is performed.
 
-![Diesel generator supply](https://github.com/smartie2076/simulator_grid-connected_micro_grid/blob/master/github_wiki/diesel_mg_4days.png)
+.. figure:: ../pictures/diesel_mg_4days.png
+    :width: 5000px
+    :align: center
+    :height: 280px
+    :alt: alternate text
+    :figclass: align-center
 
-![PV-Diesel micro grid, no storage](https://github.com/smartie2076/simulator_grid-connected_micro_grid/blob/master/github_wiki/pv-diesel-mg_4days.png)
+    Diesel generator supply
 
-![Hybrid micro grid (PV, storage)](https://github.com/smartie2076/simulator_grid-connected_micro_grid/blob/master/github_wiki/pv-diesel-storage-mg_4days.png)
+.. figure:: ../pictures/pv-diesel-mg_4days.png
+    :width: 5000px
+    :align: center
+    :height: 280px
+    :alt: alternate text
+    :figclass: align-center
 
-![Hybrid micro grid (PV, wind, storage)](https://github.com/smartie2076/simulator_grid-connected_micro_grid/blob/master/github_wiki/pv-wind-storage-diesel-mg_4days.png)
+    PV-Diesel micro grid, no storage
 
-![Hybrid micro grid (PV, storage), connected to central grid with intermittent blackouts](https://github.com/smartie2076/simulator_grid-connected_micro_grid/blob/master/github_wiki/ongrid_mg_cons_4days.png)
+.. figure:: ../pictures/pv-diesel-storage-mg_4days.png
+    :width: 5000px
+    :align: center
+    :height: 350px
+    :alt: alternate text
+    :figclass: align-center
+
+    Hybrid micro grid (PV, storage)
+
+.. figure:: ../pictures/pv-wind-storage-diesel-mg_4days.png
+    :width: 5000px
+    :align: center
+    :height: 350px
+    :alt: alternate text
+    :figclass: align-center
+
+    Hybrid micro grid (PV, wind, storage)
+
+.. figure:: ../pictures/ongrid_mg_cons_4days.png
+    :width: 5000px
+    :align: center
+    :height: 300px
+    :alt: alternate text
+    :figclass: align-center
+
+    Hybrid micro grid (PV, storage), connected to central grid with intermittent blackouts
