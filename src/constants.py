@@ -1,6 +1,5 @@
 # Offgriders.py
 MICRO_GRID_DESIGN_LOGFILE_LOG = "micro_grid_design_logfile.log"
-PATH_MICRO_GRID_DESIGN_LOGFILE_LOG = "/micro_grid_design_logfile.log"
 DISPLAY_EXPERIMENT = "display_experiment"
 PERFORM_MULTICRITERIA_ANALYSIS = "perform_multicriteria_analysis"
 OUTPUT_FILE = "output_file"
