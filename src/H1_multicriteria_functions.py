@@ -507,7 +507,7 @@ def representation(
         51: "AZ",
     }
 
-    workbook = xlsxwriter.Workbook(settings[OUTPUT_FOLDER] + "/MCA_evaluations.xlsx")
+    workbook = xlsxwriter.Workbook(settings[OUTPUT_FOLDER] + PATH_MCA_EVALUATIONS_XLSX)
 
     for n in range(len(all_data[EVALUATIONS])):
         # there will be a tab for each project
