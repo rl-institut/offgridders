@@ -22,11 +22,13 @@ Readthedocs corrected
 ## [Unreleased]
 
 ### Added
--
+-Constant variables for strings in constants.py (#89)
+
 ### Changed
 -
 ### Removed
--
+-Constant variables for strings in constants.py (#89)
+
 ### Fixed
 -
 

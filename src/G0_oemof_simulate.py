@@ -17,28 +17,47 @@ import logging
 import oemof.outputlib as outputlib
 
 # For speeding up lp_files and bus/component definition in oemof as well as processing
+import src.G1_oemof_create_model as oemof_model
+import src.G2b_constraints_custom as constraints_custom
+import src.G3_oemof_evaluate as timeseries
+import src.G3a_economic_evaluation as economic_evaluation
+import src.G3b_plausability_tests as plausability_tests
+import src.G4_output_functions as output
 
-try:
-    import src.G1_oemof_create_model as oemof_model
-    import src.G2b_constraints_custom as constraints_custom
-    import src.G3_oemof_evaluate as timeseries
-    import src.G3a_economic_evaluation as economic_evaluation
-    import src.G3b_plausability_tests as plausability_tests
-    import src.G4_output_functions as output
-
-except ModuleNotFoundError:
-    print("Module error at G0")
-    from src.G1_oemof_create_model import oemof_model
-    from src.G2b_constraints_custom import (
-        stability_criterion,
-        renewable_criterion,
-        battery_management,
-        ac_dc_bus,
-    )
-    from src.G3_oemof_evaluate import timeseries
-    from src.G3a_economic_evaluation import economic_evaluation
-    from src.G3b_plausability_tests import plausability_tests
-    from src.G4_output_functions import output
+from src.constants import (
+    FILENAME,
+    OUTPUT_FOLDER,
+    RESTORE_OEMOF_IF_EXISTENT,
+    MAIN,
+    META,
+    CASE,
+    OBJECTIVE_VALUE,
+    OBJECTIVE,
+    SIMULATION_TIME,
+    SOLVER,
+    TIME,
+    COMMENTS,
+    BUS_ELECTRICITY_AC,
+    BUS_ELECTRICITY_DC,
+    TOTAL_DEMAND_SUPPLIED_ANNUAL_KWH,
+    TOTAL_DEMAND_ANNUAL_KWH,
+    GRID_AVAILABILITY,
+    PEAK_WIND_GENERATION_PER_KW,
+    PEAK_PV_GENERATION_PER_KWP,
+    STABILITY_CONSTRAINT,
+    SHARE_BACKUP,
+    SHARE_USAGE,
+    SHARE_HYBRID,
+    EVALUATION_TIME,
+    LCOE,
+    CASE_NAME,
+    CAPACITY_STORAGE_KWH,
+    CAPACITY_PV_KWP,
+    CAPACITY_WIND_KW,
+    CAPACITY_GENSET_KW,
+    RES_SHARE,
+    SUPPLY_RELIABILITY_KWH,
+    PREFIX_RESULTS)
 
 # This is not really a necessary class, as the whole experiement could be given to the function, but it ensures, that
 # only correct input data is included
@@ -56,14 +75,14 @@ def run(experiment, case_dict):
         """
     start = timeit.default_timer()
 
-    file_name = case_dict["filename"]
+    file_name = case_dict[FILENAME]
 
     # For restoring .oemof results if that is possible (speeding up computation time)
     if (
-        os.path.isfile(experiment["output_folder"] + "/oemof/" + file_name + ".oemof")
-        and experiment["restore_oemof_if_existant"] == True
+        os.path.isfile(experiment[OUTPUT_FOLDER] + "/oemof/" + file_name + ".oemof")
+        and experiment[RESTORE_OEMOF_IF_EXISTENT] == True
     ):
-        logging.info("Previous results of " + case_dict["case_name"] + " restored.")
+        logging.info("Previous results of " + case_dict[CASE_NAME] + " restored.")
 
     # If .oemof results do not already exist, start oemof-process
     else:
@@ -75,33 +94,33 @@ def run(experiment, case_dict):
         )
         # store simulation results to .oemof
         oemof_model.store_results(
-            micro_grid_system, file_name, experiment["output_folder"]
+            micro_grid_system, file_name, experiment[OUTPUT_FOLDER]
         )
 
     # it actually is not really necessary to restore just simulated results... but for consistency and to make sure that calling results is easy, this is used nevertheless
     # load oemof results from previous or just finished simulation
     micro_grid_system = oemof_model.load_oemof_results(
-        experiment["output_folder"], file_name
+        experiment[OUTPUT_FOLDER], file_name
     )
 
     # output.save_network_graph(micro_grid_system, case_dict['case_name'])
     ######################
     # Processing
     ######################
-    results = micro_grid_system.results["main"]
-    meta = micro_grid_system.results["meta"]
+    results = micro_grid_system.results[MAIN]
+    meta = micro_grid_system.results[META]
 
     oemof_results = {
-        "case": case_dict["case_name"],
-        "filename": "results_" + case_dict["case_name"] + experiment["filename"],
-        "objective_value": meta["objective"],
-        "simulation_time": meta["solver"]["Time"],
-        "comments": experiment["comments"],
+        CASE: case_dict[CASE_NAME],
+        FILENAME: PREFIX_RESULTS + case_dict[CASE_NAME] + experiment[FILENAME],
+        OBJECTIVE_VALUE: meta[OBJECTIVE],
+        SIMULATION_TIME: meta[SOLVER][TIME],
+        COMMENTS: experiment[COMMENTS],
     }
 
-    electricity_bus_ac = outputlib.views.node(results, "bus_electricity_ac")
+    electricity_bus_ac = outputlib.views.node(results, BUS_ELECTRICITY_AC)
 
-    electricity_bus_dc = outputlib.views.node(results, "bus_electricity_dc")
+    electricity_bus_dc = outputlib.views.node(results, BUS_ELECTRICITY_DC)
 
     try:
 
@@ -123,10 +142,8 @@ def run(experiment, case_dict):
 
         oemof_results.update(
             {
-                "supply_reliability_kWh": oemof_results[
-                    "total_demand_supplied_annual_kWh"
-                ]
-                / oemof_results["total_demand_annual_kWh"]
+                SUPPLY_RELIABILITY_KWH: oemof_results[TOTAL_DEMAND_SUPPLIED_ANNUAL_KWH]
+                / oemof_results[TOTAL_DEMAND_ANNUAL_KWH]
             }
         )
 
@@ -148,7 +165,7 @@ def run(experiment, case_dict):
             oemof_results,
             results,
             e_flows_df,
-            experiment["grid_availability"],
+            experiment[GRID_AVAILABILITY],
         )
 
         e_flows_df = timeseries.get_wind(
@@ -156,7 +173,7 @@ def run(experiment, case_dict):
             oemof_results,
             electricity_bus_ac,
             e_flows_df,
-            experiment["peak_wind_generation_per_kW"],
+            experiment[PEAK_WIND_GENERATION_PER_KW],
         )
 
         e_flows_df = timeseries.get_pv(
@@ -165,7 +182,7 @@ def run(experiment, case_dict):
             electricity_bus_dc,
             experiment,
             e_flows_df,
-            experiment["peak_pv_generation_per_kWp"],
+            experiment[PEAK_PV_GENERATION_PER_KWP],
         )
 
         e_flows_df = timeseries.get_storage(
@@ -201,13 +218,13 @@ def run(experiment, case_dict):
     plausability_tests.run(oemof_results, e_flows_df)
 
     # Run test on oemof constraints
-    if case_dict["stability_constraint"] == False:
+    if case_dict[STABILITY_CONSTRAINT] == False:
         pass
-    elif case_dict["stability_constraint"] == "share_backup":
+    elif case_dict[STABILITY_CONSTRAINT] == SHARE_BACKUP:
         constraints_custom.backup_test(case_dict, oemof_results, experiment, e_flows_df)
-    elif case_dict["stability_constraint"] == "share_usage":
+    elif case_dict[STABILITY_CONSTRAINT] == SHARE_USAGE:
         constraints_custom.usage_test(case_dict, oemof_results, experiment, e_flows_df)
-    elif case_dict["stability_constraint"] == "share_hybrid":
+    elif case_dict[STABILITY_CONSTRAINT] == SHARE_HYBRID:
         constraints_custom.hybrid_test(case_dict, oemof_results, experiment, e_flows_df)
 
     constraints_custom.share_test(case_dict, oemof_results, experiment)
@@ -222,17 +239,17 @@ def run(experiment, case_dict):
     )
 
     # Generate output (csv, png) for energy/storage flows
-    output.save_mg_flows(experiment, case_dict, e_flows_df, experiment["filename"])
-    output.save_storage(experiment, case_dict, e_flows_df, experiment["filename"])
+    output.save_mg_flows(experiment, case_dict, e_flows_df, experiment[FILENAME])
+    output.save_storage(experiment, case_dict, e_flows_df, experiment[FILENAME])
 
     # print meta/main results in command window
     if electricity_bus_ac != None:
         output.print_oemof_meta_main_invest(
-            experiment, meta, electricity_bus_ac, case_dict["case_name"]
+            experiment, meta, electricity_bus_ac, case_dict[CASE_NAME]
         )
     if electricity_bus_dc != None:
         output.print_oemof_meta_main_invest(
-            experiment, meta, electricity_bus_dc, case_dict["case_name"]
+            experiment, meta, electricity_bus_dc, case_dict[CASE_NAME]
         )
 
     # Evaluate simulated systems regarding costs
@@ -242,30 +259,30 @@ def run(experiment, case_dict):
     economic_evaluation.calculate_co2_emissions(oemof_results, experiment)
 
     duration = timeit.default_timer() - start
-    oemof_results.update({"evaluation_time": round(duration, 5)})
+    oemof_results.update({EVALUATION_TIME: round(duration, 5)})
 
     # Infos on simulation
     logging.info(
         'Simulation of case "'
-        + case_dict["case_name"]
+        + case_dict[CASE_NAME]
         + '" resulted in : \n'
         + "    "
         + "  "
         + "    "
         + "    "
         + "    "
-        + str(round(oemof_results["lcoe"], 3))
+        + str(round(oemof_results[LCOE], 3))
         + " currency/kWh, "
         + "at a renewable share of "
-        + str(round(oemof_results["res_share"] * 100, 2))
+        + str(round(oemof_results[RES_SHARE] * 100, 2))
         + " percent"
         + " with a reliability of "
-        + str(round(oemof_results["supply_reliability_kWh"] * 100, 2))
+        + str(round(oemof_results[SUPPLY_RELIABILITY_KWH] * 100, 2))
         + " percent"
     )
     logging.info(
         "    Initial simulation time (s): "
-        + str(round(oemof_results["simulation_time"], 2))
+        + str(round(oemof_results[SIMULATION_TIME], 2))
         + " / Actual evaluation time (s): "
         + str(round(duration, 2))
     )
@@ -273,32 +290,32 @@ def run(experiment, case_dict):
     # Debug messages
     logging.debug(
         '    Exact OEM results of case "'
-        + case_dict["case_name"]
+        + case_dict[CASE_NAME]
         + '" : \n'
         + "    "
         + "  "
         + "    "
         + "    "
         + "    "
-        + str(round(oemof_results["capacity_storage_kWh"], 3))
+        + str(round(oemof_results[CAPACITY_STORAGE_KWH], 3))
         + " kWh battery, "
-        + str(round(oemof_results["capacity_pv_kWp"], 3))
+        + str(round(oemof_results[CAPACITY_PV_KWP], 3))
         + " kWp PV, "
-        + str(round(oemof_results["capacity_wind_kW"], 3))
+        + str(round(oemof_results[CAPACITY_WIND_KW], 3))
         + " kW wind, "
-        + str(round(oemof_results["capacity_genset_kW"], 3))
+        + str(round(oemof_results[CAPACITY_GENSET_KW], 3))
         + " kW genset "
         + "at a renewable share of "
-        + str(round(oemof_results["res_share"] * 100, 2))
+        + str(round(oemof_results[RES_SHARE] * 100, 2))
         + " percent"
         + " with a reliability of "
-        + str(round(oemof_results["supply_reliability_kWh"] * 100, 2))
+        + str(round(oemof_results[SUPPLY_RELIABILITY_KWH] * 100, 2))
         + " percent"
     )
-    logging.debug("    Simulation of case " + case_dict["case_name"] + " complete.")
+    logging.debug("    Simulation of case " + case_dict[CASE_NAME] + " complete.")
     logging.debug("\n")
 
     if experiment["save_oemofresults"] == False:
-        os.remove(experiment["output_folder"] + "/oemof/" + file_name + ".oemof")
+        os.remove(experiment[OUTPUT_FOLDER] + "/oemof/" + file_name + ".oemof")
 
     return oemof_results

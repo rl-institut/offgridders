@@ -12,11 +12,74 @@ import oemof.solph as solph
 import logging
 
 # Try to import matplotlib librar
-try:
-    import matplotlib.pyplot as plt
-except ImportError:
-    logging.warning("Attention! matplotlib could not be imported.")
-    plt = None
+import matplotlib.pyplot as plt
+
+from src.constants import (
+    SOURCE_FUEL,
+    PRICE_FUEL,
+    COMBUSTION_VALUE_FUEL,
+    SOURCE_SHORTAGE,
+    SHORTAGE_PENALTY_COST,
+    MAX_SHORTAGE,
+    TOTAL_DEMAND_AC,
+    TOTAL_DEMAND_DC,
+    BUS_ELECTRICITY_NG_CONSUMPTION,
+    SOURCE_MAINGRID_CONSUMPTION,
+    SINK_MAINGRID_CONSUMPTION_SYMBOLIC,
+    SOURCE_PV,
+    PV_GENERATION_PER_KWP,
+    PV_COST_VAR,
+    PEAK_PV_GENERATION_PER_KWP,
+    PV_COST_ANNUITY,
+    SOURCE_WIND,
+    WIND_GENERATION_PER_KW,
+    WIND_COST_VAR,
+    PEAK_WIND_GENERATION_PER_KW,
+    RECTIFIER_AC_DC_COST_VAR,
+    RECTIFIER_AC_DC_EFFICIENCY,
+    RECTIFIER_AC_DC_COST_ANNUITY,
+    INVERTER_DC_AC_COST_VAR,
+    INVERTER_DC_AC_EFFICIENCY,
+    TRANSFORMER_INVERTER_DC_AC,
+    INVERTER_DC_AC_COST_ANNUITY,
+    TRANSFORMER_GENSET_,
+    GENSET_COST_VAR,
+    GENSET_EFFICIENCY,
+    GENSET_MIN_LOADING,
+    GENSET_MAX_LOADING,
+    GENSET_COST_ANNUITY,
+    TRANSFORMER_PCC_FEEDIN,
+    PCOUPLING_COST_ANNUITY,
+    PCOUPLING_COST_VAR,
+    MAINGRID_FEEDIN_TARIFF,
+    TRANSFORMER_PCC_CONSUMPTION,
+    MAINGRID_ELECTRICITY_PRICE,
+    PCOUPLING_EFFICIENCY,
+    GENERIC_STORAGE,
+    STORAGE_SOC_INITIAL,
+    STORAGE_CAPACITY_COST_ANNUITY,
+    STORAGE_COST_VAR,
+    STORAGE_POWER_COST_ANNUITY,
+    STORAGE_LOSS_TIMESTEP,
+    STORAGE_SOC_MIN,
+    STORAGE_SOC_MAX,
+    STORAGE_EFFICIENCY_CHARGE,
+    STORAGE_EFFICIENCY_DISCHARGE,
+    STORAGE_CRATE_CHARGE,
+    STORAGE_CRATE_DISCHARGE,
+    SINK_EXCESS,
+    TRANSFORMER_RECTIFIER,
+    DISTRIBUTION_GRID_EFFICIENCY,
+    SINK_DEMAND_AC,
+    SINK_DEMAND_DC,
+    SINK_MAINGRID_FEEDIN,
+    GRID_AVAILABILITY,
+    SINK_MAINGRID_FEEDIN_SYMBOLIC,
+    PV_GENERATION,
+    WIND_GENERATION,
+    WIND_COST_ANNUITY,
+    BUS_ELECTRICITY_NG_FEEDIN,
+)
 
 ###############################################################################
 # Define all oemof_functioncalls (including generate graph etc)
@@ -28,11 +91,11 @@ def fuel(micro_grid_system, bus_fuel, experiment):
     logging.debug("Added to oemof model: source fuel")
     # Does NOT include a boundary for intendet minimal renewable factor (as in dispatch, operation costs in focus)
     source_fuel = solph.Source(
-        label="source_fuel",
+        label=SOURCE_FUEL,
         outputs={
             bus_fuel: solph.Flow(
-                variable_costs=experiment["price_fuel"]
-                / experiment["combustion_value_fuel"]
+                variable_costs=experiment[PRICE_FUEL]
+                / experiment[COMBUSTION_VALUE_FUEL]
             )
         },
     )
@@ -45,16 +108,16 @@ def shortage(
 ):
     logging.debug("Added to oemof model: source shortage")
     source_shortage = solph.Source(
-        label="source_shortage",
+        label=SOURCE_SHORTAGE,
         outputs={
             bus_electricity_ac: solph.Flow(
-                variable_costs=experiment["shortage_penalty_costs"],
-                nominal_value=case_dict["max_shortage"] * case_dict["total_demand_ac"],
+                variable_costs=experiment[SHORTAGE_PENALTY_COST],
+                nominal_value=case_dict[MAX_SHORTAGE] * case_dict[TOTAL_DEMAND_AC],
                 summed_max=1,
             ),
             bus_electricity_dc: solph.Flow(
-                variable_costs=experiment["shortage_penalty_costs"],
-                nominal_value=case_dict["max_shortage"] * case_dict["total_demand_dc"],
+                variable_costs=experiment[SHORTAGE_PENALTY_COST],
+                nominal_value=case_dict[MAX_SHORTAGE] * case_dict[TOTAL_DEMAND_DC],
                 summed_max=1,
             ),
         },
@@ -66,14 +129,14 @@ def shortage(
 def maingrid_consumption(micro_grid_system, experiment):
     logging.debug("Added to oemof model: maingrid consumption")
     # create and add demand sink to micro_grid_system - fixed
-    bus_electricity_ng_consumption = solph.Bus(label="bus_electricity_ng_consumption")
+    bus_electricity_ng_consumption = solph.Bus(label=BUS_ELECTRICITY_NG_CONSUMPTION)
     micro_grid_system.add(bus_electricity_ng_consumption)
 
     source_maingrid_consumption = solph.Source(
-        label="source_maingrid_consumption",
+        label=SOURCE_MAINGRID_CONSUMPTION,
         outputs={
             bus_electricity_ng_consumption: solph.Flow(
-                actual_value=experiment["grid_availability"],
+                actual_value=experiment[GRID_AVAILABILITY],
                 fixed=True,
                 investment=solph.Investment(ep_costs=0),
             )
@@ -83,7 +146,7 @@ def maingrid_consumption(micro_grid_system, experiment):
     micro_grid_system.add(source_maingrid_consumption)
 
     sink_maingrid_consumption_symbolic = solph.Sink(
-        label="sink_maingrid_consumption_symbolic",
+        label=SINK_MAINGRID_CONSUMPTION_SYMBOLIC,
         inputs={bus_electricity_ng_consumption: solph.Flow()},
     )
     micro_grid_system.add(sink_maingrid_consumption_symbolic)
@@ -96,14 +159,14 @@ def maingrid_consumption(micro_grid_system, experiment):
 def pv_fix(micro_grid_system, bus_electricity_dc, experiment, capacity_pv):
     logging.debug("Added to oemof model: pv fix")
     source_pv = solph.Source(
-        label="source_pv",
+        label=SOURCE_PV,
         outputs={
             bus_electricity_dc: solph.Flow(
-                label="PV generation",
-                actual_value=experiment["pv_generation_per_kWp"],
+                label=PV_GENERATION,
+                actual_value=experiment[PV_GENERATION_PER_KWP],
                 fixed=True,
                 nominal_value=capacity_pv,
-                variable_costs=experiment["pv_cost_var"],
+                variable_costs=experiment[PV_COST_VAR],
             )
         },
     )
@@ -114,24 +177,24 @@ def pv_fix(micro_grid_system, bus_electricity_dc, experiment, capacity_pv):
 
 def pv_oem(micro_grid_system, bus_electricity_dc, experiment):
     logging.debug("Added to oemof model: pv oem")
-    peak_pv_generation = experiment["peak_pv_generation_per_kWp"]
-    pv_norm = experiment["pv_generation_per_kWp"] / peak_pv_generation
+    peak_pv_generation = experiment[PEAK_PV_GENERATION_PER_KWP]
+    pv_norm = experiment[PV_GENERATION_PER_KWP] / peak_pv_generation
     if pv_norm.any() > 1:
         logging.warning("Error, PV generation not normalized, greater than 1")
     if pv_norm.any() < 0:
         logging.warning("Error, PV generation negative")
 
     source_pv = solph.Source(
-        label="source_pv",
+        label=SOURCE_PV,
         outputs={
             bus_electricity_dc: solph.Flow(
-                label="PV generation",
+                label=PV_GENERATION,
                 actual_value=pv_norm,
                 fixed=True,
                 investment=solph.Investment(
-                    ep_costs=experiment["pv_cost_annuity"] / peak_pv_generation
+                    ep_costs=experiment[PV_COST_ANNUITY] / peak_pv_generation
                 ),
-                variable_costs=experiment["pv_cost_var"] / peak_pv_generation,
+                variable_costs=experiment[PV_COST_VAR] / peak_pv_generation,
             )
         },
     )
@@ -143,14 +206,14 @@ def pv_oem(micro_grid_system, bus_electricity_dc, experiment):
 def wind_fix(micro_grid_system, bus_electricity_ac, experiment, capacity_wind):
     logging.debug("Added to oemof model: wind")
     source_wind = solph.Source(
-        label="source_wind",
+        label=SOURCE_WIND,
         outputs={
             bus_electricity_ac: solph.Flow(
-                label="Wind generation",
-                actual_value=experiment["wind_generation_per_kW"],
+                label=WIND_GENERATION,
+                actual_value=experiment[WIND_GENERATION_PER_KW],
                 fixed=True,
                 nominal_value=capacity_wind,
-                variable_costs=experiment["wind_cost_var"],
+                variable_costs=experiment[WIND_COST_VAR],
             )
         },
     )
@@ -161,24 +224,24 @@ def wind_fix(micro_grid_system, bus_electricity_ac, experiment, capacity_wind):
 
 def wind_oem(micro_grid_system, bus_electricity_ac, experiment):
     logging.debug("Added to oemof model: wind")
-    peak_wind_generation = experiment["peak_wind_generation_per_kW"]
-    wind_norm = experiment["wind_generation_per_kW"] / peak_wind_generation
+    peak_wind_generation = experiment[PEAK_WIND_GENERATION_PER_KW]
+    wind_norm = experiment[WIND_GENERATION_PER_KW] / peak_wind_generation
     if wind_norm.any() > 1:
         logging.warning("Error, Wind generation not normalized, greater than 1")
     if wind_norm.any() < 0:
         logging.warning("Error, Wind generation negative")
 
     source_wind = solph.Source(
-        label="source_wind",
+        label=SOURCE_WIND,
         outputs={
             bus_electricity_ac: solph.Flow(
-                label="Wind generation",
+                label=WIND_GENERATION,
                 actual_value=wind_norm,
                 fixed=True,
                 investment=solph.Investment(
-                    ep_costs=experiment["wind_cost_annuity"] / peak_wind_generation
+                    ep_costs=experiment[WIND_COST_ANNUITY] / peak_wind_generation
                 ),
-                variable_costs=experiment["wind_cost_var"] / peak_wind_generation,
+                variable_costs=experiment[WIND_COST_VAR] / peak_wind_generation,
             )
         },
     )
@@ -195,17 +258,15 @@ def rectifier_fix(
 ):
     logging.debug("Added to oemof model: rectifier fix")
     rectifier = solph.Transformer(
-        label="transformer_rectifier",
+        label=TRANSFORMER_RECTIFIER,
         inputs={
             bus_electricity_ac: solph.Flow(
                 nominal_value=capacity_rectifier,
-                variable_costs=experiment["rectifier_ac_dc_cost_var"],
+                variable_costs=experiment[RECTIFIER_AC_DC_COST_VAR],
             )
         },
         outputs={bus_electricity_dc: solph.Flow()},
-        conversion_factors={
-            bus_electricity_dc: experiment["rectifier_ac_dc_efficiency"]
-        },
+        conversion_factors={bus_electricity_dc: experiment[RECTIFIER_AC_DC_EFFICIENCY]},
     )
     micro_grid_system.add(rectifier)
     return rectifier
@@ -216,19 +277,17 @@ def rectifier_oem(
 ):
     logging.debug("Added to oemof model: rectifier oem")
     rectifier = solph.Transformer(
-        label="transformer_rectifier",
+        label=TRANSFORMER_RECTIFIER,
         inputs={
             bus_electricity_ac: solph.Flow(
                 investment=solph.Investment(
-                    ep_costs=experiment["rectifier_ac_dc_cost_annuity"]
+                    ep_costs=experiment[RECTIFIER_AC_DC_COST_ANNUITY]
                 ),
-                variable_costs=experiment["rectifier_ac_dc_cost_var"],
+                variable_costs=experiment[RECTIFIER_AC_DC_COST_VAR],
             )
         },
         outputs={bus_electricity_dc: solph.Flow()},
-        conversion_factors={
-            bus_electricity_dc: experiment["rectifier_ac_dc_efficiency"]
-        },
+        conversion_factors={bus_electricity_dc: experiment[RECTIFIER_AC_DC_EFFICIENCY]},
     )
     micro_grid_system.add(rectifier)
     return rectifier
@@ -243,17 +302,15 @@ def inverter_dc_ac_fix(
 ):
     logging.debug("Added to oemof model: inverter_dc_ac fix")
     inverter_dc_ac = solph.Transformer(
-        label="transformer_inverter_dc_ac",
+        label=TRANSFORMER_INVERTER_DC_AC,
         inputs={
             bus_electricity_dc: solph.Flow(
                 nominal_value=capacity_inverter_dc_ac,
-                variable_costs=experiment["inverter_dc_ac_cost_var"],
+                variable_costs=experiment[INVERTER_DC_AC_COST_VAR],
             )
         },
         outputs={bus_electricity_ac: solph.Flow()},
-        conversion_factors={
-            bus_electricity_ac: experiment["inverter_dc_ac_efficiency"]
-        },
+        conversion_factors={bus_electricity_ac: experiment[INVERTER_DC_AC_EFFICIENCY]},
     )
     micro_grid_system.add(inverter_dc_ac)
     return inverter_dc_ac
@@ -264,19 +321,17 @@ def inverter_dc_ac_oem(
 ):
     logging.debug("Added to oemof model: inverter_dc_ac oem")
     inverter_dc_ac = solph.Transformer(
-        label="transformer_inverter_dc_ac",
+        label=TRANSFORMER_INVERTER_DC_AC,
         inputs={
             bus_electricity_dc: solph.Flow(
                 investment=solph.Investment(
-                    ep_costs=experiment["inverter_dc_ac_cost_annuity"]
+                    ep_costs=experiment[INVERTER_DC_AC_COST_ANNUITY]
                 ),
-                variable_costs=experiment["inverter_dc_ac_cost_var"],
+                variable_costs=experiment[INVERTER_DC_AC_COST_VAR],
             )
         },
         outputs={bus_electricity_ac: solph.Flow()},
-        conversion_factors={
-            bus_electricity_ac: experiment["inverter_dc_ac_efficiency"]
-        },
+        conversion_factors={bus_electricity_ac: experiment[INVERTER_DC_AC_EFFICIENCY]},
     )
     micro_grid_system.add(inverter_dc_ac)
     return inverter_dc_ac
@@ -294,15 +349,15 @@ def genset_fix(
     dict_of_generators = {}
     for number in range(1, number_of_equal_generators + 1):
         genset = solph.Transformer(
-            label="transformer_genset_" + str(number),
+            label=TRANSFORMER_GENSET_ + str(number),
             inputs={bus_fuel: solph.Flow()},
             outputs={
                 bus_electricity_ac: solph.Flow(
                     nominal_value=capacity_fuel_gen / number_of_equal_generators,
-                    variable_costs=experiment["genset_cost_var"],
+                    variable_costs=experiment[GENSET_COST_VAR],
                 )
             },
-            conversion_factors={bus_electricity_ac: experiment["genset_efficiency"]},
+            conversion_factors={bus_electricity_ac: experiment[GENSET_EFFICIENCY]},
         )
         micro_grid_system.add(genset)
         dict_of_generators.update({number: genset})
@@ -321,18 +376,18 @@ def genset_fix_minload(
     dict_of_generators = {}
     for number in range(1, number_of_equal_generators + 1):
         genset = solph.Transformer(
-            label="transformer_genset_" + str(number),
+            label=TRANSFORMER_GENSET_ + str(number),
             inputs={bus_fuel: solph.Flow()},
             outputs={
                 bus_electricity_ac: solph.Flow(
                     nominal_value=capacity_fuel_gen / number_of_equal_generators,
-                    variable_costs=experiment["genset_cost_var"],
-                    min=experiment["genset_min_loading"],
-                    max=experiment["genset_max_loading"],
+                    variable_costs=experiment[GENSET_COST_VAR],
+                    min=experiment[GENSET_MIN_LOADING],
+                    max=experiment[GENSET_MAX_LOADING],
                     nonconvex=solph.NonConvex(),
                 )
             },
-            conversion_factors={bus_electricity_ac: experiment["genset_efficiency"]},
+            conversion_factors={bus_electricity_ac: experiment[GENSET_EFFICIENCY]},
         )
         micro_grid_system.add(genset)
         dict_of_generators.update({number: genset})
@@ -347,21 +402,41 @@ def genset_oem(
     dict_of_generators = {}
     for number in range(1, number_of_generators + 1):
         genset = solph.Transformer(
-            label="transformer_genset_" + str(number),
+            label=TRANSFORMER_GENSET_ + str(number),
             inputs={bus_fuel: solph.Flow()},
             outputs={
                 bus_electricity_ac: solph.Flow(
                     investment=solph.Investment(
-                        ep_costs=experiment["genset_cost_annuity"]
+                        ep_costs=experiment[GENSET_COST_ANNUITY]
                     ),
-                    variable_costs=experiment["genset_cost_var"],
+                    variable_costs=experiment[GENSET_COST_VAR],
                 )
             },
-            conversion_factors={bus_electricity_ac: experiment["genset_efficiency"]},
+            conversion_factors={bus_electricity_ac: experiment[GENSET_EFFICIENCY]},
         )
         micro_grid_system.add(genset)
         dict_of_generators.update({number: genset})
     return dict_of_generators
+
+
+"""
+def genset_oem_minload(micro_grid_system, bus_fuel, bus_electricity_ac, experiment):
+    logging.debug('Added to oemof model: genset oem minload')
+    logging.warning('Currently not possible to optimize capacities of generator with minimal loading with OEMOF!')
+    genset = solph.Transformer(label="transformer_genset",
+                                               inputs   ={bus_fuel: solph.Flow()},
+                                               outputs  ={bus_electricity_ac: solph.Flow(
+                                                   investment=solph.Investment(
+                                                       ep_costs=experiment['genset_cost_annuity']),
+                                                   variable_costs   = experiment['genset_cost_var'],
+                                                   min=experiment['genset_min_loading'],
+                                                   max=experiment['genset_max_loading'],
+                                                   nonconvex=solph.NonConvex())},
+                                               conversion_factors={ bus_electricity_ac: experiment['genset_efficiency']}
+                                               )
+    micro_grid_system.add(genset)
+    return genset
+    """
 
 
 def pointofcoupling_feedin_fix(
@@ -373,16 +448,16 @@ def pointofcoupling_feedin_fix(
 ):
     logging.debug("Added to oemof model: pcc feedin fix")
     pointofcoupling_feedin = solph.Transformer(
-        label="transformer_pcc_feedin",
+        label=TRANSFORMER_PCC_FEEDIN,
         inputs={
             bus_electricity_ac: solph.Flow(
                 nominal_value=capacity_pointofcoupling,
-                variable_costs=experiment["pcoupling_cost_var"]
-                - experiment["maingrid_feedin_tariff"],
+                variable_costs=experiment[PCOUPLING_COST_VAR]
+                - experiment[MAINGRID_FEEDIN_TARIFF],
             )
         },
         outputs={bus_electricity_ng_feedin: solph.Flow()},
-        conversion_factors={bus_electricity_ac: experiment["pcoupling_efficiency"]},
+        conversion_factors={bus_electricity_ac: experiment[PCOUPLING_EFFICIENCY]},
     )  # is efficiency of the generator?? Then this should later on be included as a function of the load factor
 
     micro_grid_system.add(pointofcoupling_feedin)
@@ -400,18 +475,18 @@ def pointofcoupling_feedin_oem(
 ):
     logging.debug("Added to oemof model: pcc feedin oem")
     pointofcoupling_feedin = solph.Transformer(
-        label="transformer_pcc_feedin",
+        label=TRANSFORMER_PCC_FEEDIN,
         inputs={
             bus_electricity_ac: solph.Flow(
                 investment=solph.Investment(
-                    ep_costs=experiment["pcoupling_cost_annuity"]
+                    ep_costs=experiment[PCOUPLING_COST_ANNUITY]
                 ),
-                variable_costs=experiment["pcoupling_cost_var"]
-                - experiment["maingrid_feedin_tariff"],
+                variable_costs=experiment[PCOUPLING_COST_VAR]
+                - experiment[MAINGRID_FEEDIN_TARIFF],
             )
         },
         outputs={bus_electricity_ng_feedin: solph.Flow()},
-        conversion_factors={bus_electricity_ac: experiment["pcoupling_efficiency"]},
+        conversion_factors={bus_electricity_ac: experiment[PCOUPLING_EFFICIENCY]},
     )
     micro_grid_system.add(pointofcoupling_feedin)
     return
@@ -426,17 +501,17 @@ def pointofcoupling_consumption_fix(
 ):
     logging.debug("Added to oemof model: pcc consumption fix")
     pointofcoupling_consumption = solph.Transformer(
-        label="transformer_pcc_consumption",
+        label=TRANSFORMER_PCC_CONSUMPTION,
         inputs={
             bus_electricity_ng_consumption: solph.Flow(
                 nominal_value=cap_pointofcoupling,  # inflow is limited to nominal value!
-                variable_costs=experiment["pcoupling_cost_var"]
-                + experiment["maingrid_electricity_price"],
+                variable_costs=experiment[PCOUPLING_COST_VAR]
+                + experiment[MAINGRID_ELECTRICITY_PRICE],
             )
         },
         outputs={bus_electricity_ac: solph.Flow()},
         conversion_factors={
-            bus_electricity_ng_consumption: experiment["pcoupling_efficiency"]
+            bus_electricity_ng_consumption: experiment[PCOUPLING_EFFICIENCY]
         },
     )  # is efficiency of the generator?? Then this should later on be included as a function of the load factor
 
@@ -453,19 +528,19 @@ def pointofcoupling_consumption_oem(
 ):
     logging.debug("Added to oemof model: pcc consumption oem")
     pointofcoupling_consumption = solph.Transformer(
-        label="transformer_pcc_consumption",
+        label=TRANSFORMER_PCC_CONSUMPTION,
         inputs={
             bus_electricity_ng_consumption: solph.Flow(
-                variable_costs=experiment["pcoupling_cost_var"]
-                + experiment["maingrid_electricity_price"],
+                variable_costs=experiment[PCOUPLING_COST_VAR]
+                + experiment[MAINGRID_ELECTRICITY_PRICE],
                 investment=solph.Investment(
-                    ep_costs=experiment["pcoupling_cost_annuity"]
+                    ep_costs=experiment[PCOUPLING_COST_ANNUITY]
                 ),
             )
         },
         outputs={bus_electricity_ac: solph.Flow()},
         conversion_factors={
-            bus_electricity_ng_consumption: experiment["pcoupling_efficiency"]
+            bus_electricity_ng_consumption: experiment[PCOUPLING_EFFICIENCY]
         },
     )
     micro_grid_system.add(pointofcoupling_consumption)
@@ -477,12 +552,12 @@ def storage_fix(
 ):
     logging.debug("Added to oemof model: storage fix")
     generic_storage = solph.components.GenericStorage(
-        label="generic_storage",
+        label=GENERIC_STORAGE,
         nominal_capacity=capacity_storage,
         inputs={
             bus_electricity_dc: solph.Flow(
-                nominal_value=capacity_storage * experiment["storage_Crate_charge"],
-                variable_costs=experiment["storage_cost_var"],
+                nominal_value=capacity_storage * experiment[STORAGE_CRATE_CHARGE],
+                variable_costs=experiment[STORAGE_COST_VAR],
             )
         },  # maximum charge possible in one timestep
         outputs={
@@ -490,14 +565,14 @@ def storage_fix(
                 nominal_value=power_storage  # capacity_storage*experiment['storage_Crate_discharge']
             )
         },  # maximum discharge possible in one timestep
-        capacity_loss=experiment["storage_loss_timestep"],  # from timestep to timestep
-        capacity_min=experiment["storage_soc_min"],
-        capacity_max=experiment["storage_soc_max"],
-        initial_capacity=experiment["storage_soc_initial"],  # in terms of SOC?
+        capacity_loss=experiment[STORAGE_LOSS_TIMESTEP],  # from timestep to timestep
+        capacity_min=experiment[STORAGE_SOC_MIN],
+        capacity_max=experiment[STORAGE_SOC_MAX],
+        initial_capacity=experiment[STORAGE_SOC_INITIAL],  # in terms of SOC?
         inflow_conversion_factor=experiment[
-            "storage_efficiency_charge"
+            STORAGE_EFFICIENCY_CHARGE
         ],  # storing efficiency
-        outflow_conversion_factor=experiment["storage_efficiency_discharge"],
+        outflow_conversion_factor=experiment[STORAGE_EFFICIENCY_DISCHARGE],
     )  # efficiency of discharge
     micro_grid_system.add(generic_storage)
     return generic_storage
@@ -532,36 +607,32 @@ def storage_fix_secondary(micro_grid_system, bus_electricity_dc, experiment, cap
 def storage_oem(micro_grid_system, bus_electricity_dc, experiment):
     logging.debug("Added to oemof model: storage oem")
     generic_storage = solph.components.GenericStorage(
-        label="generic_storage",
-        investment=solph.Investment(
-            ep_costs=experiment["storage_capacity_cost_annuity"]
-        ),
+        label=GENERIC_STORAGE,
+        investment=solph.Investment(ep_costs=experiment[STORAGE_CAPACITY_COST_ANNUITY]),
         inputs={
-            bus_electricity_dc: solph.Flow(
-                variable_costs=experiment["storage_cost_var"]
-            )
+            bus_electricity_dc: solph.Flow(variable_costs=experiment[STORAGE_COST_VAR])
         },
         outputs={
             bus_electricity_dc: solph.Flow(
                 investment=solph.Investment(
-                    ep_costs=experiment["storage_power_cost_annuity"]
+                    ep_costs=experiment[STORAGE_POWER_COST_ANNUITY]
                 )
             )
         },
-        capacity_loss=experiment["storage_loss_timestep"],  # from timestep to timestep
-        capacity_min=experiment["storage_soc_min"],
-        capacity_max=experiment["storage_soc_max"],
+        capacity_loss=experiment[STORAGE_LOSS_TIMESTEP],  # from timestep to timestep
+        capacity_min=experiment[STORAGE_SOC_MIN],
+        capacity_max=experiment[STORAGE_SOC_MAX],
         inflow_conversion_factor=experiment[
-            "storage_efficiency_charge"
+            STORAGE_EFFICIENCY_CHARGE
         ],  # storing efficiency
         outflow_conversion_factor=experiment[
-            "storage_efficiency_discharge"
+            STORAGE_EFFICIENCY_DISCHARGE
         ],  # efficiency of discharge
         invest_relation_input_capacity=experiment[
-            "storage_Crate_charge"
+            STORAGE_CRATE_CHARGE
         ],  # storage can be charged with invest_relation_output_capacity*capacity in one timeperiod
         invest_relation_output_capacity=experiment[
-            "storage_Crate_discharge"
+            STORAGE_CRATE_DISCHARGE
         ],  # storage can be emptied with invest_relation_output_capacity*capacity in one timeperiod
     )
     micro_grid_system.add(generic_storage)
@@ -575,7 +646,7 @@ def excess(micro_grid_system, bus_electricity_ac, bus_electricity_dc):
     logging.debug("Added to oemof model: excess")
     # create and add excess electricity sink to micro_grid_system - variable
     sink_excess = solph.Sink(
-        label="sink_excess",
+        label=SINK_EXCESS,
         inputs={bus_electricity_ac: solph.Flow(), bus_electricity_dc: solph.Flow()},
     )
     micro_grid_system.add(sink_excess)
@@ -591,11 +662,11 @@ def distribution_grid_ac(
 ):
     logging.debug("Added to oemof model: Distribution grid efficiency (AC)")
     distribution = solph.Transformer(
-        label="transformer_rectifier",
+        label=TRANSFORMER_RECTIFIER,
         inputs={bus_electricity_ac: solph.Flow(investment=solph.Investment())},
         outputs={bus_electricity_demand: solph.Flow()},
         conversion_factors={
-            bus_electricity_demand: experiment["distribution_grid_efficiency"]
+            bus_electricity_demand: experiment[DISTRIBUTION_GRID_EFFICIENCY]
         },
     )
     micro_grid_system.add(distribution)
@@ -603,7 +674,7 @@ def distribution_grid_ac(
     logging.debug("Added to oemof model: demand AC")
     # create and add demand sink to micro_grid_system - fixed
     sink_demand_ac = solph.Sink(
-        label="sink_demand_ac",
+        label=SINK_DEMAND_AC,
         inputs={
             bus_electricity_ac: solph.Flow(
                 actual_value=demand_profile, nominal_value=1, fixed=True
@@ -620,7 +691,7 @@ def demand_ac(micro_grid_system, bus_electricity_ac, demand_profile):
     logging.debug("Added to oemof model: demand AC")
     # create and add demand sink to micro_grid_system - fixed
     sink_demand_ac = solph.Sink(
-        label="sink_demand_ac",
+        label=SINK_DEMAND_AC,
         inputs={
             bus_electricity_ac: solph.Flow(
                 actual_value=demand_profile, nominal_value=1, fixed=True
@@ -636,7 +707,7 @@ def demand_dc(micro_grid_system, bus_electricity_dc, demand_profile):
     logging.debug("Added to oemof model: demand DC")
     # create and add demand sink to micro_grid_system - fixed
     sink_demand_dc = solph.Sink(
-        label="sink_demand_dc",
+        label=SINK_DEMAND_DC,
         inputs={
             bus_electricity_dc: solph.Flow(
                 actual_value=demand_profile, nominal_value=1, fixed=True
@@ -649,15 +720,15 @@ def demand_dc(micro_grid_system, bus_electricity_dc, demand_profile):
 
 def maingrid_feedin(micro_grid_system, experiment):
     logging.debug("Added to oemof model: maingrid feedin")
-    bus_electricity_ng_feedin = solph.Bus(label="bus_electricity_ng_feedin")
+    bus_electricity_ng_feedin = solph.Bus(label=BUS_ELECTRICITY_NG_FEEDIN)
     micro_grid_system.add(bus_electricity_ng_feedin)
 
     # create and add demand sink to micro_grid_system - fixed
     sink_maingrid_feedin = solph.Sink(
-        label="sink_maingrid_feedin",
+        label=SINK_MAINGRID_FEEDIN,
         inputs={
             bus_electricity_ng_feedin: solph.Flow(
-                actual_value=experiment["grid_availability"],
+                actual_value=experiment[GRID_AVAILABILITY],
                 fixed=True,
                 investment=solph.Investment(ep_costs=0),
             )
@@ -667,7 +738,7 @@ def maingrid_feedin(micro_grid_system, experiment):
 
     # to fill in for not really provided feed in
     source_maingrid_feedin_symbolic = solph.Source(
-        label="source_maingrid_feedin_symbolic",
+        label=SINK_MAINGRID_FEEDIN_SYMBOLIC,
         outputs={bus_electricity_ng_feedin: solph.Flow()},
     )
     micro_grid_system.add(source_maingrid_feedin_symbolic)
