@@ -22,7 +22,7 @@ Here is a template for new release sections
 
 ### Added
 -Constant variables for strings in constants.py (#89)
--CSV,PNG files and paths added (#117)
+-CSV,PNG files and paths now defined by variables in `constants.py` (#117)
 
 ### Changed
 -
@@ -167,5 +167,4 @@ Major changes:
 - 1 hr timesteps, 1 to 365 days evaluation time
 - All input data via excel sheet
 - Easy case definition
-
 
