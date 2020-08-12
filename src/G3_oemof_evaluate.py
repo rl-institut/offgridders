@@ -113,7 +113,11 @@ from src.constants import (
     TOTAL_PCOUPLING_THROUGHPUT_KWH,
     MAINGRID_RENEWABLE_SHARE,
     RES_SHARE,
-    AC_SYSTEM, FEED_INTO_MAIN_GRID_MG_SIDE, DEMAND_AC, DEMAND_DC)
+    AC_SYSTEM,
+    FEED_INTO_MAIN_GRID_MG_SIDE,
+    DEMAND_AC,
+    DEMAND_DC,
+)
 
 
 def join_e_flows_df(timeseries, name, e_flows_df):

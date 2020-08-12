@@ -44,8 +44,28 @@ from src.constants import (
     LOCAL_LS,
     CASES_AND_EXPERIMENTS,
     EVALUATION,
-    DIMENSIONS_W, EC1, EC2, T1, T2, T3, T4, WEIGHTS, L1, LINF,
-    ENVIRONMENTAL_W, MCA_PLOTS, S1, S3, S2, EN1, EN2, EN3, GLOBAL)
+    DIMENSIONS_W,
+    EC1,
+    EC2,
+    T1,
+    T2,
+    T3,
+    T4,
+    WEIGHTS,
+    L1,
+    LINF,
+    ENVIRONMENTAL_W,
+    MCA_PLOTS,
+    S1,
+    S3,
+    S2,
+    EN1,
+    EN2,
+    EN3,
+    GLOBAL,
+    PREFIX_CASE,
+    PATH_MCA_EVALUATIONS_XLSX,
+)
 
 
 def evaluate_criteria(all_results, qualitative_punctuations, multicriteria_data):
@@ -488,7 +508,9 @@ def representation(
         51: "AZ",
     }
 
-    workbook = xlsxwriter.Workbook(settings[OUTPUT_FOLDER] + "/MCA_evaluations.xlsx")
+    workbook = xlsxwriter.Workbook(
+        os.path.join(settings[OUTPUT_FOLDER], PATH_MCA_EVALUATIONS_XLSX)
+    )
 
     for n in range(len(all_data[EVALUATIONS])):
         # there will be a tab for each project
@@ -586,12 +608,14 @@ def representation(
                 if i % 2 == 0:
                     worksheet.write(row, col, case, format_highlight)
                     worksheet.write(
-                        row + 1, col, "case_" + str(j), format_highlight
+                        row + 1, col, PREFIX_CASE + str(j), format_highlight
                     )  # easy name to reference case and experiment when plotting
                     j += 1
                 else:
                     worksheet.write(row, col, case, format_highlight2)
-                    worksheet.write(row + 1, col, "case_" + str(j), format_highlight2)
+                    worksheet.write(
+                        row + 1, col, PREFIX_CASE + str(j), format_highlight2
+                    )
                     j += 1
                 col += 1
             i += 1
@@ -864,9 +888,9 @@ def plot_evaluations(
 
     cases_exp = []
     for i in range(combinations):
-        cases_exp.append("case_" + str(i + 1))
+        cases_exp.append(PREFIX_CASE + str(i + 1))
 
-    if os.path.isdir(settings[OUTPUT_FOLDER] + MCA_PLOTS):
+    if os.path.isdir(os.path.join(settings[OUTPUT_FOLDER] + MCA_PLOTS)):
         shutil.rmtree(settings[OUTPUT_FOLDER] + MCA_PLOTS, ignore_errors=True)
     if len(plot_criteria) > 0:
         os.mkdir(settings[OUTPUT_FOLDER] + MCA_PLOTS)
