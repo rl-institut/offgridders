@@ -64,7 +64,7 @@ from src.constants import (
     EN3,
     GLOBAL,
     PREFIX_CASE,
-)
+    PATH_MCA_EVALUATIONS_XLSX)
 
 
 def evaluate_criteria(all_results, qualitative_punctuations, multicriteria_data):
