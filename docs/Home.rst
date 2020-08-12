@@ -15,7 +15,7 @@ Home
 * Connection to a central electricity grid (optional: intermittent blackouts)
 * Contraints: supply shortage, renewable share, stability constraint
 
-A detailed description of all components defining an electricity system in Offgridders is provided in **Definition of an electricity supply system** . Based on these components,
+A detailed description of all components defining an electricity system in Offgridders is provided in `Definition of an electricity supply system <https://offgridders.readthedocs.io/en/latest/Definition.html>`_ . Based on these components,
 exemplary electricity systems that can be simulated are:
 
 * Fossil-fuelled micro grid
@@ -24,7 +24,9 @@ exemplary electricity systems that can be simulated are:
 * Standalone solutions with low capacity (eg. SHS)
 * Backup electricity supply systems ensuring reliable supply of consumers connected to weak grids
 
-A description of these different electricity systems is provided in **Exemplary electricity supply systems**.
+A description of these different electricity systems is provided in `Exemplary electricity supply systems <https://offgridders.readthedocs.io/en/latest/Exemplary.html>`_.
+
+For setting-up **Offgridders** on your operating system, please check the `Installation <https://offgridders.readthedocs.io/en/latest/Installation.html>`_.
 
 Features of Offgridders
 ------------------------
@@ -47,7 +49,7 @@ The features of the simulation tool can be summarized with:
 * **Multitude of input parameters, sensitivity analysis**.
     Numerous parameters can
     be defined to characterize the electricity solution to be simulated, including many
-    techno-economical parameters (see  **Input Values**. A sensitivity analysis of any parameter can evaluate its influence on the overall optimization results. The simulation can run for any time
+    techno-economical parameters (see  `Input Values <https://offgridders.readthedocs.io/en/latest/Inputs.html>`_. A sensitivity analysis of any parameter can evaluate its influence on the overall optimization results. The simulation can run for any time
     period between one day and a year with hourly time steps.
 
 * **Multiple project sites**.
