@@ -17,7 +17,7 @@ The input data is then pre-processed, e.g. the specific CAPEX and OPEX of each a
 
 The simulation tool outline is provided with the graph below:
 
-.. figure:: ../github_wiki/mg_tool_overview.png
+.. figure:: ../pictures/mg_tool_overview.png
     :width: 5000px
     :align: center
     :height: 300px
@@ -66,7 +66,7 @@ which can be sized based on a ratio of peak demand.
 
 In th Electricity supply system, almost all assets can be de-activated. The assest can be seeing in following figure:
 
-.. figure:: ../github_wiki/oemof_diagram_ac_dc_bus.jpg
+.. figure:: ../pictures/oemof_diagram_ac_dc_bus.jpg
     :width: 5000px
     :align: center
     :height: 400px

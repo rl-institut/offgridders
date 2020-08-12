@@ -32,7 +32,7 @@ Optimal local capacities for off-grid site with national grid access
 ---------------------------------------------------------------------
 An optimization of backup-capacities of an off-grid site already connected to a blackout-ridden national grid is performed.
 
-.. figure:: ../github_wiki/diesel_mg_4days.png
+.. figure:: ../pictures/diesel_mg_4days.png
     :width: 5000px
     :align: center
     :height: 280px
@@ -41,7 +41,7 @@ An optimization of backup-capacities of an off-grid site already connected to a 
 
     Diesel generator supply
 
-.. figure:: ../github_wiki/pv-diesel-mg_4days.png
+.. figure:: ../pictures/pv-diesel-mg_4days.png
     :width: 5000px
     :align: center
     :height: 280px
@@ -50,7 +50,7 @@ An optimization of backup-capacities of an off-grid site already connected to a 
 
     PV-Diesel micro grid, no storage
 
-.. figure:: ../github_wiki/pv-diesel-storage-mg_4days.png
+.. figure:: ../pictures/pv-diesel-storage-mg_4days.png
     :width: 5000px
     :align: center
     :height: 350px
@@ -59,7 +59,7 @@ An optimization of backup-capacities of an off-grid site already connected to a 
 
     Hybrid micro grid (PV, storage)
 
-.. figure:: ../github_wiki/pv-wind-storage-diesel-mg_4days.png
+.. figure:: ../pictures/pv-wind-storage-diesel-mg_4days.png
     :width: 5000px
     :align: center
     :height: 350px
@@ -68,7 +68,7 @@ An optimization of backup-capacities of an off-grid site already connected to a 
 
     Hybrid micro grid (PV, wind, storage)
 
-.. figure:: ../github_wiki/ongrid_mg_cons_4days.png
+.. figure:: ../pictures/ongrid_mg_cons_4days.png
     :width: 5000px
     :align: center
     :height: 300px
