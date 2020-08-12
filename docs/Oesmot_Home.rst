@@ -1,6 +1,6 @@
 Welcome to the simulator_grid-connected_micro_grid wiki!
 ________________________________________________________
-The Open Electricity System Modelling and Optimization Tool (oesmot), based on python3, simulates an user-defined electricity supply system and performs an optimization of the system's capacities as well as a dispatch-optimization of the optimized assets, utilizing the Open Energy Modelling Framework (Website) (Code). The system can be defined using:
+The Open Electricity System Modelling and Optimization Tool (Offgridders), based on python3, simulates an user-defined electricity supply system and performs an optimization of the system's capacities as well as a dispatch-optimization of the optimized assets, utilizing the Open Energy Modelling Framework (Website) (Code). The system can be defined using:
 
 * AC- and DC-demand
 * Inverters and rectifiers connecting AC- and DC-bus
@@ -11,7 +11,7 @@ The Open Electricity System Modelling and Optimization Tool (oesmot), based on p
 *  Connection to a central electricity grid (optional: intermittent blackouts)
 *  Contraints: supply shortage, renewable share, stability constraint
 
-A detailed description of all components defining an electricity system in oesmot is provided in github wiki: Definition of an electricity supply system. Based on these components, exemplary electricity systems that can be simulated are:
+A detailed description of all components defining an electricity system in Offgridders is provided in github wiki: Definition of an electricity supply system. Based on these components, exemplary electricity systems that can be simulated are:
 
 * Fossil-fuelled micro grid
 * Hybridized micro grid, utilizing PV, wind and/or storage
@@ -21,8 +21,8 @@ A detailed description of all components defining an electricity system in oesmo
 
 A description of these different electricity systems is provided in github wiki: Exemplary electricity supply systems.
 
-For setting-up oesmot on your operating system, please check the github wiki: Installation.
-Features of oesmot
+For setting-up Offgridders on your operating system, please check the github wiki: Installation.
+Features of Offgridders
 
 The features of the simulation tool can be summarized with:
 

@@ -15,7 +15,7 @@ Home
 * Connection to a central electricity grid (optional: intermittent blackouts)
 * Contraints: supply shortage, renewable share, stability constraint
 
-A detailed description of all components defining an electricity system in oesmot is provided in  `Github wiki: Definition of an electricity supply system <https://github.com/smartie2076/simulator_grid-connected_micro_grid/wiki/Definition-of-an-electricity-supply-system>`_. Based on these components,
+A detailed description of all components defining an electricity system in Offgridders is provided in  `Github wiki: Definition of an electricity supply system <https://github.com/smartie2076/simulator_grid-connected_micro_grid/wiki/Definition-of-an-electricity-supply-system>`_. Based on these components,
 exemplary electricity systems that can be simulated are:
 
 * Fossil-fuelled micro grid

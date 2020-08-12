@@ -1,13 +1,13 @@
 ========================
 Installation
 ========================
-To set-up oesmot, follow the steps below:
+To set-up Offgridders, follow the steps below:
 
 * If python3 is not pre-installed: Install miniconda (`for python 3.7 <https://docs.conda.io/en/latest/miniconda.html>`_)
 
 * Download the `cbc-solver <https://projects.coin-or.org/Cbc>`_ into your system from https://ampl.com/dl/open/cbc/ and integrate it in your system, ie. unzip, place into chosen path, add path to your system variables  (Windows: “System Properties” -->”Advanced”--> “Environment Variables”, requires admin-rights)
 
-* Download latest `oesmot release <https://github.com/smartie2076/simulator_grid-connected_micro_grid/releases>`_
+* Download latest `Offgridders release <https://github.com/smartie2076/simulator_grid-connected_micro_grid/releases>`_
 
 * Open Anaconda prompt, create and activate environment
 
@@ -22,7 +22,7 @@ To set-up oesmot, follow the steps below:
 
     `pip list`
 
-* Test your set-up by executing oesmot with the included test-files:
+* Test your set-up by executing Offgridders with the included test-files:
 
     `python A_main_script.py ./inputs/test_input_template.xlsx`
 
