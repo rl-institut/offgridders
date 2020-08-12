@@ -10,7 +10,7 @@ Here is a template for new release sections
 ## [_._._] - 20XX-MM-DD
 
 ### Added
--Constant variables for strings in constants.py (#89)
+-Constant variables for strings in constants.py (#89, #117, #118)
 
 ### Changed
 -
