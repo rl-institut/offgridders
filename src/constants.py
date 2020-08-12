@@ -66,7 +66,7 @@ SEPARATOR = "seperator"
 GRID_AVAILABILITY_CSV = "grid_availability.csv"
 
 
-INPUT_TEMPLATE_EXCEL_XLSX = "/inputs/input_template_excel.xlsx"
+INPUT_TEMPLATE_EXCEL_XLSX = "inputs/input_template_excel.xlsx"
 
 OEMOF_FOLDER = "/oemof"
 INPUTS_FOLDER = "/inputs"
