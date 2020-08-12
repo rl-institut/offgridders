@@ -64,7 +64,8 @@ from src.constants import (
     EN3,
     GLOBAL,
     PREFIX_CASE,
-    PATH_MCA_EVALUATIONS_XLSX)
+    PATH_MCA_EVALUATIONS_XLSX,
+)
 
 
 def evaluate_criteria(all_results, qualitative_punctuations, multicriteria_data):
@@ -507,7 +508,9 @@ def representation(
         51: "AZ",
     }
 
-    workbook = xlsxwriter.Workbook(os.path.join(settings[OUTPUT_FOLDER],PATH_MCA_EVALUATIONS_XLSX))
+    workbook = xlsxwriter.Workbook(
+        os.path.join(settings[OUTPUT_FOLDER], PATH_MCA_EVALUATIONS_XLSX)
+    )
 
     for n in range(len(all_data[EVALUATIONS])):
         # there will be a tab for each project

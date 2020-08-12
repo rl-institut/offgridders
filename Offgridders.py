@@ -277,7 +277,7 @@ def main():
     logging.shutdown()
     path_from = os.path.abspath("./micro_grid_design_logfile.log")
     path_to = os.path.abspath(
-        os.path.join(settings[OUTPUT_FOLDER],MICRO_GRID_DESIGN_LOGFILE_LOG)
+        os.path.join(settings[OUTPUT_FOLDER], MICRO_GRID_DESIGN_LOGFILE_LOG)
     )
     shutil.move(path_from, path_to)
 
