@@ -429,7 +429,7 @@ def check_output_directory(settings, input_excel_file):
             # Delete all folders. Special case: oemof folder
             if folder == OEMOF_FOLDER and os.path.isdir(output_folder + folder) == True:
                 # dont delete oemof folder if necessary for restoring results
-                if settings[RESTORE_OEMOF_IF_EXISTENT] == True:
+                if settings[RESTORE_OEMOF_IF_EXISTENT] is True:
                     pass
                 # delete oemof folder if no restoring necessary
                 else:
@@ -469,18 +469,18 @@ def check_output_directory(settings, input_excel_file):
     path_to = os.path.abspath(os.path.join(output_folder, INPUT_TEMPLATE_EXCEL_XLSX))
     shutil.copy(path_from, path_to)
 
-    if settings[SAVE_LP_FILE] == True or settings[LP_FILE_FOR_ONLY_3_TIMESTEPS] == True:
+    if settings[SAVE_LP_FILE] is True or settings[LP_FILE_FOR_ONLY_3_TIMESTEPS] is True:
         os.mkdir(output_folder + LP_FILES_FOLDER)
 
     if (
-        settings[SAVE_TO_CSV_FLOWS_STORAGE] == True
-        or settings[SAVE_TO_PNG_FLOWS_STORAGE] == True
+        settings[SAVE_TO_CSV_FLOWS_STORAGE] is True
+        or settings[SAVE_TO_PNG_FLOWS_STORAGE] is True
     ):
         os.mkdir(output_folder + STORAGE_FOLDER)
 
     if (
-        settings[SAVE_TO_CSV_FLOWS_ELECTRICITY_MG] == True
-        or settings[SAVE_TO_PNG_FLOWS_ELECTRICITY_MG] == True
+        settings[SAVE_TO_CSV_FLOWS_ELECTRICITY_MG] is True
+        or settings[SAVE_TO_PNG_FLOWS_ELECTRICITY_MG] is True
     ):
         os.mkdir(output_folder + ELECTRICITY_MG_FOLDER)
     return

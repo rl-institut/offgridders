@@ -88,7 +88,7 @@ def backup(
         demand = model.flow[el_bus_ac, sink_demand, t]
         expr += -stability_limit * demand
         ## ------- Get shortage at t------- #
-        if case_dict[ALLOW_SHORTAGE] == True:
+        if case_dict[ALLOW_SHORTAGE] is True:
             shortage = model.flow[source_shortage, el_bus_ac, t]
             # todo is this correct?
             expr += +stability_limit * shortage
@@ -133,7 +133,7 @@ def backup(
         )
         expr += -stability_limit * demand
         ## ------- Get shortage at t------- #
-        if case_dict[ALLOW_SHORTAGE] == True:
+        if case_dict[ALLOW_SHORTAGE] is True:
             shortage = model.flow[source_shortage, el_bus_ac, t]
             # todo is this correct?
             expr += +stability_limit * shortage
@@ -191,7 +191,7 @@ def backup_test(case_dict, oemof_results, experiment, e_flows_df):
 
         genset_capacity = oemof_results[CAPACITY_GENSET_KW]
 
-        if case_dict[ALLOW_SHORTAGE] == True:
+        if case_dict[ALLOW_SHORTAGE] is True:
             shortage = e_flows_df[DEMAND_SHORTAGE]
         else:
             shortage = pd.Series(
@@ -263,7 +263,7 @@ def hybrid(
         expr += -stability_limit * demand
 
         ## ------- Get shortage at t------- #
-        if case_dict[ALLOW_SHORTAGE] == True:
+        if case_dict[ALLOW_SHORTAGE] is True:
             shortage = model.flow[source_shortage, el_bus_ac, t]
             expr += +stability_limit * shortage
 
@@ -356,7 +356,7 @@ def hybrid_test(case_dict, oemof_results, experiment, e_flows_df):
     if case_dict[STABILITY_CONSTRAINT] != False:
         demand_profile = e_flows_df[DEMAND]
 
-        if case_dict[ALLOW_SHORTAGE] == True:
+        if case_dict[ALLOW_SHORTAGE] is True:
             shortage = e_flows_df[DEMAND_SHORTAGE]
         else:
             shortage = pd.Series(
@@ -452,7 +452,7 @@ def usage(
         expr += -stability_limit * demand
 
         ## ------- Get shortage at t------- #
-        if case_dict[ALLOW_SHORTAGE] == True:
+        if case_dict[ALLOW_SHORTAGE] is True:
             shortage = model.flow[source_shortage, el_bus, t]
             expr += stability_limit * shortage
 
@@ -484,7 +484,7 @@ def usage_test(case_dict, oemof_results, experiment, e_flows_df):
     if case_dict[STABILITY_CONSTRAINT] != False:
         demand_profile = e_flows_df[DEMAND]
 
-        if case_dict[ALLOW_SHORTAGE] == True:
+        if case_dict[ALLOW_SHORTAGE] is True:
             shortage = e_flows_df[DEMAND_SHORTAGE]
         else:
             shortage = pd.Series(
@@ -843,7 +843,7 @@ def discharge_only_at_blackout_test(case_dict, oemof_results, e_flows_df):
     Testing simulation results for adherance to above defined criterion
     """
     if (
-        case_dict[DISCHARGE_ONLY_WHEN_BLACKOUT] == True
+        case_dict[DISCHARGE_ONLY_WHEN_BLACKOUT] is True
         and case_dict[STORAGE_FIXED_CAPACITY] != None
     ):
         boolean_test = [
@@ -916,7 +916,7 @@ def inverter_only_at_blackout_test(case_dict, oemof_results, e_flows_df):
     """
 
     if (
-        case_dict[ENABLE_INVERTER_ONLY_AT_BLACKOUT] == True
+        case_dict[ENABLE_INVERTER_ONLY_AT_BLACKOUT] is True
         and case_dict[INVERTER_DC_AC_FIXED_CAPACITY] != None
     ):
         boolean_test = [

@@ -88,7 +88,7 @@ def build(experiment, case_dict):
     if case_dict[GENSET_FIXED_CAPACITY] == None:
         genset = None
     elif case_dict[GENSET_FIXED_CAPACITY] == False:
-        if case_dict[GENSET_WITH_MINIMAL_LOADING] == True:
+        if case_dict[GENSET_WITH_MINIMAL_LOADING] is True:
             # not possible with oemof
             logging.error(
                 "It is not possible to optimize a generator with minimal loading in oemof. \n "
@@ -109,7 +109,7 @@ def build(experiment, case_dict):
             )
 
     elif isinstance(case_dict[GENSET_FIXED_CAPACITY], float):
-        if case_dict[GENSET_WITH_MINIMAL_LOADING] == True:
+        if case_dict[GENSET_WITH_MINIMAL_LOADING] is True:
             genset = generate.genset_fix_minload(
                 micro_grid_system,
                 bus_fuel,
@@ -341,7 +341,7 @@ def build(experiment, case_dict):
     generate.excess(micro_grid_system, bus_electricity_ac, bus_electricity_dc)
 
     # ------------Optional: Shortage source------------#
-    if case_dict[ALLOW_SHORTAGE] == True:
+    if case_dict[ALLOW_SHORTAGE] is True:
         source_shortage = generate.shortage(
             micro_grid_system,
             bus_electricity_ac,
@@ -411,7 +411,7 @@ def build(experiment, case_dict):
     # ------------Renewable share constraint------------#
     if case_dict[RENEWABLE_SHARE_CONSTRAINT] == False:
         pass
-    elif case_dict[RENEWABLE_SHARE_CONSTRAINT] == True:
+    elif case_dict[RENEWABLE_SHARE_CONSTRAINT] is True:
         logging.info("Adding constraint: Renewable share.")
         constraints_custom.share(
             model,
@@ -434,7 +434,7 @@ def build(experiment, case_dict):
     # ------------Force charge from maingrid------------#
     if case_dict[FORCE_CHARGE_FROM_MAINGRID] == False:
         pass
-    elif case_dict[FORCE_CHARGE_FROM_MAINGRID] == True:
+    elif case_dict[FORCE_CHARGE_FROM_MAINGRID] is True:
         logging.info("Added constraint: Forcing charge from main grid.")
         constraints_custom.forced_charge(
             model, case_dict, bus_electricity_dc, storage, experiment
@@ -449,7 +449,7 @@ def build(experiment, case_dict):
     # ------------Allow discharge only at maingrid blackout------------#
     if case_dict[DISCHARGE_ONLY_WHEN_BLACKOUT] == False:
         pass
-    elif case_dict[DISCHARGE_ONLY_WHEN_BLACKOUT] == True:
+    elif case_dict[DISCHARGE_ONLY_WHEN_BLACKOUT] is True:
         logging.info("Added constraint: Allowing discharge only at blackout times.")
         constraints_custom.discharge_only_at_blackout(
             model, case_dict, bus_electricity_dc, storage, experiment
@@ -464,7 +464,7 @@ def build(experiment, case_dict):
     # ------------Allow inverter use only at maingrid blackout------------#
     if case_dict[ENABLE_INVERTER_ONLY_AT_BLACKOUT] == False:
         pass
-    elif case_dict[ENABLE_INVERTER_ONLY_AT_BLACKOUT] == True:
+    elif case_dict[ENABLE_INVERTER_ONLY_AT_BLACKOUT] is True:
         logging.info("Added constraint: Allowing inverter use only at blackout times.")
         constraints_custom.inverter_only_at_blackout(
             model, case_dict, bus_electricity_dc, inverter, experiment
