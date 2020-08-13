@@ -549,7 +549,7 @@ def storage_fix(
     logging.debug("Added to oemof model: storage fix")
     generic_storage = solph.components.GenericStorage(
         label=GENERIC_STORAGE,
-        nominal_capacity=capacity_storage,
+        nominal_storage_capacity=capacity_storage,
         inputs={
             bus_electricity_dc: solph.Flow(
                 nominal_value=capacity_storage * experiment[STORAGE_CRATE_CHARGE],
@@ -588,11 +588,9 @@ def storage_oem(micro_grid_system, bus_electricity_dc, experiment):
                 )
             )
         },
-        loss_rate=experiment[
-            "storage_loss_timestep"
-        ],  # from timestep to timestep
-        min_storage_level=experiment["storage_soc_min"],
-        max_storage_level=experiment["storage_soc_max"],
+        loss_rate=experiment[STORAGE_LOSS_TIMESTEP],  # from timestep to timestep
+        min_storage_level=experiment[STORAGE_SOC_MIN],
+        max_storage_level=experiment[STORAGE_SOC_MAX],
         inflow_conversion_factor=experiment[
             STORAGE_EFFICIENCY_CHARGE
         ],  # storing efficiency
@@ -678,7 +676,7 @@ def demand_dc(micro_grid_system, bus_electricity_dc, demand_profile):
     logging.debug("Added to oemof model: demand DC")
     # create and add demand sink to micro_grid_system - fixed
     sink_demand_dc = solph.Sink(
-        label=SINK_DEMAND_DC,
+        label="sink_demand_dc",
         inputs={
             bus_electricity_dc: solph.Flow(
                 fix=demand_profile, nominal_value=1

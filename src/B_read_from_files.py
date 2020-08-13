@@ -427,7 +427,7 @@ def check_output_directory(settings, input_excel_file):
         # Empty folders with previous result, except oemof results if simulation restart
         for folder in folder_list:
             # Delete all folders. Special case: oemof folder
-            if folder == OEMOF_FOLDER and os.path.isdir(output_folder + folder) == True:
+            if folder == OEMOF_FOLDER and os.path.isdir(output_folder + folder) is True:
                 # dont delete oemof folder if necessary for restoring results
                 if settings[RESTORE_OEMOF_IF_EXISTENT] is True:
                     pass

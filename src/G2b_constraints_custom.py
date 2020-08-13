@@ -48,7 +48,6 @@ from src.constants import (
     SHORTAGE_MAX_TIMESTEP,
 )
 
-
 def backup(
     model,
     case_dict,
@@ -128,9 +127,7 @@ def backup(
     def stability_rule_power(model, t):
         expr = CAP_genset
         ## ------- Get demand at t ------- #
-        demand = (
-            model.flow[el_bus_ac, sink_demand, t]
-        )
+        demand = model.flow[el_bus_ac, sink_demand, t]
         expr += -stability_limit * demand
         ## ------- Get shortage at t------- #
         if case_dict[ALLOW_SHORTAGE] is True:
@@ -212,7 +209,7 @@ def backup_test(case_dict, oemof_results, experiment, e_flows_df):
             for t in range(0, len(demand_profile.index))
         ]
 
-        if all(boolean_test) == True:
+        if all(boolean_test) is True:
             logging.debug("Stability criterion is fullfilled.")
         else:
             ratio = pd.Series(
@@ -311,7 +308,7 @@ def hybrid(
         expr += -stability_limit * demand
 
         ## ------- Get shortage at t------- #
-        if case_dict["allow_shortage"] == True:
+        if case_dict[ALLOW_SHORTAGE] is True:
             shortage = model.flow[source_shortage, el_bus_ac, t]
             expr += +stability_limit * shortage
 
@@ -962,12 +959,10 @@ def timestep(model, case_dict, experiment, el_bus, sink_demand, source_shortage)
     def stability_per_timestep_rule(model, t):
         expr = 0
         ## ------- Get demand at t ------- #
-        demand = (
-            model.flow[el_bus, sink_demand, t]
-        )
+        demand = model.flow[el_bus, sink_demand, t]
         expr += experiment[SHORTAGE_MAX_TIMESTEP] * demand
         ## ------- Get shortage at t------- #
-        if case_dict[ALLOW_SHORTAGE] == True:
+        if case_dict["allow_shortage"] is True:
             expr += -model.flow[source_shortage, el_bus, t]
 
         return expr >= 0

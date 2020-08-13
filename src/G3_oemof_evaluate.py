@@ -516,8 +516,8 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
     if case_dict[STORAGE_FIXED_CAPACITY] != None:
         storage = solph.views.node(results, GENERIC_STORAGE)
         storage_discharge = storage[SEQUENCES][
-            ((GENERIC_STORAGE, BUS_ELECTRICITY_DC), FLOW)
-        ]
+            ((GENERIC_STORAGE, BUS_ELECTRICITY_DC), FLOW)]
+
         storage_charge = storage[SEQUENCES][
             ((BUS_ELECTRICITY_DC, GENERIC_STORAGE), FLOW)
         ]

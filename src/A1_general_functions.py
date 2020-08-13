@@ -45,7 +45,6 @@ def define_base_capacities(oemof_results):
     }
     return capacities_base
 
-
 def store_result_matrix(overall_results, experiment, oemof_results):
     """
     Storing results to vector and then result matrix for saving it in csv.

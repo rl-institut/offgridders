@@ -502,7 +502,7 @@ def simulate(experiment, micro_grid_system, model, file_name):
     )  # ratioGap allowedGap mipgap
     logging.debug("Problem solved")
 
-    if experiment[SAVE_LP_FILE] == True:
+    if experiment["save_lp_file"] is True:
         logging.debug("Saving lp-file to folder.")
         model.write(
             experiment[OUTPUT_FOLDER] + "/lp_files/model_" + file_name + ".lp",
@@ -510,8 +510,8 @@ def simulate(experiment, micro_grid_system, model, file_name):
         )
 
     # add results to the energy system to make it possible to store them.
-    micro_grid_system.results["main"] = processing.results(model)
-    micro_grid_system.results["meta"] = processing.meta_results(model)
+    micro_grid_system.results[MAIN] = processing.results(model)
+    micro_grid_system.results[META] = processing.meta_results(model)
     return micro_grid_system
 
 
