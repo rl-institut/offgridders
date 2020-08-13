@@ -17,11 +17,11 @@ oemof.tools==0.4.0
 pandas==0.23.4
 pip==19.0.2
 ply==3.11
-Pyomo==5.5
+Pyomo==5.7.0
 pyparsing==2.2.2
 python-dateutil==2.7.3
 pytz==2018.5
-PyUtilib==5.6.3
+PyUtilib==6.0.0
 setuptools==40.4.3
 scipy==1.4.1
 six==1.11.0
