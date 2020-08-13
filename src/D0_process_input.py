@@ -71,6 +71,7 @@ from src.constants import (
     SUFFIX_COST_CAPEX,
 )
 
+
 def list_of_cases(case_definitions):
     case_list = []
     str_cases_simulated = ""

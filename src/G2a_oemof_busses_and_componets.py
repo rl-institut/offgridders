@@ -117,8 +117,7 @@ def shortage(
             ),
             bus_electricity_dc: solph.Flow(
                 variable_costs=experiment["shortage_penalty_costs"],
-                nominal_value=case_dict["max_shortage"]
-                * case_dict["total_demand_dc"],
+                nominal_value=case_dict["max_shortage"] * case_dict["total_demand_dc"],
                 summed_max=1,
             ),
         },
@@ -573,6 +572,7 @@ def storage_fix(
     micro_grid_system.add(generic_storage)
     return generic_storage
 
+
 def storage_oem(micro_grid_system, bus_electricity_dc, experiment):
     logging.debug("Added to oemof model: storage oem")
     generic_storage = solph.components.GenericStorage(
@@ -644,11 +644,7 @@ def distribution_grid_ac(
     # create and add demand sink to micro_grid_system - fixed
     sink_demand_ac = solph.Sink(
         label=SINK_DEMAND_AC,
-        inputs={
-            bus_electricity_ac: solph.Flow(
-                fix=demand_profile, nominal_value=1
-            )
-        },
+        inputs={bus_electricity_ac: solph.Flow(fix=demand_profile, nominal_value=1)},
     )
 
     micro_grid_system.add(sink_demand_ac)
@@ -661,11 +657,7 @@ def demand_ac(micro_grid_system, bus_electricity_ac, demand_profile):
     # create and add demand sink to micro_grid_system - fixed
     sink_demand_ac = solph.Sink(
         label=SINK_DEMAND_AC,
-        inputs={
-            bus_electricity_ac: solph.Flow(
-                fix=demand_profile, nominal_value=1
-            )
-        },
+        inputs={bus_electricity_ac: solph.Flow(fix=demand_profile, nominal_value=1)},
     )
 
     micro_grid_system.add(sink_demand_ac)
@@ -677,11 +669,7 @@ def demand_dc(micro_grid_system, bus_electricity_dc, demand_profile):
     # create and add demand sink to micro_grid_system - fixed
     sink_demand_dc = solph.Sink(
         label="sink_demand_dc",
-        inputs={
-            bus_electricity_dc: solph.Flow(
-                fix=demand_profile, nominal_value=1
-            )
-        },
+        inputs={bus_electricity_dc: solph.Flow(fix=demand_profile, nominal_value=1)},
     )
     micro_grid_system.add(sink_demand_dc)
     return sink_demand_dc

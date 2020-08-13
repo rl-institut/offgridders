@@ -20,6 +20,7 @@ import logging
 
 import matplotlib.pyplot as plt
 
+
 def plot_results(pandas_dataframe, title, xaxis, yaxis):
     """ general function for plots"""
     if plt is not None:
@@ -44,6 +45,7 @@ def define_base_capacities(oemof_results):
         CAPACITY_INVERTER_DC_AC_KW: oemof_results[CAPACITY_INVERTER_DC_AC_KW],
     }
     return capacities_base
+
 
 def store_result_matrix(overall_results, experiment, oemof_results):
     """
