@@ -8,8 +8,8 @@ import matplotlib
 import matplotlib.pyplot as plt
 import logging
 
-import oemof.graph as graph
 import networkx as nx
+import oemof.network.graph as graph
 
 from src.constants import (
     DISPLAY_META,
