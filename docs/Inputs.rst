@@ -36,7 +36,7 @@ The distribution grid costs should be mentioned separately from the project cost
 
 Constraints
 -----------
-If the stability constraint is activated in the simulation settings [simulation settings](https://github.com/smartie2076/simulator_grid-connected_micro_grid/wiki/Configuration-file), the stability limit in terms of minimal share of demand that the system should be able to meet in case of volatilities by fossil-fuelled generation or battery discharge has to be defined:::
+If the stability constraint is activated in the **configuration file**, the stability limit in terms of minimal share of demand that the system should be able to meet in case of volatilities by fossil-fuelled generation or battery discharge has to be defined:::
 
         'stability_limit':     0.5 # factor of demand
 

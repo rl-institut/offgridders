@@ -15,6 +15,63 @@ import pprint as pp
 # Logging of info
 import logging
 
+from src.constants import (
+    CASE_NAME,
+    FILENAME,
+    TOTAL_DEMAND_AC,
+    TOTAL_DEMAND_DC,
+    ABS_PEAK_DEMAND_AC_SIDE,
+    EVALUATED_DAYS,
+    GENSET_WITH_MINIMAL_LOADING,
+    CAPACITY_PV_KWP,
+    CAPACITY_WIND_KW,
+    CAPACITY_RECTIFIER_AC_DC_KW,
+    CAPACITY_INVERTER_DC_AC_KW,
+    SHORTAGE_BATCH_CAPACITY,
+    SHORTAGE_BATCH_POWER,
+    GENSET_BATCH,
+    PV_BATCH,
+    PCOUPLING_BATCH,
+    WIND_BATCH,
+    RECTIFIER_AC_DC_BATCH,
+    INVERTER_DC_AC_BATCH,
+    STORAGE_FIXED_CAPACITY,
+    STORAGE_FIXED_POWER,
+    GENSET_FIXED_CAPACITY,
+    PV_FIXED_CAPACITY,
+    PCC_CONSUMPTION_FIXED_CAPACITY,
+    PCC_FEEDIN_FIXED_CAPACITY,
+    WIND_FIXED_CAPACITY,
+    RECTIFIER_AC_DC_FIXED_CAPACITY,
+    INVERTER_DC_AC_FIXED_CAPACITY,
+    POWER_STORAGE_KW,
+    CAPACITY_STORAGE_KWH,
+    CAPACITY_GENSET_KW,
+    GENSET_OVERSIZE_FACTOR,
+    CAPACITY_PCC_CONSUMPTION_KW,
+    CAPACITY_PCC_FEEDING_KW,
+    PCOUPLING_OVERSIZE_FACTOR,
+    ALLOW_SHORTAGE,
+    SHORTAGE_MAX_ALLOWED,
+    MAX_SHORTAGE,
+    STABILITY_CONSTRAINT,
+    RENEWABLE_CONSTRAINT,
+    MIN_RENEWABLE_SHARE,
+    RENEWABLE_SHARE_CONSTRAINT,
+    NUMBER_OF_EQUAL_GENERATORS,
+    EVALUATION_PERSPECTIVE,
+    FORCE_CHARGE_FROM_MAINGRID,
+    DISCHARGE_ONLY_WHEN_BLACKOUT,
+    ENABLE_INVERTER_ONLY_AT_BLACKOUT,
+    OEM,
+    PEAK_DEMAND,
+    PCOUPLING_EFFICIENCY,
+    SHARE_BACKUP,
+    SHARE_USAGE,
+    SHARE_HYBRID,
+    DEFAULT,
+)
+
 # This is not really a necessary class, as the whole experiement could be given to the function, but it ensures, that
 # only correct input data is included
 
@@ -24,57 +81,57 @@ def update_dict(capacities_oem, specific_case, experiment):
 
     experiment_case_dict.update(
         {
-            "case_name": specific_case["case_name"],
-            "filename": specific_case["case_name"]
+            CASE_NAME: specific_case[CASE_NAME],
+            FILENAME: specific_case[CASE_NAME]
             + experiment[
-                "filename"
+                FILENAME
             ],  # experiment['output_folder'] + "_" + specific_case['case_name'] + experiment['filename']
-            "total_demand_ac": experiment["total_demand_ac"],
-            "total_demand_dc": experiment["total_demand_dc"],
-            "peak_demand": experiment["abs_peak_demand_ac_side"],
-            "evaluated_days": experiment["evaluated_days"],
-            "genset_with_minimal_loading": specific_case["genset_with_minimal_loading"],
+            TOTAL_DEMAND_AC: experiment[TOTAL_DEMAND_AC],
+            TOTAL_DEMAND_DC: experiment[TOTAL_DEMAND_DC],
+            PEAK_DEMAND: experiment[ABS_PEAK_DEMAND_AC_SIDE],
+            EVALUATED_DAYS: experiment[EVALUATED_DAYS],
+            GENSET_WITH_MINIMAL_LOADING: specific_case[GENSET_WITH_MINIMAL_LOADING],
         }
     )
 
-    warning_string = "Invalid case definitions. For case " + specific_case["case_name"]
+    warning_string = "Invalid case definitions. For case " + specific_case[CASE_NAME]
 
     ###########################################
     # Define capacities                       #
     ###########################################
     # pv, storage, genset, wind, pcc consumption/feedin
     list_base_capacities = [
-        "capacity_storage_kWh",
-        "power_storage_kW",
-        "capacity_genset_kW",
-        "capacity_pv_kWp",
-        "capacity_pcc_consumption_kW",
-        "capacity_pcc_feedin_kW",
-        "capacity_wind_kW",
-        "capacity_rectifier_ac_dc_kW",
-        "capacity_inverter_dc_ac_kW",
+        CAPACITY_STORAGE_KWH,
+        POWER_STORAGE_KW,
+        CAPACITY_GENSET_KW,
+        CAPACITY_PV_KWP,
+        CAPACITY_PCC_CONSUMPTION_KW,
+        CAPACITY_PCC_FEEDING_KW,
+        CAPACITY_WIND_KW,
+        CAPACITY_RECTIFIER_AC_DC_KW,
+        CAPACITY_INVERTER_DC_AC_KW,
     ]
     list_of_batch_names = [
-        "storage_batch_capacity",
-        "storage_batch_power",
-        "genset_batch",
-        "pv_batch",
-        "pcoupling_batch",  # check entry
-        "pcoupling_batch",  # check entry
-        "wind_batch",
-        "rectifier_ac_dc_batch",
-        "inverter_dc_ac_batch",
+        SHORTAGE_BATCH_CAPACITY,
+        SHORTAGE_BATCH_POWER,
+        GENSET_BATCH,
+        PV_BATCH,
+        PCOUPLING_BATCH,  # check entry
+        PCOUPLING_BATCH,  # check entry
+        WIND_BATCH,
+        RECTIFIER_AC_DC_BATCH,
+        INVERTER_DC_AC_BATCH,
     ]  # create entry
     list_build_oemof_names = [
-        "storage_fixed_capacity",
-        "storage_fixed_power",
-        "genset_fixed_capacity",
-        "pv_fixed_capacity",
-        "pcc_consumption_fixed_capacity",
-        "pcc_feedin_fixed_capacity",
-        "wind_fixed_capacity",
-        "rectifier_ac_dc_fixed_capacity",
-        "inverter_dc_ac_fixed_capacity",
+        STORAGE_FIXED_CAPACITY,
+        STORAGE_FIXED_POWER,
+        GENSET_FIXED_CAPACITY,
+        PV_FIXED_CAPACITY,
+        PCC_CONSUMPTION_FIXED_CAPACITY,
+        PCC_FEEDIN_FIXED_CAPACITY,
+        WIND_FIXED_CAPACITY,
+        RECTIFIER_AC_DC_FIXED_CAPACITY,
+        INVERTER_DC_AC_FIXED_CAPACITY,
     ]
 
     if len(list_base_capacities) != len(list_build_oemof_names):
@@ -82,9 +139,9 @@ def update_dict(capacities_oem, specific_case, experiment):
 
     for item in range(0, len(list_base_capacities)):
         if (
-            list_base_capacities[item] == "power_storage_kW"
+            list_base_capacities[item] == POWER_STORAGE_KW
         ):  # it is not possible to set the optimization ect. of the storage power; the setting of storage will be used
-            case_dict_entry = specific_case["capacity_storage_kWh"]
+            case_dict_entry = specific_case[CAPACITY_STORAGE_KWH]
         else:
             case_dict_entry = specific_case[list_base_capacities[item]]
         component_name = list_base_capacities[item]
@@ -97,19 +154,19 @@ def update_dict(capacities_oem, specific_case, experiment):
             experiment[list_of_batch_names[item]],
         )
         # Correction factor for oversizing generator and pcc by factor (and include inefficiency of transformer)
-        if case_dict_entry == "peak_demand":
-            if component_name == "capacity_genset_kW":
+        if case_dict_entry == PEAK_DEMAND:
+            if component_name == CAPACITY_GENSET_KW:
                 case_dict_capacity = (
-                    case_dict_capacity * experiment["genset_oversize_factor"]
+                    case_dict_capacity * experiment[GENSET_OVERSIZE_FACTOR]
                 )
             elif (
-                component_name == "capacity_pcc_consumption_kW"
-                or component_name == "capacity_pcc_feedin_kW"
+                component_name == CAPACITY_PCC_CONSUMPTION_KW
+                or component_name == CAPACITY_PCC_FEEDING_KW
             ):
                 case_dict_capacity = round(
                     case_dict_capacity
-                    / experiment["pcoupling_efficiency"]
-                    * experiment["pcoupling_oversize_factor"],
+                    / experiment[PCOUPLING_EFFICIENCY]
+                    * experiment[PCOUPLING_OVERSIZE_FACTOR],
                     3,
                 )
 
@@ -120,38 +177,33 @@ def update_dict(capacities_oem, specific_case, experiment):
     ###########################################
     # Allowing shortage, define max. shortage #
     ###########################################
-    if specific_case["allow_shortage"] == "default":
-        experiment_case_dict.update({"allow_shortage": experiment["allow_shortage"]})
-        experiment_case_dict.update(
-            {"max_shortage": experiment["shortage_max_allowed"]}
-        )
+    if specific_case[ALLOW_SHORTAGE] == DEFAULT:
+        experiment_case_dict.update({ALLOW_SHORTAGE: experiment[ALLOW_SHORTAGE]})
+        experiment_case_dict.update({MAX_SHORTAGE: experiment[SHORTAGE_MAX_ALLOWED]})
 
-    elif specific_case["allow_shortage"] is False:
-        experiment_case_dict.update({"allow_shortage": False})
-        experiment_case_dict.update({"max_shortage": 0})
+    elif specific_case[ALLOW_SHORTAGE] == False:
+        experiment_case_dict.update({ALLOW_SHORTAGE: False})
+        experiment_case_dict.update({MAX_SHORTAGE: 0})
 
     elif (
-        specific_case["allow_shortage"] is True
-        and specific_case["max_shortage"] == "default"
+        specific_case[ALLOW_SHORTAGE] == True and specific_case[MAX_SHORTAGE] == DEFAULT
     ):
-        experiment_case_dict.update({"allow_shortage": True})
-        experiment_case_dict.update(
-            {"max_shortage": experiment["shortage_max_allowed"]}
-        )
+        experiment_case_dict.update({ALLOW_SHORTAGE: True})
+        experiment_case_dict.update({MAX_SHORTAGE: experiment[SHORTAGE_MAX_ALLOWED]})
 
-    elif specific_case["allow_shortage"] is True:
-        if isinstance(specific_case["max_shortage"], float) or isinstance(
-            specific_case["max_shortage"], int
+    elif specific_case[ALLOW_SHORTAGE] == True:
+        if isinstance(specific_case[MAX_SHORTAGE], float) or isinstance(
+            specific_case[MAX_SHORTAGE], int
         ):
-            experiment_case_dict.update({"allow_shortage": True})
-            experiment_case_dict.update({"max_shortage": specific_case["max_shortage"]})
+            experiment_case_dict.update({ALLOW_SHORTAGE: True})
+            experiment_case_dict.update({MAX_SHORTAGE: specific_case[MAX_SHORTAGE]})
 
     else:
         logging.warning(
             warning_string
-            + ' values "allow_shortage" (True/False/default) and "max_shortage" (float/default) not defined properly: '
-            + str(specific_case["allow_shortage"])
-            + str(isinstance(specific_case["allow_shortage"], str))
+            + f" values {ALLOW_SHORTAGE} (True/False/default) and {MAX_SHORTAGE} (float/default) not defined properly: "
+            + str(specific_case[ALLOW_SHORTAGE])
+            + str(isinstance(specific_case[ALLOW_SHORTAGE], str))
         )
 
     ###########################################
@@ -159,55 +211,53 @@ def update_dict(capacities_oem, specific_case, experiment):
     ###########################################
 
     if (
-        specific_case["stability_constraint"] is False
-        or specific_case["stability_constraint"] == "share_backup"
-        or specific_case["stability_constraint"] == "share_usage"
-        or specific_case["stability_constraint"] == "share_hybrid"
+        specific_case[STABILITY_CONSTRAINT] == False
+        or specific_case[STABILITY_CONSTRAINT] == SHARE_BACKUP
+        or specific_case[STABILITY_CONSTRAINT] == SHARE_USAGE
+        or specific_case[STABILITY_CONSTRAINT] == SHARE_HYBRID
     ):
         experiment_case_dict.update(
-            {"stability_constraint": specific_case["stability_constraint"]}
+            {STABILITY_CONSTRAINT: specific_case[STABILITY_CONSTRAINT]}
         )
     else:
         logging.warning(
             warning_string
-            + ' value "stability_constraint" (False/share_backup/share_usage) not defined properly'
+            + f" value {STABILITY_CONSTRAINT} (False/share_backup/share_usage) not defined properly"
         )
 
     ###########################################
     # Include renewable constraint            #
     ###########################################
 
-    if specific_case["renewable_constraint"] == "default":
-        if experiment["min_renewable_share"] == 0:
-            experiment_case_dict.update({"renewable_share_constraint": False})
+    if specific_case[RENEWABLE_CONSTRAINT] == DEFAULT:
+        if experiment[MIN_RENEWABLE_SHARE] == 0:
+            experiment_case_dict.update({RENEWABLE_SHARE_CONSTRAINT: False})
         else:
-            experiment_case_dict.update({"renewable_share_constraint": True})
+            experiment_case_dict.update({RENEWABLE_SHARE_CONSTRAINT: True})
 
-    elif specific_case["renewable_constraint"] is False:
-        experiment_case_dict.update({"renewable_share_constraint": False})
+    elif specific_case[RENEWABLE_CONSTRAINT] == False:
+        experiment_case_dict.update({RENEWABLE_SHARE_CONSTRAINT: False})
 
-    elif specific_case["renewable_constraint"] is True:
-        experiment_case_dict.update({"renewable_share_constraint": True})
+    elif specific_case[RENEWABLE_CONSTRAINT] == True:
+        experiment_case_dict.update({RENEWABLE_SHARE_CONSTRAINT: True})
     else:
         logging.warning(
             warning_string
-            + ' value "renewable_share_constraint" (True/False/default) not defined properly'
+            + f" value {RENEWABLE_SHARE_CONSTRAINT} (True/False/default) not defined properly"
         )
 
-    experiment_case_dict["number_of_equal_generators"] = specific_case[
-        "number_of_equal_generators"
+    experiment_case_dict[NUMBER_OF_EQUAL_GENERATORS] = specific_case[
+        NUMBER_OF_EQUAL_GENERATORS
     ]
-    experiment_case_dict["evaluation_perspective"] = specific_case[
-        "evaluation_perspective"
+    experiment_case_dict[EVALUATION_PERSPECTIVE] = specific_case[EVALUATION_PERSPECTIVE]
+    experiment_case_dict[FORCE_CHARGE_FROM_MAINGRID] = specific_case[
+        FORCE_CHARGE_FROM_MAINGRID
     ]
-    experiment_case_dict["force_charge_from_maingrid"] = specific_case[
-        "force_charge_from_maingrid"
+    experiment_case_dict[DISCHARGE_ONLY_WHEN_BLACKOUT] = specific_case[
+        DISCHARGE_ONLY_WHEN_BLACKOUT
     ]
-    experiment_case_dict["discharge_only_when_blackout"] = specific_case[
-        "discharge_only_when_blackout"
-    ]
-    experiment_case_dict["enable_inverter_only_at_backout"] = specific_case[
-        "enable_inverter_only_at_backout"
+    experiment_case_dict[ENABLE_INVERTER_ONLY_AT_BLACKOUT] = specific_case[
+        ENABLE_INVERTER_ONLY_AT_BLACKOUT
     ]
     return experiment_case_dict
 
@@ -215,14 +265,14 @@ def update_dict(capacities_oem, specific_case, experiment):
 def get_base_capacity(
     experiment_case_dict, case_dict_entry, capacities, component_name, batch_size
 ):
-    if case_dict_entry == "oem":
-        case_dict_capacity = "oem"
+    if case_dict_entry == OEM:
+        case_dict_capacity = OEM
     elif case_dict_entry == None or case_dict_entry == "None":
         case_dict_capacity = None
     elif isinstance(case_dict_entry, float) or isinstance(case_dict_entry, int):
         case_dict_capacity = case_dict_entry
-    elif case_dict_entry == "peak_demand":
-        case_dict_capacity = round(experiment_case_dict["peak_demand"], 3)
+    elif case_dict_entry == PEAK_DEMAND:
+        case_dict_capacity = round(experiment_case_dict[PEAK_DEMAND], 3)
         case_dict_capacity = float(case_dict_capacity)
     elif case_dict_entry in capacities:
         case_dict_capacity = capacities[case_dict_entry][component_name]
@@ -238,7 +288,7 @@ def get_base_capacity(
 
 def define_capacity(experiment_case_dict, case_dict_capacity, oemof_name):
 
-    if case_dict_capacity == "oem":
+    if case_dict_capacity == OEM:
         experiment_case_dict.update({oemof_name: False})
     elif case_dict_capacity == None or case_dict_capacity == 0:
         experiment_case_dict.update({oemof_name: None})

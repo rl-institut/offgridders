@@ -3,12 +3,22 @@ Small scripts to keep the main file clean
 """
 
 import pandas as pd
+from src.constants import (
+    CAPACITY_PV_KWP,
+    CAPACITY_WIND_KW,
+    CAPACITY_STORAGE_KWH,
+    POWER_STORAGE_KW,
+    CAPACITY_GENSET_KW,
+    CAPACITY_PCOUPLING_KW,
+    CAPACITY_RECTIFIER_AC_DC_KW,
+    CAPACITY_INVERTER_DC_AC_KW,
+    DEMAND_PROFILE,
+)
 
-try:
-    import matplotlib.pyplot as plt
-except ImportError:
-    print("Matplotlib.pyplot could not be loaded")
-    plt = None
+from oemof.tools import logger
+import logging
+
+import matplotlib.pyplot as plt
 
 
 def plot_results(pandas_dataframe, title, xaxis, yaxis):
@@ -25,17 +35,16 @@ def plot_results(pandas_dataframe, title, xaxis, yaxis):
 
 def define_base_capacities(oemof_results):
     capacities_base = {
-        "capacity_pv_kWp": oemof_results["capacity_pv_kWp"],
-        "capacity_wind_kW": oemof_results["capacity_wind_kW"],
-        "capacity_storage_kWh": oemof_results["capacity_storage_kWh"],
-        "power_storage_kW": oemof_results["power_storage_kW"],
-        "capacity_genset_kW": oemof_results["capacity_genset_kW"],
-        "capacity_pcoupling_kW": oemof_results["capacity_pcoupling_kW"],
-        "capacity_rectifier_ac_dc_kW": oemof_results["capacity_rectifier_ac_dc_kW"],
-        "capacity_inverter_dc_ac_kW": oemof_results["capacity_inverter_dc_ac_kW"],
+        CAPACITY_PV_KWP: oemof_results[CAPACITY_PV_KWP],
+        CAPACITY_WIND_KW: oemof_results[CAPACITY_WIND_KW],
+        CAPACITY_STORAGE_KWH: oemof_results[CAPACITY_STORAGE_KWH],
+        POWER_STORAGE_KW: oemof_results[POWER_STORAGE_KW],
+        CAPACITY_GENSET_KW: oemof_results[CAPACITY_GENSET_KW],
+        CAPACITY_PCOUPLING_KW: oemof_results[CAPACITY_PCOUPLING_KW],
+        CAPACITY_RECTIFIER_AC_DC_KW: oemof_results[CAPACITY_RECTIFIER_AC_DC_KW],
+        CAPACITY_INVERTER_DC_AC_KW: oemof_results[CAPACITY_INVERTER_DC_AC_KW],
     }
     return capacities_base
-
 
 def store_result_matrix(overall_results, experiment, oemof_results):
     """
@@ -56,7 +65,7 @@ def store_result_matrix(overall_results, experiment, oemof_results):
                     pd.Series([round(oemof_results[key], round_to_comma)], index=[key])
                 )
         # extend by item of demand profile
-        elif key == "demand_profile":
+        elif key == DEMAND_PROFILE:
             result_series = result_series.append(
                 pd.Series([experiment[key]], index=[key])
             )

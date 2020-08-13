@@ -4,6 +4,63 @@ import os
 import sys
 import shutil
 
+from src.constants import (
+    SETTINGS,
+    INPUT_CONSTANT,
+    INPUT_SENSITIVITY,
+    PROJECT_SITES,
+    CASE_DEFINITIONS,
+    MULTICRITERIA_DATA,
+    INPUT_FOLDER_TIMESERIES,
+    TIMESERIES_FILE,
+    TITLE_GRID_AVAILABILITY,
+    NECESSITY_FOR_BLACKOUT_TIMESERIES_GENERATION,
+    SETTING_VALUE,
+    UNIT,
+    VALUE,
+    CASE_NAME,
+    MAX_SHORTAGE,
+    NUMBER_OF_EQUAL_GENERATORS,
+    DIMENSIONS,
+    CRITERIA,
+    PARAMETERS,
+    TARIFF,
+    TITLE_TIME,
+    TITLE_DEMAND_AC,
+    TITLE_DEMAND_DC,
+    TITLE_PV,
+    TITLE_WIND,
+    DEMAND_AC,
+    DEMAND_DC,
+    PV_GENERATION_PER_KWP,
+    WIND_GENERATION_PER_KW,
+    GRID_AVAILABILITY,
+    OUTPUT_FOLDER,
+    RESTORE_OEMOF_IF_EXISTENT,
+    RESTORE_BLACKOUTS_IF_EXISTENT,
+    SAVE_LP_FILE,
+    LP_FILE_FOR_ONLY_3_TIMESTEPS,
+    SAVE_TO_CSV_FLOWS_STORAGE,
+    SAVE_TO_PNG_FLOWS_STORAGE,
+    SAVE_TO_CSV_FLOWS_ELECTRICITY_MG,
+    SAVE_TO_PNG_FLOWS_ELECTRICITY_MG,
+    FILE_INDEX,
+    EVALUATION_PERSPECTIVE,
+    DEFAULT,
+    AC_SYSTEM,
+    DC_SYSTEM,
+    SEPARATOR,
+    GRID_AVAILABILITY_CSV,
+    FUEL_CO2_EMISSION_FACTOR,
+    MAINGRID_CO2_EMISSION_FACTOR,
+    INPUT_TEMPLATE_EXCEL_XLSX,
+    OEMOF_FOLDER,
+    INPUTS_FOLDER,
+    ELECTRICITY_MG_FOLDER,
+    STORAGE_FOLDER,
+    LP_FILES_FOLDER,
+)
+
 # requires xlrd
 
 
@@ -13,12 +70,12 @@ def process_excel_file(input_excel_file):
     #######################################
 
     # Name of tabs
-    sheet_settings = "settings"
-    sheet_input_constant = "input_constant"
-    sheet_input_sensitivity = "input_sensitivity"
-    sheet_project_sites = "project_sites"
-    sheet_case_definitions = "case_definitions"
-    sheet_multicriteria_data = "multicriteria_data"
+    sheet_settings = SETTINGS
+    sheet_input_constant = INPUT_CONSTANT
+    sheet_input_sensitivity = INPUT_SENSITIVITY
+    sheet_project_sites = PROJECT_SITES
+    sheet_case_definitions = CASE_DEFINITIONS
+    sheet_multicriteria_data = MULTICRITERIA_DATA
 
     settings = get_settings(input_excel_file, sheet_settings)
 
@@ -39,24 +96,24 @@ def process_excel_file(input_excel_file):
     for project_site in project_site_s:
         # copy input timeseries to new location
         path_from = os.path.abspath(
-            settings["input_folder_timeseries"]
+            settings[INPUT_FOLDER_TIMESERIES]
             + "/"
-            + project_site_s[project_site]["timeseries_file"]
+            + project_site_s[project_site][TIMESERIES_FILE]
         )
         path_to = os.path.abspath(
-            settings["output_folder"]
+            settings[OUTPUT_FOLDER]
             + "/inputs/"
-            + project_site_s[project_site]["timeseries_file"]
+            + project_site_s[project_site][TIMESERIES_FILE]
         )
         shutil.copy(path_from, path_to)
 
         from_file(project_site_s[project_site], path_from)
-        if project_site_s[project_site]["title_grid_availability"] == "None":
+        if project_site_s[project_site][TITLE_GRID_AVAILABILITY] == "None":
             necessity_for_blackout_timeseries_generation = True
 
     settings.update(
         {
-            "necessity_for_blackout_timeseries_generation": necessity_for_blackout_timeseries_generation
+            NECESSITY_FOR_BLACKOUT_TIMESERIES_GENERATION: necessity_for_blackout_timeseries_generation
         }
     )
     case_definitions = get_case_definitions(input_excel_file, sheet_case_definitions)
@@ -107,7 +164,7 @@ def get_settings(file, sheet_settings):
     # defines dictionary connected to settings
     settings = get_data(file, sheet_settings, 11, "B", "C")
     settings = settings.to_dict(orient="dict")
-    settings = settings["setting_value"]
+    settings = settings[SETTING_VALUE]
 
     # Translate strings 'True' and 'False' from excel sheet to True and False
     for key in settings:
@@ -119,20 +176,20 @@ def get_parameters_constant(file, sheet_input_constant):
     # defines dictionary connected to parameters
     parameters_constant = get_data(file, sheet_input_constant, 6, "A", "C")
     parameters_constant = parameters_constant.to_dict(orient="dict")
-    parameters_constant_units = parameters_constant["Unit"]
-    parameters_constant_values = parameters_constant["Value"]
+    parameters_constant_units = parameters_constant[UNIT]
+    parameters_constant_values = parameters_constant[VALUE]
 
-    if "fuel_co2_emission_factor" not in parameters_constant_values.keys():
-        parameters_constant_values.update({"fuel_co2_emission_factor": 2.68})
-        parameters_constant_units.update({"fuel_co2_emission_factor": "kgCO2/l"})
+    if FUEL_CO2_EMISSION_FACTOR not in parameters_constant_values.keys():
+        parameters_constant_values.update({FUEL_CO2_EMISSION_FACTOR: 2.68})
+        parameters_constant_units.update({FUEL_CO2_EMISSION_FACTOR: "kgCO2/l"})
         logging.warning(
             "Optional parameter `fuel_co2_emission_factor` was not included in the input parameters."
             "The CO2 emissions will be calculated with the default value of 2.68 kgCO2/l diesel"
         )
 
-    if "maingrid_co2_emission_factor" not in parameters_constant_values.keys():
-        parameters_constant_values.update({"maingrid_co2_emission_factor": 0.9})
-        parameters_constant_units.update({"maingrid_co2_emission_factor": "kgCO2/kWh"})
+    if MAINGRID_CO2_EMISSION_FACTOR not in parameters_constant_values.keys():
+        parameters_constant_values.update({MAINGRID_CO2_EMISSION_FACTOR: 0.9})
+        parameters_constant_units.update({MAINGRID_CO2_EMISSION_FACTOR: "kgCO2/kWh"})
         logging.warning(
             "Optional parameter `maingrid_co2_emission_factor` was not included in the input parameters."
             "The CO2 emissions will be calculated with the default value of 0.9 kgCO2/ kWh "
@@ -174,7 +231,7 @@ def get_case_definitions(file, sheet_project_sites):
     # defines dictionary connected to project sites
     case_definitions = get_data(file, sheet_project_sites, 17, None, None)
     # if any(case_definitions.columns.str.contains('unnamed', case=False)):
-    #    logging.warning('Input template: Tab "case_definitions" might have unnamed columns, which will be dropped. Check if all your cases are simulated.')
+    #    logging.warning('Input template: Tab CASE_DEFINITIONS might have unnamed columns, which will be dropped. Check if all your cases are simulated.')
     #    case_definitions.drop(case_definitions.columns[case_definitions.columns.str.contains('unnamed', case=False)], axis=1, inplace=True)
 
     case_definitions = case_definitions.to_dict(orient="dict")
@@ -182,20 +239,30 @@ def get_case_definitions(file, sheet_project_sites):
     # Translate strings 'True' and 'False' from excel sheet to True and False
 
     for case in case_definitions:
-        case_definitions[case].update({"case_name": case})
+        case_definitions[case].update({CASE_NAME: case})
         for key in case_definitions[case]:
             case_definitions[case][key] = identify_true_false(
                 case_definitions[case][key]
             )
-        if case_definitions[case]["max_shortage"] != "default":
+        if case_definitions[case][MAX_SHORTAGE] != DEFAULT:
             case_definitions[case].update(
-                {"max_shortage": float(case_definitions[case]["max_shortage"])}
+                {MAX_SHORTAGE: float(case_definitions[case][MAX_SHORTAGE])}
+            )
+
+        if case_definitions[case][EVALUATION_PERSPECTIVE] not in [
+            AC_SYSTEM,
+            DC_SYSTEM,
+        ]:
+            logging.error(
+                "Parameter evaluation_perspective has to be either 'AC_system' or 'DC_system', "
+                "but is ",
+                case_definitions[case][EVALUATION_PERSPECTIVE],
             )
 
         case_definitions[case].update(
             {
-                "number_of_equal_generators": int(
-                    case_definitions[case]["number_of_equal_generators"]
+                NUMBER_OF_EQUAL_GENERATORS: int(
+                    case_definitions[case][NUMBER_OF_EQUAL_GENERATORS]
                 )
             }
         )
@@ -234,21 +301,21 @@ def get_multicriteria_data(file, sheet_multicriteria_analysis, case_definitions)
     parameters = parameters.to_dict(orient="index")
 
     multicriteria_data = {
-        "dimensions": dimension_weights,
-        "criteria": criteria_weights,
-        "parameters": parameters,
+        DIMENSIONS: dimension_weights,
+        CRITERIA: criteria_weights,
+        PARAMETERS: parameters,
     }
 
     # gets the tariff for each case scenario from the case_definitions dictionary
-    multicriteria_data["tariff"] = {}
+    multicriteria_data[TARIFF] = {}
     for case in case_definitions:
         for key in case_definitions[case]:
             if key == "tariff for electrical service":
                 tariff = case_definitions[case][key]
                 if tariff != "None":
-                    multicriteria_data["tariff"][case] = float(tariff)
+                    multicriteria_data[TARIFF][case] = float(tariff)
                 else:
-                    multicriteria_data["tariff"][case] = tariff
+                    multicriteria_data[TARIFF][case] = tariff
 
     return multicriteria_data
 
@@ -271,15 +338,15 @@ def from_file(project_site, path_from):
     ##########################################################
     # Reads timeseries from files connected to project sites #
     ##########################################################
-    data_set = pd.read_csv(path_from, sep=project_site["seperator"])
+    data_set = pd.read_csv(path_from, sep=project_site[SEPARATOR])
 
     list_columns = [
-        "title_time",
-        "title_demand_ac",
-        "title_demand_dc",
-        "title_pv",
-        "title_wind",
-        "title_grid_availability",
+        TITLE_TIME,
+        TITLE_DEMAND_AC,
+        TITLE_DEMAND_DC,
+        TITLE_PV,
+        TITLE_WIND,
+        TITLE_GRID_AVAILABILITY,
     ]
 
     # Attached data to each project site analysed. Does NOT apply noise here,
@@ -290,31 +357,31 @@ def from_file(project_site, path_from):
     # If-else clauses allow that some of the timeseries are not included in csv file.
 
     for column_item in list_columns:
-        if column_item == "title_time":
+        if column_item == TITLE_TIME:
             if project_site[column_item] == "None":
                 file_index = None
             else:
                 try:
                     file_index = pd.DatetimeIndex(
-                        data_set[project_site["title_time"]].values
+                        data_set[project_site[TITLE_TIME]].values
                     )
                 except (KeyError):
                     column_not_existant(
                         column_item, project_site[column_item], path_from
                     )
-            project_site.update({"file_index": file_index})
+            project_site.update({FILE_INDEX: file_index})
 
         else:
-            if column_item == "title_demand_ac":
-                dictionary_title = "demand_ac"
-            elif column_item == "title_demand_dc":
-                dictionary_title = "demand_dc"
-            elif column_item == "title_pv":
-                dictionary_title = "pv_generation_per_kWp"
-            elif column_item == "title_wind":
-                dictionary_title = "wind_generation_per_kW"
-            elif column_item == "title_grid_availability":
-                dictionary_title = "grid_availability"
+            if column_item == TITLE_DEMAND_AC:
+                dictionary_title = DEMAND_AC
+            elif column_item == TITLE_DEMAND_DC:
+                dictionary_title = DEMAND_DC
+            elif column_item == TITLE_PV:
+                dictionary_title = PV_GENERATION_PER_KWP
+            elif column_item == TITLE_WIND:
+                dictionary_title = WIND_GENERATION_PER_KW
+            elif column_item == TITLE_GRID_AVAILABILITY:
+                dictionary_title = GRID_AVAILABILITY
 
             if project_site[column_item] != "None":
                 try:
@@ -326,7 +393,7 @@ def from_file(project_site, path_from):
                         column_item, project_site[column_item], path_from
                     )
             else:
-                if column_item != "title_grid_availability":
+                if column_item != TITLE_GRID_AVAILABILITY:
                     if project_site[column_item] != "None":
                         logging.warning(
                             "It is assumed that timeseries "
@@ -347,25 +414,34 @@ def check_output_directory(settings, input_excel_file):
     import os
     import shutil
 
-    output_folder = settings["output_folder"]
-    folder_list = ["/lp_files", "/storage", "/electricity_mg", "/inputs", "/oemof"]
+    output_folder = settings[OUTPUT_FOLDER]
+    folder_list = [
+        LP_FILES_FOLDER,
+        STORAGE_FOLDER,
+        ELECTRICITY_MG_FOLDER,
+        INPUTS_FOLDER,
+        OEMOF_FOLDER,
+    ]
 
     if os.path.isdir(output_folder) is True:
         # Empty folders with previous result, except oemof results if simulation restart
         for folder in folder_list:
             # Delete all folders. Special case: oemof folder
-            if folder == "/oemof" and os.path.isdir(output_folder + folder) is True:
+            if folder == OEMOF_FOLDER and os.path.isdir(output_folder + folder) is True:
                 # dont delete oemof folder if necessary for restoring results
-                if settings["restore_oemof_if_existant"] is True:
+                if settings[RESTORE_OEMOF_IF_EXISTENT] == True:
                     pass
                 # delete oemof folder if no restoring necessary
                 else:
                     path_removed = os.path.abspath(output_folder + folder)
                     shutil.rmtree(path_removed, ignore_errors=True)
-                    os.mkdir(output_folder + "/oemof")
+                    os.mkdir(output_folder + OEMOF_FOLDER)
 
-            elif folder == "/oemof" and os.path.isdir(output_folder + folder) is False:
-                os.mkdir(output_folder + "/oemof")
+            elif (
+                folder == OEMOF_FOLDER
+                and os.path.isdir(output_folder + folder) == False
+            ):
+                os.mkdir(output_folder + OEMOF_FOLDER)
 
             elif os.path.isdir(output_folder + folder):
                 path_removed = os.path.abspath(output_folder + folder)
@@ -375,37 +451,34 @@ def check_output_directory(settings, input_excel_file):
         for root, dirs, files in os.walk(output_folder):
             for file in files:
                 if (
-                    file == "grid_availability.csv"
-                    and settings["restore_blackouts_if_existant"] is False
+                    file == GRID_AVAILABILITY_CSV
+                    and settings[RESTORE_BLACKOUTS_IF_EXISTENT] == False
                 ):
                     os.remove(root + "/" + file)
                 else:
                     pass
     else:
         os.mkdir(output_folder)
-        os.mkdir(output_folder + "/oemof")
+        os.mkdir(output_folder + OEMOF_FOLDER)
 
-    os.mkdir(output_folder + "/inputs")
+    os.mkdir(output_folder + INPUTS_FOLDER)
 
     path_from = os.path.abspath(input_excel_file)
-    path_to = os.path.abspath(output_folder + "/inputs/input_template_excel.xlsx")
+    path_to = os.path.abspath(os.path.join(output_folder, INPUT_TEMPLATE_EXCEL_XLSX))
     shutil.copy(path_from, path_to)
 
-    if (
-        settings["save_lp_file"] is True
-        or settings["lp_file_for_only_3_timesteps"] is True
-    ):
-        os.mkdir(output_folder + "/lp_files")
+    if settings[SAVE_LP_FILE] == True or settings[LP_FILE_FOR_ONLY_3_TIMESTEPS] == True:
+        os.mkdir(output_folder + LP_FILES_FOLDER)
 
     if (
-        settings["save_to_csv_flows_storage"] is True
-        or settings["save_to_png_flows_storage"] is True
+        settings[SAVE_TO_CSV_FLOWS_STORAGE] == True
+        or settings[SAVE_TO_PNG_FLOWS_STORAGE] == True
     ):
-        os.mkdir(output_folder + "/storage")
+        os.mkdir(output_folder + STORAGE_FOLDER)
 
     if (
-        settings["save_to_csv_flows_electricity_mg"] is True
-        or settings["save_to_png_flows_electricity_mg"] is True
+        settings[SAVE_TO_CSV_FLOWS_ELECTRICITY_MG] == True
+        or settings[SAVE_TO_PNG_FLOWS_ELECTRICITY_MG] == True
     ):
-        os.mkdir(output_folder + "/electricity_mg")
+        os.mkdir(output_folder + ELECTRICITY_MG_FOLDER)
     return

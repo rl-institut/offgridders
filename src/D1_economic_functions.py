@@ -1,3 +1,5 @@
+import logging
+
 # annuity factor to calculate present value of cash flows
 def annuity_factor(project_life, wacc):
     # discount_rate was replaced here by wacc
@@ -14,12 +16,28 @@ def crf(project_life, wacc):
 def present_value_of_changing_fuel_price(
     fuel_price, project_lifetime, wacc, crf, fuel_price_change_annual
 ):
-    cash_flow_fuel_l = 0
-    fuel_price_i = fuel_price
-    for i in range(0, project_lifetime):
-        cash_flow_fuel_l += fuel_price_i / (1 + wacc) ** (i)
-        fuel_price_i = fuel_price_i * (1 + fuel_price_change_annual)
-    present_value_changing_fuel_price = cash_flow_fuel_l * crf
+    if fuel_price_change_annual != 0:
+        logging.error(
+            "You chose parameter 'fuel_price_change_annual' unequal zero. "
+            "This calculation is still faulty and you should check the resulting fuel price. "
+            "It would be better if you set your fuel price by hand."
+        )
+
+        cash_flow_fuel_l = 0
+        fuel_price_i = fuel_price
+        for i in range(0, project_lifetime):
+            cash_flow_fuel_l += fuel_price_i / (1 + wacc) ** (i)
+            fuel_price_i = fuel_price_i * (1 + fuel_price_change_annual)
+        present_value_changing_fuel_price = cash_flow_fuel_l * crf
+        logging.info(
+            " The resulting fuel price is: " + str(present_value_changing_fuel_price)
+        )
+    else:
+        present_value_changing_fuel_price = fuel_price
+        logging.info(
+            "Simulation will run with a fuel price of "
+            + str(present_value_changing_fuel_price)
+        )
     return present_value_changing_fuel_price
 
 
@@ -51,7 +69,7 @@ def capex_from_investment(investment_t0, lifetime, project_life, wacc, tax):
         linear_depreciation_last_investment = last_investment / lifetime
         capex = capex - linear_depreciation_last_investment * (
             number_of_investments * lifetime - project_life
-        )
+        ) / ((1 + wacc) ** (project_life))
 
     return capex
 

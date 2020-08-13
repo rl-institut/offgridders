@@ -1,13 +1,13 @@
-Installation oesmot
+Installation Offgridders
 -------------------
 
-To set-up oesmot, follow the steps below:
+To set-up Offgridders, follow the steps below:
 
 *    If python3 is not pre-installed: Install miniconda (for python 3.7: https://docs.conda.io/en/latest/miniconda.html)
 
 *    Download the cbc-solver into your system from https://ampl.com/dl/open/cbc/ and integrate it in your system, ie. unzip, place into chosen path, add path to your system variables (Windows: “System Properties” -->”Advanced”--> “Environment Variables”, requires admin-rights)
 
-*    Download latest oesmot release
+*    Download latest Offgridders release
 
 *    Open Anaconda prompt, create and activate environment
 
@@ -21,7 +21,7 @@ To set-up oesmot, follow the steps below:
 
 *    pip list
 
-*    Test your set-up by executing oesmot with the included test-files:
+*    Test your set-up by executing Offgridders with the included test-files:
 
 *    python A_main_script.py ./inputs/test_input_template.xlsx
 
