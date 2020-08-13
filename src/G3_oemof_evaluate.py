@@ -502,7 +502,7 @@ def get_genset(case_dict, oemof_results, electricity_bus_ac, e_flows_df):
 def get_fuel(case_dict, oemof_results, results):
     logging.debug("Evaluate flow: fuel")
     if case_dict[GENSET_FIXED_CAPACITY] != None:
-        fuel_bus = outputlib.views.node(results, BUS_FUEL)
+        fuel_bus = solph.views.node(results, BUS_FUEL)
         fuel = fuel_bus[SEQUENCES][((SOURCE_FUEL, BUS_FUEL), FLOW)]
         annual_value(CONSUMPTION_FUEL_ANNUAL_KWH, fuel, oemof_results, case_dict)
     else:
@@ -514,18 +514,14 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
     logging.debug("Evaluate flow: storage")
     # Get flow
     if case_dict[STORAGE_FIXED_CAPACITY] != None:
-        storage = outputlib.views.node(results, GENERIC_STORAGE)
+        storage = solph.views.node(results, GENERIC_STORAGE)
         storage_discharge = storage[SEQUENCES][
-            ((GENERIC_STORAGE, BUS_ELECTRICITY_DC), FLOW)
-    if case_dict["storage_fixed_capacity"] != None:
-        storage = solph.views.node(results, "generic_storage")
-        storage_discharge = storage["sequences"][
-            (("generic_storage", "bus_electricity_dc"), "flow")
-        ]
+            ((GENERIC_STORAGE, BUS_ELECTRICITY_DC), FLOW)]
+
         storage_charge = storage[SEQUENCES][
             ((BUS_ELECTRICITY_DC, GENERIC_STORAGE), FLOW)
         ]
-        stored_capacity = storage[SEQUENCES][((GENERIC_STORAGE, "None"), CAPACITY)]
+        stored_capacity = storage[SEQUENCES][((GENERIC_STORAGE, "None"), "storage_content")]
         annual_value(
             TOTAL_STORAGE_THOUGHPUT_KWH, storage_charge, oemof_results, case_dict
         )
