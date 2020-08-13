@@ -228,7 +228,7 @@ def get(settings, parameters_constant_values, parameters_sensitivity, project_si
             settings, parameters_constant_values, parameters_sensitivity, project_sites,
         )
 
-    elif settings[SENSITIVITY_ALL_COMBINATIONS] == False:
+    elif settings[SENSITIVITY_ALL_COMBINATIONS] is False:
         (
             sensitivitiy_experiment_s,
             number_of_project_sites,
@@ -454,7 +454,7 @@ def blackout(sensitivity_array_dict, parameters_constants, settings):
                 deepcopy(blackout_constants)
             )
 
-    elif settings[SENSITIVITY_ALL_COMBINATIONS] == False:
+    elif settings[SENSITIVITY_ALL_COMBINATIONS] is False:
         blackout_experiment_s = {}
         blackout_experiments_count = 0
         defined_base = False

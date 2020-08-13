@@ -453,8 +453,6 @@ def check_output_directory(settings, input_excel_file):
                 if (
                     file == GRID_AVAILABILITY_CSV
                     and settings[RESTORE_BLACKOUTS_IF_EXISTENT] is False
-                    file == "grid_availability.csv"
-                    and settings["restore_blackouts_if_existant"] is False
                 ):
                     os.remove(root + "/" + file)
                 else:

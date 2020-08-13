@@ -80,7 +80,7 @@ def list_of_cases(case_definitions):
     for case in case_definitions:
         if (
             case_definitions[case][PERFORM_SIMULATION] is True
-            and case_definitions[case][BASED_ON_CASE] == False
+            and case_definitions[case][BASED_ON_CASE] is False
         ):
             case_list.append(case)
             str_cases_simulated += case + ", "
