@@ -1,9 +1,11 @@
 import logging
 import sys
 import oemof.solph as solph
-import oemof.outputlib as outputlib
+from oemof.solph import processing
+
 import src.G2a_oemof_busses_and_componets as generate
 import src.G2b_constraints_custom as constraints_custom
+
 from src.constants import (
     BUS_FUEL,
     DATE_TIME_INDEX,
@@ -84,8 +86,8 @@ def build(experiment, case_dict):
     # ------------genset------------#
     if case_dict[GENSET_FIXED_CAPACITY] == None:
         genset = None
-    elif case_dict[GENSET_FIXED_CAPACITY] == False:
-        if case_dict[GENSET_WITH_MINIMAL_LOADING] == True:
+    elif case_dict[GENSET_FIXED_CAPACITY] is False:
+        if case_dict[GENSET_WITH_MINIMAL_LOADING] is True:
             # not possible with oemof
             logging.error(
                 "It is not possible to optimize a generator with minimal loading in oemof. \n "
@@ -106,7 +108,7 @@ def build(experiment, case_dict):
             )
 
     elif isinstance(case_dict[GENSET_FIXED_CAPACITY], float):
-        if case_dict[GENSET_WITH_MINIMAL_LOADING] == True:
+        if case_dict[GENSET_WITH_MINIMAL_LOADING] is True:
             genset = generate.genset_fix_minload(
                 micro_grid_system,
                 bus_fuel,
@@ -134,7 +136,7 @@ def build(experiment, case_dict):
     # ------------wind------------#
     if case_dict[WIND_FIXED_CAPACITY] == None:
         wind_plant = None
-    elif case_dict[WIND_FIXED_CAPACITY] == False:
+    elif case_dict[WIND_FIXED_CAPACITY] is False:
         wind_plant = generate.wind_oem(
             micro_grid_system, bus_electricity_ac, experiment
         )
@@ -170,7 +172,7 @@ def build(experiment, case_dict):
     # ------------point of coupling (consumption)------------#
     if case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] == None:
         pointofcoupling_consumption = None
-    elif case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] == False:
+    elif case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] is False:
         pointofcoupling_consumption = generate.pointofcoupling_consumption_oem(
             micro_grid_system,
             bus_electricity_ac,
@@ -197,7 +199,7 @@ def build(experiment, case_dict):
     if case_dict[PCC_FEEDIN_FIXED_CAPACITY] == None:
         pass
         # pointofcoupling_feedin = None
-    elif case_dict[PCC_FEEDIN_FIXED_CAPACITY] == False:
+    elif case_dict[PCC_FEEDIN_FIXED_CAPACITY] is False:
         generate.pointofcoupling_feedin_oem(
             micro_grid_system,
             bus_electricity_ac,
@@ -238,7 +240,7 @@ def build(experiment, case_dict):
     # ------------PV------------#
     if case_dict[PV_FIXED_CAPACITY] == None:
         solar_plant = None
-    elif case_dict[PV_FIXED_CAPACITY] == False:
+    elif case_dict[PV_FIXED_CAPACITY] is False:
         solar_plant = generate.pv_oem(micro_grid_system, bus_electricity_dc, experiment)
 
     elif isinstance(case_dict[PV_FIXED_CAPACITY], float):
@@ -259,7 +261,7 @@ def build(experiment, case_dict):
     # ------------storage------------#
     if case_dict[STORAGE_FIXED_CAPACITY] == None:
         storage = None
-    elif case_dict[STORAGE_FIXED_CAPACITY] == False:
+    elif case_dict[STORAGE_FIXED_CAPACITY] is False:
         storage = generate.storage_oem(
             micro_grid_system, bus_electricity_dc, experiment
         )
@@ -284,7 +286,7 @@ def build(experiment, case_dict):
     if case_dict[RECTIFIER_AC_DC_FIXED_CAPACITY] == None:
         rectifier = None
 
-    elif case_dict[RECTIFIER_AC_DC_FIXED_CAPACITY] == False:
+    elif case_dict[RECTIFIER_AC_DC_FIXED_CAPACITY] is False:
         rectifier = generate.rectifier_oem(
             micro_grid_system, bus_electricity_ac, bus_electricity_dc, experiment
         )
@@ -309,7 +311,7 @@ def build(experiment, case_dict):
     if case_dict[INVERTER_DC_AC_FIXED_CAPACITY] == None:
         inverter = None
 
-    elif case_dict[INVERTER_DC_AC_FIXED_CAPACITY] == False:
+    elif case_dict[INVERTER_DC_AC_FIXED_CAPACITY] is False:
         inverter = generate.inverter_dc_ac_oem(
             micro_grid_system, bus_electricity_ac, bus_electricity_dc, experiment
         )
@@ -338,7 +340,7 @@ def build(experiment, case_dict):
     generate.excess(micro_grid_system, bus_electricity_ac, bus_electricity_dc)
 
     # ------------Optional: Shortage source------------#
-    if case_dict[ALLOW_SHORTAGE] == True:
+    if case_dict[ALLOW_SHORTAGE] is True:
         source_shortage = generate.shortage(
             micro_grid_system,
             bus_electricity_ac,
@@ -353,7 +355,7 @@ def build(experiment, case_dict):
     model = solph.Model(micro_grid_system)
 
     # ------------Stability constraint------------#
-    if case_dict[STABILITY_CONSTRAINT] == False:
+    if case_dict[STABILITY_CONSTRAINT] is False:
         pass
     elif case_dict[STABILITY_CONSTRAINT] == SHARE_BACKUP:
         logging.info("Added constraint: Stability through backup.")
@@ -406,9 +408,9 @@ def build(experiment, case_dict):
         )
 
     # ------------Renewable share constraint------------#
-    if case_dict[RENEWABLE_SHARE_CONSTRAINT] == False:
+    if case_dict[RENEWABLE_SHARE_CONSTRAINT] is False:
         pass
-    elif case_dict[RENEWABLE_SHARE_CONSTRAINT] == True:
+    elif case_dict[RENEWABLE_SHARE_CONSTRAINT] is True:
         logging.info("Adding constraint: Renewable share.")
         constraints_custom.share(
             model,
@@ -429,9 +431,9 @@ def build(experiment, case_dict):
         )
 
     # ------------Force charge from maingrid------------#
-    if case_dict[FORCE_CHARGE_FROM_MAINGRID] == False:
+    if case_dict[FORCE_CHARGE_FROM_MAINGRID] is False:
         pass
-    elif case_dict[FORCE_CHARGE_FROM_MAINGRID] == True:
+    elif case_dict[FORCE_CHARGE_FROM_MAINGRID] is True:
         logging.info("Added constraint: Forcing charge from main grid.")
         constraints_custom.forced_charge(
             model, case_dict, bus_electricity_dc, storage, experiment
@@ -444,9 +446,9 @@ def build(experiment, case_dict):
         )
 
     # ------------Allow discharge only at maingrid blackout------------#
-    if case_dict[DISCHARGE_ONLY_WHEN_BLACKOUT] == False:
+    if case_dict[DISCHARGE_ONLY_WHEN_BLACKOUT] is False:
         pass
-    elif case_dict[DISCHARGE_ONLY_WHEN_BLACKOUT] == True:
+    elif case_dict[DISCHARGE_ONLY_WHEN_BLACKOUT] is True:
         logging.info("Added constraint: Allowing discharge only at blackout times.")
         constraints_custom.discharge_only_at_blackout(
             model, case_dict, bus_electricity_dc, storage, experiment
@@ -459,9 +461,9 @@ def build(experiment, case_dict):
         )
 
     # ------------Allow inverter use only at maingrid blackout------------#
-    if case_dict[ENABLE_INVERTER_ONLY_AT_BLACKOUT] == False:
+    if case_dict[ENABLE_INVERTER_ONLY_AT_BLACKOUT] is False:
         pass
-    elif case_dict[ENABLE_INVERTER_ONLY_AT_BLACKOUT] == True:
+    elif case_dict[ENABLE_INVERTER_ONLY_AT_BLACKOUT] is True:
         logging.info("Added constraint: Allowing inverter use only at blackout times.")
         constraints_custom.inverter_only_at_blackout(
             model, case_dict, bus_electricity_dc, inverter, experiment
@@ -475,7 +477,7 @@ def build(experiment, case_dict):
 
     """
     # ------------Allow shortage only for certain percentage of demand in a timestep------------#
-    if case_dict['allow_shortage'] == True:
+    if case_dict['allow_shortage'] is True:
         if bus_electricity_ac != None:
             shortage_constraints.timestep(model, case_dict, experiment, sink_demand_ac, 
                                           source_shortage, bus_electricity_ac)
@@ -499,7 +501,7 @@ def simulate(experiment, micro_grid_system, model, file_name):
     )  # ratioGap allowedGap mipgap
     logging.debug("Problem solved")
 
-    if experiment[SAVE_LP_FILE] == True:
+    if experiment["save_lp_file"] is True:
         logging.debug("Saving lp-file to folder.")
         model.write(
             experiment[OUTPUT_FOLDER] + "/lp_files/model_" + file_name + ".lp",
@@ -507,8 +509,8 @@ def simulate(experiment, micro_grid_system, model, file_name):
         )
 
     # add results to the energy system to make it possible to store them.
-    micro_grid_system.results[MAIN] = outputlib.processing.results(model)
-    micro_grid_system.results[META] = outputlib.processing.meta_results(model)
+    micro_grid_system.results[MAIN] = processing.results(model)
+    micro_grid_system.results[META] = processing.meta_results(model)
     return micro_grid_system
 
 

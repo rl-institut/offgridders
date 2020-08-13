@@ -24,7 +24,9 @@ Here is a template for new release sections
 ### Added
 -
 ### Changed
--
+- Replaced `== False` with `is False` and `== True` with `is True`
+- Facilitated upgrade to unbundled oemof version: `oemof.solph == 0.4.0`, `oemof.network==0.4.0rc0`, `oemof.tools==0.4.0` and update `requirements.txt`
+
 ### Removed
 -
 ### Fixed

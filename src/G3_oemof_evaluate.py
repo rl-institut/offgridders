@@ -5,7 +5,7 @@ tables, tkinter
 """
 
 import pandas as pd
-import oemof.outputlib as outputlib
+import oemof.solph as solph
 
 import logging
 
@@ -183,7 +183,7 @@ def get_shortage(
     # Get flow
     shortage = pd.Series([0 for i in e_flows_df.index], index=e_flows_df.index)
 
-    if case_dict[ALLOW_SHORTAGE] == True:
+    if case_dict[ALLOW_SHORTAGE] is True:
         if electricity_bus_ac != None:
 
             shortage_ac = electricity_bus_ac[SEQUENCES][
@@ -307,7 +307,7 @@ def get_pv(
         oemof_results.update({TOTAL_PV_GENERATION_KWH: 0})
 
     # Get capacity
-    if case_dict[PV_FIXED_CAPACITY] == False:
+    if case_dict[PV_FIXED_CAPACITY] is False:
         if pv_generation_max > 1:
             oemof_results.update(
                 {
@@ -361,7 +361,7 @@ def get_rectifier(
         oemof_results.update({TOTAL_RECTIFIER_AC_DC_THROUGHPUT_KWH: 0})
 
     # Get capacity
-    if case_dict[RECTIFIER_AC_DC_FIXED_CAPACITY] == False:
+    if case_dict[RECTIFIER_AC_DC_FIXED_CAPACITY] is False:
         rectifier_capacity = electricity_bus_ac[SCALARS][
             ((BUS_ELECTRICITY_AC, TRANSFORMER_RECTIFIER), INVEST)
         ]
@@ -400,7 +400,7 @@ def get_inverter(
         oemof_results.update({TOTAL_INVERTER_DC_AC_THROUGHPUT_KWH: 0})
 
     # Get capacity
-    if case_dict[INVERTER_DC_AC_FIXED_CAPACITY] == False:
+    if case_dict[INVERTER_DC_AC_FIXED_CAPACITY] is False:
         inverter_capacity = electricity_bus_dc[SCALARS][
             ((BUS_ELECTRICITY_DC, TRANSFORMER_INVERTER_DC_AC), INVEST)
         ]
@@ -431,7 +431,7 @@ def get_wind(
         oemof_results.update({TOTAL_WIND_GENERATION_KWH: 0})
 
     # Get capacity
-    if case_dict[WIND_FIXED_CAPACITY] == False:
+    if case_dict[WIND_FIXED_CAPACITY] is False:
         if wind_generation_max > 1:
             oemof_results.update(
                 {
@@ -484,7 +484,7 @@ def get_genset(case_dict, oemof_results, electricity_bus_ac, e_flows_df):
         oemof_results.update({TOTAL_GENSET_GENERATION_KWH: 0})
 
     # Get capacity
-    if case_dict[GENSET_FIXED_CAPACITY] == False:
+    if case_dict[GENSET_FIXED_CAPACITY] is False:
         # Optimized generator capacity (sum)
         genset_capacity = 0
         for number in range(1, case_dict[NUMBER_OF_EQUAL_GENERATORS] + 1):
@@ -502,7 +502,7 @@ def get_genset(case_dict, oemof_results, electricity_bus_ac, e_flows_df):
 def get_fuel(case_dict, oemof_results, results):
     logging.debug("Evaluate flow: fuel")
     if case_dict[GENSET_FIXED_CAPACITY] != None:
-        fuel_bus = outputlib.views.node(results, BUS_FUEL)
+        fuel_bus = solph.views.node(results, BUS_FUEL)
         fuel = fuel_bus[SEQUENCES][((SOURCE_FUEL, BUS_FUEL), FLOW)]
         annual_value(CONSUMPTION_FUEL_ANNUAL_KWH, fuel, oemof_results, case_dict)
     else:
@@ -514,14 +514,17 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
     logging.debug("Evaluate flow: storage")
     # Get flow
     if case_dict[STORAGE_FIXED_CAPACITY] != None:
-        storage = outputlib.views.node(results, GENERIC_STORAGE)
+        storage = solph.views.node(results, GENERIC_STORAGE)
         storage_discharge = storage[SEQUENCES][
             ((GENERIC_STORAGE, BUS_ELECTRICITY_DC), FLOW)
         ]
+
         storage_charge = storage[SEQUENCES][
             ((BUS_ELECTRICITY_DC, GENERIC_STORAGE), FLOW)
         ]
-        stored_capacity = storage[SEQUENCES][((GENERIC_STORAGE, "None"), CAPACITY)]
+        stored_capacity = storage[SEQUENCES][
+            ((GENERIC_STORAGE, "None"), "storage_content")
+        ]
         annual_value(
             TOTAL_STORAGE_THOUGHPUT_KWH, storage_charge, oemof_results, case_dict
         )
@@ -560,12 +563,12 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
         oemof_results.update({TOTAL_STORAGE_THOUGHPUT_KWH: 0})
 
     # Get capacity
-    if case_dict[STORAGE_FIXED_CAPACITY] == False:
+    if case_dict[STORAGE_FIXED_CAPACITY] is False:
         # Optimized storage capacity
-        storage = outputlib.views.node(results, GENERIC_STORAGE)
+        storage = solph.views.node(results, GENERIC_STORAGE)
         storage_capacity = storage[SCALARS][((GENERIC_STORAGE, "None"), INVEST)]
 
-        electricity_bus_dc = outputlib.views.node(results, BUS_ELECTRICITY_DC)
+        electricity_bus_dc = solph.views.node(results, BUS_ELECTRICITY_DC)
         storage_power = electricity_bus_dc[SCALARS][
             ((GENERIC_STORAGE, BUS_ELECTRICITY_DC), INVEST)
         ]
@@ -604,7 +607,7 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
 
 def get_national_grid(case_dict, oemof_results, results, e_flows_df, grid_availability):
     logging.debug("Evaluate flow: main grid")
-    micro_grid_bus = outputlib.views.node(results, BUS_ELECTRICITY_AC)
+    micro_grid_bus = solph.views.node(results, BUS_ELECTRICITY_AC)
     # define grid availability
     if (
         case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] != None
@@ -632,7 +635,7 @@ def get_national_grid(case_dict, oemof_results, results, e_flows_df, grid_availa
             oemof_results,
             case_dict,
         )
-        bus_electricity_ng_consumption = outputlib.views.node(
+        bus_electricity_ng_consumption = solph.views.node(
             results, BUS_ELECTRICITY_NG_CONSUMPTION
         )
         consumption_utility_side = bus_electricity_ng_consumption[SEQUENCES][
@@ -685,9 +688,7 @@ def get_national_grid(case_dict, oemof_results, results, e_flows_df, grid_availa
             case_dict,
         )
 
-        bus_electricity_ng_feedin = outputlib.views.node(
-            results, BUS_ELECTRICITY_NG_FEEDIN
-        )
+        bus_electricity_ng_feedin = solph.views.node(results, BUS_ELECTRICITY_NG_FEEDIN)
         feedin_utility_side = bus_electricity_ng_feedin[SEQUENCES][
             ((TRANSFORMER_PCC_FEEDIN, BUS_ELECTRICITY_NG_FEEDIN), FLOW)
         ]
@@ -714,12 +715,12 @@ def get_national_grid(case_dict, oemof_results, results, e_flows_df, grid_availa
         or case_dict[PCC_FEEDIN_FIXED_CAPACITY] != None
     ):
         pcc_cap = []
-        if case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] == False:
+        if case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] is False:
             pcc_cap.append(consumption_utility_side.max())
         elif isinstance(case_dict[PCC_CONSUMPTION_FIXED_CAPACITY], float):
             pcc_cap.append(case_dict[PCC_CONSUMPTION_FIXED_CAPACITY])
 
-        if case_dict[PCC_FEEDIN_FIXED_CAPACITY] == False:
+        if case_dict[PCC_FEEDIN_FIXED_CAPACITY] is False:
             pcc_cap.append(feedin_utility_side.max())
         elif isinstance(case_dict[PCC_FEEDIN_FIXED_CAPACITY], float):
             pcc_cap.append(case_dict[PCC_FEEDIN_FIXED_CAPACITY])

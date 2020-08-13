@@ -8,8 +8,8 @@ import matplotlib
 import matplotlib.pyplot as plt
 import logging
 
-import oemof.graph as graph
 import networkx as nx
+import oemof.network.graph as graph
 
 from src.constants import (
     DISPLAY_META,
@@ -68,18 +68,18 @@ from src.constants import (
 
 
 def print_oemof_meta_main_invest(experiment, meta, electricity_bus, case_name):
-    if experiment[DISPLAY_META] == True:
+    if experiment[DISPLAY_META] is True:
         logging.info("********* Meta results *********")
         pp.pprint(meta)
 
     # print the sums of the flows around the electricity bus
-    if experiment[DISPLAY_MAIN] == True:
+    if experiment[DISPLAY_MAIN] is True:
         logging.info("********* Main results *********")
         pp.pprint(electricity_bus[SEQUENCES].sum(axis=0))
 
     # print the scalars of investment optimization (not equal to capacities!)
     if case_name == BASE_OEM or case_name == BASE_OEM_WITH_MIN_LOADING:
-        if experiment[DISPLAY_INVEST] == True:
+        if experiment[DISPLAY_INVEST] is True:
             logging.info("********* Invest results *********")
             pp.pprint(electricity_bus[SCALARS])
     return
@@ -178,7 +178,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
 
                 mg_flows = mg_flows.join(new_column)
 
-    if experiment[SAVE_TO_CSV_FLOWS_ELECTRICITY_MG] == True:
+    if experiment[SAVE_TO_CSV_FLOWS_ELECTRICITY_MG] is True:
         mg_flows.to_csv(
             experiment[OUTPUT_FOLDER]
             + "/electricity_mg/"
@@ -187,7 +187,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
             + SUFFIX_ELECTRICITY_MG_CSV
         )
 
-    if experiment[SAVE_TO_PNG_FLOWS_ELECTRICITY_MG] == True:
+    if experiment[SAVE_TO_PNG_FLOWS_ELECTRICITY_MG] is True:
         number_of_subplots = 0
 
         for item in droplist:
@@ -343,7 +343,7 @@ def save_storage(experiment, case_dict, e_flows_df, filename):
                     )
                 storage_flows = storage_flows.join(new_column)
 
-        if experiment[SAVE_TO_CSV_FLOWS_STORAGE] == True:
+        if experiment[SAVE_TO_CSV_FLOWS_STORAGE] is True:
             storage_flows.to_csv(
                 experiment[OUTPUT_FOLDER]
                 + "/storage/"
@@ -352,7 +352,7 @@ def save_storage(experiment, case_dict, e_flows_df, filename):
                 + SUFFIX_STORAGE_CSV
             )
 
-        if experiment[SAVE_TO_PNG_FLOWS_STORAGE] == True:
+        if experiment[SAVE_TO_PNG_FLOWS_STORAGE] is True:
             fig = storage_flows.plot(
                 title="Storage flows of case "
                 + case_dict[CASE_NAME]
