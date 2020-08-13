@@ -12,13 +12,25 @@ Here is a template for new release sections
 ### Added
 -
 ### Changed
-Readthedocs corrected
-
+-
 ### Removed
 -
 ### Fixed
 -
+```
+
 ## [Unreleased]
+
+### Added
+-
+### Changed
+-
+### Removed
+-
+### Fixed
+-
+
+## [Offgridders V4.5] - 2020-08-12
 
 ### Added
 - Constant variables for strings are gathered in `constants.py` (#89,#117, #118)
@@ -27,8 +39,10 @@ Readthedocs corrected
 - Replaced parameter strings with variable calls  (#89,#117, #118)
 - Changed path calls to `os.path.join` to enable compatability (#118)
 - Log messages now call variable of parameter name (#117, #118)
+
 ### Removed
 - Try/Except clauses at module import (#103) 
+
 ### Fixed
 -
 
