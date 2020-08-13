@@ -39,7 +39,7 @@ def get_blackouts(settings, blackout_experiment_s):
         or os.path.isfile(
             os.path.join(settings[INPUT_FOLDER_TIMESERIES], GRID_AVAILABILITY_CSV)
         )
-    ) and settings[RESTORE_BLACKOUTS_IF_EXISTENT] == True:
+    ) and settings[RESTORE_BLACKOUTS_IF_EXISTENT] is True:
 
         # ? read to csv: timestamp as first row -> not equal column number, date time without index
         if os.path.isfile(os.path.join(settings[OUTPUT_FOLDER], GRID_AVAILABILITY_CSV)):

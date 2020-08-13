@@ -82,7 +82,7 @@ def run(experiment, case_dict):
     # For restoring .oemof results if that is possible (speeding up computation time)
     if (
         os.path.isfile(experiment[OUTPUT_FOLDER] + "/oemof/" + file_name + ".oemof")
-        and experiment[RESTORE_OEMOF_IF_EXISTENT] == True
+        and experiment[RESTORE_OEMOF_IF_EXISTENT] is True
     ):
         logging.info("Previous results of " + case_dict[CASE_NAME] + " restored.")
 

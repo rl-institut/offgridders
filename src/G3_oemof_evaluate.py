@@ -183,7 +183,7 @@ def get_shortage(
     # Get flow
     shortage = pd.Series([0 for i in e_flows_df.index], index=e_flows_df.index)
 
-    if case_dict[ALLOW_SHORTAGE] == True:
+    if case_dict[ALLOW_SHORTAGE] is True:
         if electricity_bus_ac != None:
 
             shortage_ac = electricity_bus_ac[SEQUENCES][

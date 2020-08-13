@@ -486,7 +486,7 @@ def expenditures_shortage(oemof_results, experiment):
         }
     )
 
-    if experiment[INCLUDE_SHORTAGE_PENALTY_COSTS_IN_LCOE] == True:
+    if experiment[INCLUDE_SHORTAGE_PENALTY_COSTS_IN_LCOE] is True:
         oemof_results.update(
             {
                 ANNUITY: oemof_results[ANNUITY]
