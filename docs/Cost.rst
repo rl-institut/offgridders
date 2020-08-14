@@ -1,7 +1,7 @@
 ==========================================
 Cost analysis
 ==========================================
-For the costs analysis ultimately governing the optimization and determining the solutions NPV and LCOE, a number of values have to be provided as input parameters (as always, these can be subject to sensitivity analyses). These values are utilized to calculate the annuity and variable costs used in oemof-optimizations. The costs evaluation takes place after the oemof-optimization itself and calculates annuity and variable operation costs of the project.
+For the costs analysis ultimately governing the optimization and determining the solutions NPV and LCOE, a number of values have to be provided as input parameters (as always, these can be subject to sensitivity analyses). These values are used to calculate the annuity and variable costs applied in oemof-optimizations. The costs' evaluation takes place after the oemof-optimization itself and calculates annuity and variable operation costs of the project.
 
 Input values
 -------------
@@ -26,7 +26,7 @@ Further parameters are necessary for each cost component:
 
 The parameters specifying each of those components are
 
-* Life time
+* Lifetime
 * Operation and management costs per year
 * Variable costs per kWh
 * Investment costs
@@ -39,7 +39,7 @@ Including costs in oemof optimization
 
 To simplify this large amount of data and enable its integration into the oemof framework, the fixed annuity of each component is calculated.
 
-First the CAPEX of each component has to be calculated. As this includes its first investment costs as well as re-investments based on it's lifetime and value at project end, an algorithm has to be used:::
+First the CAPEX of each component has to be calculated. The CAPEX includes its first investment costs as well as re-investments based on it's lifetime and value at project end. For this procedure the following algorithm is used:::
 
         number_of_investments = int(round(project_life / lifetime))
         # costs with quantity and import tax at t=0
@@ -64,7 +64,7 @@ The operation and management costs that have a fix annual value are summarized a
        annuity_factor = 1 / wacc - 1 / (wacc * (1 + wacc) ** project_life)
        OPEX = annual O&M costs * annuity_factor
 
-The present cost are calculated by adding the CAPEX of a component to its OPEX:::
+The present costs are calculated by adding the CAPEX of a component to its OPEX:::
 
        present cost = CAPEX + OPEX
 
@@ -72,10 +72,10 @@ Factorized with the annuity factor, the annuity is calculated:::
 
        annuity = present costs / annuity factor
 
-In optimizations, the variable costs from the inputs are equal to the _variable_costs_ of a flow connected to a component. In investment mode, the annuity is equal to the _ep_costs_.
+In optimizations, the variable costs from the inputs are equal to the _variable_costs_ of a flow connected to a component. In investment mode, the annuity is equal to the _ep_costs_ (What does this mean).
 
 Case-based cost evaluation
 --------------------------------------
-Currently, the cost evaluation is performed in a complicated manner and it is necessary to distinguish between cases. This is rooting from the fact, that in dispatch analyses only the variable costs are optimized, while the optimal energy mix also includes above calculated annuities per component unit. In mixed cases with dispatch (fixed PCC capacities) and optimal energy mix, this issue becomes more complicated.
+Currently, the cost evaluation is performed in a complicated manner and it is necessary to distinguish between cases. This comes from the fact, that in dispatch analyses only the variable costs are optimized, while the optimal energy mix also includes above calculated annuities per component unit. In mixed cases with dispatch (fixed PCC capacities) and optimal energy mix, this issue becomes more complicated.
 
 A simplification that bases the calculation of component costs on its capacities and connected flows should be possible and will be included in the future.
