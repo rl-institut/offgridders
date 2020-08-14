@@ -14,7 +14,7 @@ import timeit
 
 # Logging of info
 import logging
-import oemof.outputlib as outputlib
+import oemof.solph as solph
 
 # For speeding up lp_files and bus/component definition in oemof as well as processing
 import src.G1_oemof_create_model as oemof_model
@@ -82,7 +82,7 @@ def run(experiment, case_dict):
     # For restoring .oemof results if that is possible (speeding up computation time)
     if (
         os.path.isfile(experiment[OUTPUT_FOLDER] + "/oemof/" + file_name + ".oemof")
-        and experiment[RESTORE_OEMOF_IF_EXISTENT] == True
+        and experiment[RESTORE_OEMOF_IF_EXISTENT] is True
     ):
         logging.info("Previous results of " + case_dict[CASE_NAME] + " restored.")
 
@@ -120,9 +120,9 @@ def run(experiment, case_dict):
         COMMENTS: experiment[COMMENTS],
     }
 
-    electricity_bus_ac = outputlib.views.node(results, BUS_ELECTRICITY_AC)
+    electricity_bus_ac = solph.views.node(results, BUS_ELECTRICITY_AC)
 
-    electricity_bus_dc = outputlib.views.node(results, BUS_ELECTRICITY_DC)
+    electricity_bus_dc = solph.views.node(results, BUS_ELECTRICITY_DC)
 
     try:
 
@@ -220,7 +220,7 @@ def run(experiment, case_dict):
     plausability_tests.run(oemof_results, e_flows_df)
 
     # Run test on oemof constraints
-    if case_dict[STABILITY_CONSTRAINT] == False:
+    if case_dict[STABILITY_CONSTRAINT] is False:
         pass
     elif case_dict[STABILITY_CONSTRAINT] == SHARE_BACKUP:
         constraints_custom.backup_test(case_dict, oemof_results, experiment, e_flows_df)
@@ -317,7 +317,7 @@ def run(experiment, case_dict):
     logging.debug("    Simulation of case " + case_dict[CASE_NAME] + " complete.")
     logging.debug("\n")
 
-    if experiment[SAVE_OEMOFRESULTS] == False:
+    if experiment[SAVE_OEMOFRESULTS] is False:
         os.remove(experiment[OUTPUT_FOLDER] + "/oemof/" + file_name + ".oemof")
 
     return oemof_results

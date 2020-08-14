@@ -70,10 +70,10 @@ def charge_discharge(oemof_results, e_flows_df):
             for t in e_flows_df.index
         ]
 
-        if any(test) == False:
+        if any(test) is False:
             boolean = False
 
-        if boolean == False:
+        if boolean is False:
             logging.warning(
                 "PLAUSABILITY TEST FAILED: Charge and discharge of batteries at the same time!"
             )
@@ -112,10 +112,10 @@ def demand_supply_shortage(oemof_results, e_flows_df):
             for t in e_flows_df.index
         ]
 
-        if any(test) == False:
+        if any(test) is False:
             boolean = False
 
-        if boolean == False:
+        if boolean is False:
             logging.warning(
                 "PLAUSABILITY TEST FAILED: Demand not fully supplied but no shortage!"
             )
@@ -145,10 +145,10 @@ def feedin_consumption(oemof_results, e_flows_df):
             for t in e_flows_df.index
         ]
 
-        if any(test) == False:
+        if any(test) is False:
             boolean = False
 
-        if boolean == False:
+        if boolean is False:
             logging.warning(
                 "PLAUSABILITY TEST FAILED: Feedin to and consumption from national grid at the same time!"
             )
@@ -178,10 +178,10 @@ def gridavailability_feedin(oemof_results, e_flows_df):
             for t in e_flows_df.index
         ]
 
-        if any(test) == False:
+        if any(test) is False:
             boolean = False
 
-        if boolean == False:
+        if boolean is False:
             logging.warning(
                 "PLAUSABILITY TEST FAILED: Feedin to national grid during blackout!"
             )
@@ -211,10 +211,10 @@ def gridavailability_consumption(oemof_results, e_flows_df):
             for t in e_flows_df.index
         ]
 
-        if any(test) == False:
+        if any(test) is False:
             boolean = False
 
-        if boolean == False:
+        if boolean is False:
             logging.warning(
                 "PLAUSABILITY TEST FAILED: Consumption from national grid during blackout!"
             )
@@ -244,10 +244,10 @@ def excess_shortage(oemof_results, e_flows_df):
             for t in e_flows_df.index
         ]
 
-        if any(test) == False:
+        if any(test) is False:
             boolean = False
 
-        if boolean == False:
+        if boolean is False:
             logging.warning(
                 "PLAUSABILITY TEST FAILED: Excess and shortage at the same time!"
             )
@@ -288,10 +288,10 @@ def excess_feedin(oemof_results, e_flows_df):
             for t in e_flows_df.index
         ]
 
-        if any(test) == False:
+        if any(test) is False:
             boolean = False
 
-        if boolean == False:
+        if boolean is False:
             logging.warning(
                 "PLAUSABILITY TEST FAILED: Excess while feedin to national grid not maximal (PCC capacity)!"
             )
