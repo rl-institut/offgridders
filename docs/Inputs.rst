@@ -3,7 +3,7 @@ Input values
 ==========================================
 **to be updated, mostly accurate**
 
-TThere are numerous input values that have to be provided for the model. Most of those can be defined either as a constant value (_sensitivity_constants_)::
+There are numerous input values that have to be provided for the model. Most of those can be defined either as a constant value (_sensitivity_constants_)::
 
         sensitivity_constants = {'variable_name':  constant value}
 
@@ -109,7 +109,7 @@ The pv system generation per kWp can be calculated based on Location::
         altitude = 34
         timezone = 'Etc/GMT-1'
 
-and PV and inverter specifications. The specific module and inverter used can be chosen from the SANDIA list and already includes all technical parameters.::
+and PV and inverter specifications. The specific module and inverter used can be chosen from the SANDIA list (what is this?) and already includes all technical parameters.::
 
         pv_composite_name = 'basic'
         surface_azimuth = 180
