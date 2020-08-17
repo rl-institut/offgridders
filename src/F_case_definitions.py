@@ -181,17 +181,17 @@ def update_dict(capacities_oem, specific_case, experiment):
         experiment_case_dict.update({ALLOW_SHORTAGE: experiment[ALLOW_SHORTAGE]})
         experiment_case_dict.update({MAX_SHORTAGE: experiment[SHORTAGE_MAX_ALLOWED]})
 
-    elif specific_case[ALLOW_SHORTAGE] == False:
+    elif specific_case[ALLOW_SHORTAGE] is False:
         experiment_case_dict.update({ALLOW_SHORTAGE: False})
         experiment_case_dict.update({MAX_SHORTAGE: 0})
 
     elif (
-        specific_case[ALLOW_SHORTAGE] == True and specific_case[MAX_SHORTAGE] == DEFAULT
+        specific_case[ALLOW_SHORTAGE] is True and specific_case[MAX_SHORTAGE] == DEFAULT
     ):
         experiment_case_dict.update({ALLOW_SHORTAGE: True})
         experiment_case_dict.update({MAX_SHORTAGE: experiment[SHORTAGE_MAX_ALLOWED]})
 
-    elif specific_case[ALLOW_SHORTAGE] == True:
+    elif specific_case[ALLOW_SHORTAGE] is True:
         if isinstance(specific_case[MAX_SHORTAGE], float) or isinstance(
             specific_case[MAX_SHORTAGE], int
         ):
@@ -211,7 +211,7 @@ def update_dict(capacities_oem, specific_case, experiment):
     ###########################################
 
     if (
-        specific_case[STABILITY_CONSTRAINT] == False
+        specific_case[STABILITY_CONSTRAINT] is False
         or specific_case[STABILITY_CONSTRAINT] == SHARE_BACKUP
         or specific_case[STABILITY_CONSTRAINT] == SHARE_USAGE
         or specific_case[STABILITY_CONSTRAINT] == SHARE_HYBRID
@@ -235,10 +235,10 @@ def update_dict(capacities_oem, specific_case, experiment):
         else:
             experiment_case_dict.update({RENEWABLE_SHARE_CONSTRAINT: True})
 
-    elif specific_case[RENEWABLE_CONSTRAINT] == False:
+    elif specific_case[RENEWABLE_CONSTRAINT] is False:
         experiment_case_dict.update({RENEWABLE_SHARE_CONSTRAINT: False})
 
-    elif specific_case[RENEWABLE_CONSTRAINT] == True:
+    elif specific_case[RENEWABLE_CONSTRAINT] is True:
         experiment_case_dict.update({RENEWABLE_SHARE_CONSTRAINT: True})
     else:
         logging.warning(

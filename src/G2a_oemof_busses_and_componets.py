@@ -116,8 +116,8 @@ def shortage(
                 summed_max=1,
             ),
             bus_electricity_dc: solph.Flow(
-                variable_costs=experiment[SHORTAGE_PENALTY_COST],
-                nominal_value=case_dict[MAX_SHORTAGE] * case_dict[TOTAL_DEMAND_DC],
+                variable_costs=experiment["shortage_penalty_costs"],
+                nominal_value=case_dict["max_shortage"] * case_dict["total_demand_dc"],
                 summed_max=1,
             ),
         },
@@ -136,8 +136,7 @@ def maingrid_consumption(micro_grid_system, experiment):
         label=SOURCE_MAINGRID_CONSUMPTION,
         outputs={
             bus_electricity_ng_consumption: solph.Flow(
-                actual_value=experiment[GRID_AVAILABILITY],
-                fixed=True,
+                fix=experiment[GRID_AVAILABILITY],
                 investment=solph.Investment(ep_costs=0),
             )
         },
@@ -163,8 +162,7 @@ def pv_fix(micro_grid_system, bus_electricity_dc, experiment, capacity_pv):
         outputs={
             bus_electricity_dc: solph.Flow(
                 label=PV_GENERATION,
-                actual_value=experiment[PV_GENERATION_PER_KWP],
-                fixed=True,
+                fix=experiment[PV_GENERATION_PER_KWP],
                 nominal_value=capacity_pv,
                 variable_costs=experiment[PV_COST_VAR],
             )
@@ -189,8 +187,7 @@ def pv_oem(micro_grid_system, bus_electricity_dc, experiment):
         outputs={
             bus_electricity_dc: solph.Flow(
                 label=PV_GENERATION,
-                actual_value=pv_norm,
-                fixed=True,
+                fix=pv_norm,
                 investment=solph.Investment(
                     ep_costs=experiment[PV_COST_ANNUITY] / peak_pv_generation
                 ),
@@ -210,8 +207,7 @@ def wind_fix(micro_grid_system, bus_electricity_ac, experiment, capacity_wind):
         outputs={
             bus_electricity_ac: solph.Flow(
                 label=WIND_GENERATION,
-                actual_value=experiment[WIND_GENERATION_PER_KW],
-                fixed=True,
+                fix=experiment[WIND_GENERATION_PER_KW],
                 nominal_value=capacity_wind,
                 variable_costs=experiment[WIND_COST_VAR],
             )
@@ -236,8 +232,7 @@ def wind_oem(micro_grid_system, bus_electricity_ac, experiment):
         outputs={
             bus_electricity_ac: solph.Flow(
                 label=WIND_GENERATION,
-                actual_value=wind_norm,
-                fixed=True,
+                fix=wind_norm,
                 investment=solph.Investment(
                     ep_costs=experiment[WIND_COST_ANNUITY] / peak_wind_generation
                 ),
@@ -553,7 +548,7 @@ def storage_fix(
     logging.debug("Added to oemof model: storage fix")
     generic_storage = solph.components.GenericStorage(
         label=GENERIC_STORAGE,
-        nominal_capacity=capacity_storage,
+        nominal_storage_capacity=capacity_storage,
         inputs={
             bus_electricity_dc: solph.Flow(
                 nominal_value=capacity_storage * experiment[STORAGE_CRATE_CHARGE],
@@ -565,10 +560,10 @@ def storage_fix(
                 nominal_value=power_storage  # capacity_storage*experiment['storage_Crate_discharge']
             )
         },  # maximum discharge possible in one timestep
-        capacity_loss=experiment[STORAGE_LOSS_TIMESTEP],  # from timestep to timestep
-        capacity_min=experiment[STORAGE_SOC_MIN],
-        capacity_max=experiment[STORAGE_SOC_MAX],
-        initial_capacity=experiment[STORAGE_SOC_INITIAL],  # in terms of SOC?
+        loss_rate=experiment[STORAGE_LOSS_TIMESTEP],  # from timestep to timestep
+        min_storage_level=experiment[STORAGE_SOC_MIN],
+        max_storage_level=experiment[STORAGE_SOC_MAX],
+        initial_storage_level=experiment[STORAGE_SOC_INITIAL],  # in terms of SOC?
         inflow_conversion_factor=experiment[
             STORAGE_EFFICIENCY_CHARGE
         ],  # storing efficiency
@@ -576,32 +571,6 @@ def storage_fix(
     )  # efficiency of discharge
     micro_grid_system.add(generic_storage)
     return generic_storage
-
-
-"""
-# todo: try or not try?!
-def storage_fix_secondary(micro_grid_system, bus_electricity_dc, experiment, capacity_storage):
-    logging.debug('Added to oemof model: storage fix')
-    generic_storage = solph.components.GenericStorage(
-        label                       = 'generic_storage',
-        nominal_capacity            = capacity_storage,
-        max                         = experiment['grid_availability'],
-        inputs={bus_electricity_dc: solph.Flow(
-            nominal_value= capacity_storage*experiment['storage_Crate_charge'],
-            variable_costs=experiment['storage_cost_var']
-            )},  # maximum charge possible in one timestep
-        outputs={bus_electricity_dc: solph.Flow(
-            nominal_value= capacity_storage*experiment['storage_Crate_discharge']
-            )},  # maximum discharge possible in one timestep
-        capacity_loss               = experiment['storage_loss_timestep'],  # from timestep to timestep
-        capacity_min                = experiment['storage_soc_min'],
-        capacity_max                = experiment['storage_soc_max'],
-        initial_capacity            = experiment['storage_soc_initial'],  # in terms of SOC?
-        inflow_conversion_factor    = experiment['storage_efficiency_charge'],  # storing efficiency
-        outflow_conversion_factor   = experiment['storage_efficiency_discharge'])  # efficiency of discharge
-    micro_grid_system.add(generic_storage)
-    return generic_storage
-"""
 
 
 def storage_oem(micro_grid_system, bus_electricity_dc, experiment):
@@ -619,9 +588,9 @@ def storage_oem(micro_grid_system, bus_electricity_dc, experiment):
                 )
             )
         },
-        capacity_loss=experiment[STORAGE_LOSS_TIMESTEP],  # from timestep to timestep
-        capacity_min=experiment[STORAGE_SOC_MIN],
-        capacity_max=experiment[STORAGE_SOC_MAX],
+        loss_rate=experiment[STORAGE_LOSS_TIMESTEP],  # from timestep to timestep
+        min_storage_level=experiment[STORAGE_SOC_MIN],
+        max_storage_level=experiment[STORAGE_SOC_MAX],
         inflow_conversion_factor=experiment[
             STORAGE_EFFICIENCY_CHARGE
         ],  # storing efficiency
@@ -675,11 +644,7 @@ def distribution_grid_ac(
     # create and add demand sink to micro_grid_system - fixed
     sink_demand_ac = solph.Sink(
         label=SINK_DEMAND_AC,
-        inputs={
-            bus_electricity_ac: solph.Flow(
-                actual_value=demand_profile, nominal_value=1, fixed=True
-            )
-        },
+        inputs={bus_electricity_ac: solph.Flow(fix=demand_profile, nominal_value=1)},
     )
 
     micro_grid_system.add(sink_demand_ac)
@@ -692,11 +657,7 @@ def demand_ac(micro_grid_system, bus_electricity_ac, demand_profile):
     # create and add demand sink to micro_grid_system - fixed
     sink_demand_ac = solph.Sink(
         label=SINK_DEMAND_AC,
-        inputs={
-            bus_electricity_ac: solph.Flow(
-                actual_value=demand_profile, nominal_value=1, fixed=True
-            )
-        },
+        inputs={bus_electricity_ac: solph.Flow(fix=demand_profile, nominal_value=1)},
     )
 
     micro_grid_system.add(sink_demand_ac)
@@ -707,12 +668,8 @@ def demand_dc(micro_grid_system, bus_electricity_dc, demand_profile):
     logging.debug("Added to oemof model: demand DC")
     # create and add demand sink to micro_grid_system - fixed
     sink_demand_dc = solph.Sink(
-        label=SINK_DEMAND_DC,
-        inputs={
-            bus_electricity_dc: solph.Flow(
-                actual_value=demand_profile, nominal_value=1, fixed=True
-            )
-        },
+        label="sink_demand_dc",
+        inputs={bus_electricity_dc: solph.Flow(fix=demand_profile, nominal_value=1)},
     )
     micro_grid_system.add(sink_demand_dc)
     return sink_demand_dc
@@ -728,8 +685,7 @@ def maingrid_feedin(micro_grid_system, experiment):
         label=SINK_MAINGRID_FEEDIN,
         inputs={
             bus_electricity_ng_feedin: solph.Flow(
-                actual_value=experiment[GRID_AVAILABILITY],
-                fixed=True,
+                fix=experiment[GRID_AVAILABILITY],
                 investment=solph.Investment(ep_costs=0),
             )
         },

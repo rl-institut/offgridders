@@ -19,6 +19,7 @@ import src.E_blackouts_central_grid as central_grid
 import src.F_case_definitions as cases
 import src.G0_oemof_simulate as oemof_simulate
 import src.H0_multicriteria_analysis as multicriteria_analysis
+
 from src.constants import (
     TOTAL_NUMBER_OF_EXPERIMENTS,
     MAX_DATE_TIME_INDEX,
@@ -129,7 +130,7 @@ def main():
     process_input.apply_noise(sensitivity_experiment_s)  # Applies white noise
 
     # Calculation of grid_availability with randomized blackouts
-    if settings[NECESSITY_FOR_BLACKOUT_TIMESERIES_GENERATION] == True:
+    if settings[NECESSITY_FOR_BLACKOUT_TIMESERIES_GENERATION] is True:
         sensitivity_grid_availability, blackout_results = central_grid.get_blackouts(
             settings, blackout_experiment_s
         )
@@ -253,7 +254,7 @@ def main():
             )
             print("\n")
 
-        if settings[DISPLAY_EXPERIMENT] == True:
+        if settings[DISPLAY_EXPERIMENT] is True:
             logging.info("The experiment with following parameters has been analysed:")
             pp.pprint(sensitivity_experiment_s[experiment])
 
@@ -267,7 +268,7 @@ def main():
     pp.pprint(overall_results[output_names])
 
     # Calculate multicriteria analysis
-    if settings[PERFORM_MULTICRITERIA_ANALYSIS] == True:
+    if settings[PERFORM_MULTICRITERIA_ANALYSIS] is True:
         logging.info("Performing multicriteria analysis")
         multicriteria_analysis.main_analysis(
             overall_results, multicriteria_data, settings

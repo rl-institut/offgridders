@@ -554,7 +554,7 @@ def representation(
         # write parameters and values of the sensibility analysis that are considered for the multicriteria analysis
         parameters_name = []
         for parameter in parameters:
-            if parameters[parameter][ANALYSE] == True:
+            if parameters[parameter][ANALYSE] is True:
                 worksheet.write(row, col, parameter, format_highlight)
                 parameters_name.append(parameter)
                 row += 1
@@ -562,7 +562,7 @@ def representation(
         row, col, final = 0, 4, 4
         first = True
         for parameter in parameters:
-            if parameters[parameter][ANALYSE] == True:
+            if parameters[parameter][ANALYSE] is True:
                 del parameters_name[0]
                 cells = len(cases)
                 for param in parameters_name:
@@ -883,7 +883,7 @@ def plot_evaluations(
     """
     combinations = len(cases)
     for parameter in parameters:
-        if parameters[parameter][ANALYSE] == True:
+        if parameters[parameter][ANALYSE] is True:
             combinations = combinations * len(parameters[parameter][LEVELS])
 
     cases_exp = []
