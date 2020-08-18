@@ -307,7 +307,7 @@ def get_multicriteria_data(file, sheet_multicriteria_analysis, case_definitions)
     }
 
     # gets the tariff for each case scenario from the case_definitions dictionary
-    multicriteria_data[TARIFF] = {}
+    multicriteria_data[TARIFF] = {} #This needs to be changed
     for case in case_definitions:
         for key in case_definitions[case]:
             if key == "tariff for electrical service":
