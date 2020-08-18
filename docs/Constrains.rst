@@ -5,7 +5,7 @@ General: Adding constraints
 
 Sometimes, a scenario analyzed by oemof needs additional constraints for a proper optimization result. As presented in oemof's `readthedocs <https://oemof.readthedocs.io/en/stable/_modules/oemof/solph/constraints.html>`_ this could be as easy as limiting the total investment allowed. In other cases, more elaborate constraints have to be formulated.
 
-In the case of this tool, a constraint defining minimal grid-stabilizing capacities (fossil-fulled generator, storage) was needed. The constraint has to be full-filled in every time step, but also accesses constants and optimized investment capacities. The procedure to add this customized constraint shall be described below.
+In the case of this tool, a constraint defining minimal grid-stabilizing capacities (fossil-fulled generator, storage) was needed. The constraint has to be fullfilled in every time step, but also accesses (?) constants and optimized investment capacities. The procedure to add this customized constraint shall be described below.
 
 
 General structure of a constraint
@@ -87,7 +87,7 @@ Make sure that this value is defined for your component.
 Equation for pyomo (3)
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-The constraint itself is defined by an equation (<=, ==, >=). Make sure, that your equation does not result in a value (True/False) but in the generation of an commonly applicable rule. This can happen if you print out results during coding the constraint and use calls like _model.flow[el_bus,sink_demand,t].value_.::
+The constraint itself is defined by an equation (<=, ==, >=). Make sure, that your equation does not result in a value (True/False) but in the generation of an commonly applicable rule (?). This can happen if you print out results during coding the constraint and use calls like _model.flow[el_bus,sink_demand,t].value_.::
 
                 expr = CAP_genset + storage_capacity * storage.invest_relation_output_capacity\
                        >= stability_limit * demand
@@ -100,7 +100,7 @@ To make sure this rule is applied to every timestep, you can either explicitly l
 Sidenotes: Indirectly accessing attributes of Flows of an oemof-model (1)
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-Calling constant attributes of Flows or InvestmentFlows indirectly makes most sense, if a certain class of components/busses is subjected to the constraint and if you can not or do not want to group it's element. Possible classes can be:::
+Calling constant attributes of Flows or InvestmentFlows indirectly makes most sense, if a certain class of components/busses is subjected to the constraint and if you can not or do not want to group it's element (?). Possible classes can be:::
 
 * oemof.solph.components.GenericStorage
 * oemof.solph.network.Transformer
