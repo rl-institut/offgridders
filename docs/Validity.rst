@@ -10,8 +10,8 @@ Cases currently analysed:
 * **interconnected_buysell**:  Base OEM interconnected with MG, buy and sell (fix PCC)
 * **sole_maingrid**: Supply only by national grid (no stability criterion)
 
--> But I need to adjust stability constraint again, as this locks pcc consumption directly to constraint, <->  it only HAS TO BE POSSIBLE to consume from grid. Assuming this is the definition.
-=> expr += pcc_cap * grid availability
+(-> But I need to adjust stability constraint again, as this locks pcc consumption directly to constraint, <->  it only HAS TO BE POSSIBLE to consume from grid. Assuming this is the definition.
+=> expr += pcc_cap * grid availability) ?
 
 Costs
 --------------------------------
@@ -22,7 +22,7 @@ Costs
 +++++++++++++++++++++++
 base_oem
 +++++++++++++++++++++++
-
+?
 +++++++++++++++++++++++
 interconnected_buy
 +++++++++++++++++++++++
