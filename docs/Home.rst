@@ -39,7 +39,7 @@ The features of the simulation tool can be summarized with:
 
 * **User-friendly interface**.
     All simulation parameters, project locations and scenarios
-    can be defined within a single excel file (see Configuration). **The time series linked to one or multiple project locations can be defined in one or multiple .csv file(s)** (This is not really clear, means parallel simulation of diferent cases with different time-series?). Even though it
+    can be defined within a single excel file (see Configuration). The timeseries of demand and renewable resources have to be defined as one or multiple .csv file(s). They can be used to define one or multiple project locations (batch analysis). Even though it
     is necessary to install Python as well as required packages and execute the tool via a
     command-line interface (e.g. miniconda), this should enable users without programming
     experience to use the tool without having to edit any of the provided code.
