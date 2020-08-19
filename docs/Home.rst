@@ -31,10 +31,10 @@ Features of Offgridders
 The features of the simulation tool can be summarized with:
 
 * **Versatile application and scenario definition**.
-    Through scenario definitions, a \
-    multitude of energy system models (cases) can be defined. The energy system model’s \
-    capacity and their dispatch are optimized. All possible simulations of the energy system, \
-    can be reduced to a combination of the following components: AC and/or DC demand, \
+    Through scenario definitions, a
+    multitude of energy system models (cases) can be defined. The energy system model’s
+    capacity and their dispatch are optimized. All possible simulations of the energy system,
+    can be reduced to a combination of the following components: AC and/or DC demand,
     generator, photovoltaic (PV) panels, storage, inverters, rectifiers, wind plant and connection to a national grid.
 
 * **User-friendly interface**.
