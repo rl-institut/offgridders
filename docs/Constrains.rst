@@ -87,7 +87,7 @@ Make sure that this value is defined for your component.
 Equation for pyomo (3)
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-The constraint itself is defined by an equation (<=, ==, >=). Make sure, that your equation does not result in a value (True/False) but in the generation of an commonly applicable rule. This can happen if you print out results during coding the constraint and use calls like _model.flow[el_bus,sink_demand,t].value_.::
+The constraint itself is defined by an equation (<=, ==, >=). Make sure, that your equation does not result in a value (True/False) but in the generation of an commonly applicable rule (?). This can happen if you print out results during coding the constraint and use calls like _model.flow[el_bus,sink_demand,t].value_.::
 
                 expr = CAP_genset + storage_capacity * storage.invest_relation_output_capacity\
                        >= stability_limit * demand
@@ -100,7 +100,7 @@ To make sure this rule is applied to every timestep, you can either explicitly l
 Sidenotes: Indirectly accessing attributes of Flows of an oemof-model (1)
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-Calling constant attributes of Flows or InvestmentFlows indirectly makes most sense, if a certain class of components/busses is subjected to the constraint and if you can not or do not want to group it's element. Possible classes can be:::
+Calling constant attributes of Flows or InvestmentFlows indirectly makes most sense, if a certain class of components/busses is subjected to the constraint and if you can not or do not want to group it's element (?). Possible classes can be:::
 
 * oemof.solph.components.GenericStorage
 * oemof.solph.network.Transformer
