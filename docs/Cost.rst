@@ -72,7 +72,7 @@ Factorized with the annuity factor, the annuity is calculated:::
 
        annuity = present costs / annuity factor
 
-In optimizations, the variable costs from the inputs are equal to the _variable_costs_ of a flow connected to a component. In investment mode, the annuity is equal to the _ep_costs_ (What does this mean).
+In optimizations, the variable costs from the inputs are equal to the _variable_costs_ of a flow connected to a component. In investment mode, the annuity is equal to the _ep_costs_.
 
 Case-based cost evaluation
 --------------------------------------
