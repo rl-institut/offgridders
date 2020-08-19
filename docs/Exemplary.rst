@@ -32,7 +32,7 @@ An interconnection with the main grid allows consumption from as well as feed-in
 
 Optimal local capacities for off-grid site with national grid access
 ---------------------------------------------------------------------
-An optimization of backup-capacities of an off-grid site already connected to a blackout-ridden national grid is performed. (Following pictures present the results?)
+An optimization of backup-capacities of an off-grid site already connected to a blackout-ridden national grid is performed. Following pictures present the results.
 
 .. figure:: ../pictures/diesel_mg_4days.png
     :width: 5000px
