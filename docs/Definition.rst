@@ -10,8 +10,8 @@ The electricity supply system can be defined de-/activating a number of availabl
 
 * Demand profiles for multiple project sites
 * Weather data (irradiation, wind speed, temperature) of a project site
-* Technical specifications of the fossil-fuelled generator, PV, wind and the storage unit
-* Costs for the fossil-fuelled generator, PV and storage
+* Technical specifications of fossil-fuelled generator, PV, wind and storage unit
+* Costs for the fossil-fuelled generator, PV, wind and storage unit
 
 The input data is then pre-processed, e.g. the specific CAPEX and OPEX of each asset is calculated. If necessary, a randomized blackout profile is generated. From this, the tool defines the electricity system model using oemof and optimizes it for each of the sensitivity experiments. The results are evaluated, calculating main performance indicators (supply reliability, Levelized Costs of Electricity (LCOE), renewable share)) and generating automated graphs of the electricity flows within the system.
 
