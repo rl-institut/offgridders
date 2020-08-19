@@ -9,12 +9,10 @@ Currently, following operational modes will be analyzed, mostly with capacities 
 * Off-grid micro grid interconnecting to national grid (consumption and feed-in)
 * Optimal local capacities for off-grid site with national grid access
 
-The results of the oemof-optimizations have to be interpreted considering the evaluated scenario. Further details on this can be found in `Evaluation of oemof results <https://offgridders.readthedocs.io/en/latest/Evaluation.html>`_.
+The results of the oemof-optimizations have to be interpreted considering the evaluated scenario. Further detail on that can be found in `Evaluation of oemof results <https://offgridders.readthedocs.io/en/latest/Evaluation.html>`_.
 
-(Are these features or are they part of the result? If feels like this list (Dispatch,Off-grid micro..) needs a caption or a title)\
-
-* **Dispatch optimization of off-grid micro grid** with base case capacities.
-* **Off-grid micro grid** with base case capacities interconnecting with national grid:
+#. **Dispatch optimization of off-grid micro grid** with base case capacities.
+#. **Off-grid micro grid** with base case capacities interconnecting with national grid:
     * Only consumption from national grid
     * Consumption from and feed-in to national grid
 
