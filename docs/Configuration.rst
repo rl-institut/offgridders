@@ -30,7 +30,7 @@ Simulated cases
             base_case_with_min_loading = True
 
 
-* Checking all operational modes (cases) to be analyzed in **simulated_cases**. (This is not clear) A base case OEM to determine necessary capacities is always performed.::
+* Checking all operational modes (cases) to be analyzed in **simulated_cases**. A base case OEM to determine necessary capacities is always performed.::
 
         simulated_cases = {
             'offgrid_fixed': True,            # dispatch with base oem capacities
@@ -106,9 +106,9 @@ In general, the solver of oemof is set to cbc (**solver**). The solver output (*
 
 To increase computation speed (especially for nonconvex flows in the dispatch OEM), an additional solver option **cmdline_option** is added  with value _cmdline_option_value_. It influences, when the solver accepts the found solution as optimal. Possible options:
 
-* ratioGap: ?
-* allowedGap: ?
-* mipgap: ?
+* ratioGap
+* allowedGap
+* mipgap
 
 Comand line options::
 
