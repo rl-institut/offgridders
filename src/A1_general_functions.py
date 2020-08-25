@@ -22,6 +22,26 @@ import matplotlib.pyplot as plt
 
 
 def plot_results(pandas_dataframe, title, xaxis, yaxis):
+    r"""
+    Plots the results contained in pandas_dataframe
+
+    Parameters
+    ----------
+    pandas_dataframe : Pandas DataFrame
+                      Dataframe containing the results
+    title : str
+            title of the figure
+    xaxis : str
+            label for the x axis
+    yaxis : str
+            label for the y axis
+
+
+    Returns
+    -------
+    Plots the correspoding DataFrame
+
+    """
     """ general function for plots"""
     if plt is not None:
         # Plot demand
@@ -34,6 +54,17 @@ def plot_results(pandas_dataframe, title, xaxis, yaxis):
 
 
 def define_base_capacities(oemof_results):
+    """
+
+    Parameters
+    ----------
+    oemof_results : Dictionary containing the oemof-results
+
+    Returns
+    -------
+    capacities_base : Dictionary containing the selected
+
+    """
     capacities_base = {
         CAPACITY_PV_KWP: oemof_results[CAPACITY_PV_KWP],
         CAPACITY_WIND_KW: oemof_results[CAPACITY_WIND_KW],
