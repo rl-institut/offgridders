@@ -48,7 +48,6 @@ Components
 * **pointofcoupling_feedin_fix** (*micro_grid_system, bus_electricity_mg, bus_electricity_ng, capacity_pointofcoupling, experiment*):
     Creates point of coupling "pointofcoupling_feedin" with fixed capacity, conversion factor and variable costs for the feed into the national grid.
 
-
 * **pointofcoupling_feedin_oem** (*micro_grid_system, bus_electricity_mg, bus_electricity_ng, experiment*):
     Creates point of coupling "pointofcoupling_feedin" for OEM, conversion factor, investment and variable costs for the feed into the national grid.
 

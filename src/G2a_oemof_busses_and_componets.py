@@ -106,6 +106,10 @@ def fuel(micro_grid_system, bus_fuel, experiment):
 def shortage(
     micro_grid_system, bus_electricity_ac, bus_electricity_dc, experiment, case_dict
 ):
+    """
+    Creates source for shortages "source_shortage" including boundary conditions
+    for maximal unserved demand and the variable costs of unserved demand.
+    """
     logging.debug("Added to oemof model: source shortage")
     source_shortage = solph.Source(
         label=SOURCE_SHORTAGE,
@@ -156,6 +160,10 @@ def maingrid_consumption(micro_grid_system, experiment):
 
 ######## Components ########
 def pv_fix(micro_grid_system, bus_electricity_dc, experiment, capacity_pv):
+    """
+    Creates PV generation source "source_pv" with fix capacity,
+    using the PV generation profile per kWp (scaled by capacity) with variable costs.
+    """
     logging.debug("Added to oemof model: pv fix")
     source_pv = solph.Source(
         label=SOURCE_PV,
@@ -174,6 +182,12 @@ def pv_fix(micro_grid_system, bus_electricity_dc, experiment, capacity_pv):
 
 
 def pv_oem(micro_grid_system, bus_electricity_dc, experiment):
+    """
+    Creates PV generation source "source_pv" for OEM,
+    using the normed PV generation profile per kWp,
+    investment costs and variable costs.
+    """
+
     logging.debug("Added to oemof model: pv oem")
     peak_pv_generation = experiment[PEAK_PV_GENERATION_PER_KWP]
     pv_norm = experiment[PV_GENERATION_PER_KWP] / peak_pv_generation
@@ -340,6 +354,12 @@ def genset_fix(
     capacity_fuel_gen,
     number_of_equal_generators,
 ):
+    """
+    Generates fossil-fueled genset "transformer_fuel_generator" with nonconvex flow
+    (min and max loading), generator efficiency, fixed capacity and variable costs.
+    If minimal loading = 0, the generator is modeled without a nonconvex flow
+    (which would result in an error due to constraint 'NonConvexFlow.min').
+    """
     logging.debug("Added to oemof model: genset fix no minload")
     dict_of_generators = {}
     for number in range(1, number_of_equal_generators + 1):
@@ -393,6 +413,10 @@ def genset_fix_minload(
 def genset_oem(
     micro_grid_system, bus_fuel, bus_electricity_ac, experiment, number_of_generators,
 ):
+    """
+    Generates fossi-fueled genset "transformer_fuel_generator" for OEM with generator efficiency,
+    investment and variable costs.
+    """
     logging.debug("Added to oemof model: genset oem no minload")
     dict_of_generators = {}
     for number in range(1, number_of_generators + 1):
@@ -441,6 +465,10 @@ def pointofcoupling_feedin_fix(
     experiment,
     capacity_pointofcoupling,
 ):
+    """
+    Creates point of coupling "pointofcoupling_feedin" with fixed capacity,
+    conversion factor and variable costs for the feed into the national grid.
+    """
     logging.debug("Added to oemof model: pcc feedin fix")
     pointofcoupling_feedin = solph.Transformer(
         label=TRANSFORMER_PCC_FEEDIN,
@@ -468,6 +496,10 @@ def pointofcoupling_feedin_oem(
     experiment,
     min_cap_pointofcoupling,
 ):
+    """
+    Creates point of coupling "pointofcoupling_feedin" for OEM, conversion factor,
+    investment and variable costs for the feed into the national grid.
+    """
     logging.debug("Added to oemof model: pcc feedin oem")
     pointofcoupling_feedin = solph.Transformer(
         label=TRANSFORMER_PCC_FEEDIN,
@@ -545,6 +577,12 @@ def pointofcoupling_consumption_oem(
 def storage_fix(
     micro_grid_system, bus_electricity_dc, experiment, capacity_storage, power_storage,
 ):
+    """
+    Create storage unit "generic_storage" with fixed capacity,
+    variable costs, maximal charge and discharge per timestep,
+    capacity loss per timestep, charge and discharge efficiency,
+    SOC boundaries (and initial SOC, possibly not needed).
+    """
     logging.debug("Added to oemof model: storage fix")
     generic_storage = solph.components.GenericStorage(
         label=GENERIC_STORAGE,
@@ -574,6 +612,12 @@ def storage_fix(
 
 
 def storage_oem(micro_grid_system, bus_electricity_dc, experiment):
+    """
+    Create storage unit "generic_storage" for OEM with investment, variable costs,
+    maximal charge and discharge per timestep,  capacity loss per timestep,
+    charge and discharge efficiency,
+    SOC boundaries (and initial SOC, possibly not needed).
+    """
     logging.debug("Added to oemof model: storage oem")
     generic_storage = solph.components.GenericStorage(
         label=GENERIC_STORAGE,
@@ -612,6 +656,10 @@ def storage_oem(micro_grid_system, bus_electricity_dc, experiment):
 
 ######## Sinks ########
 def excess(micro_grid_system, bus_electricity_ac, bus_electricity_dc):
+    """
+    Creates sink for excess electricity "sink_excess",
+    eg. if PV panels generate too much electricity.
+    """
     logging.debug("Added to oemof model: excess")
     # create and add excess electricity sink to micro_grid_system - variable
     sink_excess = solph.Sink(
@@ -653,6 +701,9 @@ def distribution_grid_ac(
 
 
 def demand_ac(micro_grid_system, bus_electricity_ac, demand_profile):
+    """
+    Creates demand sink "sink_demand" with fixed flow
+    """
     logging.debug("Added to oemof model: demand AC")
     # create and add demand sink to micro_grid_system - fixed
     sink_demand_ac = solph.Sink(
@@ -665,6 +716,9 @@ def demand_ac(micro_grid_system, bus_electricity_ac, demand_profile):
 
 
 def demand_dc(micro_grid_system, bus_electricity_dc, demand_profile):
+    """
+    Creates demand sink "sink_demand" with fixed flow
+    """
     logging.debug("Added to oemof model: demand DC")
     # create and add demand sink to micro_grid_system - fixed
     sink_demand_dc = solph.Sink(
