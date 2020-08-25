@@ -31,7 +31,7 @@ The parameters specifying each of those components are
 * Variable costs per kWh
 * Investment costs
 
-In this list, the costs of grid extension, local distribution grid and project costs are not specified by variable investment costs.Furthermore, project investment costs do not have a specified lifetime and only have to be payed once.
+In this list, the costs of grid extension, local distribution grid and project costs are not specified by variable investment costs. 
 
 Including costs in oemof optimization
 --------------------------------------
