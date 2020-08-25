@@ -11,7 +11,7 @@ A micro grid with PV generation can only be called stable during operation, if a
 
 With micro grids interconnected to a blackout-ridden national grid, additional aspects have to be considered:
 
-* In case of later on grid-interconnected micro grids, the stability criteria has to adhered to the off-grid operation
+* In case of later-on grid-interconnected micro grids, the stability criteria has to adhered to by the during off-grid operation of the MG. 
 * In case of grid-tied micro grids, the stability criterion can be fullfilled through the main grid interconnection. With blackouts occuring in it's supply, a micro grid with 100% reliability still needs to adhere to above presented constraints.
 
 
