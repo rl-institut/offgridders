@@ -108,7 +108,6 @@ To increase computation speed (especially for nonconvex flows in the dispatch OE
 
 * ratioGap
 * allowedGap
-* mipgap
 
 Comand line options::
 
