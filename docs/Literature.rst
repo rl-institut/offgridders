@@ -38,6 +38,6 @@ Link to paper: `Sciencedirect <https://www.sciencedirect.com/science/article/abs
 
 * **[Submitted] Journal paper: Integration of Multi-Criteria Analysis into Offgridders**
 
-Marc Juanpera, Philipp Blechinger, Laia Ferrer-Martí, Martha M. Hoffmann, Rafael Pastor: *Multicriteria-based methodology for the design of rural electrification systems. A case study in Nigeria*,  2020, submitted to the Journal "Renewable & Sustainable Energy Reviews"
+Marc Juanpera, Philipp Blechinger, Laia Ferrer-Martí, Martha M. Hoffmann, Rafael Pastor: *Multicriteria-based methodology for the design of rural electrification systems. A case study in Nigeria*,  2020, submitted to the Journal "Renewable & Sustainable Energy Reviews". For further information refer to `Multicriteria Analysis <https://offgridders.readthedocs.io/en/latest/Multicriteria_Analysis.html>`_
 
 This paper will give an overview over the new futures realized in PR #47.
