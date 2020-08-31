@@ -3,7 +3,7 @@ Input values
 ==========================================
 **to be updated, mostly accurate**
 
-TThere are numerous input values that have to be provided for the model. Most of those can be defined either as a constant value (_sensitivity_constants_)::
+There are numerous input values that have to be provided for the model. Most of those can be defined either as a constant value (_sensitivity_constants_)::
 
         sensitivity_constants = {'variable_name':  constant value}
 

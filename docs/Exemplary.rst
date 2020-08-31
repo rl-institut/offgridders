@@ -2,7 +2,7 @@
 Exemplary electricity supply systems
 ==========================================
 
-Currently, following operational modes will be analyzed, mostly with capacities resulting from the `base case <https://github.com/smartie2076/simulator_grid-connected_micro_grid/wiki/Base-case:-Off-grid-micro-grid>`_:
+Currently, following operational modes will be analyzed, mostly with capacities resulting from the base case:
 
 * Off-grid micro grid with fixed capacities
 * Off-grid micro grid interconnecting to national grid (consumption)
@@ -12,23 +12,27 @@ Currently, following operational modes will be analyzed, mostly with capacities 
 The results of the oemof-optimizations have to be interpreted considering the evaluated scenario:
 
 #. **Dispatch optimization of off-grid micro grid** with base case capacities.
+
 #.  **Off-grid micro grid** with base case capacities interconnecting with national grid:
     * Only consumption from national grid
     * Consumption from and feed-in to national grid
 
 Further detail on that can be found in `Evaluation of oemof results <https://offgridders.readthedocs.io/en/latest/Evaluation.html>`_.
-
 Off-grid micro grid with fixed capacities
------------------------------------------
+##########################################
+
+
 Off-grid micro grid interconnecting to national grid
 -----------------------------------------------------
-This case analyses the dispatch the capacities in an implemented off-grid micro grid sized within the base case scenario. It takes into account blackout events. To eliminate the influence of blackouts on this case set both _blackout_duration_ and _blackout_frequency_ in the input list to 0. Two cases can be analyzed:
+This case analyses the dispatch of the capacities in an implemented off-grid microgrid, sized within the base case scenario. It takes into account blackout events. To eliminate the influence of blackouts on this case set both _blackout_duration_ and _blackout_frequency_ in the input list to 0.With this configuration two cases can be analyzed:
 
 1. **Only electricity consumption**:
 An interconnection with the main grid only allows consumption from the national grid through the point of common coupling, as long as the grid is not subject to blackouts.
 
+
 2. **Electricity consumption and feed-in**:
 An interconnection with the main grid allows consumption from as well as feed-into the national grid through the point of common coupling, as long as the grid is not subject to blackouts.
+
 
 Optimal local capacities for off-grid site with national grid access
 ---------------------------------------------------------------------
