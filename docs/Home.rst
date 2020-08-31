@@ -84,4 +84,4 @@ This description is largely based upon the methodology chapter of Martha Hoffman
 
 * Martha M. Hoffmann: Optimizing the Design of Off-Grid Micro Grids Facing Interconnection with an Unreliable Central Grid Utilizing an Open-Source Simulation Tool, June 2019, Reiner Lemoine Institut and Technologische Universität Berlin
 
-For more information, please refer to the `Github Readme <https://github.com/rl-institut/offgridders/blob/dev/README.md>`_
+For more information, please refer to the `Literature <https://offgridders.readthedocs.io/en/latest/Literature.html>`_
