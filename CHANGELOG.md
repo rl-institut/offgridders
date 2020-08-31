@@ -41,6 +41,9 @@ Here is a template for new release sections
 -Small content corrections to readthedocs (#125)
 
 
+### Fixed
+-Small content corrections to readthedocs (#123)
+
 ## [Offgridders V4.5] - 2020-08-12
 
 ### Added

@@ -24,7 +24,7 @@ The simulation tool outline is provided with the graph below:
     :alt: alternate text
     :figclass: align-center
 
-    Flowchart of the micro grid simulation tool
+    Flowchart of the micro grid simulation tool `Offgridders`
 
 Electricity supply system components
 ------------------------------------

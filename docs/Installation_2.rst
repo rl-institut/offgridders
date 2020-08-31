@@ -1,5 +1,5 @@
 Installation Offgridders
--------------------
+-------------------------
 
 To set-up Offgridders, follow the steps below:
 
