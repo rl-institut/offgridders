@@ -354,12 +354,6 @@ def genset_fix(
     capacity_fuel_gen,
     number_of_equal_generators,
 ):
-    """
-    Generates fossil-fueled genset "transformer_fuel_generator" with nonconvex flow
-    (min and max loading), generator efficiency, fixed capacity and variable costs.
-    If minimal loading = 0, the generator is modeled without a nonconvex flow
-    (which would result in an error due to constraint 'NonConvexFlow.min').
-    """
     logging.debug("Added to oemof model: genset fix no minload")
     dict_of_generators = {}
     for number in range(1, number_of_equal_generators + 1):
@@ -387,6 +381,13 @@ def genset_fix_minload(
     capacity_fuel_gen,
     number_of_equal_generators,
 ):
+    """
+    Generates fossil-fueled genset "transformer_fuel_generator" with nonconvex flow
+    (min and max loading), generator efficiency, fixed capacity and variable costs.
+    If minimal loading = 0, the generator is modeled without a nonconvex flow
+    (which would result in an error due to constraint 'NonConvexFlow.min').
+    """
+
     logging.debug("Added to oemof model: genset fix minload")
     dict_of_generators = {}
     for number in range(1, number_of_equal_generators + 1):
