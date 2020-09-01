@@ -5,7 +5,7 @@ General: Adding constraints
 
 Sometimes, a scenario analyzed by oemof needs additional constraints for a proper optimization result. As presented in oemof's `readthedocs <https://oemof.readthedocs.io/en/stable/_modules/oemof/solph/constraints.html>`_ this could be as easy as limiting the total investment allowed. In other cases, more elaborate constraints have to be formulated.
 
-In the case of this tool, a constraint defining minimal grid-stabilizing capacities (fossil-fulled generator, storage) was needed. The constraint has to be fullfilled in every time step, but also accesses (?) constants and optimized investment capacities. The procedure to add this customized constraint shall be described below.
+In the case of this tool, a constraint defining minimal grid-stabilizing capacities (fossil-fulled generator, storage) was needed. The constraint has to be fullfilled in every time step, which influences the optimization result of the capacities to be installed. The procedure to add this customized constraint shall be described below.
 
 
 General structure of a constraint
