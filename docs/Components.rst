@@ -43,7 +43,7 @@ Components
     Generates fossil-fueled genset "transformer_fuel_generator" with nonconvex flow (min and max loading), generator efficiency, fixed capacity and variable costs. If minimal loading = 0, the generator is modeled without a nonconvex flow (which would result in an error due to constraint 'NonConvexFlow.min').
 
 * **genset_oem** (*micro_grid_system, bus_fuel, bus_electricity_mg, experiment*):
-    Generates fossi-fueled genset "transformer_fuel_generator" for OEM with generator efficiency, investment and variable costs.
+    Generates fossil-fueled genset "transformer_fuel_generator" for OEM with generator efficiency, investment and variable costs.
 
 * **pointofcoupling_feedin_fix** (*micro_grid_system, bus_electricity_mg, bus_electricity_ng, capacity_pointofcoupling, experiment*):
     Creates point of coupling "pointofcoupling_feedin" with fixed capacity, conversion factor and variable costs for the feed into the national grid.
