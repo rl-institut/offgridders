@@ -4,7 +4,7 @@ Home
 
 *Welcome to the simulator_grid-connected_micro_grid wiki!*
 
-**Offgridders**, based on python3, simulates an user-defined electricity supply system and performs an optimization of the system's capacities as well as a dispatch-optimization of the optimized assets, utilizing the library `oemof-solph<https://oemof-solph.readthedocs.io/en/latest/>`_ of the Open Energy Modelling Framework (`Website <https://oemof.org/>`_ ). The system can be defined using:
+**Offgridders**, based on python3, simulates an user-defined electricity supply system and performs an optimization of the system's capacities as well as a dispatch-optimization of the optimized assets, utilizing the Open Energy Modelling Framework (`Website <https://oemof.org/>`_ , `Code <https://github.com/oemof>`_). The system can be defined using:
 
 * AC- and DC-demand
 * Inverters and rectifiers connecting AC- and DC-bus
@@ -33,15 +33,15 @@ Features of Offgridders
 The features of the simulation tool can be summarized with:
 
 * **Versatile application and scenario definition**.
-    Through scenario definitions, a \
-    multitude of energy system models (cases) can be defined. The energy system model’s \
-    capacity and their dispatch are optimized. All energy systems can be simulated that \
-    can be reduced to a combination of the following components: AC and/or DC demand, \
+    Through scenario definitions, a
+    multitude of energy system models (cases) can be defined. The energy system model’s
+    capacity and their dispatch are optimized. All possible simulations of the energy system,
+    can be reduced to a combination of the following components: AC and/or DC demand,
     generator, photovoltaic (PV) panels, storage, inverters, rectifiers, wind plant and connection to a national grid.
 
 * **User-friendly interface**.
     All simulation parameters, project locations and scenarios
-    can be defined within a single excel file (see Configuration). The time series connected to one or multiple project locations can be defined in one or multiple .csv file(s). Even though it
+    can be defined within a single excel file (see Configuration). The timeseries of demand and renewable resources have to be defined as one or multiple .csv file(s). They can be used to define one or multiple project locations (batch analysis). Even though it
     is necessary to install Python as well as required packages and execute the tool via a
     command-line interface (e.g. miniconda), this should enable users without programming
     experience to use the tool without having to edit any of the provided code.
@@ -49,7 +49,7 @@ The features of the simulation tool can be summarized with:
 * **Multitude of input parameters, sensitivity analysis**.
     Numerous parameters can
     be defined to characterize the electricity solution to be simulated, including many
-    techno-economical parameters (see  `Input Values <https://offgridders.readthedocs.io/en/latest/Inputs.html>`_. A sensitivity analysis of any parameter can evaluate its influence on the overall optimization results. The simulation can run for any time
+    techno-economical parameters (see  `Input Values <https://offgridders.readthedocs.io/en/latest/Inputs.html>`_). A sensitivity analysis of any parameter can evaluate its influence on the overall optimization results. The simulation can run for any time
     period between one day and a year with hourly time steps.
 
 * **Multiple project sites**.
