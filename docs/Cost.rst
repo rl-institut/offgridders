@@ -1,6 +1,6 @@
 ==========================================
 Cost analysis
-==========================================
+
 For the costs analysis ultimately governing the optimization and determining the solutions NPV and LCOE, a number of values have to be provided as input parameters (as always, these can be subject to sensitivity analyses). These values are used to calculate the annuity and variable costs applied in oemof-optimizations. The costs' evaluation takes place after the oemof-optimization itself and calculates annuity and variable operation costs of the project.
 
 Input values
@@ -31,7 +31,7 @@ The parameters specifying each of those components are
 * Variable costs per kWh
 * Investment costs
 
-In this list, the costs of grid extension, local distribution grid and project costs are not specified by variable investment costs. Project investment costs further do not have a specified lifetime and only have to be payed once.
+In this list, the costs of grid extension, local distribution grid and project costs are not specified by variable investment costs. 
 
 Including costs in oemof optimization
 --------------------------------------
@@ -39,7 +39,9 @@ Including costs in oemof optimization
 
 To simplify this large amount of data and enable its integration into the oemof framework, the fixed annuity of each component is calculated.
 
-First the CAPEX of each component has to be calculated. The CAPEX includes its first investment costs as well as re-investments based on it's lifetime and value at project end. For this procedure the following algorithm is used:::
+
+First the CAPEX of each component has to be calculated. As this includes its first investment costs as well as re-investments based on it's lifetime and value at project end, following algorithm is used:::
+
 
         number_of_investments = int(round(project_life / lifetime))
         # costs with quantity and import tax at t=0
