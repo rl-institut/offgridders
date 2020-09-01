@@ -2,7 +2,7 @@
 Component library: oemof_generatemodel.py
 ==========================================
 
-For a deep insight into Offgridders energy system model, the components are presented below. This information is mainly important for developers, that are thinking of changing module G (especially G0 and G2a)
+For a deep insight into Offgridders energy system model, the components are presented below. This information is mainly important for developers that are thinking of changing module `G` (especially `G0` and `G2a`), eg. when adding new assets.
 
 To ease the definition of the models cases, a library of the utilized buses and components for the oemof model was generated. By combining them, the cases analyze specific energy systems with equal input parameters. The connections to the energy system model of oemof are automatically created, when a function is called.
 
