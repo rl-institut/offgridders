@@ -6,7 +6,7 @@ Literature
 
 The Master of Science Thesis *Optimizing the Design of Off-Grid Micro Grids Facing Interconnection with an Unreliable Central Grid Utilizing an Open-Source Simulation Tool* by Martha Hoffmann at the Berlin Institute of Technology developed Offgridders as a tool for a lager study.
 
-`Master thesis excerpt on Offgridders, M. Hoffmann 2019 <https://github.com/rl-institut/offgridders/tree/dev/docs/files/oesmot_description_hoffmann_rli.pdf>`_
+`Master thesis excerpt on Offgridders, M. Hoffmann 2019 <https://github.com/rl-institut/offgridders/tree/dev/docs/files/Offgridders_description_hoffmann_rli.pdf>`_
 
 * **Journal paper using Offgridders: Backup systems for unreliable grids**
 
