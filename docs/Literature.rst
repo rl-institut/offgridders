@@ -6,7 +6,7 @@ Literature
 
 The Master of Science Thesis *Optimizing the Design of Off-Grid Micro Grids Facing Interconnection with an Unreliable Central Grid Utilizing an Open-Source Simulation Tool* by Martha Hoffmann at the Berlin Institute of Technology developed Offgridders as a tool for a lager study.
 
-`Master thesis excerpt on Offgridders, M. Hoffmann 2019 <https://github.com/rl-institut/offgridders/blob/documentation/add_literature/docs/files/oesmot_description_hoffmann_rli.pdf>`_
+`Master thesis excerpt on Offgridders, M. Hoffmann 2019 <https://github.com/rl-institut/offgridders/tree/dev/docs/files/oesmot_description_hoffmann_rli.pdf>`_
 
 * **Journal paper using Offgridders: Backup systems for unreliable grids**
 
@@ -16,7 +16,7 @@ Hoffmann MM, Pelz S, Monés-Pederzini Ò, Andreottola   M, Blechinger P. Overcom
 
 This presentation describes how to use Offgridders intermediary development versions, ie. V1. There have been a couple of changes by now (most importantly, that there is now an AC and a DC bus, see master thesis excerpt), also comp. the `CHANGELOG.md <https://github.com/rl-institut/offgridders/blob/dev/CHANGELOG.md>`_, so please keep in mind that we are by now at V4!
 
-`Presentation Offgridders V1 (2019-03-28) <https://github.com/rl-institut/offgridders/blob/documentation/add_literature/docs/files/oesmot_description_hoffmann_rli.pdf>`_
+`Presentation Offgridders V1 (2019-03-28) <https://github.com/rl-institut/offgridders/tree/dev/docs/files/MGT_Tutorial_Mar28.pdf>`_
 
 * **Graphical User Interface of Offgridders (limited functionalities)**
 
@@ -40,4 +40,4 @@ Link to paper: `Sciencedirect <https://www.sciencedirect.com/science/article/abs
 
 Marc Juanpera, Philipp Blechinger, Laia Ferrer-Martí, Martha M. Hoffmann, Rafael Pastor: *Multicriteria-based methodology for the design of rural electrification systems. A case study in Nigeria*,  2020, submitted to the Journal "Renewable & Sustainable Energy Reviews". For further information refer to `Multicriteria Analysis <https://offgridders.readthedocs.io/en/latest/Multicriteria_Analysis.html>`_
 
-This paper will give an overview over the new futures realized in PR #47.
+This paper will give an overview over the new futures realized in PR #47. For further information please refer to following `publication <https://www.sciencedirect.com/science/article/abs/pii/S1364032120305323?via%3Dihub>`_.
