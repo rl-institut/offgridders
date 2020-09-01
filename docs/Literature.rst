@@ -6,7 +6,7 @@ Literature
 
 The Master of Science Thesis *Optimizing the Design of Off-Grid Micro Grids Facing Interconnection with an Unreliable Central Grid Utilizing an Open-Source Simulation Tool* by Martha Hoffmann at the Berlin Institute of Technology developed Offgridders as a tool for a lager study.
 
-`Master thesis excerpt on Offgridders, M. Hoffmann 2019 <https://github.com/rl-institut/offgridders/files/4415276/oesmot_description_hoffmann_rli.pdf>`_
+`Master thesis excerpt on Offgridders, M. Hoffmann 2019 <https://github.com/rl-institut/offgridders/blob/documentation/add_literature/docs/files/oesmot_description_hoffmann_rli.pdf>`_
 
 * **Journal paper using Offgridders: Backup systems for unreliable grids**
 
@@ -16,7 +16,7 @@ Hoffmann MM, Pelz S, Monés-Pederzini Ò, Andreottola   M, Blechinger P. Overcom
 
 This presentation describes how to use Offgridders intermediary development versions, ie. V1. There have been a couple of changes by now (most importantly, that there is now an AC and a DC bus, see master thesis excerpt), also comp. the `CHANGELOG.md <https://github.com/rl-institut/offgridders/blob/dev/CHANGELOG.md>`_, so please keep in mind that we are by now at V4!
 
-`Presentation Offgridders V1 (2019-03-28) <https://github.com/rl-institut/offgridders/files/4415265/MGT_Tutorial_Mar28.pdf>`_
+`Presentation Offgridders V1 (2019-03-28) <https://github.com/rl-institut/offgridders/blob/documentation/add_literature/docs/files/oesmot_description_hoffmann_rli.pdf>`_
 
 * **Graphical User Interface of Offgridders (limited functionalities)**
 
