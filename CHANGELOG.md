@@ -39,10 +39,11 @@ Here is a template for new release sections
 
 ### Added
 - Literature file to readthedocs (#129)
+- Added some docstrings to functions in `G2a`, copied from `Components.rst` (#125)
 - Replaced "Yes" and "No" with True and False. In H0 and inside the Excel Files (#127)
 
 ### Fixed
--Small content corrections to readthedocs (#119,#123)
+-Small content corrections to readthedocs (#119,#123,#125)
 
 
 ## [Offgridders V4.5] - 2020-08-12
