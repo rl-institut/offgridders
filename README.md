@@ -9,7 +9,7 @@ a connection to a central electricity grid (optional: with blackouts), diesel ge
 PV panels, wind plant and storage. 
 It is possible to allow a defined annual shortage or force a renewable share or system stability constraint. 
 For a visualization of the components and demands to be included, 
-see the [github wiki](https://github.com/smartie2076/simulator_grid-connected_micro_grid/wiki).
+see the [Readthedocs: Definition of an electricity supply system](https://offgridders.readthedocs.io/en/latest/Definition.html).
 
 Examples for electricity systems that can be simulated with oesmot: 
 * Off-grid micro grid, purely fossil-fuelled or hybridized
@@ -28,7 +28,11 @@ If you have questions regarding the tool's execution or it's code pieces, please
 * Run: `pip install -r requirements.txt`
 * Execute: `python Offgridders.py ./inputs/test_input_template.xlsx`
 
-For Details: See [github wiki](https://github.com/smartie2076/simulator_grid-connected_micro_grid/wiki/Installation)
+For Details: See [Readthedocs: Installation](https://offgridders.readthedocs.io/en/latest/Installation.html)
+
+# Literature
+
+For further reading please refer to [Readthedocs: Literature](https://offgridders.readthedocs.io/en/latest/Literature.html)
 
 # Change log
 
