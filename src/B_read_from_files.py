@@ -213,7 +213,8 @@ def identify_true_false(entry):
 
     Returns
     -------
-    entry: boolean
+    entry: boolean or str
+        Value pased either as a string (no change), or in case that entry can be interpreted as a boolean a boolean value
     """
 
     # Translates strings True/False to boolean
