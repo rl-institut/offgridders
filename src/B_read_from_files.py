@@ -304,7 +304,7 @@ def get_parameters_constant(file, sheet_input_constant):
 
 def get_parameters_sensitivity(file, sheet_input_sensitivity):
     """
-    Defines dictionary connected to senstivity analysis
+    Defines dictionary connected to sensitivity analysis
 
     Parameters
     ----------
