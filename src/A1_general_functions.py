@@ -22,12 +22,12 @@ import matplotlib.pyplot as plt
 
 
 def plot_results(pandas_dataframe, title, xaxis, yaxis):
-    """
+    r"""
     Plots the results contained in pandas_dataframe
 
     Parameters
     ----------
-    pandas_dataframe : pandas.DataFrame
+    pandas_dataframe : Pandas DataFrame
                       Dataframe containing the results
     title : str
             title of the figure
@@ -58,13 +58,11 @@ def define_base_capacities(oemof_results):
 
     Parameters
     ----------
-    oemof_results : dict
-                    contains the oemof-results
+    oemof_results : Dictionary containing the oemof-results
 
     Returns
     -------
-    capacities_base : dict
-                    contains the resulting capacities after optimization
+    capacities_base : Dictionary containing the selected
 
     """
     capacities_base = {
@@ -82,25 +80,7 @@ def define_base_capacities(oemof_results):
 
 def store_result_matrix(overall_results, experiment, oemof_results):
     """
-
-    Parameters
-    ----------
-    overall_results: pandas.DataFrame
-                    Dataframe filled with the outcomes of the sensitivity experiment
-
-    experiment: dict
-                Dictionary containing parameters of the sensitivity experiments
-
-    oemof_results: dict
-                Dictionary containing results from oemof-simulation
-
-    Returns
-    -------
-    overall_results: pandas.DataFrame
-                    Dataframe containing the results of the sensitivity experiments
-
-
-
+    Storing results to vector and then result matrix for saving it in csv.
     """
     round_to_comma = 5
     result_series = pd.Series()
