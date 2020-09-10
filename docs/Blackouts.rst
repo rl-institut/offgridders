@@ -56,7 +56,7 @@ Loading previous grid availability timeseries
 
 To enable the recalculation of a set of experiments, all grid availability time series are saved to an csv-file. Enabeling the option _restore_blackouts_if_existant_ will load previously generated series.
 
-**Currently this is performed lazily**, meaning that if the number of column heads of the data frame that reloaded the csv values equals the number of blackout events due to the sensitivity bounds defined in the current simulation, the tool assumes that the loaded grid availabilities fit the simulation. If, however, a blackout experiment can not be red from the data frame through its name (column header), the tool will abort the simulation.
+**Currently this is performed lazily**, meaning that if the number of column heads of the data frame that reloaded the csv values equals the number of blackout events due to the sensitivity bounds defined in the current simulation, the tool assumes that the loaded grid availabilities fit the simulation. If, however, a blackout experiment can not be read from the data frame through its name (column header), the tool will abort the simulation.
 
 => Analyze performance of grid extension WITHOUT local generation/storage, but keep in mind that allowed shortage has to be >0 to allow blackouts
 

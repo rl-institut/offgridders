@@ -29,6 +29,7 @@ Welcome to Offgridders's documentation!
    Oesmot_Home
    Installation_2
    Multicriteria_Analysis
+   Literature
 
 
 
