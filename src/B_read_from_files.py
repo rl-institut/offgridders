@@ -209,6 +209,7 @@ def identify_true_false(entry):
     Parameters
     ----------
     entry: str
+        Value parsed as a string
 
     Returns
     -------
