@@ -76,29 +76,25 @@ def process_excel_file(input_excel_file):
     Returns
     -------
     settings: dict
-            Contains the initialization
-            settings for the simulation
+        Contains the initialization settings for the simulation
 
     parameters_constant_values: dict
-            Contains the constant parameters for the simulation
+        Contains the constant parameters for the simulation
 
     parameters_sensitivity: dict of dicts
-            Adjusts the sensitivity of the experiment
-            1. dict: parameter analyzed in sensitvity exp. (e.g. 'pv_cost_investment)
-            2. dict: Limit values for 'Min','Max','Step'
+        Adjusts the sensitivity of the experiment
+        1. dict: parameter analyzed in sensitvity exp. (e.g. 'pv_cost_investment)
+        2. dict: Limit values for 'Min','Max','Step'
 
     project_site_s: dict
-            Contains details about timeseries values.
-            (e.g. 'Demand DC' for everytimestep)
+        Contains details about timeseries values.
+        (e.g. 'Demand DC' for everytimestep)
 
     case_definitions: dict of dicts
-            Determines the generation/storage parameters for the chosen case.
+        Determines the generation/storage parameters for the chosen case.
 
-
-
-    multicriteria_data
-
-
+    multicriteria_data: dict
+        Contains data for multicriteria analysis depending on the case definition
     """
 
     # Name of tabs
