@@ -82,7 +82,7 @@ def define_base_capacities(oemof_results):
 
 def store_result_matrix(overall_results, experiment, oemof_results):
     """
-    Stores the oemof_results in the overall_results dataframe
+    Storing results to vector and then result matrix for saving it in csv.
 
     Parameters
     ----------
