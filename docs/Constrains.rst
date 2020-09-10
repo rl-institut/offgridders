@@ -100,7 +100,7 @@ To make sure this rule is applied to every timestep, you can either explicitly l
 Sidenotes: Indirectly accessing attributes of Flows of an oemof-model (1)
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-Calling constant attributes of Flows or InvestmentFlows indirectly makes most sense, if a certain class of components/busses is subjected to the constraint and if you can not or do not want to group it's element (?). Possible classes can be:::
+Calling constant attributes of Flows or InvestmentFlows indirectly by accessing the oemof-solph assets can be helpful, if only a certain class of components/busses is subjected to the constraint. Possible classes can be:::
 
 * oemof.solph.components.GenericStorage
 * oemof.solph.network.Transformer
@@ -212,4 +212,3 @@ A constraint can be added to the oemof energysystem after adding all components 
          constraints.stability_criterion(model, limit)
 
          model.solve(solver = solver)
-
