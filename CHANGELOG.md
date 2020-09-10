@@ -33,7 +33,8 @@ Here is a template for new release sections
 ## [Offgridders V4.6] - 2020-08-17
 
 ### Added
--Docstrings to A1 (#131)
+-Docstrings to A1,B (#131,#132)
+
 
 ### Changed
 - Replaced `== False` with `is False` and `== True` with `is True`

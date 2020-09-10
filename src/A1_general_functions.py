@@ -41,6 +41,7 @@ def plot_results(pandas_dataframe, title, xaxis, yaxis):
     -------
     """
 
+
     """ general function for plots"""
     if plt is not None:
         # Plot demand
@@ -67,6 +68,7 @@ def define_base_capacities(oemof_results):
         contains the resulting capacities after optimization
 
     """
+
     capacities_base = {
         CAPACITY_PV_KWP: oemof_results[CAPACITY_PV_KWP],
         CAPACITY_WIND_KW: oemof_results[CAPACITY_WIND_KW],
