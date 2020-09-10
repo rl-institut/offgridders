@@ -194,7 +194,7 @@ from src.constants import (
 
 def get_blackout_experiment_name(blackout_experiment):
     '''
-    Generate names for blackout sensitivity_experiment_s, used in sensitivity.blackoutexperiments and in maintool
+    Generate names for blackout sensitivity_experiment_s, used in sensitivity.blackout experiments and in maintool
 
     Parameters
     ----------
