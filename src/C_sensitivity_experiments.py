@@ -914,12 +914,13 @@ def experiment_name(experiment, sensitivity_array_dict, number_of_project_sites)
 
     Parameters
     ----------
-    experiment:
+    experiment: dict
+        Contains all details of the simulation experiment
 
     sensitivity_array_dict: dict
         Contains element for SE and values for the corresponding sensitivities
 
-    number_of_project_sites:int
+    number_of_project_sites: int
 
     Returns
     --------
@@ -957,6 +958,19 @@ def experiment_name(experiment, sensitivity_array_dict, number_of_project_sites)
 
 
 def constants_project_sites(parameters_constant_values, project_sites):
+    """
+
+    Parameters
+    ----------
+    parameters_constant_values: dict
+        Contains constant parameters
+
+    project_sites: dict
+        Contains information of the projects sites timeseries
+
+    Returns
+    -------
+    """
     # remove all entries that are doubled in parameters_constant_values, settings & project_site_s from parameters_constant_values
     str = 'Attributes "'
     keys = deepcopy(parameters_constant_values).keys()
@@ -978,6 +992,19 @@ def constants_project_sites(parameters_constant_values, project_sites):
 
 
 def project_sites_sensitivity(parameters_sensitivity, project_sites):
+    """
+
+    Parameters
+    ----------
+    parameters_sensitivity: dict
+        Sensitivity range for the chosen element {Elem : Min, Max, Step}
+
+    project_sites: dict
+        Contains information of the projects sites timeseries
+
+    Returns
+    --------
+    """
     # remove all entries that are doubled in sensitivity_bounds/project_site_s from project site
     str = 'Attributes "'
     keys = deepcopy(parameters_sensitivity).keys()
@@ -1001,6 +1028,19 @@ def project_sites_sensitivity(parameters_sensitivity, project_sites):
 
 
 def constants_senstivity(parameters_constant_values, parameters_sensitivity):
+    """
+
+    Parameters
+    ----------
+    parameters_constant_values: dict
+        Contains constant parameters
+
+    parameters_sensitivity: dict
+        Sensitivity range for the chosen element {Elem : Min, Max, Step}
+
+    Returns
+    -------
+    """
     # remove all entries that are doubled in parameters_constant_values, settings & parameters_sensitivity
     str = 'Attributes "'
     keys = deepcopy(parameters_constant_values).keys()
@@ -1018,6 +1058,17 @@ def constants_senstivity(parameters_constant_values, parameters_sensitivity):
 
 
 def test_techno_economical_parameters_complete(experiment):
+    """
+
+    Parameters
+    ----------
+    experiment: dict
+        Contains all details of the simulation experiment
+
+    Returns
+    -------
+
+    """
     parameter_list = {
         BLACKOUT_DURATION: 0,
         BLACKOUT_DURATION_STD_DEVIATION: 0,
@@ -1135,6 +1186,24 @@ def test_techno_economical_parameters_complete(experiment):
 
 
 def overall_results_title(settings, number_of_project_sites, sensitivity_array_dict):
+    """
+
+    Parameters
+    ----------
+    settings: dict
+            General settings for the simulation
+
+    number_of_project_sites: int
+
+    sensitivity_array_dict: dict
+        Contains element for SE and values for the corresponding sensitivities
+
+
+    Returns
+    -------
+    title_overall_results: pandas.DataFrame
+        Contains the values for every analyzed parameter
+    """
     logging.debug("Generating header for results.csv")
     title_overall_results = pd.DataFrame(columns=[CASE, PROJECT_SITE_NAME])
 
