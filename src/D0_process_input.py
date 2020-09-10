@@ -589,6 +589,7 @@ def on_series(experiment, noise_name, series_name):
 
 def randomized(white_noise_percentage, data_subframe):
     """
+    Inserts randomized distribution of noise into the data_subframe
 
     Parameters
     ----------
