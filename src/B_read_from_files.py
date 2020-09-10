@@ -164,8 +164,8 @@ def process_excel_file(input_excel_file):
 
 
 def get_data(file, sheet, header_row, index_column, last_column):
-    '''
-    Gets data from excel template
+    """
+    Gets data from excel file
 
     Parameters
     ----------
@@ -190,7 +190,7 @@ def get_data(file, sheet, header_row, index_column, last_column):
     data: pandas.Dataframe
         Df containing the imported data from excel file
 
-    '''
+    """
     if index_column == None and last_column == None:
         data = pd.read_excel(file, sheet_name=sheet, header=header_row - 1, index_col=0)
         data = data.dropna(axis=1)
@@ -207,7 +207,7 @@ def get_data(file, sheet, header_row, index_column, last_column):
 
 
 def identify_true_false(entry):
-    '''
+    """
     Change True/False strings to booleans
 
     Parameters
@@ -217,7 +217,8 @@ def identify_true_false(entry):
     Returns
     -------
     entry: boolean
-    '''
+    """
+
     # Translates strings True/False to boolean
     if entry == "True":
         entry = True
@@ -230,7 +231,7 @@ def identify_true_false(entry):
 
 
 def get_settings(file, sheet_settings):
-    '''
+    """
     Defines dictionary connected to settings
 
     Parameters
@@ -245,7 +246,8 @@ def get_settings(file, sheet_settings):
     -------
     settings: dict
         Dictionary with setting for the simulation
-    '''
+    """
+
     settings = get_data(file, sheet_settings, 11, "B", "C")
     settings = settings.to_dict(orient="dict")
     settings = settings[SETTING_VALUE]
@@ -256,8 +258,8 @@ def get_settings(file, sheet_settings):
     return settings
 
 def get_parameters_constant(file, sheet_input_constant):
-    '''
-    Defines dictionary connected to parameters
+    """
+    Defines dictionary connected to constant parameters
 
     Parameters
     ----------
@@ -276,7 +278,7 @@ def get_parameters_constant(file, sheet_input_constant):
     parameters_constant_values: dict
         Values for the constant parameters
 
-    '''
+    """
 
     parameters_constant = get_data(file, sheet_input_constant, 6, "A", "C")
     parameters_constant = parameters_constant.to_dict(orient="dict")
@@ -305,7 +307,7 @@ def get_parameters_constant(file, sheet_input_constant):
 
 
 def get_parameters_sensitivity(file, sheet_input_sensitivity):
-    '''
+    """
     Defines dictionary connected to senstivity analysis
 
     Parameters
@@ -321,7 +323,7 @@ def get_parameters_sensitivity(file, sheet_input_sensitivity):
     parameters_sensitivity: dict
         Contains sensitivity constrains (Min, Max, Step)
 
-    '''
+    """
 
     parameters_sensitivity = get_data(file, sheet_input_sensitivity, 10, "A", "D")
     parameters_sensitivity = parameters_sensitivity.to_dict(orient="index")
@@ -329,7 +331,7 @@ def get_parameters_sensitivity(file, sheet_input_sensitivity):
 
 
 def get_project_sites(file, sheet_project_sites):
-    '''
+    """
     Defines dictionary connected to project sites
 
     Parameters
@@ -344,7 +346,7 @@ def get_project_sites(file, sheet_project_sites):
     -------
     project_sites: dict of dicts
         Contains dicts with the reading settings corresponding to each project site
-    '''
+    """
 
     project_sites = get_data(file, sheet_project_sites, 14, None, None)
     project_sites = project_sites.to_dict(orient="index")
@@ -365,8 +367,8 @@ def get_project_sites(file, sheet_project_sites):
 
 
 def get_case_definitions(file, sheet_project_sites):
-    '''
-    Defines dictionary connected to project sites
+    """
+    Defines dictionary connected to project site's case definition
 
     Parameters
     ----------
@@ -383,7 +385,7 @@ def get_case_definitions(file, sheet_project_sites):
         Each dict contains settings for specific case (Diesel, pv-diesel,...)
 
 
-    '''
+    """
 
     case_definitions = get_data(file, sheet_project_sites, 17, None, None)
     # if any(case_definitions.columns.str.contains('unnamed', case=False)):
@@ -426,7 +428,8 @@ def get_case_definitions(file, sheet_project_sites):
 
 
 def get_multicriteria_data(file, sheet_multicriteria_analysis, case_definitions):
-    '''
+    """
+    Defines dictionary connected to multicriteria analysis based on their case definition
 
     Parameters
     ----------
@@ -444,7 +447,7 @@ def get_multicriteria_data(file, sheet_multicriteria_analysis, case_definitions)
     multicriteria_data: dict
         Contains configurations for different simulation parameters
 
-    '''
+    """
     # gets weights of the dimensions
     dimension_weights = pd.read_excel(
         file,
@@ -496,7 +499,8 @@ def get_multicriteria_data(file, sheet_multicriteria_analysis, case_definitions)
 
 
 def column_not_existant(column_item, column_title, path_from):
-    '''
+    """
+    Verifies that the chosen column exists in the Exceln file
 
     Parameters
     ----------
@@ -513,7 +517,8 @@ def column_not_existant(column_item, column_title, path_from):
     -------
     Logging error, if the column is not present
 
-    '''
+    """
+
     logging.error(
         'A column with the header "'
         + column_title
@@ -528,7 +533,7 @@ def column_not_existant(column_item, column_title, path_from):
 
 
 def from_file(project_site, path_from):
-    '''
+    """
     Reads timeseries from files connected to project sites and updates it if needed
 
     Parameters
@@ -542,7 +547,8 @@ def from_file(project_site, path_from):
 
     Returns
     -------
-    '''
+    """
+
     data_set = pd.read_csv(path_from, sep=project_site[SEPARATOR])
 
     list_columns = [
@@ -613,7 +619,7 @@ def from_file(project_site, path_from):
 
 
 def check_output_directory(settings, input_excel_file):
-    '''
+    """
     Checks if output directory allready exist. Otherwise it is created
 
     Parameters
@@ -628,7 +634,8 @@ def check_output_directory(settings, input_excel_file):
     Returns
     -------
 
-    '''
+    """
+
     logging.debug("Checking for folders and files")
     """ Checking for output folder, creating it if nonexistant and deleting files if needed """
     import os
