@@ -666,6 +666,7 @@ def get_universal_parameters(
     settings, parameters_constant_values, parameters_sensitivity, project_site_s
 ):
     """
+    Creates the base case by copying the settings and the constant values
 
     Parameters
     ----------
@@ -688,6 +689,7 @@ def get_universal_parameters(
 
     number_of_project_sites: int
     """
+
     # create base case
     universal_parameters = deepcopy(settings)
     universal_parameters.update(deepcopy(parameters_constant_values))
@@ -701,6 +703,7 @@ def get_universal_parameters(
 
 def get_dict_sensitivies_arrays(parameters_sensitivity, project_sites):
     """
+    Creates a dict containing elements and values for sensitivity experiments
 
     Parameters
     ----------
@@ -740,6 +743,7 @@ def get_dict_sensitivies_arrays(parameters_sensitivity, project_sites):
 
 def get_all_possible_combinations(sensitivity_array_dict, name_entry_dict):
     """
+    Creates all possible sensitivity experiences based on the elements and values in the array
 
     Parameters
     ----------
@@ -783,6 +787,7 @@ def get_combinations_around_base(
     sensitivity_array_dict, universal_parameters, project_site_s
 ):
     """
+    Create sensitivity experiments based on the base case in universal parameters
 
     Parameters
     ----------
@@ -881,6 +886,7 @@ def get_combinations_around_base(
 
 def project_site_experiments(sensitivity_experiment_s, project_sites):
     """
+    Creates dict containing the sensitivity experiments from the project_sites dict
 
     Parameters
     ----------
@@ -915,6 +921,7 @@ def project_site_experiments(sensitivity_experiment_s, project_sites):
 
 def experiment_name(experiment, sensitivity_array_dict, number_of_project_sites):
     """
+    Generates names for all experiments
 
     Parameters
     ----------
@@ -963,6 +970,7 @@ def experiment_name(experiment, sensitivity_array_dict, number_of_project_sites)
 
 def constants_project_sites(parameters_constant_values, project_sites):
     """
+    Remove all entries that are doubled in parameters_constant_values, settings & project_site_s from parameters_constant_values
 
     Parameters
     ----------
@@ -975,7 +983,7 @@ def constants_project_sites(parameters_constant_values, project_sites):
     Returns
     -------
     """
-    # remove all entries that are doubled in parameters_constant_values, settings & project_site_s from parameters_constant_values
+
     str = 'Attributes "'
     keys = deepcopy(parameters_constant_values).keys()
     for key in keys:
@@ -997,6 +1005,7 @@ def constants_project_sites(parameters_constant_values, project_sites):
 
 def project_sites_sensitivity(parameters_sensitivity, project_sites):
     """
+    Remove all entries that are doubled in sensitivity_bounds/project_site_s from project site
 
     Parameters
     ----------
@@ -1009,7 +1018,7 @@ def project_sites_sensitivity(parameters_sensitivity, project_sites):
     Returns
     --------
     """
-    # remove all entries that are doubled in sensitivity_bounds/project_site_s from project site
+
     str = 'Attributes "'
     keys = deepcopy(parameters_sensitivity).keys()
     for key in keys:
@@ -1033,6 +1042,7 @@ def project_sites_sensitivity(parameters_sensitivity, project_sites):
 
 def constants_senstivity(parameters_constant_values, parameters_sensitivity):
     """
+    Remove all entries that are doubled in parameters_constant_values, settings & parameters_sensitivity
 
     Parameters
     ----------
@@ -1045,7 +1055,7 @@ def constants_senstivity(parameters_constant_values, parameters_sensitivity):
     Returns
     -------
     """
-    # remove all entries that are doubled in parameters_constant_values, settings & parameters_sensitivity
+
     str = 'Attributes "'
     keys = deepcopy(parameters_constant_values).keys()
     for key in keys:
@@ -1063,6 +1073,7 @@ def constants_senstivity(parameters_constant_values, parameters_sensitivity):
 
 def test_techno_economical_parameters_complete(experiment):
     """
+    Verifies the validity of the experiment's settings
 
     Parameters
     ----------
@@ -1191,6 +1202,7 @@ def test_techno_economical_parameters_complete(experiment):
 
 def overall_results_title(settings, number_of_project_sites, sensitivity_array_dict):
     """
+    Creates Dataframe containinig all general information about the simulations results
 
     Parameters
     ----------
