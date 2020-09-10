@@ -193,7 +193,7 @@ from src.constants import (
 
 
 def get_blackout_experiment_name(blackout_experiment):
-    '''
+    """
     Generate names for blackout sensitivity_experiment_s, used in sensitivity.blackout experiments and in maintool
 
     Parameters
@@ -206,7 +206,8 @@ def get_blackout_experiment_name(blackout_experiment):
     blackout_experiment_name: str
         Name of the experiment containing its settings
 
-    '''
+    """
+
     blackout_experiment_name = (
         "blackout_dur"
         + "_"
@@ -229,7 +230,7 @@ def get_blackout_experiment_name(blackout_experiment):
 
 # Sensitivy
 def get(settings, parameters_constant_values, parameters_sensitivity, project_sites):
-    '''
+    """
     Get sensitivity_experiment_s for sensitivity analysis
 
     Parameters
@@ -260,7 +261,7 @@ def get(settings, parameters_constant_values, parameters_sensitivity, project_si
     names_sensitivities: list
         Contains parameters to be analyzed in the sensitivity experiment
 
-    '''
+    """
 
 
     if settings[SENSITIVITY_ALL_COMBINATIONS] is True:
@@ -400,7 +401,8 @@ def get(settings, parameters_constant_values, parameters_sensitivity, project_si
 def all_possible(
     settings, parameters_constant_values, parameters_sensitivity, project_site_s
 ):
-    '''
+    """
+    Generates cases for all sensitivity experiments
 
     Parameters
     ----------
@@ -428,7 +430,8 @@ def all_possible(
 
     total_number_of_experiments: int
 
-    '''
+    """
+
     # Deletes constants from parameters_constant_values depending on values defined in sensitivity
     constants_senstivity(parameters_constant_values, parameters_sensitivity)
     # Deletes constants from parameters_constant_values depending on values defined in project sites
@@ -470,7 +473,8 @@ def all_possible(
 def with_base_case(
     settings, parameters_constant_values, parameters_sensitivity, project_site_s
 ):
-    '''
+    """
+    Generates sensitivity experiment around the base case
 
     Parameters
     ----------
@@ -491,14 +495,13 @@ def with_base_case(
     sensitivity_experiment_s: dict
         Settings for different sensitivity experiments
 
-
     number_of_project_sites: int
 
     sensitivity_array_dict: dict
         Contains element for SE and values for the corresponding sensitivities
 
     total_number_of_experiments: int
-    '''
+    """
     constants_project_sites(parameters_constant_values, project_site_s)
 
     universal_parameters, number_of_project_sites = get_universal_parameters(
@@ -526,7 +529,8 @@ def with_base_case(
 
 
 def blackout(sensitivity_array_dict, parameters_constants, settings):
-    '''
+    """
+    Creates blackout experiments with parameters contained in the array
 
     Parameters
     ----------
@@ -546,7 +550,7 @@ def blackout(sensitivity_array_dict, parameters_constants, settings):
         Settings for all blackout experiments
 
     blackout_experiments_count: int
-    '''
+    """
 
     blackout_parameters = deepcopy(sensitivity_array_dict)
     for parameter in sensitivity_array_dict:
@@ -661,7 +665,7 @@ def blackout(sensitivity_array_dict, parameters_constants, settings):
 def get_universal_parameters(
     settings, parameters_constant_values, parameters_sensitivity, project_site_s
 ):
-    '''
+    """
 
     Parameters
     ----------
@@ -683,7 +687,7 @@ def get_universal_parameters(
         Global settings for the simulation
 
     number_of_project_sites: int
-    '''
+    """
     # create base case
     universal_parameters = deepcopy(settings)
     universal_parameters.update(deepcopy(parameters_constant_values))
@@ -696,7 +700,7 @@ def get_universal_parameters(
 
 
 def get_dict_sensitivies_arrays(parameters_sensitivity, project_sites):
-    '''
+    """
 
     Parameters
     ----------
@@ -711,7 +715,7 @@ def get_dict_sensitivies_arrays(parameters_sensitivity, project_sites):
     sensitivity_array_dict: dict
         Contains element for SE and values for the corresponding sensitivities
 
-    '''
+    """
     # fill dictionary with all sensitivity ranges defining the different simulations of the sensitivity analysis
     # ! do not use a key two times, as it will be overwritten by new information
     sensitivity_array_dict = {}
@@ -735,7 +739,7 @@ def get_dict_sensitivies_arrays(parameters_sensitivity, project_sites):
 
 
 def get_all_possible_combinations(sensitivity_array_dict, name_entry_dict):
-    '''
+    """
 
     Parameters
     ----------
@@ -752,7 +756,7 @@ def get_all_possible_combinations(sensitivity_array_dict, name_entry_dict):
 
     total_number_of_experiments: int
 
-    '''
+    """
     # create all possible combinations of sensitive parameters
     all_parameters = {}
     for key in sensitivity_array_dict:
@@ -778,7 +782,7 @@ def get_all_possible_combinations(sensitivity_array_dict, name_entry_dict):
 def get_combinations_around_base(
     sensitivity_array_dict, universal_parameters, project_site_s
 ):
-    '''
+    """
 
     Parameters
     ----------
@@ -797,7 +801,7 @@ def get_combinations_around_base(
         Settings for different sensitivity experiments
 
     total_number_of_experiments: int
-    '''
+    """
 
     experiment_number = 0
     sensitivity_experiment_s = {}
@@ -876,7 +880,7 @@ def get_combinations_around_base(
 
 
 def project_site_experiments(sensitivity_experiment_s, project_sites):
-    '''
+    """
 
     Parameters
     ----------
@@ -892,7 +896,7 @@ def project_site_experiments(sensitivity_experiment_s, project_sites):
         Result of the experiment in diferent sites (?)
 
     number_of_experiments:int
-    '''
+    """
     experiment_s = {}
     number_of_experiments = 0
     for experiment in sensitivity_experiment_s:
@@ -910,7 +914,7 @@ def project_site_experiments(sensitivity_experiment_s, project_sites):
 
 
 def experiment_name(experiment, sensitivity_array_dict, number_of_project_sites):
-    '''
+    """
 
     Parameters
     ----------
@@ -924,7 +928,7 @@ def experiment_name(experiment, sensitivity_array_dict, number_of_project_sites)
 
     Returns
     --------
-    '''
+    """
     # define file postfix to save simulation
     filename = "_s"
     if number_of_project_sites > 1:
