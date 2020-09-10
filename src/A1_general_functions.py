@@ -22,6 +22,25 @@ import matplotlib.pyplot as plt
 
 
 def plot_results(pandas_dataframe, title, xaxis, yaxis):
+    """
+    Plots the results contained in pandas_dataframe
+
+    Parameters
+    ----------
+    pandas_dataframe : pandas.DataFrame
+        Dataframe containing the results
+    title : str
+        title of the figure
+    xaxis : str
+        label for the x axis
+    yaxis : str
+        label for the y axis
+
+
+    Returns
+    -------
+    """
+
     """ general function for plots"""
     if plt is not None:
         # Plot demand
@@ -34,6 +53,20 @@ def plot_results(pandas_dataframe, title, xaxis, yaxis):
 
 
 def define_base_capacities(oemof_results):
+    """
+    Extracts from the oemef_results the base capacities for different elements in the system
+
+    Parameters
+    ----------
+    oemof_results : dict
+        contains the oemof-results
+
+    Returns
+    -------
+    capacities_base : dict
+        contains the resulting capacities after optimization
+
+    """
     capacities_base = {
         CAPACITY_PV_KWP: oemof_results[CAPACITY_PV_KWP],
         CAPACITY_WIND_KW: oemof_results[CAPACITY_WIND_KW],
@@ -50,6 +83,23 @@ def define_base_capacities(oemof_results):
 def store_result_matrix(overall_results, experiment, oemof_results):
     """
     Storing results to vector and then result matrix for saving it in csv.
+
+    Parameters
+    ----------
+    overall_results: pandas.DataFrame
+        Dataframe filled with the outcomes of the sensitivity experiment
+
+    experiment: dict
+        Dictionary containing parameters of the sensitivity experiments
+
+    oemof_results: dict
+        Dictionary containing results from oemof-simulation
+
+    Returns
+    -------
+    overall_results: pandas.DataFrame
+        Dataframe containing the results of the sensitivity experiments
+
     """
     round_to_comma = 5
     result_series = pd.Series()
