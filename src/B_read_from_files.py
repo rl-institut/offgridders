@@ -241,7 +241,7 @@ def get_settings(file, sheet_settings):
     Returns
     -------
     settings: dict
-        Dictionary with setting for the simulation
+        Dictionary with settings for the simulation
     """
 
     settings = get_data(file, sheet_settings, 11, "B", "C")
