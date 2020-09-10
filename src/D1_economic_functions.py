@@ -1,14 +1,46 @@
 import logging
 
-# annuity factor to calculate present value of cash flows
+
 def annuity_factor(project_life, wacc):
+    """
+    Annuity factor to calculate present value of cash flows (?)
+
+    Parameters
+    ----------
+    project_life: int
+        Years of projected lifetime
+
+    wacc: float
+        Discounting Factor
+
+    Returns
+    -------
+    Annuity_factor: float
+
+    """
     # discount_rate was replaced here by wacc
     annuity_factor = 1 / wacc - 1 / (wacc * (1 + wacc) ** project_life)
     return annuity_factor
 
 
-# accounting factor to translate present value to annual cash flows
+
 def crf(project_life, wacc):
+    """
+    Accounting factor to translate present value to annual cash flows
+
+    Parameters
+    ----------
+    project_life: int
+        Years of projects lifetime (?)
+
+    wacc: float
+        Discounting Factor
+
+    Returns
+    -------
+    crf: float
+
+    """
     crf = (wacc * (1 + wacc) ** project_life) / ((1 + wacc) ** project_life - 1)
     return crf
 
@@ -16,6 +48,30 @@ def crf(project_life, wacc):
 def present_value_of_changing_fuel_price(
     fuel_price, project_lifetime, wacc, crf, fuel_price_change_annual
 ):
+    """
+
+    Parameters
+    ----------
+    fuel_price:float
+        Fuel price per liter
+
+    project_lifetime: int
+        Number of projects lifetime years
+
+    wacc: float
+        Discount factor
+
+    crf: float
+
+    fuel_price_change_annual: float
+        Change in annual price
+
+    Returns
+    -------
+    present_value_changing_fuel_price: float
+        Change of fuel price in the future
+
+    """
     if fuel_price_change_annual != 0:
         logging.error(
             "You chose parameter 'fuel_price_change_annual' unequal zero. "
@@ -42,6 +98,26 @@ def present_value_of_changing_fuel_price(
 
 
 def capex_from_investment(investment_t0, lifetime, project_life, wacc, tax):
+    """
+
+    Parameters
+    ----------
+    investment_t0: float
+
+    lifetime:int
+
+    project_life:int
+
+    wacc: float
+        Discount factor
+
+    tax:int
+        Import tax?
+
+    Returns
+    -------
+
+    """
     # [quantity, investment, installation, weight, lifetime, om, first_investment]
     if project_life == lifetime:
         number_of_investments = 1
@@ -75,10 +151,41 @@ def capex_from_investment(investment_t0, lifetime, project_life, wacc, tax):
 
 
 def annuity(present_value, crf):
+    """
+    Calculates the regular payment including interests(?)
+
+    Parameters
+    ----------
+    present_value: float
+        Current price
+
+    crf:float
+
+
+    Returns
+    -------
+    Annuity: float
+
+    """
     annuity = present_value * crf
     return annuity
 
 
 def present_value_from_annuity(annuity, annuity_factor):
+    """
+    Calculates the present value of the proyect from the calculated annuity and its factor
+
+    Parameters
+    ----------
+    annuity: float
+        Sequential payments
+
+    annuity_factor: float
+        ?
+
+    Returns
+    -------
+
+    """
     present_value = annuity * annuity_factor
     return present_value
