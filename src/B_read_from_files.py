@@ -535,11 +535,11 @@ def from_file(project_site, path_from):
     Parameters
     ----------
     project_site: dict
-        Contains information about the projects site
+        Contains information about the project's site
         (including timeseries demand)
 
     path_from: str
-        Path to csv file corresponding to proejcts site
+        Path to csv file corresponding to project's site
 
     Returns
     -------
