@@ -77,6 +77,18 @@ from src.constants import (
 
 
 def update_dict(capacities_oem, specific_case, experiment):
+    """
+
+    Parameters
+    ----------
+    capacities_oem
+    specific_case
+    experiment
+
+    Returns
+    -------
+
+    """
     experiment_case_dict = {}
 
     experiment_case_dict.update(
@@ -265,6 +277,20 @@ def update_dict(capacities_oem, specific_case, experiment):
 def get_base_capacity(
     experiment_case_dict, case_dict_entry, capacities, component_name, batch_size
 ):
+    """
+
+    Parameters
+    ----------
+    experiment_case_dict
+    case_dict_entry
+    capacities
+    component_name
+    batch_size
+
+    Returns
+    -------
+
+    """
     if case_dict_entry == OEM:
         case_dict_capacity = OEM
     elif case_dict_entry == None or case_dict_entry == "None":
@@ -287,7 +313,18 @@ def get_base_capacity(
 
 
 def define_capacity(experiment_case_dict, case_dict_capacity, oemof_name):
+    """
 
+    Parameters
+    ----------
+    experiment_case_dict
+    case_dict_capacity
+    oemof_name
+
+    Returns
+    -------
+
+    """
     if case_dict_capacity == OEM:
         experiment_case_dict.update({oemof_name: False})
     elif case_dict_capacity == None or case_dict_capacity == 0:
