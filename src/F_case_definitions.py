@@ -78,16 +78,23 @@ from src.constants import (
 
 def update_dict(capacities_oem, specific_case, experiment):
     """
+    Creates a dictionary containing all the details for the specific simulation
 
     Parameters
     ----------
-    capacities_oem
-    specific_case
-    experiment
+    capacities_oem: dict
+        Contains the capacities of the system as well as their characteristics
+
+    specific_case: dict
+        Contains details for the case name and definition
+
+    experiment: dict
+        Settings for the experiment
 
     Returns
     -------
-
+    experiment_case_dict: dict
+        Contains detailed information about the experiment's settings
     """
     experiment_case_dict = {}
 
@@ -278,17 +285,29 @@ def get_base_capacity(
     experiment_case_dict, case_dict_entry, capacities, component_name, batch_size
 ):
     """
+    Read or calculate the base capacity by looking at components or previous results
 
     Parameters
     ----------
-    experiment_case_dict
-    case_dict_entry
-    capacities
-    component_name
-    batch_size
+    experiment_case_dict: dict
+        Contains detailed information about the experiment's settings
+
+    case_dict_entry: str or int/float
+        Value for capacities or reference to them
+
+    capacities: dict
+        Contains capacities in the system
+
+    component_name: str
+        Name of the component from which its capacity will be extracted
+
+    batch_size: float
+        (?)
 
     Returns
     -------
+    case_dict_capacity: str or int/float
+        Base capacity of the simulation
 
     """
     if case_dict_entry == OEM:
@@ -317,13 +336,17 @@ def define_capacity(experiment_case_dict, case_dict_capacity, oemof_name):
 
     Parameters
     ----------
-    experiment_case_dict
-    case_dict_capacity
-    oemof_name
+    experiment_case_dict: dict
+        Contains detailed information about the experiment's settings
+
+    case_dict_capacity: str or int/float
+        Base capacity of the simulation
+
+    oemof_name: str
+        Name of the oemof simulation
 
     Returns
     -------
-
     """
     if case_dict_capacity == OEM:
         experiment_case_dict.update({oemof_name: False})
