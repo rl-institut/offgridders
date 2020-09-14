@@ -67,14 +67,28 @@ from src.constants import (
 
 def run(experiment, case_dict):
     """
-        Funktion to generate oemof-lp file, simulate and extract simulation results from oemof-results,
-        including extraction of time series, accumulated values, optimized capacities.
-        Simulation results are extracted based on their case definitions in case_dict,
-        thus the only part where changes are neccesary to modify cases is not here but
-        in the case definitions directly (oemof_cases). If the computation of the extracted
-        results itself should change (eg. in the future allowing a finer timestep resulution),
-        this is the right place.
-        """
+    Function to generate oemof-lp file, simulate and extract simulation results from oemof-results,
+    including extraction of time series, accumulated values, optimized capacities.
+    Simulation results are extracted based on their case definitions in case_dict,
+    thus the only part where changes are neccesary to modify cases is not here but
+    in the case definitions directly (oemof_cases). If the computation of the extracted
+    results itself should change (eg. in the future allowing a finer timestep resulution),
+    this is the right place.
+
+    Parameters
+    ----------
+    experiment: dict
+        Contains general settings for the experiment
+
+    case_dict: dict
+        Contains settings for capacities and storage
+
+    Returns
+    -------
+    oemof_results: dict
+        Contains the results for the optimization experiment
+    """
+
     start = timeit.default_timer()
 
     file_name = case_dict[FILENAME]
