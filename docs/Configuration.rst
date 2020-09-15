@@ -3,7 +3,7 @@ Configuration
 ==========================================
 **to be updated, mostly accurate**
 
-The configuration file enables the user to adapt the simulation to ones need, as listed below. The input file should, however, not be overlooked, as it summarizes all simulation input data and especially enables a sensitivity analysis of a number of parameters. This file and the sensitivity parameters will be discussed in separate Wiki entries each.
+The configuration file enables the user to adapt the simulation to ones need, as listed below. The input file should, however, not be overlooked, as it summarizes all simulation input data and especially enables a sensitivity analysis of a number of parameters. The Input file as well as the sensitivity parameters will be discussed in separate entry.
 
 Coding mode
 -----------
@@ -13,11 +13,11 @@ To simplify the simulation during coding (speeding up the calculations), **codin
 
 Restoring results
 -----------------
-It is possible to continue a sensitivity analysis where it was interrupted by checking::
+It is possible to resume a sensitivity analysis at the point of interruption by checking::
 
         restore_oemof_if_existant   = True
 
-Otherwise, all previous results will be deleted and should be manually moved to another folder, if they should be stored long-term!
+Otherwise, all previous results will be deleted and should be manually moved to another folder, if they are to be stored long-term!
 
 For this setting to work, **setting_save_oemofresults** also has to be set to True.
 
@@ -25,7 +25,7 @@ Please keep in mind that the oemof-files are saved with the name of their case a
 
 Simulated cases
 ---------------
-* Base case OEM is by default performed without minimal loading of generators, enabling sizing of generators. If a minimal loading has to be taken into account, then the setting  **base_case_with_min_loading** fixes the generator capacity to the demand peak value (without security margin).::
+* Base case OEM is by default performed without minimal loading of generators, enabling their sizing. If a minimal loading has to be taken into account, then setting  **base_case_with_min_loading** fixes the generator capacity to the demand peak value (without security margin).::
 
             base_case_with_min_loading = True
 
@@ -75,12 +75,12 @@ If no input files are used for demand and weather, the calculated demand and irr
 
 Display of results and graphs
 ______________________________
-Oemof can generate and save .lp files and .oemof files with the simulation results. These can be saved to the output folder, **setting_save_lp_file**, **setting_save_oemofresults** if are set to True. Especially with long computing times, the oemof results should be saved.::
+Oemof can generate and save .lp files and .oemof files with the simulation results. These can be saved to the output folder,if **setting_save_lp_file**, **setting_save_oemofresults** are set to True. Especially with long computing times, the oemof results should be saved.::
 
         setting_save_lp_file        = False
         setting_save_oemofresults   = True
 
-During simulation, a number of graphs can be generated (**display_graphs_solar**, **display_graphs_demand**, **display_graphs_simulation**, display interrupts computation) and simulation results printed in the command line (**print_simulation_meta**, **print_simulation_main**, **print_simulation_invest**). If the performed simulation includes a sensitivity analysis, it is advisable to disable all these functions. The details of the simulated case can be displayed with **print_simulation_experiment**.::
+During simulation, a number of graphs can be generated (**display_graphs_solar**, **display_graphs_demand**, **display_graphs_simulation**, **display interrupts computation**) and simulation results printed in the command line (**print_simulation_meta**, **print_simulation_main**, **print_simulation_invest**). If the performed simulation includes a sensitivity analysis, it is advisable to disable all these functions. The details of the simulated case can be displayed with **print_simulation_experiment**.::
 
         display_graphs_solar        = False
         display_graphs_demand       = False
@@ -106,9 +106,8 @@ In general, the solver of oemof is set to cbc (**solver**). The solver output (*
 
 To increase computation speed (especially for nonconvex flows in the dispatch OEM), an additional solver option **cmdline_option** is added  with value _cmdline_option_value_. It influences, when the solver accepts the found solution as optimal. Possible options:
 
-* ratioGap: ?
-* allowedGap: ?
-* mipgap: ?
+* ratioGap
+* allowedGap
 
 Comand line options::
 

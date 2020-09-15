@@ -264,7 +264,7 @@ def format_punctuations(multicriteria_data):
             GENSET: assessment[DIESEL],
             MAINGRID: assessment[MAINGRID],
         }
-        if assessment[PLOT] == "Yes":
+        if assessment[PLOT] == True:
             plot_criteria.append(assessment[ABREV])
 
     parameters = {}

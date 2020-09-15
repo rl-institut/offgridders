@@ -65,9 +65,37 @@ from src.constants import (
 
 
 def process_excel_file(input_excel_file):
-    #######################################
-    # Reads all input from excel template #
-    #######################################
+    """
+    Reads all input from excel template
+
+    Parameters
+    ----------
+    input_excel_file : str
+            Path to input_excel_file
+
+    Returns
+    -------
+    settings: dict
+        Contains the initialization settings for the simulation
+
+    parameters_constant_values: dict
+        Contains the constant parameters for the simulation
+
+    parameters_sensitivity: dict of dicts
+        Adjusts the sensitivity of the experiment
+        1. dict: parameter analyzed in sensitvity exp. (e.g. 'pv_cost_investment)
+        2. dict: Limit values for 'Min','Max','Step'
+
+    project_site_s: dict
+        Contains details about timeseries values.
+        (e.g. 'Demand DC' for everytimestep)
+
+    case_definitions: dict of dicts
+        Determines the generation/storage parameters for the chosen case.
+
+    multicriteria_data: dict
+        Contains data for multicriteria analysis depending on the case definition
+    """
 
     # Name of tabs
     sheet_settings = SETTINGS
@@ -132,7 +160,33 @@ def process_excel_file(input_excel_file):
 
 
 def get_data(file, sheet, header_row, index_column, last_column):
-    # Gets data from excel template
+    """
+    Gets data from excel file
+
+    Parameters
+    ----------
+    file: str
+        Path to excel file
+
+    sheet: str
+        Sheet in excel file
+
+    header_row: int
+        Row to be picked
+
+    index_column: str
+        Name of the 1st column in the selection
+
+    last_column: str
+        Name of the last column in the selection
+
+
+    Returns
+    -------
+    data: pandas.Dataframe
+        Df containing the imported data from excel file
+
+    """
     if index_column == None and last_column == None:
         data = pd.read_excel(file, sheet_name=sheet, header=header_row - 1, index_col=0)
         data = data.dropna(axis=1)
@@ -149,6 +203,20 @@ def get_data(file, sheet, header_row, index_column, last_column):
 
 
 def identify_true_false(entry):
+    """
+    Change True/False strings to booleans
+
+    Parameters
+    ----------
+    entry: str
+        Value parsed as a string
+
+    Returns
+    -------
+    entry: boolean or str
+        Value pased either as a string (no change), or in case that entry can be interpreted as a boolean a boolean value
+    """
+
     # Translates strings True/False to boolean
     if entry == "True":
         entry = True
@@ -161,7 +229,23 @@ def identify_true_false(entry):
 
 
 def get_settings(file, sheet_settings):
-    # defines dictionary connected to settings
+    """
+    Defines dictionary connected to settings
+
+    Parameters
+    ----------
+    file: str
+        Path to Excel file
+
+    sheet_settings: str
+        Sheet where settings are stored
+
+    Returns
+    -------
+    settings: dict
+        Dictionary with settings for the simulation
+    """
+
     settings = get_data(file, sheet_settings, 11, "B", "C")
     settings = settings.to_dict(orient="dict")
     settings = settings[SETTING_VALUE]
@@ -171,9 +255,29 @@ def get_settings(file, sheet_settings):
         settings[key] = identify_true_false(settings[key])
     return settings
 
-
 def get_parameters_constant(file, sheet_input_constant):
-    # defines dictionary connected to parameters
+    """
+    Defines dictionary connected to constant parameters
+
+    Parameters
+    ----------
+    file: str
+        Path to Excel file
+
+    sheet_input_constant:
+        Sheet containing input constants
+
+
+    Returns
+    -------
+    parameters_constant_units: dict
+        Units of measure for the constant parameters
+
+    parameters_constant_values: dict
+        Values for the constant parameters
+
+    """
+
     parameters_constant = get_data(file, sheet_input_constant, 6, "A", "C")
     parameters_constant = parameters_constant.to_dict(orient="dict")
     parameters_constant_units = parameters_constant[UNIT]
@@ -201,14 +305,47 @@ def get_parameters_constant(file, sheet_input_constant):
 
 
 def get_parameters_sensitivity(file, sheet_input_sensitivity):
-    # defines dictionary connected to senstivity analysis
+    """
+    Defines dictionary connected to sensitivity analysis
+
+    Parameters
+    ----------
+    file: str
+        Path to Excel file
+
+    sheet_input_sensitivity: str
+        Sheet with input sensitivity values
+
+    Returns
+    -------
+    parameters_sensitivity: dict
+        Contains sensitivity constrains (Min, Max, Step)
+
+    """
+
     parameters_sensitivity = get_data(file, sheet_input_sensitivity, 10, "A", "D")
     parameters_sensitivity = parameters_sensitivity.to_dict(orient="index")
     return parameters_sensitivity
 
 
 def get_project_sites(file, sheet_project_sites):
-    # defines dictionary connected to project sites
+    """
+    Defines dictionary connected to project sites
+
+    Parameters
+    ----------
+    file: str
+        Path to Excel file
+
+    sheet_project_sites: str
+        Sheet containing the projects' sites
+
+    Returns
+    -------
+    project_sites: dict of dicts
+        Contains dicts with the reading settings corresponding to each project site
+    """
+
     project_sites = get_data(file, sheet_project_sites, 14, None, None)
     project_sites = project_sites.to_dict(orient="index")
 
@@ -228,7 +365,26 @@ def get_project_sites(file, sheet_project_sites):
 
 
 def get_case_definitions(file, sheet_project_sites):
-    # defines dictionary connected to project sites
+    """
+    Defines dictionary connected to project site's case definition
+
+    Parameters
+    ----------
+    file: str
+        Path to Excel file
+
+    sheet_project_sites: str
+        Sheet containing the project sites
+
+
+    Returns
+    -------
+    case_definitions: dict of dicts
+        Each dict contains settings for specific case (Diesel, pv-diesel,...)
+
+
+    """
+
     case_definitions = get_data(file, sheet_project_sites, 17, None, None)
     # if any(case_definitions.columns.str.contains('unnamed', case=False)):
     #    logging.warning('Input template: Tab CASE_DEFINITIONS might have unnamed columns, which will be dropped. Check if all your cases are simulated.')
@@ -270,6 +426,26 @@ def get_case_definitions(file, sheet_project_sites):
 
 
 def get_multicriteria_data(file, sheet_multicriteria_analysis, case_definitions):
+    """
+    Defines dictionary connected to multicriteria analysis based on their case definition
+
+    Parameters
+    ----------
+    file: str
+        Path to Excel file
+
+    sheet_multicriteria_analysis: str
+        Sheet containing MCA
+
+    case_definitions: dict
+        dict containining settings for specific case (Diesel, pv-diesel,...)
+
+    Returns
+    -------
+    multicriteria_data: dict
+        Contains configurations for different simulation parameters
+
+    """
     # gets weights of the dimensions
     dimension_weights = pd.read_excel(
         file,
@@ -321,6 +497,26 @@ def get_multicriteria_data(file, sheet_multicriteria_analysis, case_definitions)
 
 
 def column_not_existant(column_item, column_title, path_from):
+    """
+    Verifies that the chosen column exists in the Exceln file
+
+    Parameters
+    ----------
+    column_item: str
+        Item in the column
+
+    column_title: str
+        Title of the column
+
+    path_from: str
+        Path to file
+
+    Returns
+    -------
+    Logging error, if the column is not present
+
+    """
+
     logging.error(
         'A column with the header "'
         + column_title
@@ -335,9 +531,22 @@ def column_not_existant(column_item, column_title, path_from):
 
 
 def from_file(project_site, path_from):
-    ##########################################################
-    # Reads timeseries from files connected to project sites #
-    ##########################################################
+    """
+    Reads timeseries from files connected to project sites and updates it if needed
+
+    Parameters
+    ----------
+    project_site: dict
+        Contains information about the project's site
+        (including timeseries demand)
+
+    path_from: str
+        Path to csv file corresponding to project's site
+
+    Returns
+    -------
+    """
+
     data_set = pd.read_csv(path_from, sep=project_site[SEPARATOR])
 
     list_columns = [
@@ -408,6 +617,22 @@ def from_file(project_site, path_from):
 
 
 def check_output_directory(settings, input_excel_file):
+    """
+    Checks if output directory allready exist. Otherwise it is created
+
+    Parameters
+    ----------
+    settings: dict
+        Contains settings for the simulation
+
+    input_excel_file: str
+        path to excel file
+
+
+    Returns
+    -------
+
+    """
 
     logging.debug("Checking for folders and files")
     """ Checking for output folder, creating it if nonexistant and deleting files if needed """

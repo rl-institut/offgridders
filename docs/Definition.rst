@@ -8,12 +8,12 @@ General tool structure
 
 The electricity supply system can be defined de-/activating a number of available system components in the input template excel file. The technical specifications used can be defined in this input file and  can also undergo a sensitivity analysis. The input data to be provided includes:
 
-* Demand profiles for multiple project  project site
+* Demand profiles for multiple project sites
 * Weather data (irradiation, wind speed, temperature) of a project site
-* Technical specifications of fossil-fuelled generator, PV, wind and storage
-* Costs of fossil-fuelled generator, PV and storage
+* Technical specifications of fossil-fuelled generator, PV, wind and storage unit
+* Costs for the fossil-fuelled generator, PV, wind and storage unit
 
-The input data is then pre-processed, e.g. the specific CAPEX and OPEX of each asset are calculated. If necessary, a randomized blackout profile is generated. From this, the tool defines the electricity system model using oemof and optimizes it for each of the sensitivity experiments. The results are evaluated, calculating main performance indicators (supply reliability, Levelized Costs of Electricity (LCOE), renewable share)) and generating automated graphs of the electricity flows within the system.
+The input data is then pre-processed, e.g. the specific CAPEX and OPEX of each asset is calculated. If necessary, a randomized blackout profile is generated. From this, the tool defines the electricity system model using oemof and optimizes it for each of the sensitivity experiments. The results are evaluated, calculating main performance indicators (supply reliability, Levelized Costs of Electricity (LCOE), renewable share)) and generating automated graphs of the electricity flows within the system.
 
 The simulation tool outline is provided with the graph below:
 
@@ -24,7 +24,7 @@ The simulation tool outline is provided with the graph below:
     :alt: alternate text
     :figclass: align-center
 
-    Flowchart of the micro grid simulation tool "Offgridders"
+    Flowchart of the micro grid simulation tool `Offgridders`
 
 Electricity supply system components
 ------------------------------------
@@ -64,7 +64,7 @@ of an energy system with or without connection to a central grid. It is not poss
 define the used component capacities, apart from the diesel generator and the PCC, both of
 which can be sized based on a ratio of peak demand.
 
-In th Electricity supply system, almost all assets can be de-activated. The assest can be seeing in following figure:
+In the Electricity supply system, almost all assets can be de-activated. The assest can be seeing in following figure:
 
 .. figure:: ../pictures/oemof_diagram_ac_dc_bus.jpg
     :width: 5000px

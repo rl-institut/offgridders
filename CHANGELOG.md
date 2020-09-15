@@ -24,13 +24,31 @@ Here is a template for new release sections
 ### Added
 -
 ### Changed
-- Replaced `== False` with `is False` and `== True` with `is True`
-- Facilitated upgrade to unbundled oemof version: `oemof.solph == 0.4.0`, `oemof.network==0.4.0rc0`, `oemof.tools==0.4.0` and update `requirements.txt`
-
+-
 ### Removed
 -
 ### Fixed
 -
+
+## [Offgridders V4.6] - 2020-08-17
+
+### Added
+-Docstrings to A1,B (#131,#132)
+
+
+### Changed
+- Replaced `== False` with `is False` and `== True` with `is True`
+- Facilitated upgrade to unbundled oemof version: `oemof.solph == 0.4.0`, `oemof.network==0.4.0rc0`, `oemof.tools==0.4.0` and update `requirements.txt`
+- Update README (#129)
+
+### Added
+- Literature file to readthedocs (#129)
+- Added some docstrings to functions in `G2a`, copied from `Components.rst` (#125)
+- Replaced "Yes" and "No" with True and False. In H0 and inside the Excel Files (#127)
+
+### Fixed
+-Small content corrections to readthedocs (#119,#123,#125)
+
 
 ## [Offgridders V4.5] - 2020-08-12
 
