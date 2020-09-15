@@ -34,28 +34,30 @@ can be found below. The components and their technological parameters shall be
 presented in the proceeding paragraphs.
 
 Connected to the DC-bus are the following components:
-* PV plant, modelled based on a feed-in time series in kWh/kW p,inst . The installed
-capacity in kW p can be optimized. Efficiency and system losses are not parameters of
-the simulation, but rather have to be included in the provided time series.
-* Battery storage, modeled with a constant throughput-efficiency, maximum charge-
-and discharge per time step defined through attributed C-rates, as well as minimal and maximal SOC.
-The installed capacity (kWh) and power output (kW) can be optimized.
-* DC demand as a time series in kWh.
-* Excess and shortage sink required due to oemof-terminology.
+
+*   PV plant, modelled based on a feed-in time series in kWh/kW p,inst . The installed
+    capacity in kW p can be optimized. Efficiency and system losses are not parameters of
+    the simulation, but rather have to be included in the provided time series.
+*   Battery storage, modeled with a constant throughput-efficiency, maximum charge-
+    and discharge per time step defined through attributed C-rates, as well as minimal and maximal SOC.
+    The installed capacity (kWh) and power output (kW) can be optimized.
+*   DC demand as a time series in kWh.
+*   Excess and shortage sink required due to oemof-terminology.
 
 Through a rectifier and inverter with defined conversion efficiency, the DC- bus is connected
 to an AC-bus with following components:
-* Wind plant, modelled based on a feed-in time series in kWh/kW inst . The installed
-capacity kW can be optimized.
-* Generator, modelled with a constant efficiency and with or without minimal loading.
-The generator type is determined by the combustion value of the used fuel. The installed
-capacity in kW can be optimized. The capacity of a generator with minimal loading
-can not be optimized. Fuel usage is detected trough a fuel source.
-* Point of Common Coupling, enabling consumption from and/or feed-in to central
-grid. The installed capacity in kW can be optimized. Costs can either be attributed to
-the grid operator or the utility grid operator. The Point of Common Coupling (PCC)
-can allow an electricity flow only when the grid is available. This is defined through a
-Boolean time series, in which 1 indicates grid availability and 0 an outage.
+
+*   Wind plant, modelled based on a feed-in time series in kWh/kW inst . The installed
+    capacity kW can be optimized.
+*   Generator, modelled with a constant efficiency and with or without minimal loading.
+    The generator type is determined by the combustion value of the used fuel. The installed
+    capacity in kW can be optimized. The capacity of a generator with minimal loading
+    can not be optimized. Fuel usage is detected trough a fuel source.
+*   Point of Common Coupling, enabling consumption from and/or feed-in to central
+    grid. The installed capacity in kW can be optimized. Costs can either be attributed to
+    the grid operator or the utility grid operator. The Point of Common Coupling (PCC)
+    can allow an electricity flow only when the grid is available. This is defined through a
+    Boolean time series, in which 1 indicates grid availability and 0 an outage.
 * AC demand as a time series in kWh.
 * Excess and shortage sink required due to oemof-terminology.
 
