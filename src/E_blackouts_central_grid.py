@@ -410,7 +410,7 @@ def get_time_of_blackout_events(blackout_events_per_timeframe, date_time_index):
 
 def get_blackout_event_durations(experiment, timestep, number_of_blackouts):
     """
-    Caluclate the lenght of every blackout
+    Calculate the lenght of every blackout
 
     Parameters
     ----------
