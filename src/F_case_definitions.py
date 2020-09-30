@@ -333,7 +333,9 @@ def get_base_capacity(
 
 def define_capacity(experiment_case_dict, case_dict_capacity, oemof_name):
     """
+Updates the simulation information of a scenario with the capacities that each asset should already have pre-installed
 
+Depends on whether assets in the scenario are to be optimized or if the capacity is determined based on a previous, but different scenario.
     Parameters
     ----------
     experiment_case_dict: dict
