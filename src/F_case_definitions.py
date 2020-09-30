@@ -302,7 +302,7 @@ def get_base_capacity(
         Name of the component from which its capacity will be extracted
 
     batch_size: float
-        (?)
+        Undividable units that an asset can be installed as
 
     Returns
     -------
