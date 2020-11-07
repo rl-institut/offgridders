@@ -40,3 +40,4 @@ To set-up Offgridders, follow the steps below:
 Troubleshooting
 ###############
 
+If you experience troubles with the compatibility of installed packages, try installing the requirements `requirements_dev.txt`. They may specify the package versions that colloborate well together.
