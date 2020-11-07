@@ -72,7 +72,7 @@ def build(experiment, case_dict):
     micro_grid_system: oemof.solph.network.EnergySystem
         Energy system for oemof optimization
 
-    model:oemof.solph.models.Model
+    model: oemof.solph.models.Model
         Model used for the oemof optimization
 
 
@@ -522,7 +522,7 @@ def simulate(experiment, micro_grid_system, model, file_name):
     micro_grid_system: oemof.solph.network.EnergySystem
         Energy system for oemof optimization
 
-    model:oemof.solph.models.Model
+    model: oemof.solph.models.Model
         Model used for the oemof optimization
 
     file_name: str
@@ -561,7 +561,8 @@ def simulate(experiment, micro_grid_system, model, file_name):
 
 def store_results(micro_grid_system, file_name, output_folder):
     """
-    Stores the results :)
+    Stores the results of the oemof simulation to an `.oemof` file. 
+    Output folder and name are defined by the user in the input sheet.
 
     Parameters
     ----------
@@ -590,7 +591,7 @@ def store_results(micro_grid_system, file_name, output_folder):
 
 def load_oemof_results(output_folder, file_name):
     """
-    Loads an oemof model
+    Loads simulation results stored in an `.oemof` file.
 
     Parameters
     ----------

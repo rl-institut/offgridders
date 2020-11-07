@@ -33,7 +33,7 @@ Here is a template for new release sections
 ## [Offgridders V4.6] - 2020-08-17
 
 ### Added
--Docstrings to A1,B,C,D,EF,G0-2 (#131-#136)
+-Docstrings to A1,B,C,D,EF,G0-2 (#131, #132, #133, #134, #135, #136)
 
 
 ### Changed
