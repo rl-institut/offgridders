@@ -35,8 +35,8 @@ presented in the proceeding paragraphs.
 
 Connected to the DC-bus are the following components:
 
-*   PV plant, modelled based on a feed-in time series in kWh/kW p,inst . The installed
-    capacity in kW p can be optimized. Efficiency and system losses are not parameters of
+*   PV plant, modelled based on a feed-in time series in kWh/kWp installed. The installed
+    capacity in kWp can be optimized. Efficiency and system losses are not parameters of
     the simulation, but rather have to be included in the provided time series.
 *   Battery storage, modeled with a constant throughput-efficiency, maximum charge-
     and discharge per time step defined through attributed C-rates, as well as minimal and maximal SOC.
@@ -47,7 +47,7 @@ Connected to the DC-bus are the following components:
 Through a rectifier and inverter with defined conversion efficiency, the DC- bus is connected
 to an AC-bus with following components:
 
-*   Wind plant, modelled based on a feed-in time series in kWh/kW inst . The installed
+*   Wind plant, modelled based on a feed-in time series in kWh/kW installed. The installed
     capacity kW can be optimized.
 *   Generator, modelled with a constant efficiency and with or without minimal loading.
     The generator type is determined by the combustion value of the used fuel. The installed
