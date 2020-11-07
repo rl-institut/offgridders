@@ -73,6 +73,23 @@ from src.constants import (
 
 
 def list_of_cases(case_definitions):
+    """
+    Creates a list for the simulation order of different cases. 
+    
+    Cases that provide the base capacities for other cases should be simulated first.
+
+    Parameters
+    ----------
+    case_definitions: dict of dicts
+        Determines the generation/storage parameters for the chosen case
+
+    Returns
+    -------
+    case_list:list
+        Simulation order of different scenarios
+
+    """
+
     case_list = []
     str_cases_simulated = ""
     # Certain ORDER of simulation: First base capacities are optimized
@@ -106,6 +123,20 @@ def list_of_cases(case_definitions):
 
 
 def economic_values(experiment):
+    """
+    Introduces the economic values into the experiment dictionary
+
+    Parameters
+    ----------
+    experiment: dict
+        Dictionary containing parameters for sensitivity experiments
+
+    Returns
+    -------
+    experiment: dict
+
+    """
+
     """Pre-processing of input data (calculation of economic values)"""
     experiment.update(
         {
@@ -199,7 +230,23 @@ def economic_values(experiment):
 
 
 def add_timeseries(experiment_s):
-    # Update experiments and add longest date_time_index to settings
+    """
+    Update experiments and add longest date_time_index to settings
+
+    Parameters
+    ----------
+    experiment_s: dict
+        Contains different experiments
+
+    Returns
+    -------
+    max_date_time_index: pandas.DatetimeIndex
+        Datetime from start until end of the experiment
+
+    max_evaluated_days: int
+        Number of days evaluated in the experiment
+    """
+
     entries = 0
     longest = ""
 
@@ -494,6 +541,20 @@ def add_timeseries(experiment_s):
 
 
 def apply_noise(experiment_s):
+    """
+    Adds white noise to demands and generations to the timeseries of each experiment.
+    
+    #ToDo: Changes are necessary to this function. It may either be not applied currently, or it should be completely deleted.
+
+    Parameters
+    ----------
+    experiment_s: dict
+        Contains different experiments
+
+    Returns
+    -------
+
+    """
     for experiment in experiment_s:
         on_series(experiment_s[experiment], WHITE_NOISE_DEMAND, DEMAND_AC)
         on_series(experiment_s[experiment], WHITE_NOISE_DEMAND, DEMAND_DC)
@@ -503,6 +564,23 @@ def apply_noise(experiment_s):
 
 
 def on_series(experiment, noise_name, series_name):
+    """
+    Applies an specific type of noise to an experiment
+
+    Parameters
+    ----------
+    experiment: dict
+        Dictionary containing parameters for sensitivity experiments
+
+    noise_name: str
+        Name of the noise to be applied
+
+    series_name:
+        Name of the timeseries to be infused with noise
+
+    Returns
+    -------
+    """
     if experiment[noise_name] != 0:
         series_values = pd.Series(
             randomized(experiment[noise_name], experiment[series_name]),
@@ -514,6 +592,23 @@ def on_series(experiment, noise_name, series_name):
 
 
 def randomized(white_noise_percentage, data_subframe):
+    """
+    Inserts randomized distribution of noise into the data_subframe
+
+    Parameters
+    ----------
+    white_noise_percentage: int
+        Percentage of white noise to be introduced. Width of the distribution
+
+    data_subframe: pandas.Dataframe
+        Dataframe with values to be modified through white noise
+
+    Returns
+    -------
+    data_subframe: pandas.Dataframe
+        Modified version of the subdataframe with white noise included
+
+    """
     import numpy as np
 
     noise = np.random.normal(0, white_noise_percentage, len(data_subframe))
