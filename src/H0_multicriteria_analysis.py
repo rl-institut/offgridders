@@ -62,9 +62,12 @@ def main_analysis(overallresults, multicriteria_data, settings):
     ) = format_punctuations(multicriteria_data)
 
     # the cases chosen to analyse in the multicriteria analysis are selected
-    (all_results, cases, projects_name, sensibility,) = presentation(
-        overallresults, parameters
-    )
+    (
+        all_results,
+        cases,
+        projects_name,
+        sensibility,
+    ) = presentation(overallresults, parameters)
 
     # the multicriteria analysis with sensibility parameters can only be realised if all combinations have been calculated
     if settings[SENSITIVITY_ALL_COMBINATIONS] or not sensibility:
@@ -81,8 +84,10 @@ def main_analysis(overallresults, multicriteria_data, settings):
 
             # first, a global ranking, for all solutions, is calculated
             # evaluations are normalized
-            global_normalized_evaluations = multicriteria_functions.normalize_evaluations(
-                global_evaluations, weights_criteria, GLOBAL
+            global_normalized_evaluations = (
+                multicriteria_functions.normalize_evaluations(
+                    global_evaluations, weights_criteria, GLOBAL
+                )
             )
             all_projects_MCA_data[NORMALIZED_EVALUATIONS][
                 project
@@ -104,8 +109,10 @@ def main_analysis(overallresults, multicriteria_data, settings):
                 # second, each local_evaluations are normalized and a ranking is calculated
                 local_Ls = []
                 for evaluation in local_evaluations:
-                    local_normalized_evaluation = multicriteria_functions.normalize_evaluations(
-                        evaluation, weights_criteria, LOCAL
+                    local_normalized_evaluation = (
+                        multicriteria_functions.normalize_evaluations(
+                            evaluation, weights_criteria, LOCAL
+                        )
                     )
                     local_Ls_each = multicriteria_functions.rank(
                         local_normalized_evaluation,
@@ -264,7 +271,7 @@ def format_punctuations(multicriteria_data):
             GENSET: assessment[DIESEL],
             MAINGRID: assessment[MAINGRID],
         }
-        if assessment[PLOT] == "Yes":
+        if assessment[PLOT] == True:
             plot_criteria.append(assessment[ABREV])
 
     parameters = {}

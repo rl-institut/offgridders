@@ -10,16 +10,19 @@ Input files
 -----------
 Initial considerations
 _______________________
-The MCA can be activated or deactivated in the settings tab: perform_multicriteria_analysis = True. Also, to display the results correctly, sensivity_all_combinations must be also True
+The MCA can be activated or deactivated in the settings tab: perform_multicriteria_analysis = True. Also, to display the results correctly, sensivity_all_combinations must be also True.
 
 Input parameters
 __________________
 The MCA needs:
+
 * Weights of the dimensions and criteria. The user might want to give a different importance rating (weight) to each criterion and dimension, considering the particular features and context of the project. When filling the weights, two rules must be considered: the sum of the weights of all dimensions must equal 1, and the sum of the weights of all criteria inside each dimension must equal 1.
+
 * Punctuations on the different technologies of electricity generation (PV, wind, diesel, and the national grid). Some of the criteria are closely related to the performance of each technology. For example, diesel generators can be very well accepted by the end users, but might be against of the national governments plans.
+
 The user of the tool can use the default values given in the test_input_template.
 
-Moreover, the MCA allows to choose which parameters included in the sensitivity analysis are also included and displayed in the MCA. Finally, it can be useful to see plotted the evaluations of all electrification solutions regarding one specific criterion.
+Moreover, the MCA allows one to choose which parameters included in the sensitivity analysis are also included and displayed in the MCA. Finally, it can be useful to display a plot of evaluations of all electrification solutions regarding one specific criterion.
 
 
 Code structure

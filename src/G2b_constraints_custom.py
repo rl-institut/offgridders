@@ -166,7 +166,7 @@ def backup(
 
 def backup_test(case_dict, oemof_results, experiment, e_flows_df):
     """
-        Testing simulation results for adherance to above defined stability criterion
+    Testing simulation results for adherance to above defined stability criterion
     """
     if case_dict[STABILITY_CONSTRAINT] != False:
         demand_profile = e_flows_df[DEMAND]
@@ -348,8 +348,8 @@ def hybrid(
 
 def hybrid_test(case_dict, oemof_results, experiment, e_flows_df):
     """
-        Testing simulation results for adherance to above defined stability criterion
-        #todo actually this does not test the stability_share_power criterion, which includes the storage power!
+    Testing simulation results for adherance to above defined stability criterion
+    #todo actually this does not test the stability_share_power criterion, which includes the storage power!
     """
     if case_dict[STABILITY_CONSTRAINT] != False:
         demand_profile = e_flows_df[DEMAND]
@@ -477,7 +477,7 @@ def usage(
 
 def usage_test(case_dict, oemof_results, experiment, e_flows_df):
     """
-        Testing simulation results for adherance to above defined stability criterion
+    Testing simulation results for adherance to above defined stability criterion
     """
     if case_dict[STABILITY_CONSTRAINT] != False:
         demand_profile = e_flows_df[DEMAND]
@@ -705,9 +705,9 @@ def forced_charge(model, case_dict, el_bus_dc, storage, experiment):
         expr = 0
         if case_dict[STORAGE_FIXED_CAPACITY] != None:
             if case_dict[STORAGE_FIXED_CAPACITY] is False:  # Storage subject to OEM
-                stored_electricity += model.GenericInvestmentStorageBlock.storage_content[
-                    storage, t
-                ]
+                stored_electricity += (
+                    model.GenericInvestmentStorageBlock.storage_content[storage, t]
+                )
             elif isinstance(
                 case_dict[STORAGE_FIXED_CAPACITY], float
             ):  # Fixed storage subject to dispatch
@@ -814,9 +814,9 @@ def discharge_only_at_blackout(model, case_dict, el_bus, storage, experiment):
             expr += model.flow[storage, el_bus, t]
             # Get stored electricity at t
             if case_dict[STORAGE_FIXED_CAPACITY] is False:  # Storage subject to OEM
-                stored_electricity += model.GenericInvestmentStorageBlock.storage_content[
-                    storage, t
-                ]
+                stored_electricity += (
+                    model.GenericInvestmentStorageBlock.storage_content[storage, t]
+                )
             elif isinstance(
                 case_dict[STORAGE_FIXED_CAPACITY], float
             ):  # Fixed storage subject to dispatch

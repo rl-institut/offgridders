@@ -2,16 +2,16 @@
 
 The simulation tool **Offgridders** * generates a model of an user-defined electricity supply system, optimizes the capacities of the system's generation, storage and electrical components and then performs a dispatch optimization of the optimized capacities.
  
-Oesmot is written in python3 and utilizes the Open Energy Modelling Framework ([Website](https://oemof.org/)) ([Code](https://github.com/oemof)) 
+Offgridders is written in python3 and utilizes the Open Energy Modelling Framework ([Website](https://oemof.org/)) ([Code](https://github.com/oemof)) 
 and as such uses linerarized component models. 
 The electricity system can include AC- as well as DC demand, inverters/rectifiers, 
 a connection to a central electricity grid (optional: with blackouts), diesel generator, 
 PV panels, wind plant and storage. 
 It is possible to allow a defined annual shortage or force a renewable share or system stability constraint. 
 For a visualization of the components and demands to be included, 
-see the [github wiki](https://github.com/smartie2076/simulator_grid-connected_micro_grid/wiki).
+see the [Readthedocs: Definition of an electricity supply system](https://offgridders.readthedocs.io/en/latest/Definition.html).
 
-Examples for electricity systems that can be simulated with oesmot: 
+Examples for electricity systems that can be simulated with Offgridders: 
 * Off-grid micro grid, purely fossil-fuelled or hybridized
 * On-grid micro grid, either only consuming or also feeding into the central grid
 * Off-grid SHS
@@ -22,13 +22,19 @@ If you have questions regarding the tool's execution or it's code pieces, please
 *) previous working name: oesmot - Open Electricity System Modelling and Optimization Tool
 
 # Setup
-* If python3 not pre-installed: Install miniconda
-* Download and integrate cbc solver
-* Open Anaconda prompt, create environment
+* Download and integrate cbc solver.
+* Open Anaconda prompt, create environment with `python==3.6`
 * Run: `pip install -r requirements.txt`
-* Execute: `python Offgridders.py ./inputs/test_input_template.xlsx`
+* Execute test data: `python Offgridders.py`
+* Run your own simulations by defining the path to your input excel file: `python Offgridders.py ./inputs/test_input_template.xlsx`
 
-For Details: See [github wiki](https://github.com/smartie2076/simulator_grid-connected_micro_grid/wiki/Installation)
+When working as a dev, you need to install additional packages with `pip install -r requirements_dev.txt`
+
+For Details: See [Readthedocs: Installation](https://offgridders.readthedocs.io/en/latest/Installation.html)
+
+# Literature
+
+For further reading please refer to [Readthedocs: Literature](https://offgridders.readthedocs.io/en/latest/Literature.html)
 
 # Change log
 
