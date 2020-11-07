@@ -136,7 +136,9 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
     ]
 
     mg_flows = pd.DataFrame(
-        e_flows_df[DEMAND].values, columns=[DEMAND], index=e_flows_df[DEMAND].index,
+        e_flows_df[DEMAND].values,
+        columns=[DEMAND],
+        index=e_flows_df[DEMAND].index,
     )
     for entry in flows_connected_to_electricity_mg_bus:
         if entry in e_flows_df.columns:

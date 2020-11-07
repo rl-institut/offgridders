@@ -333,22 +333,22 @@ def get_base_capacity(
 
 def define_capacity(experiment_case_dict, case_dict_capacity, oemof_name):
     """
-Updates the simulation information of a scenario with the capacities that each asset should already have pre-installed
+    Updates the simulation information of a scenario with the capacities that each asset should already have pre-installed
 
-Depends on whether assets in the scenario are to be optimized or if the capacity is determined based on a previous, but different scenario.
-    Parameters
-    ----------
-    experiment_case_dict: dict
-        Contains detailed information about the experiment's settings
+    Depends on whether assets in the scenario are to be optimized or if the capacity is determined based on a previous, but different scenario.
+        Parameters
+        ----------
+        experiment_case_dict: dict
+            Contains detailed information about the experiment's settings
 
-    case_dict_capacity: str or int/float
-        Base capacity of the simulation
+        case_dict_capacity: str or int/float
+            Base capacity of the simulation
 
-    oemof_name: str
-        Name of the oemof simulation
+        oemof_name: str
+            Name of the oemof simulation
 
-    Returns
-    -------
+        Returns
+        -------
     """
     if case_dict_capacity == OEM:
         experiment_case_dict.update({oemof_name: False})

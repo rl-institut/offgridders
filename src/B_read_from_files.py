@@ -110,9 +110,10 @@ def process_excel_file(input_excel_file):
     # -------- Check for, create or empty results directory -----------------------#
     check_output_directory(settings, input_excel_file)
 
-    (parameters_constant_units, parameters_constant_values,) = get_parameters_constant(
-        input_excel_file, sheet_input_constant
-    )
+    (
+        parameters_constant_units,
+        parameters_constant_values,
+    ) = get_parameters_constant(input_excel_file, sheet_input_constant)
     parameters_sensitivity = get_parameters_sensitivity(
         input_excel_file, sheet_input_sensitivity
     )
@@ -254,6 +255,7 @@ def get_settings(file, sheet_settings):
     for key in settings:
         settings[key] = identify_true_false(settings[key])
     return settings
+
 
 def get_parameters_constant(file, sheet_input_constant):
     """
@@ -410,9 +412,7 @@ def get_case_definitions(file, sheet_project_sites):
             DC_SYSTEM,
         ]:
             logging.error(
-                "Parameter evaluation_perspective has to be either 'AC_system' or 'DC_system', "
-                "but is ",
-                case_definitions[case][EVALUATION_PERSPECTIVE],
+                f"Parameter {EVALUATION_PERSPECTIVE} has to be either {AC_SYSTEM} or {DC_SYSTEM}, but is {case_definitions[case][EVALUATION_PERSPECTIVE]}"
             )
 
         case_definitions[case].update(
