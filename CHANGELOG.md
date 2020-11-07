@@ -30,6 +30,8 @@ Here is a template for new release sections
 ### Changed
 - Update README (#129)
 - Bump `black` version number (#144)
+- Devided the `requirements.txt` into a base one (users) and an extended one for developers and for troubleshooting (`requirements_dev.txt`) (#145)
+- Updated the installation instructions in `Readme.md` and of the RTD (#145)
 
 ### Removed
 -
