@@ -19,7 +19,7 @@ Here is a template for new release sections
 -
 ```
 
-## [Unreleased]
+## [Offgridders V4.6.1] - 2020-11-07
 
 ### Added
 - Docstrings to A1, B, C, D0, D1, E, F, G0-2 (#131, #132, #133, #134, #135, #136)
@@ -32,9 +32,6 @@ Here is a template for new release sections
 - Bump `black` version number (#144)
 - Devided the `requirements.txt` into a base one (users) and an extended one for developers and for troubleshooting (`requirements_dev.txt`) (#145)
 - Updated the installation instructions in `Readme.md` and of the RTD (#145)
-
-### Removed
--
 
 ### Fixed
 - Small content corrections to readthedocs (#119,#123,#125)
