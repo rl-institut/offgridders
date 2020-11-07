@@ -26,6 +26,25 @@ from src.constants import (
 
 # Check for saved blackout scenarios/grid availability, else continue randomization of backout events
 def get_blackouts(settings, blackout_experiment_s):
+    """
+    Runs blackout experiments
+
+    Parameters
+    ----------
+    settings: dict
+        Contains the initialization settings for the simulation
+
+    blackout_experiment_s: dict
+        Contains the settings for the blackout experiment
+
+    Returns
+    -------
+    grid_availability_df: pandas.Dataframe
+        Contains avilability of the grid (1 available, 0 not available)
+
+    blackout_result_s: dict
+        Contains number of blackouts, their duration, and grid availability
+    """
 
     blackout_experiments_left = deepcopy(blackout_experiment_s)
     blackout_result_s = {}
@@ -151,6 +170,20 @@ def get_blackouts(settings, blackout_experiment_s):
 
 
 def oemof_extension_for_blackouts(grid_availability):
+    """
+    Calculates blackout information for one time series
+
+    Parameters
+    ----------
+    grid_availability: pandas.Series
+        Time series with availability information (1 available, 0 unavailable)
+
+    Returns
+    -------
+    blackout_result: dict
+        Contains info about blackout duration and frequency
+
+    """
     # calculating blackout results
     total_grid_availability = sum(grid_availability)
     total_grid_blackout_duration = (
@@ -178,6 +211,28 @@ def oemof_extension_for_blackouts(grid_availability):
 def availability(
     settings, blackout_experiment_s, blackout_result_s, grid_availability_df
 ):
+    """
+    Updates the grid availability df after blackout experiment
+
+    Parameters
+    ----------
+    settings: dict
+        Contains the initialization settings for the simulation
+
+    blackout_experiment_s: dict
+        Contains the settings for the blackout experiment
+
+    blackout_result_s: dict
+        Contains number of blackouts, their duration, and grid availability
+
+    grid_availability_df: pandas.Dataframe
+        Contains avilability of the grid (1 available, 0 not available)
+
+    Returns
+    -------
+    grid_availability_df
+
+    """
 
     date_time_index = settings[MAX_DATE_TIME_INDEX]
 
@@ -278,6 +333,22 @@ def availability(
 
 
 def get_number_of_blackouts(evaluated_days, experiment):
+    """
+    Calculate the number of blackouts for an specific time range
+
+    Parameters
+    ----------
+    evaluated_days: int
+
+    experiment: dict
+        Settings for the experiment
+
+    Returns
+    -------
+    blackout_events_per_timeframe: int
+        Estimate of blackouts in the given timeframe
+
+    """
     # Calculation of expected blackouts per analysed timeframe
     blackout_events_per_month = np.random.normal(
         loc=experiment[BLACKOUT_FREQUENCY],  # median value: blackout duration
@@ -296,6 +367,23 @@ def get_number_of_blackouts(evaluated_days, experiment):
 
 
 def get_time_of_blackout_events(blackout_events_per_timeframe, date_time_index):
+    """
+    Calculates the time for every blackout
+
+    Parameters
+    ----------
+    blackout_events_per_timeframe: int
+        Estimate of blackouts in the given timeframe
+
+    date_time_index: pandas.DatetimeIndex
+        Time index of the experiment
+
+    Returns
+    -------
+    time_of_blackout_events: pandas.Series
+        Contains the blackouts with their respective ocurring times
+    """
+
     # Choosing blackout event starts randomly from whole duration
     # (probability set by data_time_index and blackout_events_per_timeframe)
     time_of_blackout_events = pd.Series(
@@ -321,6 +409,27 @@ def get_time_of_blackout_events(blackout_events_per_timeframe, date_time_index):
 
 
 def get_blackout_event_durations(experiment, timestep, number_of_blackouts):
+    """
+    Calculate the lenght of every blackout
+
+    Parameters
+    ----------
+    experiment: dict
+        Settings for the experiment
+
+    timestep: int
+
+    number_of_blackouts:int
+
+    Returns
+    -------
+    blackout_event_durations: dict
+        Contains information about the randomized blackouts
+
+    accumulated_blackout_duration: float
+        Sum of all blackout durations
+
+    """
     # Generating blackout durations for the number of events
     blackout_event_durations = np.random.normal(
         loc=experiment[BLACKOUT_DURATION],  # median value: blackout duration
@@ -352,6 +461,32 @@ def get_blackout_event_durations(experiment, timestep, number_of_blackouts):
 def availability_series(
     grid_availability, time_of_blackout_events, timestep, blackout_event_durations
 ):
+    """
+    Calculates availability and overlapping blackouts for a series
+
+    Parameters
+    ----------
+    grid_availability: pandas.Series
+        Time series with availability information (1 available, 0 unavailable)
+
+    time_of_blackout_events: pandas.Series
+        Contains the blackouts with their respective ocurring times
+
+    timestep:int
+
+    blackout_event_durations: dict
+        Contains information about the randomized blackouts
+
+    Returns
+    -------
+    grid_availability: pandas.Series
+        Time series with availability information (1 available, 0 unavailable)
+
+    overlapping_blackouts: int
+        Number of synchronous blackouts
+
+    blackout_count:int
+    """
     ## Create 0-1-series that determines grid_availability
     blackout_started = 0
     overlapping_blackouts = 0
@@ -386,6 +521,23 @@ def availability_series(
 
 
 def extend_oemof_results(oemof_results, blackout_results):
+    """
+    Updates oemof results with the information from the blackout experiment
+
+    Parameters
+    ----------
+    oemof_results:  dict
+        Results for the optimization experiment
+
+    blackout_results: dict
+        Results for the blackout experiment
+
+    Returns
+    -------
+    oemof_results:  dict
+        Updated results for the optimization experiment
+        with blackout information
+    """
     oemof_results.update(
         {
             NATIONAL_GRID_RELIABILITY_H: blackout_results[GRID_RELIABILITY],

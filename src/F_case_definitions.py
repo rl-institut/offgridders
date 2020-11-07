@@ -77,6 +77,25 @@ from src.constants import (
 
 
 def update_dict(capacities_oem, specific_case, experiment):
+    """
+    Creates a dictionary containing all the details for the specific simulation
+
+    Parameters
+    ----------
+    capacities_oem: dict
+        Contains the capacities of the system as well as their characteristics
+
+    specific_case: dict
+        Contains details for the case name and definition
+
+    experiment: dict
+        Settings for the experiment
+
+    Returns
+    -------
+    experiment_case_dict: dict
+        Contains detailed information about the experiment's settings
+    """
     experiment_case_dict = {}
 
     experiment_case_dict.update(
@@ -265,6 +284,32 @@ def update_dict(capacities_oem, specific_case, experiment):
 def get_base_capacity(
     experiment_case_dict, case_dict_entry, capacities, component_name, batch_size
 ):
+    """
+    Read or calculate the base capacity by looking at components or previous results
+
+    Parameters
+    ----------
+    experiment_case_dict: dict
+        Contains detailed information about the experiment's settings
+
+    case_dict_entry: str or int/float
+        Value for capacities or reference to them
+
+    capacities: dict
+        Contains capacities in the system
+
+    component_name: str
+        Name of the component from which its capacity will be extracted
+
+    batch_size: float
+        Undividable units that an asset can be installed as
+
+    Returns
+    -------
+    case_dict_capacity: str or int/float
+        Base capacity of the simulation
+
+    """
     if case_dict_entry == OEM:
         case_dict_capacity = OEM
     elif case_dict_entry == None or case_dict_entry == "None":
@@ -287,7 +332,24 @@ def get_base_capacity(
 
 
 def define_capacity(experiment_case_dict, case_dict_capacity, oemof_name):
+    """
+Updates the simulation information of a scenario with the capacities that each asset should already have pre-installed
 
+Depends on whether assets in the scenario are to be optimized or if the capacity is determined based on a previous, but different scenario.
+    Parameters
+    ----------
+    experiment_case_dict: dict
+        Contains detailed information about the experiment's settings
+
+    case_dict_capacity: str or int/float
+        Base capacity of the simulation
+
+    oemof_name: str
+        Name of the oemof simulation
+
+    Returns
+    -------
+    """
     if case_dict_capacity == OEM:
         experiment_case_dict.update({oemof_name: False})
     elif case_dict_capacity == None or case_dict_capacity == 0:
