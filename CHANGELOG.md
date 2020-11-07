@@ -29,15 +29,15 @@ Here is a template for new release sections
 
 ### Changed
 - Update README (#129)
-- Bump `black` version number ()
+- Bump `black` version number (#144)
 
 ### Removed
 -
 
 ### Fixed
 - Small content corrections to readthedocs (#119,#123,#125)
-- Fixed parsing issue with `evaluation_prespective` by fixing definition of logging message and constant varibale definition of `AC_SYSTEM`
-
+- Fixed parsing issue with `evaluation_prespective` by fixing definition of logging message and constant varibale definition of `AC_SYSTEM` (#143)
+ 
 ## [Offgridders V4.6] - 2020-08-17
 
 ### Changed
