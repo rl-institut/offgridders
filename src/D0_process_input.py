@@ -74,7 +74,9 @@ from src.constants import (
 
 def list_of_cases(case_definitions):
     """
-    Creates a list for the simulation order of different cases (pv,(+diesel),(+wind))
+    Creates a list for the simulation order of different cases. 
+    
+    Cases that provide the base capacities for other cases should be simulated first.
 
     Parameters
     ----------
@@ -540,7 +542,9 @@ def add_timeseries(experiment_s):
 
 def apply_noise(experiment_s):
     """
-    Adds white noise to demands and generations to the timeseries of each experiment
+    Adds white noise to demands and generations to the timeseries of each experiment.
+    
+    #ToDo: Changes are necessary to this function. It may either be not applied currently, or it should be completely deleted.
 
     Parameters
     ----------

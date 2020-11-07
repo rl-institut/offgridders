@@ -3,7 +3,7 @@ import logging
 
 def annuity_factor(project_life, wacc):
     """
-    Annuity factor to calculate present value of cash flows (?)
+    Calculates the annuity factor.
 
     Parameters
     ----------
@@ -16,6 +16,7 @@ def annuity_factor(project_life, wacc):
     Returns
     -------
     Annuity_factor: float
+        The annuity factor is used to calculate the present value of cash flows. 
 
     """
     # discount_rate was replaced here by wacc
@@ -31,7 +32,7 @@ def crf(project_life, wacc):
     Parameters
     ----------
     project_life: int
-        Years of projects lifetime (?)
+        Years of projects lifetime 
 
     wacc: float
         Discounting Factor
@@ -62,14 +63,15 @@ def present_value_of_changing_fuel_price(
         Discount factor
 
     crf: float
+       Capital recovery factor (CRF), used in the annuity method
 
     fuel_price_change_annual: float
-        Change in annual price
+        Annual change of the fuel price in percent
 
     Returns
     -------
     present_value_changing_fuel_price: float
-        Change of fuel price in the future
+        Present value of a fuel price that is to increase in the future
 
     """
     if fuel_price_change_annual != 0:
@@ -103,6 +105,7 @@ def capex_from_investment(investment_t0, lifetime, project_life, wacc, tax):
     Parameters
     ----------
     investment_t0: float
+       Specficic investment in year 0
 
     lifetime:int
 
@@ -152,7 +155,7 @@ def capex_from_investment(investment_t0, lifetime, project_life, wacc, tax):
 
 def annuity(present_value, crf):
     """
-    Calculates the regular payment including interests(?)
+    Calculates the constant annual payments (annuities) from a present value
 
     Parameters
     ----------
