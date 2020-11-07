@@ -29,6 +29,7 @@ Here is a template for new release sections
 
 ### Changed
 - Update README (#129)
+- Bump `black` version number ()
 
 ### Removed
 -
