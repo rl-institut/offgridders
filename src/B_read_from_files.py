@@ -410,9 +410,7 @@ def get_case_definitions(file, sheet_project_sites):
             DC_SYSTEM,
         ]:
             logging.error(
-                "Parameter evaluation_perspective has to be either 'AC_system' or 'DC_system', "
-                "but is ",
-                case_definitions[case][EVALUATION_PERSPECTIVE],
+                f"Parameter {EVALUATION_PERSPECTIVE} has to be either {AC_SYSTEM} or {DC_SYSTEM}, but is {case_definitions[case][EVALUATION_PERSPECTIVE]}"
             )
 
         case_definitions[case].update(
