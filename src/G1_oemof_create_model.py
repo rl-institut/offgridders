@@ -561,7 +561,7 @@ def simulate(experiment, micro_grid_system, model, file_name):
 
 def store_results(micro_grid_system, file_name, output_folder):
     """
-    Stores the results of the oemof simulation to an `.oemof` file. 
+    Stores the results of the oemof simulation to an `.oemof` file.
     Output folder and name are defined by the user in the input sheet.
 
     Parameters

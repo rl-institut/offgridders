@@ -74,8 +74,8 @@ from src.constants import (
 
 def list_of_cases(case_definitions):
     """
-    Creates a list for the simulation order of different cases. 
-    
+    Creates a list for the simulation order of different cases.
+
     Cases that provide the base capacities for other cases should be simulated first.
 
     Parameters
@@ -150,12 +150,14 @@ def economic_values(experiment):
     )
 
     if PRICE_FUEL not in experiment:
-        present_value_changing_fuel_price = economics.present_value_of_changing_fuel_price(
-            experiment[FUEL_PRICE],
-            experiment[PROJECT_LIFETIME],
-            experiment[WACC],
-            experiment[FUEL_PRICE_CHANGE_ANNUAL],
-            experiment[CRF],
+        present_value_changing_fuel_price = (
+            economics.present_value_of_changing_fuel_price(
+                experiment[FUEL_PRICE],
+                experiment[PROJECT_LIFETIME],
+                experiment[WACC],
+                experiment[FUEL_PRICE_CHANGE_ANNUAL],
+                experiment[CRF],
+            )
         )
         experiment.update({PRICE_FUEL: present_value_changing_fuel_price})
     else:
@@ -543,7 +545,7 @@ def add_timeseries(experiment_s):
 def apply_noise(experiment_s):
     """
     Adds white noise to demands and generations to the timeseries of each experiment.
-    
+
     #ToDo: Changes are necessary to this function. It may either be not applied currently, or it should be completely deleted.
 
     Parameters

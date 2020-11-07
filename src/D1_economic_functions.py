@@ -16,13 +16,12 @@ def annuity_factor(project_life, wacc):
     Returns
     -------
     Annuity_factor: float
-        The annuity factor is used to calculate the present value of cash flows. 
+        The annuity factor is used to calculate the present value of cash flows.
 
     """
     # discount_rate was replaced here by wacc
     annuity_factor = 1 / wacc - 1 / (wacc * (1 + wacc) ** project_life)
     return annuity_factor
-
 
 
 def crf(project_life, wacc):
@@ -32,7 +31,7 @@ def crf(project_life, wacc):
     Parameters
     ----------
     project_life: int
-        Years of projects lifetime 
+        Years of projects lifetime
 
     wacc: float
         Discounting Factor
