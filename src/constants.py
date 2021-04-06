@@ -4,6 +4,8 @@ DISPLAY_EXPERIMENT = "display_experiment"
 PERFORM_MULTICRITERIA_ANALYSIS = "perform_multicriteria_analysis"
 OUTPUT_FILE = "output_file"
 
+# Default input file
+INPUT_TEMPLATE_EXCEL_XLSX = "inputs/input_template_excel.xlsx"
 
 # A1_GENERAL_FUNCTIONS
 CAPACITY_PV_KWP = "capacity_pv_kWp"
