@@ -25,16 +25,20 @@ Here is a template for new release sections
 ## [Unreleased]
 
 ### Added
--
+- Version number with `src/version.py`
+- Constant variables in `constants.py`: `INPUT_TEMPLATE_EXCEL_XLSX`
 
 ### Changed
--
+- Execute all pytests in Travis `.travis.yml`
+- Added version number to `setup.py`
+- Moved `main()` from `Offgridders.py` to new file `src/cli.py`
+- Enable benchmark tests for Offgridders: Add optional argument `input_file` to `main()`
 
 ### Removed
 -
 
 ### Fixed
--
+- Basic pytest to ensure no termination with test input file (`tests/inputs/pytest_test.xlsx`)
 
 ## [Offgridders V4.6.1] - 2020-11-07
 
