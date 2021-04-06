@@ -22,7 +22,7 @@ install:
 # commands to run tests 
 script:
   - black .
-  - pytest tests/tests.py
+  - pytest tests
 
 #jobs:
 #  include:
