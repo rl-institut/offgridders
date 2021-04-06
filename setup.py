@@ -6,17 +6,22 @@ __url__ = "https://github.com/rl-institut/offgridders/blob/dev/LICENSE"
 from setuptools import setup, find_packages
 import os
 
+here = os.path.abspath(os.path.dirname(__file__))
+main_namespace = {}
+exec(
+    open(os.path.join(here, "src", "version.py")).read(),
+    main_namespace,
+)
 
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
-
 
 with open("requirements.txt") as f:
     requirements = f.read().splitlines()
 
 setup(
     name="Offgridders",
-    version="4.6.1",
+    version=main_namespace["version_num"],
     description="Simulator for electricty supplied systems",
     long_description=read("README.md"),
     url="https://github.com/rl-institut/offgridders",
