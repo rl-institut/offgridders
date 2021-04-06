@@ -21,6 +21,7 @@ import src.G0_oemof_simulate as oemof_simulate
 import src.H0_multicriteria_analysis as multicriteria_analysis
 
 from src.constants import (
+    INPUT_TEMPLATE_EXCEL_XLSX,
     TOTAL_NUMBER_OF_EXPERIMENTS,
     MAX_DATE_TIME_INDEX,
     MAX_EVALUATED_DAYS,
@@ -41,7 +42,15 @@ from src.constants import (
 )
 
 
-def main():
+def main(input_file=None):
+    r"""
+    Starts Offgridders simulations.
+
+    Other Parameters:
+    -----------------
+    input_file : str, optional
+        Path to input excel file
+    """
     # Logging
     logger.define_logging(
         logpath="./",
@@ -61,16 +70,18 @@ def main():
     ###############################################################################
 
     # For compatibility issues: If no key for input file is provided, use generic one input_excel_file
-    if len(sys.argv) >= 2:
-        test_name_legth = len("tests/test_basic.py")
-        if sys.argv[1][-test_name_legth:] == "tests/test_basic.py":
-            input_excel_file = "./tests/inputs/pytest_test.xlsx"
+    if input_file is not None:
+        input_excel_file = input_file
+    elif len(sys.argv) >= 2:
+        test_name_legth = len("tests/tests.py")
+        if sys.argv[1][-test_name_legth:] == "tests/tests.py":
+            input_excel_file = os.path.join("..", "tests", "inputs", "pytest_test.xlsx")
         else:
             # Own key mentioned for input file
             input_excel_file = str(sys.argv[1])
     else:
         # generic input file
-        input_excel_file = "./inputs/test_input_template.xlsx"
+        input_excel_file = INPUT_TEMPLATE_EXCEL_XLSX
 
     # -------- Get all settings ---------------------------------------------------#
     # General settings, general parameters, sensitivity parameters, project site  #
