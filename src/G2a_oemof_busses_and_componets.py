@@ -346,6 +346,10 @@ def inverter_dc_ac_oem(
     return inverter_dc_ac
 
 
+LOG_MESSAGE_GENSET_FIX_CAPACITY_FIX_EFFICIENCY_NO_MINLOAD = (
+    "Genset with fix capacity, fix efficiency and no minimal loading"
+)
+
 def genset_fix_capacity_fix_efficiency_no_minload(
     micro_grid_system,
     bus_fuel,
@@ -354,7 +358,9 @@ def genset_fix_capacity_fix_efficiency_no_minload(
     capacity_fuel_gen,
     number_of_equal_generators,
 ):
-    logging.debug("Added to oemof model: genset fix no minload")
+    logging.debug(
+        f"Added to oemof model: {LOG_MESSAGE_GENSET_FIX_CAPACITY_FIX_EFFICIENCY_NO_MINLOAD}"
+    )
     dict_of_generators = {}
     for number in range(1, number_of_equal_generators + 1):
         genset = solph.Transformer(
@@ -373,6 +379,12 @@ def genset_fix_capacity_fix_efficiency_no_minload(
     return dict_of_generators
 
 
+
+LOG_MESSAGE_GENSET_FIX_CAPACITY_FIX_EFFICIENCY_WITH_MINLOAD = (
+    "Genset with fix capacity, fix efficiency and with minimal loading"
+)
+
+
 def genset_fix_capacity_fix_efficiency_with_minload(
     micro_grid_system,
     bus_fuel,
@@ -388,7 +400,9 @@ def genset_fix_capacity_fix_efficiency_with_minload(
     (which would result in an error due to constraint 'NonConvexFlow.min').
     """
 
-    logging.debug("Added to oemof model: genset fix minload")
+    logging.debug(
+        f"Added to oemof model: {LOG_MESSAGE_GENSET_FIX_CAPACITY_FIX_EFFICIENCY_WITH_MINLOAD}"
+    )
     dict_of_generators = {}
     for number in range(1, number_of_equal_generators + 1):
         genset = solph.Transformer(
@@ -411,18 +425,21 @@ def genset_fix_capacity_fix_efficiency_with_minload(
     return dict_of_generators
 
 
+LOG_MESSAGE_GENSET_OEM_FIX_EFFICIENCY_NO_MINLOAD = (
+    "Genset for capacity optimizaion (OEM) with fix efficiency and no minimal loading"
+)
+
+
 def genset_oem_fix_efficiency_no_minload(
-    micro_grid_system,
-    bus_fuel,
-    bus_electricity_ac,
-    experiment,
-    number_of_generators,
+    micro_grid_system, bus_fuel, bus_electricity_ac, experiment, number_of_generators,
 ):
     """
     Generates fossil-fueled genset "transformer_fuel_generator" for OEM with fix generator efficiency,
     investment and variable costs.
     """
-    logging.debug("Added to oemof model: genset oem no minload")
+    logging.debug(
+        f"Added to oemof model: {LOG_MESSAGE_GENSET_OEM_FIX_EFFICIENCY_NO_MINLOAD}."
+    )
     dict_of_generators = {}
     for number in range(1, number_of_generators + 1):
         genset = solph.Transformer(
