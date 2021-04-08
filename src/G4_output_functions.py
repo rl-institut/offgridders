@@ -64,6 +64,7 @@ from src.constants import (
     SUFFIX_STORAGE_CSV,
     SUFFIX_STORAGE_PNG,
     SUFFIX_STORAGE_4DAYS_PNG,
+    CONSUMPTION_FUEL_TIMESERIES_KWH,
 )
 
 
@@ -110,6 +111,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
         STORAGE_CHARGE_DC,
         GENSET_GENERATION,
         GRID_AVAILABILITY,
+        CONSUMPTION_FUEL_TIMESERIES_KWH,
     ]
 
     negative_list = [
@@ -133,6 +135,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
         STORAGE_DISCHARGE_DC,
         STORAGE_CHARGE_AC,
         STORAGE_CHARGE_DC,
+        CONSUMPTION_FUEL_TIMESERIES_KWH,
     ]
 
     mg_flows = pd.DataFrame(
