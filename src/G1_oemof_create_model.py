@@ -121,7 +121,7 @@ def build(experiment, case_dict):
             sys.exit()
             # genset = generate.genset_oem_minload(micro_grid_system, bus_fuel, bus_electricity_ac, experiment, case_dict['number_of_equal_generators'])
         else:
-            genset = generate.genset_oem(
+            genset = generate.genset_oem_fix_efficiency_no_minload(
                 micro_grid_system,
                 bus_fuel,
                 bus_electricity_ac,
@@ -131,7 +131,7 @@ def build(experiment, case_dict):
 
     elif isinstance(case_dict[GENSET_FIXED_CAPACITY], float):
         if case_dict[GENSET_WITH_MINIMAL_LOADING] is True:
-            genset = generate.genset_fix_minload(
+            genset = generate.genset_fix_capacity_fix_efficiency_with_minload(
                 micro_grid_system,
                 bus_fuel,
                 bus_electricity_ac,
@@ -140,7 +140,7 @@ def build(experiment, case_dict):
                 number_of_equal_generators=case_dict[NUMBER_OF_EQUAL_GENERATORS],
             )
         else:
-            genset = generate.genset_fix(
+            genset = generate.genset_fix_capacity_fix_efficiency_no_minload(
                 micro_grid_system,
                 bus_fuel,
                 bus_electricity_ac,

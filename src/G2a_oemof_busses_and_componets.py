@@ -346,7 +346,7 @@ def inverter_dc_ac_oem(
     return inverter_dc_ac
 
 
-def genset_fix(
+def genset_fix_capacity_fix_efficiency_no_minload(
     micro_grid_system,
     bus_fuel,
     bus_electricity_ac,
@@ -373,7 +373,7 @@ def genset_fix(
     return dict_of_generators
 
 
-def genset_fix_minload(
+def genset_fix_capacity_fix_efficiency_with_minload(
     micro_grid_system,
     bus_fuel,
     bus_electricity_ac,
@@ -411,11 +411,15 @@ def genset_fix_minload(
     return dict_of_generators
 
 
-def genset_oem(
-    micro_grid_system, bus_fuel, bus_electricity_ac, experiment, number_of_generators,
+def genset_oem_fix_efficiency_no_minload(
+    micro_grid_system,
+    bus_fuel,
+    bus_electricity_ac,
+    experiment,
+    number_of_generators,
 ):
     """
-    Generates fossi-fueled genset "transformer_fuel_generator" for OEM with generator efficiency,
+    Generates fossil-fueled genset "transformer_fuel_generator" for OEM with fix generator efficiency,
     investment and variable costs.
     """
     logging.debug("Added to oemof model: genset oem no minload")
@@ -576,7 +580,11 @@ def pointofcoupling_consumption_oem(
 
 
 def storage_fix(
-    micro_grid_system, bus_electricity_dc, experiment, capacity_storage, power_storage,
+    micro_grid_system,
+    bus_electricity_dc,
+    experiment,
+    capacity_storage,
+    power_storage,
 ):
     """
     Create storage unit "generic_storage" with fixed capacity,
