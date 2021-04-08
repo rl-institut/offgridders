@@ -65,6 +65,8 @@ from src.constants import (
     SUFFIX_STORAGE_PNG,
     SUFFIX_STORAGE_4DAYS_PNG,
     CONSUMPTION_FUEL_TIMESERIES_KWH,
+    EFFICIENCY_GENSET_TIMESERIES,
+    GENSET_WITH_EFFICIENCY_CURVE,
 )
 
 
@@ -112,6 +114,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
         GENSET_GENERATION,
         GRID_AVAILABILITY,
         CONSUMPTION_FUEL_TIMESERIES_KWH,
+        EFFICIENCY_GENSET_TIMESERIES,
     ]
 
     negative_list = [
@@ -136,6 +139,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
         STORAGE_CHARGE_AC,
         STORAGE_CHARGE_DC,
         CONSUMPTION_FUEL_TIMESERIES_KWH,
+        EFFICIENCY_GENSET_TIMESERIES,
     ]
 
     mg_flows = pd.DataFrame(
@@ -189,6 +193,32 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
             + filename
             + SUFFIX_ELECTRICITY_MG_CSV
         )
+    if (
+        experiment[SAVE_TO_PNG_FLOWS_ELECTRICITY_MG] is True
+        and case_dict[GENSET_WITH_EFFICIENCY_CURVE] is True
+    ):
+        if (
+            EFFICIENCY_GENSET_TIMESERIES in e_flows_df.columns
+            and GENSET_GENERATION in e_flows_df.columns
+        ):
+            logging.debug(f"Plotting efficiency curve of the diesel generator.")
+            plt.scatter(
+                x=e_flows_df[GENSET_GENERATION],
+                y=e_flows_df[EFFICIENCY_GENSET_TIMESERIES],
+            )
+            plt.xlabel(GENSET_GENERATION)
+            plt.ylabel("Generator efficiency curve")
+            plt.savefig(
+                experiment[OUTPUT_FOLDER]
+                + "/electricity_mg/"
+                + case_dict[CASE_NAME]
+                + filename
+                + "_efficiency_curve_genset.png",
+                bbox_inches="tight",
+            )
+            plt.close()
+            plt.clf()
+            plt.cla()
 
     if experiment[SAVE_TO_PNG_FLOWS_ELECTRICITY_MG] is True:
         number_of_subplots = 0

@@ -119,6 +119,7 @@ from src.constants import (
     DEMAND_DC,
     GENSET_HOURS_OF_OPERATION,
     CONSUMPTION_FUEL_TIMESERIES_KWH,
+    EFFICIENCY_GENSET_TIMESERIES,
 )
 
 
@@ -553,6 +554,24 @@ def get_fuel(case_dict, oemof_results, results, e_flows_df):
         oemof_results.update({CONSUMPTION_FUEL_ANNUAL_KWH: 0})
     return e_flows_df
 
+
+def get_efficiency_genset(e_flows_df):
+    if (
+        CONSUMPTION_FUEL_TIMESERIES_KWH in e_flows_df.columns
+        and GENSET_GENERATION in e_flows_df.columns
+    ):
+        logging.debug("Evaluate diesel generator efficiency:")
+        efficiency_timeseries = (
+            e_flows_df[GENSET_GENERATION] / e_flows_df[CONSUMPTION_FUEL_TIMESERIES_KWH]
+        )
+        average_efficiency = efficiency_timeseries.values.mean()
+        e_flows_df = join_e_flows_df(
+            efficiency_timeseries, EFFICIENCY_GENSET_TIMESERIES, e_flows_df
+        )
+        logging.debug(
+            f"The average efficiency of the diesel generators is {average_efficiency}. Please note that this is based on the aggregated generation of all diesel generators, and may or may not include a fix efficiency, minimal loading or efficiency curve. Check column {EFFICIENCY_GENSET_TIMESERIES} in the csv output of the electricity side of the MG for details."
+        )
+    return e_flows_df
 
 
 def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
