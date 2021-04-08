@@ -46,6 +46,7 @@ from src.constants import (
     SYMBOLIC_SOLVER_LABELS,
     OEMOF_FOLDER,
     CASE_DEFINITIONS,
+    GENSET_WITH_EFFICIENCY_CURVE
 )
 
 
@@ -109,17 +110,12 @@ def build(experiment, case_dict):
     if case_dict[GENSET_FIXED_CAPACITY] == None:
         genset = None
     elif case_dict[GENSET_FIXED_CAPACITY] is False:
-        if case_dict[GENSET_WITH_MINIMAL_LOADING] is True:
-            # not possible with oemof
+        if case_dict[GENSET_WITH_MINIMAL_LOADING] is True or case_dict[GENSET_WITH_EFFICIENCY_CURVE] is True:
             logging.error(
                 "It is not possible to optimize a generator with minimal loading in oemof. \n "
-                + "    "
-                + "    "
-                + "    "
-                + f"Please set {GENSET_WITH_MINIMAL_LOADING}=False for this case on tab {CASE_DEFINITIONS} in the excel template."
+                + f"Please set {GENSET_WITH_MINIMAL_LOADING}=False and {GENSET_WITH_EFFICIENCY_CURVE}=False for this case on tab {CASE_DEFINITIONS} in the excel template."
             )
             sys.exit()
-            # genset = generate.genset_oem_minload(micro_grid_system, bus_fuel, bus_electricity_ac, experiment, case_dict['number_of_equal_generators'])
         else:
             genset = generate.genset_oem_fix_efficiency_no_minload(
                 micro_grid_system,
@@ -130,7 +126,17 @@ def build(experiment, case_dict):
             )
 
     elif isinstance(case_dict[GENSET_FIXED_CAPACITY], float):
-        if case_dict[GENSET_WITH_MINIMAL_LOADING] is True:
+        if case_dict[GENSET_WITH_EFFICIENCY_CURVE] is True:
+            genset = generate.genset_fix_capacity_efficiency_curve_and_minimal_loading(
+                micro_grid_system,
+                bus_fuel,
+                bus_electricity_ac,
+                experiment,
+                capacity_fuel_gen=case_dict[GENSET_FIXED_CAPACITY],
+                number_of_equal_generators=case_dict[NUMBER_OF_EQUAL_GENERATORS],
+                minimal_loading=case_dict[GENSET_WITH_MINIMAL_LOADING]
+            )
+        elif case_dict[GENSET_WITH_MINIMAL_LOADING] is True:
             genset = generate.genset_fix_capacity_fix_efficiency_with_minload(
                 micro_grid_system,
                 bus_fuel,
