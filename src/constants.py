@@ -302,6 +302,7 @@ MAX_EVALUATED_DAYS = "max_evaluated_days"
 # F_case_definitions
 PEAK_DEMAND = "peak_demand"
 GENSET_WITH_MINIMAL_LOADING = "genset_with_minimal_loading"
+GENSET_WITH_EFFICIENCY_CURVE = "genset_with_efficiency_curve"
 CAPACITY_PCC_CONSUMPTION_KW = "capacity_pcc_consumption_kW"
 CAPACITY_PCC_FEEDING_KW = "capacity_pcc_feedin_kW"
 STORAGE_FIXED_CAPACITY = "storage_fixed_capacity"
