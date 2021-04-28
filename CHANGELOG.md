@@ -59,6 +59,7 @@ uses the `GENSET_EFFICIENCY` as maximum efficiency, and `GENSET_EFFICIENCY/2` as
 ### Fixed
 - Basic pytest to ensure no termination with test input file (`tests/inputs/pytest_test.xlsx`) (#150)
 - `present_value_of_changing_fuel_price` now correctly calculated, fixed function call of `D1.present_value_of_changing_fuel_price` in `D0` (#153)
+- Irregular use of `capacity_inverter_kW`, use only `capacity_inverter_dc_ac_kW` (#92)
 
 ## [Offgridders V4.6.1] - 2020-11-07
 
