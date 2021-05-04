@@ -132,6 +132,7 @@ from src.constants import (
     TOTAL_WIND_GENERATION_KWH,
     TOTAL_GENSET_GENERATION_KWH,
     CONSUMPTION_FUEL_ANNUAL_L,
+    GENSET_HOURS_OF_OPERATION,
     CONSUMPTION_MAIN_GRID_MG_SIDE_ANNUAL_KWH,
     FEEDIN_MAIN_GRID_MG_SIDE_ANNUAL_KWH,
     RESULTS_ANNUITIES,
@@ -1308,6 +1309,7 @@ def overall_results_title(settings, number_of_project_sites, sensitivity_array_d
                     TOTAL_GENSET_GENERATION_KWH,
                     CONSUMPTION_FUEL_ANNUAL_KWH,
                     CONSUMPTION_FUEL_ANNUAL_L,
+                    GENSET_HOURS_OF_OPERATION,
                     CONSUMPTION_MAIN_GRID_MG_SIDE_ANNUAL_KWH,
                     FEEDIN_MAIN_GRID_MG_SIDE_ANNUAL_KWH,
                 ]
