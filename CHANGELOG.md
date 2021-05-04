@@ -26,19 +26,23 @@ Here is a template for new release sections
 
 ### Added
 - Version number with `src/version.py` (#150)
-- Constant variables in `constants.py`: `INPUT_TEMPLATE_EXCEL_XLSX`(#150)
+- Constant variables in `constants.py`: `INPUT_TEMPLATE_EXCEL_XLSX`(#150), `GENSET_HOURS_OF_OPERATION` (#153)
+- Added pytests for `D1.crf` and `D1.present_value_of_changing_fuel_price` (#153)
+- Implement new KPI: `GENSET_HOURS_OF_OPERATION` with new function `G3.get_hours_of_operation()` for generator evaluation, including pytests (#153)
 
 ### Changed
 - Execute all pytests in Travis `.travis.yml` (#150)
 - Added version number to `setup.py` (#150)
 - Moved `main()` from `Offgridders.py` to new file `src/cli.py` (#150)
 - Enable benchmark tests for Offgridders: Add optional argument `input_file` to `main()` (#150)
+- Added `GENSET_HOURS_OF_OPERATION` in `C1.overall_results_title` (#153)
 
 ### Removed
 -
 
 ### Fixed
 - Basic pytest to ensure no termination with test input file (`tests/inputs/pytest_test.xlsx`) (#150)
+- `present_value_of_changing_fuel_price` now correctly calculated, fixed function call of `D1.present_value_of_changing_fuel_price` in `D0` (#153)
 
 ## [Offgridders V4.6.1] - 2020-11-07
 
