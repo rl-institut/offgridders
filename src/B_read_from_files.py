@@ -110,10 +110,9 @@ def process_excel_file(input_excel_file):
     # -------- Check for, create or empty results directory -----------------------#
     check_output_directory(settings, input_excel_file)
 
-    (
-        parameters_constant_units,
-        parameters_constant_values,
-    ) = get_parameters_constant(input_excel_file, sheet_input_constant)
+    (parameters_constant_units, parameters_constant_values,) = get_parameters_constant(
+        input_excel_file, sheet_input_constant
+    )
     parameters_sensitivity = get_parameters_sensitivity(
         input_excel_file, sheet_input_sensitivity
     )
