@@ -106,9 +106,11 @@ def get_blackouts(settings, blackout_experiment_s):
                     in grid_availability_df.columns
                 ):
                     count_of_red_data = count_of_red_data + 1
-                    name_of_experiment_requested_from_file_dataset = (
-                        blackout_experiment_s[experiment][EXPERIMENT_NAME]
-                    )
+                    name_of_experiment_requested_from_file_dataset = blackout_experiment_s[
+                        experiment
+                    ][
+                        EXPERIMENT_NAME
+                    ]
                     blackout_result = oemof_extension_for_blackouts(
                         grid_availability_df[
                             name_of_experiment_requested_from_file_dataset

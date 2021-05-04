@@ -132,6 +132,7 @@ from src.constants import (
     TOTAL_WIND_GENERATION_KWH,
     TOTAL_GENSET_GENERATION_KWH,
     CONSUMPTION_FUEL_ANNUAL_L,
+    GENSET_HOURS_OF_OPERATION,
     CONSUMPTION_MAIN_GRID_MG_SIDE_ANNUAL_KWH,
     FEEDIN_MAIN_GRID_MG_SIDE_ANNUAL_KWH,
     RESULTS_ANNUITIES,
@@ -270,10 +271,7 @@ def get(settings, parameters_constant_values, parameters_sensitivity, project_si
             sensitivity_array_dict,
             total_number_of_experiments,
         ) = all_possible(
-            settings,
-            parameters_constant_values,
-            parameters_sensitivity,
-            project_sites,
+            settings, parameters_constant_values, parameters_sensitivity, project_sites,
         )
 
     elif settings[SENSITIVITY_ALL_COMBINATIONS] is False:
@@ -283,10 +281,7 @@ def get(settings, parameters_constant_values, parameters_sensitivity, project_si
             sensitivity_array_dict,
             total_number_of_experiments,
         ) = with_base_case(
-            settings,
-            parameters_constant_values,
-            parameters_sensitivity,
-            project_sites,
+            settings, parameters_constant_values, parameters_sensitivity, project_sites,
         )
 
     else:
@@ -339,10 +334,9 @@ def get(settings, parameters_constant_values, parameters_sensitivity, project_si
     # Get blackout_experiment_s for sensitvitiy           #
     #######################################################
     # Creating dict of possible blackout scenarios (combinations of durations  frequencies
-    (
-        blackout_experiment_s,
-        blackout_experiments_count,
-    ) = blackout(sensitivity_array_dict, parameters_constant_values, settings)
+    (blackout_experiment_s, blackout_experiments_count,) = blackout(
+        sensitivity_array_dict, parameters_constant_values, settings
+    )
 
     # save all Experiments with all used input data to csv
     csv_dict = deepcopy(sensitivitiy_experiment_s)
@@ -1315,6 +1309,7 @@ def overall_results_title(settings, number_of_project_sites, sensitivity_array_d
                     TOTAL_GENSET_GENERATION_KWH,
                     CONSUMPTION_FUEL_ANNUAL_KWH,
                     CONSUMPTION_FUEL_ANNUAL_L,
+                    GENSET_HOURS_OF_OPERATION,
                     CONSUMPTION_MAIN_GRID_MG_SIDE_ANNUAL_KWH,
                     FEEDIN_MAIN_GRID_MG_SIDE_ANNUAL_KWH,
                 ]

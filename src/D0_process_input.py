@@ -150,14 +150,12 @@ def economic_values(experiment):
     )
 
     if PRICE_FUEL not in experiment:
-        present_value_changing_fuel_price = (
-            economics.present_value_of_changing_fuel_price(
-                experiment[FUEL_PRICE],
-                experiment[PROJECT_LIFETIME],
-                experiment[WACC],
-                experiment[FUEL_PRICE_CHANGE_ANNUAL],
-                experiment[CRF],
-            )
+        present_value_changing_fuel_price = economics.present_value_of_changing_fuel_price(
+            fuel_price=experiment[FUEL_PRICE],
+            project_lifetime=experiment[PROJECT_LIFETIME],
+            wacc=experiment[WACC],
+            crf=experiment[CRF],
+            fuel_price_change_annual=experiment[FUEL_PRICE_CHANGE_ANNUAL],
         )
         experiment.update({PRICE_FUEL: present_value_changing_fuel_price})
     else:
