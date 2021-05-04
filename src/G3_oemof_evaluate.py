@@ -117,6 +117,7 @@ from src.constants import (
     FEED_INTO_MAIN_GRID_MG_SIDE,
     DEMAND_AC,
     DEMAND_DC,
+    GENSET_HOURS_OF_OPERATION,
 )
 
 
@@ -496,7 +497,36 @@ def get_genset(case_dict, oemof_results, electricity_bus_ac, e_flows_df):
         oemof_results.update({CAPACITY_GENSET_KW: case_dict[GENSET_FIXED_CAPACITY]})
     elif case_dict[GENSET_FIXED_CAPACITY] == None:
         oemof_results.update({CAPACITY_GENSET_KW: 0})
+
+    # Get hours of operation:
+    if case_dict[GENSET_FIXED_CAPACITY] != None:
+        get_hours_of_operation(oemof_results, case_dict, e_flows_df[GENSET_GENERATION])
+    else:
+        oemof_results.update({GENSET_HOURS_OF_OPERATION: 0})
     return e_flows_df
+
+
+def get_hours_of_operation(oemof_results, case_dict, genset_generation_total):
+    """
+    Calculates the total hours of genset generation (aggregated generation) of the evaluated timeframe.
+
+    Parameters
+    ----------
+    oemof_results: dict
+        Dict of all results of the simulation
+
+    genset_generation_total: pd.Series
+        Dispatch of the gensets, aggregated
+
+    Returns
+    -------
+    Updates oemof_results with annual value of the GENSET_HOURS_OF_OPERATION.
+    """
+    operation_boolean = genset_generation_total.where(
+        genset_generation_total == 0, other=1
+    )
+    annual_value(GENSET_HOURS_OF_OPERATION, operation_boolean, oemof_results, case_dict)
+    return operation_boolean
 
 
 def get_fuel(case_dict, oemof_results, results):
