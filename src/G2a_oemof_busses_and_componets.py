@@ -412,11 +412,7 @@ def genset_fix_minload(
 
 
 def genset_oem(
-    micro_grid_system,
-    bus_fuel,
-    bus_electricity_ac,
-    experiment,
-    number_of_generators,
+    micro_grid_system, bus_fuel, bus_electricity_ac, experiment, number_of_generators,
 ):
     """
     Generates fossi-fueled genset "transformer_fuel_generator" for OEM with generator efficiency,
@@ -580,11 +576,7 @@ def pointofcoupling_consumption_oem(
 
 
 def storage_fix(
-    micro_grid_system,
-    bus_electricity_dc,
-    experiment,
-    capacity_storage,
-    power_storage,
+    micro_grid_system, bus_electricity_dc, experiment, capacity_storage, power_storage,
 ):
     """
     Create storage unit "generic_storage" with fixed capacity,
