@@ -1,0 +1,177 @@
+******************************************************
+2021-07-13 14:38:11,367 - INFO - logger - Path for logging: ./micro_grid_design_logfile.log
+2021-07-13 14:38:11,368 - INFO - cli - 
+ Coded by: Martha M. Hoffmann 
+ Reiner Lemoine Institute (Berlin) 
+ 
+ 
+2021-07-13 14:38:11,369 - INFO - cli - Performing simulations defined by file "inputs/input_template_excel.xlsx"
+
+2021-07-13 14:38:11,476 - DEBUG - B_read_from_files - Checking for folders and files
+2021-07-13 14:38:11,555 - INFO - B_read_from_files - Following project locations are evaluated: test_site
+2021-07-13 14:38:11,684 - WARNING - C_sensitivity_experiments - Attributes "pv_cost_investment, pv_lifetime" defined in constant and sensitivity parameters. Only sensitivity parameter value will be used for sensitivity_experiment_s.
+2021-07-13 14:38:11,687 - INFO - C_sensitivity_experiments - Parameters of sensitivity analysis: pv_cost_investment, pv_lifetime
+2021-07-13 14:38:11,692 - ERROR - D1_economic_functions - You chose parameter 'fuel_price_change_annual' unequal zero. This calculation is still faulty and you should check the resulting fuel price. It would be better if you set your fuel price by hand.
+2021-07-13 14:38:11,692 - INFO - D1_economic_functions -  The resulting fuel price is: 1.044592173358807
+2021-07-13 14:38:11,698 - INFO - C_sensitivity_experiments - Randomized blackout timeseries for all combinations of blackout duration and frequency (1 experiments) will be generated.
+2021-07-13 14:38:11,872 - DEBUG - C_sensitivity_experiments - Generating header for results.csv
+2021-07-13 14:38:11,907 - INFO - C_sensitivity_experiments - For 1 project sites with 1 scenarios each, 1 sensitivity_experiment_s will be performed for each case.
+2021-07-13 14:38:11,908 - INFO - D0_process_input - Base capacities provided by: pv-diesel-mg
+2021-07-13 14:38:11,908 - INFO - D0_process_input - All simulated cases: pv-diesel-mg, pv-diesel-storage-mg, pv-wind-storage-diesel-mg
+2021-07-13 14:38:11,909 - INFO - cli - With these cases, a total of 3 simulations will be performed. 
+
+2021-07-13 14:38:11,915 - INFO - E_blackouts_central_grid - Blackout experiment 1: Blackout duration 0 hrs, blackout frequency 0 per month
+2021-07-13 14:38:11,917 - INFO - E_blackouts_central_grid - Number of blackouts in simulated timeframe: 0
+2021-07-13 14:38:11,918 - INFO - E_blackouts_central_grid - Grid is not operational for 0 hours, with a reliability of 100.0 percent. 
+
+2021-07-13 14:38:11,922 - INFO - E_blackouts_central_grid - Missing blackout timeseries added through auto-generation.
+2021-07-13 14:38:11,930 - DEBUG - cli - Using grid availability timeseries that was randomly generated.
+2021-07-13 14:38:11,930 - INFO - cli - Starting simulation of case pv-diesel-mg, project site test_site, experiment no. 1/3...
+2021-07-13 14:38:11,931 - DEBUG - G1_oemof_create_model - Complete case dictionary:
+2021-07-13 14:38:11,931 - DEBUG - G1_oemof_create_model - {'case_name': 'pv-diesel-mg', 'filename': 'pv-diesel-mg_s_pv_cost_investment_1000.0_pv_lifetime_20.0', 'total_demand_ac': 3671.6819400000004, 'total_demand_dc': 0, 'peak_demand': 74.74342, 'evaluated_days': 7, 'genset_with_minimal_loading': False, 'storage_fixed_capacity': None, 'storage_fixed_power': None, 'genset_fixed_capacity': False, 'pv_fixed_capacity': False, 'pcc_consumption_fixed_capacity': None, 'pcc_feedin_fixed_capacity': None, 'wind_fixed_capacity': None, 'rectifier_ac_dc_fixed_capacity': False, 'inverter_dc_ac_fixed_capacity': False, 'allow_shortage': True, 'max_shortage': 0, 'stability_constraint': 'share_hybrid', 'renewable_share_constraint': False, 'number_of_equal_generators': 1, 'evaluation_perspective': 'AC_system', 'force_charge_from_maingrid': False, 'discharge_only_when_blackout': False, 'enable_inverter_only_at_backout': False}
+2021-07-13 14:38:11,931 - DEBUG - G1_oemof_create_model - Create oemof model by adding case-specific busses and components.
+2021-07-13 14:38:11,931 - DEBUG - G1_oemof_create_model - Added to oemof model: Electricity bus of energy system, AC
+2021-07-13 14:38:11,931 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: demand AC
+2021-07-13 14:38:11,932 - DEBUG - G1_oemof_create_model - Added to oemof model: Fuel bus
+2021-07-13 14:38:11,932 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: source fuel
+2021-07-13 14:38:11,932 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: genset oem no minload
+2021-07-13 14:38:11,933 - DEBUG - G1_oemof_create_model - Added to oemof model: Electricity bus of energy system, DC
+2021-07-13 14:38:11,933 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: demand DC
+2021-07-13 14:38:11,933 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: pv oem
+2021-07-13 14:38:11,934 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: rectifier oem
+2021-07-13 14:38:11,936 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: inverter_dc_ac oem
+2021-07-13 14:38:11,937 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: excess
+2021-07-13 14:38:11,938 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: source shortage
+2021-07-13 14:38:11,938 - DEBUG - G1_oemof_create_model - Create oemof model based on created components and busses.
+2021-07-13 14:38:12,091 - INFO - G1_oemof_create_model - Added constraint: Stability though actual generation of diesel generators and backup through batteries.
+******************************************************
+2021-07-13 14:39:56,348 - INFO - logger - Path for logging: ./micro_grid_design_logfile.log
+2021-07-13 14:39:56,348 - INFO - cli - 
+ Coded by: Martha M. Hoffmann 
+ Reiner Lemoine Institute (Berlin) 
+ 
+ 
+2021-07-13 14:39:56,348 - INFO - cli - Performing simulations defined by file "inputs/input_template_excel.xlsx"
+
+2021-07-13 14:39:56,404 - DEBUG - B_read_from_files - Checking for folders and files
+2021-07-13 14:39:56,466 - INFO - B_read_from_files - Following project locations are evaluated: test_site
+2021-07-13 14:39:56,582 - WARNING - C_sensitivity_experiments - Attributes "pv_cost_investment, pv_lifetime" defined in constant and sensitivity parameters. Only sensitivity parameter value will be used for sensitivity_experiment_s.
+2021-07-13 14:39:56,595 - INFO - C_sensitivity_experiments - Parameters of sensitivity analysis: pv_cost_investment, pv_lifetime
+2021-07-13 14:39:56,599 - ERROR - D1_economic_functions - You chose parameter 'fuel_price_change_annual' unequal zero. This calculation is still faulty and you should check the resulting fuel price. It would be better if you set your fuel price by hand.
+2021-07-13 14:39:56,600 - INFO - D1_economic_functions -  The resulting fuel price is: 1.044592173358807
+2021-07-13 14:39:56,602 - INFO - C_sensitivity_experiments - Randomized blackout timeseries for all combinations of blackout duration and frequency (1 experiments) will be generated.
+2021-07-13 14:39:56,756 - DEBUG - C_sensitivity_experiments - Generating header for results.csv
+2021-07-13 14:39:56,791 - INFO - C_sensitivity_experiments - For 1 project sites with 1 scenarios each, 1 sensitivity_experiment_s will be performed for each case.
+2021-07-13 14:39:56,792 - INFO - D0_process_input - Base capacities provided by: pv-diesel-mg
+2021-07-13 14:39:56,793 - INFO - D0_process_input - All simulated cases: pv-diesel-mg, pv-diesel-storage-mg, pv-wind-storage-diesel-mg
+2021-07-13 14:39:56,793 - INFO - cli - With these cases, a total of 3 simulations will be performed. 
+
+2021-07-13 14:39:56,797 - INFO - E_blackouts_central_grid - Blackout experiment 1: Blackout duration 0 hrs, blackout frequency 0 per month
+2021-07-13 14:39:56,798 - INFO - E_blackouts_central_grid - Number of blackouts in simulated timeframe: 0
+2021-07-13 14:39:56,799 - INFO - E_blackouts_central_grid - Grid is not operational for 0 hours, with a reliability of 100.0 percent. 
+
+2021-07-13 14:39:56,802 - INFO - E_blackouts_central_grid - Missing blackout timeseries added through auto-generation.
+2021-07-13 14:39:56,808 - DEBUG - cli - Using grid availability timeseries that was randomly generated.
+2021-07-13 14:39:56,809 - INFO - cli - Starting simulation of case pv-diesel-mg, project site test_site, experiment no. 1/3...
+2021-07-13 14:39:56,810 - DEBUG - G1_oemof_create_model - Complete case dictionary:
+2021-07-13 14:39:56,810 - DEBUG - G1_oemof_create_model - {'case_name': 'pv-diesel-mg', 'filename': 'pv-diesel-mg_s_pv_cost_investment_1000.0_pv_lifetime_20.0', 'total_demand_ac': 3671.6819400000004, 'total_demand_dc': 0, 'peak_demand': 74.74342, 'evaluated_days': 7, 'genset_with_minimal_loading': False, 'storage_fixed_capacity': None, 'storage_fixed_power': None, 'genset_fixed_capacity': False, 'pv_fixed_capacity': False, 'pcc_consumption_fixed_capacity': None, 'pcc_feedin_fixed_capacity': None, 'wind_fixed_capacity': None, 'rectifier_ac_dc_fixed_capacity': False, 'inverter_dc_ac_fixed_capacity': False, 'allow_shortage': True, 'max_shortage': 0, 'stability_constraint': 'share_hybrid', 'renewable_share_constraint': False, 'number_of_equal_generators': 1, 'evaluation_perspective': 'AC_system', 'force_charge_from_maingrid': False, 'discharge_only_when_blackout': False, 'enable_inverter_only_at_backout': False}
+2021-07-13 14:39:56,810 - DEBUG - G1_oemof_create_model - Create oemof model by adding case-specific busses and components.
+2021-07-13 14:39:56,811 - DEBUG - G1_oemof_create_model - Added to oemof model: Electricity bus of energy system, AC
+2021-07-13 14:39:56,811 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: demand AC
+2021-07-13 14:39:56,811 - DEBUG - G1_oemof_create_model - Added to oemof model: Fuel bus
+2021-07-13 14:39:56,812 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: source fuel
+2021-07-13 14:39:56,812 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: genset oem no minload
+2021-07-13 14:39:56,814 - DEBUG - G1_oemof_create_model - Added to oemof model: Electricity bus of energy system, DC
+2021-07-13 14:39:56,814 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: demand DC
+2021-07-13 14:39:56,815 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: pv oem
+2021-07-13 14:39:56,816 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: rectifier oem
+2021-07-13 14:39:56,816 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: inverter_dc_ac oem
+2021-07-13 14:39:56,816 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: excess
+2021-07-13 14:39:56,817 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: source shortage
+2021-07-13 14:39:56,817 - DEBUG - G1_oemof_create_model - Create oemof model based on created components and busses.
+2021-07-13 14:39:56,999 - INFO - G1_oemof_create_model - Added constraint: Stability though actual generation of diesel generators and backup through batteries.
+******************************************************
+2021-07-13 14:42:43,796 - INFO - logger - Path for logging: ./micro_grid_design_logfile.log
+2021-07-13 14:42:43,796 - INFO - cli - 
+ Coded by: Martha M. Hoffmann 
+ Reiner Lemoine Institute (Berlin) 
+ 
+ 
+2021-07-13 14:42:43,796 - INFO - cli - Performing simulations defined by file "inputs/input_template_excel.xlsx"
+
+2021-07-13 14:42:43,936 - DEBUG - B_read_from_files - Checking for folders and files
+2021-07-13 14:44:00,669 - INFO - B_read_from_files - Following project locations are evaluated: test_site
+2021-07-13 14:44:20,259 - WARNING - C_sensitivity_experiments - Attributes "pv_cost_investment, pv_lifetime" defined in constant and sensitivity parameters. Only sensitivity parameter value will be used for sensitivity_experiment_s.
+2021-07-13 14:44:20,265 - INFO - C_sensitivity_experiments - Parameters of sensitivity analysis: pv_cost_investment, pv_lifetime
+2021-07-13 14:44:20,270 - ERROR - D1_economic_functions - You chose parameter 'fuel_price_change_annual' unequal zero. This calculation is still faulty and you should check the resulting fuel price. It would be better if you set your fuel price by hand.
+2021-07-13 14:44:20,272 - INFO - D1_economic_functions -  The resulting fuel price is: 1.044592173358807
+2021-07-13 14:44:20,279 - INFO - C_sensitivity_experiments - Randomized blackout timeseries for all combinations of blackout duration and frequency (1 experiments) will be generated.
+2021-07-13 14:44:20,624 - DEBUG - C_sensitivity_experiments - Generating header for results.csv
+2021-07-13 14:44:20,715 - INFO - C_sensitivity_experiments - For 1 project sites with 1 scenarios each, 1 sensitivity_experiment_s will be performed for each case.
+2021-07-13 14:44:20,716 - INFO - D0_process_input - Base capacities provided by: pv-diesel-mg
+2021-07-13 14:44:20,719 - INFO - D0_process_input - All simulated cases: pv-diesel-mg, pv-diesel-storage-mg, pv-wind-storage-diesel-mg
+2021-07-13 14:44:20,720 - INFO - cli - With these cases, a total of 3 simulations will be performed. 
+
+2021-07-13 14:44:20,729 - INFO - E_blackouts_central_grid - Blackout experiment 1: Blackout duration 0 hrs, blackout frequency 0 per month
+2021-07-13 14:44:20,730 - INFO - E_blackouts_central_grid - Number of blackouts in simulated timeframe: 0
+2021-07-13 14:44:20,732 - INFO - E_blackouts_central_grid - Grid is not operational for 0 hours, with a reliability of 100.0 percent. 
+
+2021-07-13 14:44:20,737 - INFO - E_blackouts_central_grid - Missing blackout timeseries added through auto-generation.
+2021-07-13 14:44:20,745 - DEBUG - cli - Using grid availability timeseries that was randomly generated.
+2021-07-13 14:44:20,746 - INFO - cli - Starting simulation of case pv-diesel-mg, project site test_site, experiment no. 1/3...
+2021-07-13 14:44:20,748 - DEBUG - G1_oemof_create_model - Complete case dictionary:
+2021-07-13 14:44:20,749 - DEBUG - G1_oemof_create_model - {'case_name': 'pv-diesel-mg', 'filename': 'pv-diesel-mg_s_pv_cost_investment_1000.0_pv_lifetime_20.0', 'total_demand_ac': 3671.6819400000004, 'total_demand_dc': 0, 'peak_demand': 74.74342, 'evaluated_days': 7, 'genset_with_minimal_loading': False, 'storage_fixed_capacity': None, 'storage_fixed_power': None, 'genset_fixed_capacity': False, 'pv_fixed_capacity': False, 'pcc_consumption_fixed_capacity': None, 'pcc_feedin_fixed_capacity': None, 'wind_fixed_capacity': None, 'rectifier_ac_dc_fixed_capacity': False, 'inverter_dc_ac_fixed_capacity': False, 'allow_shortage': True, 'max_shortage': 0, 'stability_constraint': 'share_hybrid', 'renewable_share_constraint': False, 'number_of_equal_generators': 1, 'evaluation_perspective': 'AC_system', 'force_charge_from_maingrid': False, 'discharge_only_when_blackout': False, 'enable_inverter_only_at_backout': False}
+2021-07-13 14:44:20,750 - DEBUG - G1_oemof_create_model - Create oemof model by adding case-specific busses and components.
+2021-07-13 14:44:20,750 - DEBUG - G1_oemof_create_model - Added to oemof model: Electricity bus of energy system, AC
+2021-07-13 14:44:20,755 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: demand AC
+2021-07-13 14:44:20,756 - DEBUG - G1_oemof_create_model - Added to oemof model: Fuel bus
+2021-07-13 14:44:20,757 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: source fuel
+2021-07-13 14:44:20,757 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: genset oem no minload
+2021-07-13 14:44:20,758 - DEBUG - G1_oemof_create_model - Added to oemof model: Electricity bus of energy system, DC
+2021-07-13 14:44:20,759 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: demand DC
+2021-07-13 14:44:20,759 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: pv oem
+2021-07-13 14:44:20,760 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: rectifier oem
+2021-07-13 14:44:20,761 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: inverter_dc_ac oem
+2021-07-13 14:44:20,762 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: excess
+2021-07-13 14:44:20,763 - DEBUG - G2a_oemof_busses_and_componets - Added to oemof model: source shortage
+2021-07-13 14:44:20,764 - DEBUG - G1_oemof_create_model - Create oemof model based on created components and busses.
+2021-07-13 14:44:21,517 - INFO - G1_oemof_create_model - Added constraint: Stability though actual generation of diesel generators and backup through batteries.
+******************************************************
+2021-07-13 14:49:52,512 - INFO - logger - Path for logging: ./micro_grid_design_logfile.log
+2021-07-13 14:49:52,512 - INFO - cli - 
+ Coded by: Martha M. Hoffmann 
+ Reiner Lemoine Institute (Berlin) 
+ 
+ 
+2021-07-13 14:49:52,527 - INFO - cli - Performing simulations defined by file "inputs/input_template_excel.xlsx"
+
+2021-07-13 14:49:52,650 - DEBUG - B_read_from_files - Checking for folders and files
+2021-07-13 14:51:05,974 - INFO - B_read_from_files - Following project locations are evaluated: test_site
+******************************************************
+2021-07-13 15:01:24,023 - INFO - logger - Path for logging: ./micro_grid_design_logfile.log
+2021-07-13 15:01:24,026 - INFO - cli - 
+ Coded by: Martha M. Hoffmann 
+ Reiner Lemoine Institute (Berlin) 
+ 
+ 
+2021-07-13 15:01:24,027 - INFO - cli - Performing simulations defined by file "inputs/input_template_excel.xlsx"
+
+2021-07-13 15:01:24,146 - DEBUG - B_read_from_files - Checking for folders and files
+2021-07-13 15:01:35,692 - INFO - B_read_from_files - Following project locations are evaluated: test_site
+2021-07-13 15:01:45,597 - WARNING - C_sensitivity_experiments - Attributes "pv_cost_investment, pv_lifetime" defined in constant and sensitivity parameters. Only sensitivity parameter value will be used for sensitivity_experiment_s.
+2021-07-13 15:01:45,609 - INFO - C_sensitivity_experiments - Parameters of sensitivity analysis: pv_cost_investment, pv_lifetime
+2021-07-13 15:01:45,614 - ERROR - D1_economic_functions - You chose parameter 'fuel_price_change_annual' unequal zero. This calculation is still faulty and you should check the resulting fuel price. It would be better if you set your fuel price by hand.
+2021-07-13 15:01:45,618 - INFO - D1_economic_functions -  The resulting fuel price is: 1.044592173358807
+2021-07-13 15:01:45,628 - INFO - C_sensitivity_experiments - Randomized blackout timeseries for all combinations of blackout duration and frequency (1 experiments) will be generated.
+2021-07-13 15:01:45,969 - DEBUG - C_sensitivity_experiments - Generating header for results.csv
+2021-07-13 15:01:46,051 - INFO - C_sensitivity_experiments - For 1 project sites with 1 scenarios each, 1 sensitivity_experiment_s will be performed for each case.
+2021-07-13 15:01:46,051 - INFO - D0_process_input - Base capacities provided by: pv-diesel-mg
+2021-07-13 15:01:46,053 - INFO - D0_process_input - All simulated cases: pv-diesel-mg, pv-diesel-storage-mg, pv-wind-storage-diesel-mg
+2021-07-13 15:01:46,054 - INFO - cli - With these cases, a total of 3 simulations will be performed. 
+
+2021-07-13 15:01:46,062 - INFO - E_blackouts_central_grid - Blackout experiment 1: Blackout duration 0 hrs, blackout frequency 0 per month
+2021-07-13 15:01:46,063 - INFO - E_blackouts_central_grid - Number of blackouts in simulated timeframe: 0
+2021-07-13 15:01:46,065 - INFO - E_blackouts_central_grid - Grid is not operational for 0 hours, with a reliability of 100.0 percent. 
+
+2021-07-13 15:01:46,072 - INFO - E_blackouts_central_grid - Missing blackout timeseries added through auto-generation.
+2021-07-13 15:01:46,079 - DEBUG - cli - Using grid availability timeseries that was randomly generated.

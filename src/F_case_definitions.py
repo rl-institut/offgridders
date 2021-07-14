@@ -70,6 +70,7 @@ from src.constants import (
     SHARE_USAGE,
     SHARE_HYBRID,
     DEFAULT,
+    USE_BIDIRECTIONAL_INVERTER_CONSTRAINT,
 )
 
 # This is not really a necessary class, as the whole experiement could be given to the function, but it ensures, that
@@ -278,6 +279,13 @@ def update_dict(capacities_oem, specific_case, experiment):
     experiment_case_dict[ENABLE_INVERTER_ONLY_AT_BLACKOUT] = specific_case[
         ENABLE_INVERTER_ONLY_AT_BLACKOUT
     ]
+    
+    #################################################
+    # Include use bidirectional inverter constraint #
+    #################################################
+
+    experiment_case_dict[USE_BIDIRECTIONAL_INVERTER_CONSTRAINT] = specific_case[USE_BIDIRECTIONAL_INVERTER_CONSTRAINT]
+
     return experiment_case_dict
 
 
