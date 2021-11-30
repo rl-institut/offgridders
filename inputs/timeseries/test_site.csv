@@ -1,4 +1,4 @@
-Demand;DEMAND_PROFILE_AC_CRITICAL; DEMAND_PROFILE_DC_CRITICAL;SolarGen;Wind
+Demand_ac_non_critical;Demand_ac_critical;Demand_dc_critical;SolarGen;Wind
 4.22474;4.22474;4.22474;0;0.032
 4.45403;4.45403;4.45403;0;0.052
 5.3011;5.3011;5.3011;0;0.078
