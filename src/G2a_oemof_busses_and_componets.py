@@ -709,7 +709,7 @@ def distribution_grid_ac(
     return distribution
 
 
-def demand_ac(micro_grid_system, bus_electricity_ac, demand_profile):
+def demand_ac(micro_grid_system, bus_electricity_ac, demand_profile, demand_name):
     """
     Creates demand sink "sink_demand" with fixed flow
     """
@@ -721,10 +721,11 @@ def demand_ac(micro_grid_system, bus_electricity_ac, demand_profile):
     )
 
     micro_grid_system.add(sink_demand_ac)
+    demand_name.add(sink_demand_ac)
     return sink_demand_ac
 
 
-def demand_dc(micro_grid_system, bus_electricity_dc, demand_profile):
+def demand_dc(micro_grid_system, bus_electricity_dc, demand_profile, demand_name):
     """
     Creates demand sink "sink_demand" with fixed flow
     """
@@ -735,6 +736,7 @@ def demand_dc(micro_grid_system, bus_electricity_dc, demand_profile):
         inputs={bus_electricity_dc: solph.Flow(fix=demand_profile, nominal_value=1)},
     )
     micro_grid_system.add(sink_demand_dc)
+    demand_name.add(sink_demand_dc)
     return sink_demand_dc
 
 
