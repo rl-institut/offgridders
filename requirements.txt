@@ -1,4 +1,3 @@
-matplotlib==3.0.0
 oemof.network==0.4.0rc0
 oemof.solph==0.4.1
 oemof.tools==0.4.0
@@ -8,3 +7,5 @@ Pyomo==5.7.0
 scipy==1.4.1
 xlrd==1.2.0
 xlsxwriter==1.2.7
+matplotlib
+numpy==1.19.4
