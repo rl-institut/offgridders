@@ -3,6 +3,7 @@ Small scripts to keep the main file clean
 """
 
 import pandas as pd
+import numpy as np
 from src.constants import (
     CAPACITY_PV_KWP,
     CAPACITY_WIND_KW,
@@ -103,7 +104,7 @@ def store_result_matrix(overall_results, experiment, oemof_results):
 
     """
     round_to_comma = 5
-    result_series = pd.Series()
+    result_series = pd.Series(dtype=np.float64)
 
     for key in overall_results.columns.values:
         # Check if called value is in oemof results -> Remember: check if pandas index has certain index: pd.object.index.contains(key)
