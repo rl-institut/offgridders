@@ -233,7 +233,7 @@ def backup_test(case_dict, oemof_results, experiment, e_flows_df):
                 ],
                 index=demand_profile.index,
             )
-            ratio_below_zero = ratio.clip_upper(0)
+            ratio_below_zero = ratio.clip(upper=0)
             test_warning(ratio_below_zero, oemof_results, boolean_test)
     else:
         pass
@@ -419,7 +419,7 @@ def hybrid_test(case_dict, oemof_results, experiment, e_flows_df):
                 ],
                 index=demand_profile.index,
             )
-            ratio_below_zero = ratio.clip_upper(0)
+            ratio_below_zero = ratio.clip(upper=0)
             test_warning(ratio_below_zero, oemof_results, boolean_test)
 
     else:
@@ -534,7 +534,7 @@ def usage_test(case_dict, oemof_results, experiment, e_flows_df):
                 ],
                 index=demand_profile.index,
             )
-            ratio_below_zero = ratio.clip_upper(0)
+            ratio_below_zero = ratio.clip(upper=0)
             test_warning(ratio_below_zero, oemof_results, boolean_test)
     else:
         pass
