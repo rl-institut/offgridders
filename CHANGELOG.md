@@ -36,7 +36,8 @@ Here is a template for new release sections
 - Moved `main()` from `Offgridders.py` to new file `src/cli.py` (#150)
 - Enable benchmark tests for Offgridders: Add optional argument `input_file` to `main()` (#150)
 - Added `GENSET_HOURS_OF_OPERATION` in `C1.overall_results_title` (#153)
-
+- Updated 'requirements.txt' (#164, #167)
+- Fix deprecation warnings for pandas (#167)
 ### Removed
 -
 
