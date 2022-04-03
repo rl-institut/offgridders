@@ -110,33 +110,27 @@ def store_result_matrix(overall_results, experiment, oemof_results):
         # Check if called value is in oemof results -> Remember: check if pandas index has certain index: pd.object.index.contains(key)
         if key in oemof_results:
             if isinstance(oemof_results[key], str):
-                result_series = result_series.append(
-                    pd.Series([oemof_results[key]], index=[key])
-                )
+                result_series = pd.concat([result_series, pd.Series([oemof_results[key]], index=[key])])
             else:
-                result_series = result_series.append(
-                    pd.Series([round(oemof_results[key], round_to_comma)], index=[key])
-                )
+                result_series = pd.concat([result_series, pd.Series([round(oemof_results[key], round_to_comma)], index=[key])])
         # extend by item of demand profile
         elif key == DEMAND_PROFILE:
-            result_series = result_series.append(
+            result_series = pd.concat([result_series,
                 pd.Series([experiment[key]], index=[key])
-            )
+            ])
         # Check if called value is a parameter of sensitivity_experiment_s
         elif key in experiment:
             if isinstance(experiment[key], str):
-                result_series = result_series.append(
+                result_series = pd.concat([result_series,
                     pd.Series([experiment[key]], index=[key])
-                )
+                ])
             else:
-                result_series = result_series.append(
+                result_series = pd.concat([result_series,
                     pd.Series([round(experiment[key], round_to_comma)], index=[key])
-                )
+                ])
 
     result_series = result_series.reindex(overall_results.columns, fill_value=None)
 
-    overall_results = overall_results.append(
-        pd.Series(result_series), ignore_index=True
-    )
+    overall_results = pd.concat([overall_results, result_series.to_frame().T], ignore_index=True)
 
     return overall_results
