@@ -1,7 +1,7 @@
 oemof.network==0.4.0rc0
 oemof.solph==0.4.1
 oemof.tools==0.4.0
-pandas==0.23.4
+pandas>=1.4.1
 pip==20.2.4
 Pyomo==5.7.0
 scipy==1.4.1
