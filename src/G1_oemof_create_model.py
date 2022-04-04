@@ -530,6 +530,7 @@ def build(experiment, case_dict):
             + " faulty at enable_inverter_at_backout. Value can only be True or False"
         )
 
+    # TODO maybe important for critical
     """
     # ------------Allow shortage only for certain percentage of demand in a timestep------------#
     if case_dict['allow_shortage'] is True:
