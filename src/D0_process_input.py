@@ -608,7 +608,9 @@ def apply_noise(experiment_s):
     """
     for experiment in experiment_s:
         on_series(experiment_s[experiment], WHITE_NOISE_DEMAND, DEMAND_AC)
+        on_series(experiment_s[experiment], WHITE_NOISE_DEMAND, DEMAND_AC_CRITICAL)
         on_series(experiment_s[experiment], WHITE_NOISE_DEMAND, DEMAND_DC)
+        on_series(experiment_s[experiment], WHITE_NOISE_DEMAND, DEMAND_DC_CRITICAL)
         on_series(experiment_s[experiment], WHITE_NOISE_PV, PV_GENERATION_PER_KWP)
         on_series(experiment_s[experiment], WHITE_NOISE_WIND, WIND_GENERATION_PER_KW)
     return
