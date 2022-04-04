@@ -339,6 +339,7 @@ BUS_ELECTRICITY_DC = "bus_electricity_dc"
 SHARE_BACKUP = "share_backup"
 SHARE_USAGE = "share_usage"
 SHARE_HYBRID = "share_hybrid"
+CRITICAL = "critical"
 BUS_FUEL = "bus_fuel"
 
 PREFIX_RESULTS = "results_"

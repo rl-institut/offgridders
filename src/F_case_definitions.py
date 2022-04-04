@@ -71,6 +71,7 @@ from src.constants import (
     SHARE_BACKUP,
     SHARE_USAGE,
     SHARE_HYBRID,
+    CRITICAL,
     DEFAULT,
 )
 
@@ -238,6 +239,7 @@ def update_dict(capacities_oem, specific_case, experiment):
         or specific_case[STABILITY_CONSTRAINT] == SHARE_BACKUP
         or specific_case[STABILITY_CONSTRAINT] == SHARE_USAGE
         or specific_case[STABILITY_CONSTRAINT] == SHARE_HYBRID
+        or specific_case[STABILITY_CONSTRAINT] == CRITICAL
     ):
         experiment_case_dict.update(
             {STABILITY_CONSTRAINT: specific_case[STABILITY_CONSTRAINT]}

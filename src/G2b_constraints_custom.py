@@ -676,6 +676,25 @@ def share_test(case_dict, oemof_results, experiment):
     return
 
 
+def critical(model,):
+    """
+    Resulting in an energy system adhering to a minimal renewable factor
+
+    Parameters
+    - - - - - - - -
+    model: oemof.solph.model
+    """
+
+    def meet_critical_demand_rule(model):
+        # TODO express the fact that the critical demand must be met as a constraint
+        expr = total_production - total_critical_demand
+        return expr >= 0
+
+    model.critical_constraint = po.Constraint(rule=meet_critical_demand_rule)
+
+    return model
+
+
 def forced_charge(model, case_dict, el_bus_dc, storage, experiment):
     ## ------- Get CAP Storage ------- #
     CAP_storage = 0

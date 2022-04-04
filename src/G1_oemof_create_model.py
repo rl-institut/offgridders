@@ -31,6 +31,7 @@ from src.constants import (
     SHARE_BACKUP,
     SHARE_USAGE,
     SHARE_HYBRID,
+    CRITICAL,
     RENEWABLE_SHARE_CONSTRAINT,
     FORCE_CHARGE_FROM_MAINGRID,
     DISCHARGE_ONLY_WHEN_BLACKOUT,
@@ -422,6 +423,12 @@ def build(experiment, case_dict):
             el_bus_ac=bus_electricity_ac,
             el_bus_dc=bus_electricity_dc,
         )
+    elif case_dict[STABILITY_CONSTRAINT] == CRITICAL:
+        # TODO: add the function to make the stability constraint favor critical demand over demand
+        pass
+        # constraints_custom.critical(
+        #     model,
+        # )
     else:
         logging.warning(
             "Case definition of "
