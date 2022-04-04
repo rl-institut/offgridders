@@ -23,6 +23,8 @@ from src.constants import (
     MAX_SHORTAGE,
     TOTAL_DEMAND_AC,
     TOTAL_DEMAND_DC,
+    TOTAL_DEMAND_AC_CRITICAL,
+    TOTAL_DEMAND_DC_CRITICAL,
     BUS_ELECTRICITY_NG_CONSUMPTION,
     SOURCE_MAINGRID_CONSUMPTION,
     SINK_MAINGRID_CONSUMPTION_SYMBOLIC,
@@ -70,8 +72,14 @@ from src.constants import (
     SINK_EXCESS,
     TRANSFORMER_RECTIFIER,
     DISTRIBUTION_GRID_EFFICIENCY,
+    DEMAND_AC,
+    DEMAND_AC_CRITICAL,
+    DEMAND_DC,
+    DEMAND_DC_CRITICAL,
     SINK_DEMAND_AC,
     SINK_DEMAND_DC,
+    SINK_DEMAND_AC_CRITICAL,
+    SINK_DEMAND_DC_CRITICAL,
     SINK_MAINGRID_FEEDIN,
     GRID_AVAILABILITY,
     SINK_MAINGRID_FEEDIN_SYMBOLIC,
@@ -701,33 +709,33 @@ def distribution_grid_ac(
     return distribution
 
 
-def demand_ac(micro_grid_system, bus_electricity_ac, demand_profile):
+def demand(micro_grid_system, bus_electricity, experiment, demand_type):
     """
-    Creates demand sink "sink_demand" with fixed flow
+    Creates demand sink of a demand type with a fixed flow
     """
-    logging.debug("Added to oemof model: demand AC")
+    dict_sink_names = {
+        DEMAND_AC: SINK_DEMAND_AC,
+        DEMAND_AC_CRITICAL: SINK_DEMAND_AC_CRITICAL,
+        DEMAND_DC: SINK_DEMAND_DC,
+        DEMAND_DC_CRITICAL: SINK_DEMAND_DC_CRITICAL,
+    }
+
+    if demand_type not in dict_sink_names:
+        logging.error(
+            f"The demand type you provided ({demand_type}), is not one if the allowed demand types: {','.join(dict_sink_names.keys())}"
+        )
+
+    logging.debug(f"Added to oemof model: {demand_type}")
     # create and add demand sink to micro_grid_system - fixed
     sink_demand_ac = solph.Sink(
-        label=SINK_DEMAND_AC,
-        inputs={bus_electricity_ac: solph.Flow(fix=demand_profile, nominal_value=1)},
+        label=dict_sink_names[demand_type],
+        inputs={
+            bus_electricity: solph.Flow(fix=experiment[demand_type], nominal_value=1)
+        },
     )
 
     micro_grid_system.add(sink_demand_ac)
     return sink_demand_ac
-
-
-def demand_dc(micro_grid_system, bus_electricity_dc, demand_profile):
-    """
-    Creates demand sink "sink_demand" with fixed flow
-    """
-    logging.debug("Added to oemof model: demand DC")
-    # create and add demand sink to micro_grid_system - fixed
-    sink_demand_dc = solph.Sink(
-        label="sink_demand_dc",
-        inputs={bus_electricity_dc: solph.Flow(fix=demand_profile, nominal_value=1)},
-    )
-    micro_grid_system.add(sink_demand_dc)
-    return sink_demand_dc
 
 
 def maingrid_feedin(micro_grid_system, experiment):

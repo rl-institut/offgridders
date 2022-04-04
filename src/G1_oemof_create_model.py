@@ -10,7 +10,12 @@ from src.constants import (
     BUS_FUEL,
     DATE_TIME_INDEX,
     BUS_ELECTRICITY_AC,
+    DEMAND_DC,
+    DEMAND_AC,
+    DEMAND_DC_CRITICAL,
+    DEMAND_AC_CRITICAL,
     DEMAND_PROFILE_AC,
+    DEMAND_PROFILE_AC_CRITICAL,
     GENSET_FIXED_CAPACITY,
     GENSET_WITH_MINIMAL_LOADING,
     NUMBER_OF_EQUAL_GENERATORS,
@@ -21,6 +26,7 @@ from src.constants import (
     PEAK_DEMAND,
     BUS_ELECTRICITY_DC,
     DEMAND_PROFILE_DC,
+    DEMAND_PROFILE_DC_CRITICAL,
     PV_FIXED_CAPACITY,
     STORAGE_FIXED_CAPACITY,
     STORAGE_FIXED_POWER,
@@ -95,8 +101,18 @@ def build(experiment, case_dict):
     micro_grid_system.add(bus_electricity_ac)
 
     # ------------demand sink ac------------#
-    sink_demand_ac = generate.demand_ac(
-        micro_grid_system, bus_electricity_ac, experiment[DEMAND_PROFILE_AC]
+    # the function already add the sink to the energy system
+    sink_demand_ac = generate.demand(
+        micro_grid_system, bus_electricity_ac, experiment, demand_type=DEMAND_AC
+    )
+
+    # ------------demand sink ac critical ------------#
+    # the function already add the sink to the energy system
+    demand_ac_critical = generate.demand(
+        micro_grid_system,
+        bus_electricity_ac,
+        experiment,
+        demand_type=DEMAND_AC_CRITICAL,
     )
 
     # ------------fuel source------------#
@@ -256,8 +272,18 @@ def build(experiment, case_dict):
     micro_grid_system.add(bus_electricity_dc)
 
     # ------------demand sink dc------------#
-    sink_demand_dc = generate.demand_dc(
-        micro_grid_system, bus_electricity_dc, experiment[DEMAND_PROFILE_DC]
+    # the function already add the sink to the energy system
+    sink_demand_dc = generate.demand(
+        micro_grid_system, bus_electricity_dc, experiment, demand_type=DEMAND_DC
+    )
+
+    # ------------demand sink dc critical ------------#
+    # the function already add the sink to the energy system
+    demand_dc_critical = generate.demand(
+        micro_grid_system,
+        bus_electricity_ac,
+        experiment,
+        demand_type=DEMAND_DC_CRITICAL,
     )
 
     # ------------PV------------#
