@@ -38,9 +38,13 @@ from src.constants import (
     ACCUMULATED_PROFILE_AC_SIDE,
     ACCUMULATED_PROFILE_DC_SIDE,
     TOTAL_DEMAND_AC,
+    TOTAL_DEMAND_AC_CRITICAL,
     PEAK_DEMAND_AC,
+    PEAK_DEMAND_AC_CRITICAL,
     TOTAL_DEMAND_DC,
+    TOTAL_DEMAND_DC_CRITICAL,
     PEAK_DEMAND_DC,
+    PEAK_DEMAND_DC_CRITICAL,
     PEAK_PV_GENERATION_PER_KWP,
     PEAK_WIND_GENERATION_PER_KW,
     MEAN_DEMAND_AC,
@@ -490,9 +494,21 @@ def add_timeseries(experiment_s) -> object:
         experiment_s[experiment].update(
             {
                 TOTAL_DEMAND_AC: sum(experiment_s[experiment][DEMAND_PROFILE_AC]),
+                TOTAL_DEMAND_AC_CRITICAL: sum(
+                    experiment_s[experiment][DEMAND_PROFILE_AC_CRITICAL]
+                ),
                 PEAK_DEMAND_AC: max(experiment_s[experiment][DEMAND_PROFILE_AC]),
+                PEAK_DEMAND_AC_CRITICAL: max(
+                    experiment_s[experiment][DEMAND_PROFILE_AC_CRITICAL]
+                ),
                 TOTAL_DEMAND_DC: sum(experiment_s[experiment][DEMAND_PROFILE_DC]),
+                TOTAL_DEMAND_DC_CRITICAL: sum(
+                    experiment_s[experiment][DEMAND_PROFILE_DC_CRITICAL]
+                ),
                 PEAK_DEMAND_DC: max(experiment_s[experiment][DEMAND_PROFILE_DC]),
+                PEAK_DEMAND_DC_CRITICAL: max(
+                    experiment_s[experiment][DEMAND_PROFILE_DC_CRITICAL]
+                ),
                 PEAK_PV_GENERATION_PER_KWP: max(
                     experiment_s[experiment][PV_GENERATION_PER_KWP]
                 ),
