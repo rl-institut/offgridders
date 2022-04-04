@@ -19,6 +19,8 @@ from src.constants import (
     PRICE_FUEL,
     COMBUSTION_VALUE_FUEL,
     SOURCE_SHORTAGE,
+    STABILITY_CONSTRAINT,
+    CRITICAL,
     SHORTAGE_PENALTY_COST,
     MAX_SHORTAGE,
     TOTAL_DEMAND_AC,
@@ -87,6 +89,7 @@ from src.constants import (
     WIND_GENERATION,
     WIND_COST_ANNUITY,
     BUS_ELECTRICITY_NG_FEEDIN,
+    TITLE_DEMAND_DC_CRITICAL,
 )
 
 ###############################################################################
@@ -118,22 +121,44 @@ def shortage(
     Creates source for shortages "source_shortage" including boundary conditions
     for maximal unserved demand and the variable costs of unserved demand.
     """
-    logging.debug("Added to oemof model: source shortage")
-    source_shortage = solph.Source(
-        label=SOURCE_SHORTAGE,
-        outputs={
-            bus_electricity_ac: solph.Flow(
-                variable_costs=experiment[SHORTAGE_PENALTY_COST],
-                nominal_value=case_dict[MAX_SHORTAGE] * case_dict[TOTAL_DEMAND_AC],
-                summed_max=1,
-            ),
-            bus_electricity_dc: solph.Flow(
-                variable_costs=experiment["shortage_penalty_costs"],
-                nominal_value=case_dict["max_shortage"] * case_dict["total_demand_dc"],
-                summed_max=1,
-            ),
-        },
-    )
+
+    stability_constraint = case_dict.get(STABILITY_CONSTRAINT, None)
+    if stability_constraint == CRITICAL:
+        logging.debug("Added to oemof model: source shortage for critical demand")
+        source_shortage = solph.Source(
+            label=SOURCE_SHORTAGE,
+            outputs={
+                bus_electricity_ac: solph.Flow(
+                    variable_costs=experiment[SHORTAGE_PENALTY_COST],
+                    nominal_value=case_dict[MAX_SHORTAGE]
+                    * case_dict[TOTAL_DEMAND_AC_CRITICAL],
+                    summed_max=1,
+                ),
+                bus_electricity_dc: solph.Flow(
+                    variable_costs=experiment[SHORTAGE_PENALTY_COST],
+                    nominal_value=case_dict[MAX_SHORTAGE]
+                    * case_dict[TOTAL_DEMAND_AC_CRITICAL],
+                    summed_max=1,
+                ),
+            },
+        )
+    else:
+        logging.debug("Added to oemof model: source shortage")
+        source_shortage = solph.Source(
+            label=SOURCE_SHORTAGE,
+            outputs={
+                bus_electricity_ac: solph.Flow(
+                    variable_costs=experiment[SHORTAGE_PENALTY_COST],
+                    nominal_value=case_dict[MAX_SHORTAGE] * case_dict[TOTAL_DEMAND_AC],
+                    summed_max=1,
+                ),
+                bus_electricity_dc: solph.Flow(
+                    variable_costs=experiment[SHORTAGE_PENALTY_COST],
+                    nominal_value=case_dict[MAX_SHORTAGE] * case_dict[TOTAL_DEMAND_AC],
+                    summed_max=1,
+                ),
+            },
+        )
     micro_grid_system.add(source_shortage)
     return source_shortage
 
