@@ -558,14 +558,22 @@ def add_timeseries(experiment_s) -> object:
 
         # Warnings
         if (
-            experiment_s[experiment][TOTAL_DEMAND_AC]
-            == 0 + experiment_s[experiment][TOTAL_DEMAND_DC]
-            == 0
+            experiment_s[experiment][TOTAL_DEMAND_AC] == 0
+            and experiment_s[experiment][TOTAL_DEMAND_DC] == 0
         ):
             logging.warning(
                 "No demand in evaluated timesteps at project site "
                 + experiment_s[experiment][PROJECT_SITE_NAME]
                 + " - simulation will crash."
+            )
+        if (
+            experiment_s[experiment][TOTAL_DEMAND_AC_CRITICAL] == 0
+            and experiment_s[experiment][TOTAL_DEMAND_DC_CRITICAL] == 0
+        ):
+            logging.warning(
+                "No critical demand in evaluated timesteps at project site "
+                + experiment_s[experiment][PROJECT_SITE_NAME]
+                + " - simulation will not provide expected results if you wanted to distinguish between critical and non-critical demand."
             )
         if experiment_s[experiment][PEAK_PV_GENERATION_PER_KWP] == 0:
             logging.info(
