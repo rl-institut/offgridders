@@ -27,11 +27,15 @@ from src.constants import (
     TARIFF,
     TITLE_TIME,
     TITLE_DEMAND_AC,
+    TITLE_DEMAND_AC_CRITICAL,
     TITLE_DEMAND_DC,
+    TITLE_DEMAND_DC_CRITICAL,
     TITLE_PV,
     TITLE_WIND,
     DEMAND_AC,
+    DEMAND_AC_CRITICAL,
     DEMAND_DC,
+    DEMAND_DC_CRITICAL,
     PV_GENERATION_PER_KWP,
     WIND_GENERATION_PER_KW,
     GRID_AVAILABILITY,
@@ -110,7 +114,7 @@ def process_excel_file(input_excel_file):
     # -------- Check for, create or empty results directory -----------------------#
     check_output_directory(settings, input_excel_file)
 
-    (parameters_constant_units, parameters_constant_values,) = get_parameters_constant(
+    (parameters_constant_units, parameters_constant_values) = get_parameters_constant(
         input_excel_file, sheet_input_constant
     )
     parameters_sensitivity = get_parameters_sensitivity(
@@ -406,10 +410,7 @@ def get_case_definitions(file, sheet_project_sites):
                 {MAX_SHORTAGE: float(case_definitions[case][MAX_SHORTAGE])}
             )
 
-        if case_definitions[case][EVALUATION_PERSPECTIVE] not in [
-            AC_SYSTEM,
-            DC_SYSTEM,
-        ]:
+        if case_definitions[case][EVALUATION_PERSPECTIVE] not in [AC_SYSTEM, DC_SYSTEM]:
             logging.error(
                 f"Parameter {EVALUATION_PERSPECTIVE} has to be either {AC_SYSTEM} or {DC_SYSTEM}, but is {case_definitions[case][EVALUATION_PERSPECTIVE]}"
             )
@@ -551,7 +552,9 @@ def from_file(project_site, path_from):
     list_columns = [
         TITLE_TIME,
         TITLE_DEMAND_AC,
+        TITLE_DEMAND_AC_CRITICAL,
         TITLE_DEMAND_DC,
+        TITLE_DEMAND_DC_CRITICAL,
         TITLE_PV,
         TITLE_WIND,
         TITLE_GRID_AVAILABILITY,
@@ -584,6 +587,10 @@ def from_file(project_site, path_from):
                 dictionary_title = DEMAND_AC
             elif column_item == TITLE_DEMAND_DC:
                 dictionary_title = DEMAND_DC
+            elif column_item == TITLE_DEMAND_AC_CRITICAL:
+                dictionary_title = DEMAND_AC_CRITICAL
+            elif column_item == TITLE_DEMAND_DC_CRITICAL:
+                dictionary_title = DEMAND_DC_CRITICAL
             elif column_item == TITLE_PV:
                 dictionary_title = PV_GENERATION_PER_KWP
             elif column_item == TITLE_WIND:
@@ -611,6 +618,9 @@ def from_file(project_site, path_from):
                     project_site.update(
                         {dictionary_title: pd.Series([0 for i in range(0, 8760)])}
                     )
+            logging.debug(
+                f"Data input: {column_item} will be read from column {dictionary_title}"
+            )
 
     return
 
