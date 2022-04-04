@@ -19,11 +19,13 @@ from src.constants import (
     SEQUENCES,
     BUS_ELECTRICITY_AC,
     SINK_DEMAND_AC,
+    SINK_DEMAND_AC_CRITICAL,
     FLOW,
     EVALUATION_PERSPECTIVE,
     INVERTER_DC_AC_EFFICIENCY,
     BUS_ELECTRICITY_DC,
     SINK_DEMAND_DC,
+    SINK_DEMAND_DC_CRITICAL,
     RECTIFIER_AC_DC_EFFICIENCY,
     TOTAL_DEMAND_ANNUAL_KWH,
     DEMAND_PEAK_KW,
@@ -117,7 +119,11 @@ from src.constants import (
     FEED_INTO_MAIN_GRID_MG_SIDE,
     DEMAND_AC,
     DEMAND_DC,
+    DEMAND_AC_CRITICAL,
+    DEMAND_DC_CRITICAL,
     GENSET_HOURS_OF_OPERATION,
+    STABILITY_CONSTRAINT,
+    CRITICAL,
 )
 
 
@@ -166,7 +172,33 @@ def get_demand(
     else:
         e_flows_df[DEMAND] += demand_dc
 
+    stability_constraint = case_dict.get(STABILITY_CONSTRAINT, None)
+    if stability_constraint == CRITICAL:
+        # Add the critical demand to the total demand
+        demand_ac_critical = electricity_bus_ac[SEQUENCES][
+            ((BUS_ELECTRICITY_AC, SINK_DEMAND_AC_CRITICAL), FLOW)
+        ]
+        e_flows_df = join_e_flows_df(demand_ac_critical, DEMAND_AC_CRITICAL, e_flows_df)
+        if case_dict[EVALUATION_PERSPECTIVE] == AC_SYSTEM:
+            e_flows_df[DEMAND] += demand_ac_critical
+        else:
+            e_flows_df[DEMAND] += (
+                demand_ac_critical / experiment[INVERTER_DC_AC_EFFICIENCY]
+            )
+
+        demand_dc_critical = electricity_bus_dc[SEQUENCES][
+            ((BUS_ELECTRICITY_DC, SINK_DEMAND_DC), FLOW)
+        ]
+        e_flows_df = join_e_flows_df(demand_dc_critical, DEMAND_DC_CRITICAL, e_flows_df)
+        if case_dict[EVALUATION_PERSPECTIVE] == AC_SYSTEM:
+            e_flows_df[DEMAND] += (
+                demand_dc_critical / experiment[RECTIFIER_AC_DC_EFFICIENCY]
+            )
+        else:
+            e_flows_df[DEMAND] += demand_dc_critical
+
     annual_value(TOTAL_DEMAND_ANNUAL_KWH, e_flows_df[DEMAND], oemof_results, case_dict)
+
     oemof_results.update({DEMAND_PEAK_KW: max(e_flows_df[DEMAND])})
     return e_flows_df
 
