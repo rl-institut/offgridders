@@ -20,6 +20,8 @@ from src.constants import (
     FILENAME,
     TOTAL_DEMAND_AC,
     TOTAL_DEMAND_DC,
+    TOTAL_DEMAND_AC_CRITICAL,
+    TOTAL_DEMAND_DC_CRITICAL,
     ABS_PEAK_DEMAND_AC_SIDE,
     EVALUATED_DAYS,
     GENSET_WITH_MINIMAL_LOADING,
@@ -107,6 +109,8 @@ def update_dict(capacities_oem, specific_case, experiment):
             ],  # experiment['output_folder'] + "_" + specific_case['case_name'] + experiment['filename']
             TOTAL_DEMAND_AC: experiment[TOTAL_DEMAND_AC],
             TOTAL_DEMAND_DC: experiment[TOTAL_DEMAND_DC],
+            TOTAL_DEMAND_AC_CRITICAL: experiment[TOTAL_DEMAND_AC_CRITICAL],
+            TOTAL_DEMAND_DC_CRITICAL: experiment[TOTAL_DEMAND_DC_CRITICAL],
             PEAK_DEMAND: experiment[ABS_PEAK_DEMAND_AC_SIDE],
             EVALUATED_DAYS: experiment[EVALUATED_DAYS],
             GENSET_WITH_MINIMAL_LOADING: specific_case[GENSET_WITH_MINIMAL_LOADING],
