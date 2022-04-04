@@ -20,7 +20,11 @@ from src.constants import (
     VALUE,
     CASE_NAME,
     MAX_SHORTAGE,
+    CAPACITY_GENSET_KW,
     NUMBER_OF_EQUAL_GENERATORS,
+    GENSET_WITH_EFFICIENCY_CURVE,
+    GENSET_WITH_MINIMAL_LOADING,
+    OEM,
     DIMENSIONS,
     CRITERIA,
     PARAMETERS,
@@ -301,7 +305,6 @@ def get_parameters_constant(file, sheet_input_constant):
             "consumed from the (fully coal-based) maingrid."
         )
 
-    # print(parameters_constant_values)
     return parameters_constant_units, parameters_constant_values
 
 
@@ -392,7 +395,6 @@ def get_case_definitions(file, sheet_project_sites):
     #    case_definitions.drop(case_definitions.columns[case_definitions.columns.str.contains('unnamed', case=False)], axis=1, inplace=True)
 
     case_definitions = case_definitions.to_dict(orient="dict")
-
     # Translate strings 'True' and 'False' from excel sheet to True and False
 
     for case in case_definitions:
@@ -405,6 +407,8 @@ def get_case_definitions(file, sheet_project_sites):
             case_definitions[case].update(
                 {MAX_SHORTAGE: float(case_definitions[case][MAX_SHORTAGE])}
             )
+
+        process_generator_settings(case_definition=case_definitions[case], case=case)
 
         if case_definitions[case][EVALUATION_PERSPECTIVE] not in [
             AC_SYSTEM,
@@ -422,6 +426,73 @@ def get_case_definitions(file, sheet_project_sites):
             }
         )
     return case_definitions
+
+
+MISSING_PARAMETER_WARNING = (
+    "It will be required with the next major release of Offgridders."
+)
+OPTIMIZATION_NOT_POSSIBLE_MINLOAD_OEM = "Currently, this optimization is not possible with oemof or Offgridders and will be neglected."
+OPTIMIZATION_NOT_POSSIBLE_OFFSET_TRANSFORMER_OEM = "This is not possible, as the efficiency curve is calculated based on the maximum and minimum dispatchable capacity of the diesel generator."
+NO_MINIMAL_LOADING_WITH_OFFSET_TRANSFORMER = "In general, the generator with efficiency curve can be simulated with minimal loading, but with this setting the minimal loading is deactivated."
+
+
+def process_generator_settings(case_definition, case):
+    r"""
+    Evaluate settings on tab `case_definitions` of the input file regarding the combination of possible generator settings.
+
+    Generators can be defined with parameters the CAPACITY_GENSET_KW, GENSET_WITH_EFFICIENCY_CURVE, GENSET_WITH_MINIMAL_LOADING,
+    but not all combinations are valid or expected. This function displays warnings when an invalid combination is used.
+    It especially results in an ERROR logging message if an optimization is tried with a GENSET_WITH_EFFICIENCY_CURVE==True or
+    GENSET_WITH_MINIMAL_LOADING == True.
+
+    Parameters
+    ----------
+    case_definition: dict
+        Information of one specific case defined in the case tab in the excel sheet
+    case: str
+        Case name
+
+    Returns
+    -------
+    Nothing, potentially adds logging messages.
+    """
+    if GENSET_WITH_EFFICIENCY_CURVE not in case_definition:
+        case_definition.update({GENSET_WITH_EFFICIENCY_CURVE: False})
+        logging.warning(
+            f"For case {case} a parameter {GENSET_WITH_EFFICIENCY_CURVE} is missing. {MISSING_PARAMETER_WARNING} For this simulation, it is set to the default setting `False`."
+        )
+    if case_definition[CAPACITY_GENSET_KW] is None:
+        logging.debug(f"The energy system of case {case} does not include a generator.")
+    else:
+        # Create warnings for weird combinations of diesel generator simulation settings
+        if case_definition[CAPACITY_GENSET_KW] == OEM:
+            logging.debug(f"For case {case} the diesel generator should be optimized.")
+            if case_definition[GENSET_WITH_MINIMAL_LOADING] is True:
+                logging.warning(
+                    f"At the same time, {GENSET_WITH_MINIMAL_LOADING} is set to `True`."
+                    f"{OPTIMIZATION_NOT_POSSIBLE_MINLOAD_OEM}"
+                )
+
+            if case_definition[GENSET_WITH_EFFICIENCY_CURVE] is True:
+                logging.error(
+                    f"At the same time, {GENSET_WITH_EFFICIENCY_CURVE} is set to `True`. "
+                    f"{OPTIMIZATION_NOT_POSSIBLE_OFFSET_TRANSFORMER_OEM}"
+                )
+        else:
+            logging.debug(
+                f"The energy system of {case} has a generator with fixed capacity, therefore all generator types are possible."
+            )
+            if (
+                case_definition[GENSET_WITH_EFFICIENCY_CURVE] is True
+                and case_definition[GENSET_WITH_MINIMAL_LOADING] is False
+            ):
+                logging.warning(
+                    f"For case {case} the diesel generator parameteter {GENSET_WITH_EFFICIENCY_CURVE} is set to `True`."
+                    f"and {GENSET_WITH_MINIMAL_LOADING} is set to False. "
+                    f"{NO_MINIMAL_LOADING_WITH_OFFSET_TRANSFORMER}"
+                )
+
+    return
 
 
 def get_multicriteria_data(file, sheet_multicriteria_analysis, case_definitions):

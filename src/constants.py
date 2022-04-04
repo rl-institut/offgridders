@@ -7,6 +7,25 @@ OUTPUT_FILE = "output_file"
 # Default input file
 INPUT_TEMPLATE_EXCEL_XLSX = "inputs/input_template_excel.xlsx"
 
+# Default folder names
+OEMOF_FOLDER = "/oemof"
+INPUTS_FOLDER = "/inputs"
+ELECTRICITY_MG_FOLDER = "/electricity_mg"
+STORAGE_FOLDER = "/storage"
+LP_FILES_FOLDER = "/lp_files"
+PYTEST_FOLDER = "tests"
+
+# Default file names
+GRID_AVAILABILITY_CSV = "grid_availability.csv"
+SENSITIVITY_EXPERIMENTS_CSV = "sensitivity_experiments.csv"
+SIMULATION_EXPERIMENTS_CSV = "simulation_experiments.csv"
+SUFFIX_ELECTRICITY_MG_CSV = "_electricity_mg.csv"
+SUFFIX_ELECTRICITY_MG_PNG = "_electricity_mg.png"
+SUFFIX_ELECTRICITY_MG_4DAYS_PNG = "_electricity_mg_4days.png"
+SUFFIX_STORAGE_CSV = "_storage.csv"
+SUFFIX_STORAGE_PNG = "_storage.png"
+SUFFIX_STORAGE_4DAYS_PNG = "_storage_4days.png"
+
 # A1_GENERAL_FUNCTIONS
 CAPACITY_PV_KWP = "capacity_pv_kWp"
 CAPACITY_WIND_KW = "capacity_wind_kW"
@@ -66,15 +85,6 @@ DEFAULT = "default"
 AC_SYSTEM = "AC_system"
 DC_SYSTEM = "DC_system"
 SEPARATOR = "seperator"
-GRID_AVAILABILITY_CSV = "grid_availability.csv"
-
-INPUT_TEMPLATE_EXCEL_XLSX = "inputs/input_template_excel.xlsx"
-
-OEMOF_FOLDER = "/oemof"
-INPUTS_FOLDER = "/inputs"
-ELECTRICITY_MG_FOLDER = "/electricity_mg"
-STORAGE_FOLDER = "/storage"
-LP_FILES_FOLDER = "/lp_files"
 
 # C_SENSITIVITY_EXPERIMENTS
 BLACKOUT_DURATION = "blackout_duration"
@@ -175,7 +185,6 @@ FUEL_PRICE_CHANGE_ANNUAL = "fuel_price_change_annual"
 CASE = "case"
 RESULTS_DEMAND_CHARACTERISTICS = "results_demand_characteristics"
 RESULTS_BLACKOUT_CHARACTERISTICS = "results_blackout_characteristics"
-CAPACITY_INVERTER_KW = "capacity_inverter_kW"
 LCOE = "lcoe"
 ANNUITY = "annuity"
 NPV = "npv"
@@ -236,9 +245,6 @@ COMMENTS = "comments"
 CO2_EMISSIONS_KGC02EQ = "co2_emissions_kgCO2eq"
 TOTAL_EXCESS_ANNUAL_KWH = "total_excess_annual_kWh"
 
-SENSITIVITY_EXPERIMENTS_CSV = "sensitivity_experiments.csv"
-SIMULATION_EXPERIMENTS_CSV = "simulation_experiments.csv"
-
 # D0_process_input
 PERFORM_SIMULATION = "perform_simulation"
 BASED_ON_CASE = "based_on_case"
@@ -292,11 +298,10 @@ GRID_NUMBER_OF_BLACKOUTS = "grid_number_of_blackouts"
 GRID_RELIABILITY = "grid_reliability"
 MAX_EVALUATED_DAYS = "max_evaluated_days"
 
-GRID_AVAILABILITY_CSV = "grid_availability.csv"
-
 # F_case_definitions
 PEAK_DEMAND = "peak_demand"
 GENSET_WITH_MINIMAL_LOADING = "genset_with_minimal_loading"
+GENSET_WITH_EFFICIENCY_CURVE = "genset_with_efficiency_curve"
 CAPACITY_PCC_CONSUMPTION_KW = "capacity_pcc_consumption_kW"
 CAPACITY_PCC_FEEDING_KW = "capacity_pcc_feedin_kW"
 STORAGE_FIXED_CAPACITY = "storage_fixed_capacity"
@@ -410,6 +415,8 @@ TOTAL_INVERTER_DC_AC_THROUGHPUT_KWH = "total_inverter_dc_ac_throughput_kWh"
 WIND_GENERATION = "Wind generation"
 TRANSFORMER_GENSET_1 = "transformer_genset_1"
 GENSET_1_GENERATION = "Genset 1 generation"
+CONSUMPTION_FUEL_TIMESERIES_KWH = "consumption_fuel_kWh"
+EFFICIENCY_GENSET_TIMESERIES = "efficiency_generator"
 CONSUMPTION_FUEL_ANNUAL_KWH = "consumption_fuel_annual_kWh"
 CAPACITY = "capacity"
 TOTAL_STORAGE_THOUGHPUT_KWH = "total_storage_throughput_kWh"
@@ -460,14 +467,8 @@ DISPLAY_INVEST = "display_invest"
 SUFFIX_GRAPH = "_graph"
 BASE_OEM = "base_oem"
 BASE_OEM_WITH_MIN_LOADING = "base_oem_with_min_loading"
-SUFFIX_ELECTRICITY_MG_CSV = "_electricity_mg.csv"
-SUFFIX_ELECTRICITY_MG_PNG = "_electricity_mg.png"
-SUFFIX_ELECTRICITY_MG_4DAYS_PNG = "_electricity_mg_4days.png"
-SUFFIX_STORAGE_CSV = "_storage.csv"
-SUFFIX_STORAGE_PNG = "_storage.png"
-SUFFIX_STORAGE_4DAYS_PNG = "_storage_4days.png"
 
-# H0
+# H0 - Multi-Criteria Assessment (MCA)
 CAPACITIES = "capacities"
 EVALUATIONS = "evaluations"
 NORMALIZED_EVALUATIONS = "normalized_evaluations"
@@ -488,7 +489,7 @@ SHOW = "show"
 DIMENSIONS_W = "Dimensions"  # dimension_weights
 LOCAL = "local"
 
-# H1
+# H1 - Multi-Criteria Assessment (MCA)
 ECONOMIC = "economic"
 TECHNICAL = "technical"
 SOCIOINSTITUTIONAL = "socioinstitutional"

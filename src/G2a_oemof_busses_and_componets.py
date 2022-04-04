@@ -346,7 +346,11 @@ def inverter_dc_ac_oem(
     return inverter_dc_ac
 
 
-def genset_fix(
+LOG_MESSAGE_GENSET_FIX_CAPACITY_FIX_EFFICIENCY_NO_MINLOAD = (
+    "Genset with fix capacity, fix efficiency and no minimal loading"
+)
+
+def genset_fix_capacity_fix_efficiency_no_minload(
     micro_grid_system,
     bus_fuel,
     bus_electricity_ac,
@@ -354,7 +358,9 @@ def genset_fix(
     capacity_fuel_gen,
     number_of_equal_generators,
 ):
-    logging.debug("Added to oemof model: genset fix no minload")
+    logging.debug(
+        f"Added to oemof model: {LOG_MESSAGE_GENSET_FIX_CAPACITY_FIX_EFFICIENCY_NO_MINLOAD}"
+    )
     dict_of_generators = {}
     for number in range(1, number_of_equal_generators + 1):
         genset = solph.Transformer(
@@ -373,7 +379,77 @@ def genset_fix(
     return dict_of_generators
 
 
-def genset_fix_minload(
+LOG_MESSAGE_GENSET_FIX_CAPACITY_EFFICIENCY_CURVE_AND_MINLOAD = (
+    "Genset with fix capacity, efficiency curve and minimal loading"
+)
+
+
+def genset_fix_capacity_efficiency_curve_and_minimal_loading(
+    micro_grid_system,
+    bus_fuel,
+    bus_electricity_ac,
+    experiment,
+    capacity_fuel_gen,
+    number_of_equal_generators,
+    minimal_loading = False
+):
+    if minimal_loading is False:
+        if experiment[GENSET_MIN_LOADING] != 0 or experiment[GENSET_MAX_LOADING] != 1:
+            logging.warning(
+                f"According to the case definition, the scenario should not consider minimal loading. Therefore, {GENSET_MIN_LOADING} will be set to 0 and {GENSET_MAX_LOADING} to 1, eventhough they were originally defined as {experiment[GENSET_MIN_LOADING]}/{experiment[GENSET_MAX_LOADING]}.")
+            experiment.update({GENSET_MIN_LOADING: 0})
+            experiment.update({GENSET_MAX_LOADING: 1})
+
+    eta_min = experiment[GENSET_EFFICIENCY]/2  # efficiency at minimal operation point
+    eta_max = experiment[GENSET_EFFICIENCY]  # efficiency at nominal operation point
+
+    min = experiment[GENSET_MIN_LOADING]
+    max = experiment[GENSET_MAX_LOADING]
+
+    P_out_min = capacity_fuel_gen / number_of_equal_generators * min   # absolute minimal output power
+    P_out_max = capacity_fuel_gen / number_of_equal_generators * max  # absolute nominal output power
+
+    # calculate limits of input power flow
+    P_in_min = P_out_min / eta_min
+    P_in_max = P_out_max / eta_max
+
+    # calculate coefficients of input-output line equation
+    c1 = (P_out_max - P_out_min) / (P_in_max - P_in_min)
+    c0 = P_out_max - c1 * P_in_max
+
+    logging.debug(f"The diesel generator is simulated as an OffsetTransformer "
+                 f"with a minimal output of {P_out_min} and maximal output of {P_out_max}.")
+    logging.debug(
+        f"Added to oemof model: {LOG_MESSAGE_GENSET_FIX_CAPACITY_EFFICIENCY_CURVE_AND_MINLOAD}"
+    )
+    dict_of_generators = {}
+    for number in range(1, number_of_equal_generators + 1):
+        genset = solph.OffsetTransformer(
+            label="transformer_genset_" + str(number),
+            inputs={bus_fuel: solph.Flow(
+                nominal_value=P_in_max,
+                min=P_in_min / P_in_max,
+                max=1,
+                nonconvex=solph.NonConvex()
+            )},
+            outputs={
+                bus_electricity_ac: solph.Flow(variable_costs=experiment["genset_cost_var"])
+            },
+            coefficients=(c0, c1)
+        )
+
+        micro_grid_system.add(genset)
+        dict_of_generators.update({number: genset})
+
+    return dict_of_generators
+
+
+LOG_MESSAGE_GENSET_FIX_CAPACITY_FIX_EFFICIENCY_WITH_MINLOAD = (
+    "Genset with fix capacity, fix efficiency and with minimal loading"
+)
+
+
+def genset_fix_capacity_fix_efficiency_with_minload(
     micro_grid_system,
     bus_fuel,
     bus_electricity_ac,
@@ -388,7 +464,9 @@ def genset_fix_minload(
     (which would result in an error due to constraint 'NonConvexFlow.min').
     """
 
-    logging.debug("Added to oemof model: genset fix minload")
+    logging.debug(
+        f"Added to oemof model: {LOG_MESSAGE_GENSET_FIX_CAPACITY_FIX_EFFICIENCY_WITH_MINLOAD}"
+    )
     dict_of_generators = {}
     for number in range(1, number_of_equal_generators + 1):
         genset = solph.Transformer(
@@ -411,14 +489,21 @@ def genset_fix_minload(
     return dict_of_generators
 
 
-def genset_oem(
+LOG_MESSAGE_GENSET_OEM_FIX_EFFICIENCY_NO_MINLOAD = (
+    "Genset for capacity optimizaion (OEM) with fix efficiency and no minimal loading"
+)
+
+
+def genset_oem_fix_efficiency_no_minload(
     micro_grid_system, bus_fuel, bus_electricity_ac, experiment, number_of_generators,
 ):
     """
-    Generates fossi-fueled genset "transformer_fuel_generator" for OEM with generator efficiency,
+    Generates fossil-fueled genset "transformer_fuel_generator" for OEM with fix generator efficiency,
     investment and variable costs.
     """
-    logging.debug("Added to oemof model: genset oem no minload")
+    logging.debug(
+        f"Added to oemof model: {LOG_MESSAGE_GENSET_OEM_FIX_EFFICIENCY_NO_MINLOAD}."
+    )
     dict_of_generators = {}
     for number in range(1, number_of_generators + 1):
         genset = solph.Transformer(
@@ -576,7 +661,11 @@ def pointofcoupling_consumption_oem(
 
 
 def storage_fix(
-    micro_grid_system, bus_electricity_dc, experiment, capacity_storage, power_storage,
+    micro_grid_system,
+    bus_electricity_dc,
+    experiment,
+    capacity_storage,
+    power_storage,
 ):
     """
     Create storage unit "generic_storage" with fixed capacity,

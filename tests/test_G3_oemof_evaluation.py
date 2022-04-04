@@ -18,7 +18,7 @@ def test_get_hours_of_operation():
         operation_boolean.sum() == 2
     ), f"It was expected that the number of operation hours in the evaluated timeframe was 2, but it is {operation_boolean.sum()}."
     assert_series_equal(
-        genset_generation.astype(np.float64), exp(np.float64), check_names=False,
+        operation_boolean.astype(np.float64), exp.astype(np.float64), check_names=False,
     ), f"The operational hours pd.Series should be the same when calculated with the function to the expected series."
     assert (
         GENSET_HOURS_OF_OPERATION in oemof_results

@@ -23,6 +23,7 @@ from src.constants import (
     ABS_PEAK_DEMAND_AC_SIDE,
     EVALUATED_DAYS,
     GENSET_WITH_MINIMAL_LOADING,
+    GENSET_WITH_EFFICIENCY_CURVE,
     CAPACITY_PV_KWP,
     CAPACITY_WIND_KW,
     CAPACITY_RECTIFIER_AC_DC_KW,
@@ -110,6 +111,7 @@ def update_dict(capacities_oem, specific_case, experiment):
             PEAK_DEMAND: experiment[ABS_PEAK_DEMAND_AC_SIDE],
             EVALUATED_DAYS: experiment[EVALUATED_DAYS],
             GENSET_WITH_MINIMAL_LOADING: specific_case[GENSET_WITH_MINIMAL_LOADING],
+            GENSET_WITH_EFFICIENCY_CURVE: specific_case[GENSET_WITH_EFFICIENCY_CURVE],
         }
     )
 

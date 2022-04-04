@@ -171,10 +171,12 @@ def run(experiment, case_dict):
             e_flows_df,
         )
 
-        timeseries.get_fuel(case_dict, oemof_results, results)
+        e_flows_df = timeseries.get_fuel(case_dict, oemof_results, results, e_flows_df)
         e_flows_df = timeseries.get_genset(
             case_dict, oemof_results, electricity_bus_ac, e_flows_df
         )
+
+        e_flows_df = timeseries.get_efficiency_genset(e_flows_df)
 
         e_flows_df = timeseries.get_national_grid(
             case_dict,

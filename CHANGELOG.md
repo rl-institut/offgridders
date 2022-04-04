@@ -26,9 +26,15 @@ Here is a template for new release sections
 
 ### Added
 - Version number with `src/version.py` (#150)
-- Constant variables in `constants.py`: `INPUT_TEMPLATE_EXCEL_XLSX`(#150), `GENSET_HOURS_OF_OPERATION` (#153)
+- Constant variables in `constants.py`: `INPUT_TEMPLATE_EXCEL_XLSX`(#150), `GENSET_HOURS_OF_OPERATION` (#153), `EFFICIENCY_GENSET_TIMESERIES`, `CONSUMPTION_FUEL_TIMESERIES_KWH`, `GENSET_WITH_EFFICIENCY_CURVE` (#92)
 - Added pytests for `D1.crf` and `D1.present_value_of_changing_fuel_price` (#153)
 - Implement new KPI: `GENSET_HOURS_OF_OPERATION` with new function `G3.get_hours_of_operation()` for generator evaluation, including pytests (#153)
+- Create `B.process_generator_settings` to evaluate different generator settings, including pytests (#92)
+- Implement OffsetTransformer with new parameter `GENSET_WITH_EFFICIENCY_CURVE` with `G2a.genset_fix_capacity_efficiency_curve_and_minimal_loading`. Note: Efficiency of the new OffSet Transformer with efficiency curve (#92)
+uses the `GENSET_EFFICIENCY` as maximum efficiency, and `GENSET_EFFICIENCY/2` as minimal part-load efficiency (#92)
+- New folder `tests/benchmark_tests` and `tests/benchmark_tests/timeseries/test_site.csv` to serve future tests (#92)
+- Benchmark test for generator with efficiency curve (OffsetTransformer): Add `tests/benchmark_tests/generator_with_efficiency_curve.xlsx`, ie. a base case with optimization of the diesel generator and a follow-up case which uses that capacities to simulate a diesel generator with efficiency with the same capacities at the same location. Only ensures that simulation does not terminate. (#92)
+- Calculate `EFFICIENCY_GENSET_TIMESERIES` with `G3.get_efficiency_genset`. This calculates the effective generator efficiency. In case that multiple generators are present, it represents the average efficiency, as it is based on the aggregated generator dispatch. (#92)
 
 ### Changed
 - Execute all pytests in Travis `.travis.yml` (#150)
@@ -36,6 +42,16 @@ Here is a template for new release sections
 - Moved `main()` from `Offgridders.py` to new file `src/cli.py` (#150)
 - Enable benchmark tests for Offgridders: Add optional argument `input_file` to `main()` (#150)
 - Added `GENSET_HOURS_OF_OPERATION` in `C1.overall_results_title` (#153)
+- Reorder variables in `constants.py` (#92)
+- Change `tests/test_basic.py`: Remove pytests for black, as they do not work (#92)
+- Refactor `inputs/test_input_template.xlsx` to `inputs/input_teplate_excel.xslx` (#92)
+- All input templates to feature new parameter `EFFICIENCY_GENSET_TIMESERIES` (#92)
+- Refactored`G2a.genset_fix` to `G2a.genset_fix_capacity_fix_efficiency_no_minload`, `G2a.genset_fix_minload` to `G2a.genset_fix_capacity_fix_efficiency_with_minload` and `G2a.genset_oem` to `G2a.genset_oem_fix_efficiency_no_minload` to make them explicit and improved logging messages (#92)
+- Expand elif-statements in `G1` to choose appropriate generator model (#92)
+- `G3.get_fuel()` to also store the `CONSUMPTION_FUEL_TIMESERIES_KWH` to `e_flows_df` (#92)
+- `G4.save_mg_flows()` to store `EFFICIENCY_GENSET_TIMESERIES` and `CONSUMPTION_FUEL_TIMESERIES_KWH` to csv (#92)
+- `G4.save_mg_flows()` to generate an efficiency curve from `EFFICIENCY_GENSET_TIMESERIES` if `GENSET_WITH_EFFICIENCY_CURVE==True` (#92)
+- `F.update_dict` so that new parameter `GENSET_WITH_EFFICIENCY_CURVE` is parsed (#92)
 
 ### Removed
 -
@@ -43,6 +59,7 @@ Here is a template for new release sections
 ### Fixed
 - Basic pytest to ensure no termination with test input file (`tests/inputs/pytest_test.xlsx`) (#150)
 - `present_value_of_changing_fuel_price` now correctly calculated, fixed function call of `D1.present_value_of_changing_fuel_price` in `D0` (#153)
+- Irregular use of `capacity_inverter_kW`, use only `capacity_inverter_dc_ac_kW` (#92)
 
 ## [Offgridders V4.6.1] - 2020-11-07
 
