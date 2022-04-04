@@ -231,7 +231,27 @@ def economic_values(experiment):
     return experiment
 
 
-def add_timeseries(experiment_s):
+MAPPING_DEMAND_TYPE_TO_PROFILE = {
+    DEMAND_AC: DEMAND_PROFILE_AC,
+    DEMAND_AC_CRITICAL: DEMAND_PROFILE_AC_CRITICAL,
+    DEMAND_DC_CRITICAL: DEMAND_PROFILE_DC_CRITICAL,
+    DEMAND_DC: DEMAND_PROFILE_DC,
+}
+
+
+def update_demand_profile(experiment_s, experiment, demand_type):
+    index = experiment_s[experiment][DATE_TIME_INDEX]
+    experiment_s[experiment].update(
+        {
+            MAPPING_DEMAND_TYPE_TO_PROFILE[demand_type]: pd.Series(
+                experiment_s[experiment][demand_type][0:len(index)].values,
+                index=index,
+            )
+        }
+    )
+
+
+def add_timeseries(experiment_s) -> object:
     """
     Update experiments and add longest date_time_index to settings
 
@@ -351,24 +371,15 @@ def add_timeseries(experiment_s):
                 # file index is date time index, no change necessary
                 pass
 
-        elif experiment_s[experiment][FILE_INDEX] == None:
-            # limit based on index
-            experiment_s[experiment].update(
-                {
-                    DEMAND_PROFILE_AC: pd.Series(
-                        experiment_s[experiment][DEMAND_AC][0 : len(index)].values,
-                        index=index,
-                    )
-                }
-            )
-            experiment_s[experiment].update(
-                {
-                    DEMAND_PROFILE_DC: pd.Series(
-                        experiment_s[experiment][DEMAND_DC][0 : len(index)].values,
-                        index=index,
-                    )
-                }
-            )
+        elif experiment_s[experiment][FILE_INDEX] is None:
+            for demand_type in [
+                DEMAND_AC,
+                DEMAND_AC_CRITICAL,
+                DEMAND_DC_CRITICAL,
+                DEMAND_DC,
+            ]:
+                update_demand_profile(experiment_s, experiment, demand_type)
+
             experiment_s[experiment].update(
                 {
                     PV_GENERATION_PER_KWP: pd.Series(
