@@ -32,7 +32,9 @@ from src.constants import (
     TIME_FREQUENCY,
     FILE_INDEX,
     DEMAND_PROFILE_AC,
+    DEMAND_PROFILE_AC_CRITICAL,
     DEMAND_PROFILE_DC,
+    DEMAND_PROFILE_DC_CRITICAL,
     ACCUMULATED_PROFILE_AC_SIDE,
     ACCUMULATED_PROFILE_DC_SIDE,
     TOTAL_DEMAND_AC,
@@ -300,8 +302,16 @@ def add_timeseries(experiment_s):
                     experiment_s[experiment][DEMAND_AC].values,
                     index=experiment_s[experiment][FILE_INDEX],
                 )
+                demand_ac_critical = pd.Series(
+                    experiment_s[experiment][DEMAND_AC_CRITICAL].values,
+                    index=experiment_s[experiment][FILE_INDEX],
+                )
                 demand_dc = pd.Series(
                     experiment_s[experiment][DEMAND_DC].values,
+                    index=experiment_s[experiment][FILE_INDEX],
+                )
+                demand_dc_critical = pd.Series(
+                    experiment_s[experiment][DEMAND_DC_CRITICAL].values,
                     index=experiment_s[experiment][FILE_INDEX],
                 )
                 pv_generation_per_kWp = pd.Series(
@@ -314,7 +324,13 @@ def add_timeseries(experiment_s):
                 )
                 # from provided data use only analysed timeframe
                 experiment_s[experiment].update({DEMAND_PROFILE_AC: demand_ac[index]})
+                experiment_s[experiment].update(
+                    {DEMAND_PROFILE_AC_CRITICAL: demand_ac_critical[index]}
+                )
                 experiment_s[experiment].update({DEMAND_PROFILE_DC: demand_dc[index]})
+                experiment_s[experiment].update(
+                    {DEMAND_PROFILE_DC_CRITICAL: demand_dc_critical[index]}
+                )
                 experiment_s[experiment].update(
                     {PV_GENERATION_PER_KWP: pv_generation_per_kWp[index]}
                 )
