@@ -237,10 +237,9 @@ def build(experiment, case_dict):
 
     # ------------point of coupling (feedin)------------#
     if case_dict[PCC_FEEDIN_FIXED_CAPACITY] == None:
-        pass
-        # pointofcoupling_feedin = None
+        pointofcoupling_feedin = None
     elif case_dict[PCC_FEEDIN_FIXED_CAPACITY] is False:
-        generate.pointofcoupling_feedin_oem(
+        pointofcoupling_feedin = generate.pointofcoupling_feedin_oem(
             micro_grid_system,
             bus_electricity_ac,
             bus_electricity_ng_feedin,
@@ -249,7 +248,7 @@ def build(experiment, case_dict):
         )
 
     elif isinstance(case_dict[PCC_FEEDIN_FIXED_CAPACITY], float):
-        generate.pointofcoupling_feedin_fix(
+        pointofcoupling_feedin = generate.pointofcoupling_feedin_fix(
             micro_grid_system,
             bus_electricity_ac,
             bus_electricity_ng_feedin,

@@ -518,7 +518,7 @@ def pointofcoupling_feedin_fix(
     )  # is efficiency of the generator?? Then this should later on be included as a function of the load factor
 
     micro_grid_system.add(pointofcoupling_feedin)
-    return
+    return pointofcoupling_feedin
 
 
 # point of coupling = max(demand) limits PV feed-in, therefore there should be a minimal pcc capacity defined with
@@ -550,7 +550,7 @@ def pointofcoupling_feedin_oem(
         conversion_factors={bus_electricity_ac: experiment[PCOUPLING_EFFICIENCY]},
     )
     micro_grid_system.add(pointofcoupling_feedin)
-    return
+    return pointofcoupling_feedin
 
 
 def pointofcoupling_consumption_fix(
