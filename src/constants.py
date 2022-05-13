@@ -330,6 +330,7 @@ ALLOW_SHORTAGE = "allow_shortage"
 STABILITY_CONSTRAINT = "stability_constraint"
 RENEWABLE_CONSTRAINT = "renewable_constraint"
 RENEWABLE_SHARE_CONSTRAINT = "renewable_share_constraint"
+CRITICAL_CONSTRAINT = "critical_constraint"
 EVALUATION_PERSPECTIVE = EVALUATION_PERSPECTIVE
 FORCE_CHARGE_FROM_MAINGRID = "force_charge_from_maingrid"
 DISCHARGE_ONLY_WHEN_BLACKOUT = "discharge_only_when_blackout"

@@ -60,6 +60,7 @@ from src.constants import (
     RENEWABLE_CONSTRAINT,
     MIN_RENEWABLE_SHARE,
     RENEWABLE_SHARE_CONSTRAINT,
+    CRITICAL_CONSTRAINT,
     NUMBER_OF_EQUAL_GENERATORS,
     EVALUATION_PERSPECTIVE,
     FORCE_CHARGE_FROM_MAINGRID,
@@ -251,8 +252,22 @@ def update_dict(capacities_oem, specific_case, experiment):
         )
 
     ###########################################
-    # Include renewable constraint            #
+    # Include critical constraint            #
     ###########################################
+    if specific_case[CRITICAL_CONSTRAINT] == DEFAULT:
+        experiment_case_dict.update({CRITICAL_CONSTRAINT: False})
+    elif specific_case[CRITICAL_CONSTRAINT] is False:
+        experiment_case_dict.update({CRITICAL_CONSTRAINT: False})
+    elif specific_case[CRITICAL_CONSTRAINT] is True:
+        experiment_case_dict.update({CRITICAL_CONSTRAINT: True})
+    else:
+        logging.warning(
+            warning_string
+            + f" value {CRITICAL_CONSTRAINT} (True/False/default) not defined properly"
+        )
+    ###########################################
+    # Include renewable constraint            #
+    ###########################################>>
 
     if specific_case[RENEWABLE_CONSTRAINT] == DEFAULT:
         if experiment[MIN_RENEWABLE_SHARE] == 0:
