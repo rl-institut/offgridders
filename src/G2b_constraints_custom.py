@@ -676,21 +676,69 @@ def share_test(case_dict, oemof_results, experiment):
     return
 
 
-def critical(model,):
+def critical(
+    model,
+    el_bus_ac=None,
+    el_bus_dc=None,
+    demand_ac_critical=None,
+    demand_dc_critical=None,
+    ac_generation_assets=None,
+    ac_consumption_assets=None,
+    dc_generation_assets=None,
+    dc_consumption_assets=None,
+):
     """
-    Resulting in an energy system adhering to a minimal renewable factor
+    Force the system to always meet the critical demand over the non-critical one
 
     Parameters
     - - - - - - - -
     model: oemof.solph.model
+
+    list of production assets and busses connected to them
+
+    list of critical demand assets and busses connected to them
+
     """
+    # TODO check if this constraint conflicts with other ones, then issue a warning to the user
 
-    def meet_critical_demand_rule(model):
-        # TODO express the fact that the critical demand must be met as a constraint
-        expr = total_production - total_critical_demand
-        return expr >= 0
+    def meet_critical_ac_demand_rule(model, t):
+        """
+        wind + genset + inverter + pcc_consumption + shortage - rectifier - pcc_feedin - non-critical demand - critical demand >= 0
+        """
+        ac_production = 0
+        for ac_asset in ac_generation_assets:
+            ac_production += model.flow[ac_asset, el_bus_ac, t]
 
-    model.critical_constraint = po.Constraint(rule=meet_critical_demand_rule)
+        ac_consumption = 0
+        for ac_asset in ac_consumption_assets:
+            ac_consumption += model.flow[el_bus_ac, ac_asset, t]
+
+        ac_critical_demand = model.flow[el_bus_ac, demand_ac_critical, t]
+
+        return ac_production - ac_consumption - ac_critical_demand >= 0
+
+    def meet_critical_dc_demand_rule(model, t):
+        """
+        PV + storage-discharge + shortage + rectifier - inverter - storage-charge - non-critical demand - critical demand >= 0
+        """
+        dc_production = 0
+        for dc_asset in dc_generation_assets:
+            dc_production += model.flow[dc_asset, el_bus_dc, t]
+
+        dc_consumption = 0
+        for dc_asset in dc_consumption_assets:
+            dc_consumption += model.flow[el_bus_dc, dc_asset, t]
+
+        dc_critical_demand = model.flow[el_bus_dc, demand_dc_critical, t]
+
+        return dc_production - dc_consumption - dc_critical_demand >= 0
+
+    model.critical_constraint = po.Constraint(
+        model.TIMESTEPS, rule=meet_critical_ac_demand_rule
+    )
+    model.critical_constraint = po.Constraint(
+        model.TIMESTEPS, rule=meet_critical_dc_demand_rule
+    )
 
     return model
 

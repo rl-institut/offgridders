@@ -281,7 +281,7 @@ def build(experiment, case_dict):
     # the function already add the sink to the energy system
     demand_dc_critical = generate.demand(
         micro_grid_system,
-        bus_electricity_ac,
+        bus_electricity_dc,
         experiment,
         demand_type=DEMAND_DC_CRITICAL,
     )
@@ -494,13 +494,20 @@ def build(experiment, case_dict):
         # TODO should we include the excess in the equation here?
         # list of assets which take energy away from the DC bus which then compete with critical demand
         dc_consumption_assets = [
-            asset for asset in [inverter, storage] if asset is not None
+            asset for asset in [inverter, storage, sink_demand_dc] if asset is not None
         ]
 
         constraints_custom.critical(
-            model
+            model,
+            ac_generation_assets=ac_generation_assets,
+            ac_consumption_assets=ac_consumption_assets,
+            dc_generation_assets=dc_generation_assets,
+            dc_consumption_assets=dc_consumption_assets,
+            demand_dc_critical=demand_dc_critical,
+            demand_ac_critical=demand_ac_critical,
+            el_bus_ac=bus_electricity_ac,
+            el_bus_dc=bus_electricity_dc,
         )
-
 
     # ------------Renewable share constraint------------#
     if case_dict[RENEWABLE_SHARE_CONSTRAINT] is False:
