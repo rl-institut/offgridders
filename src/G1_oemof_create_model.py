@@ -458,10 +458,45 @@ def build(experiment, case_dict):
 
     # ------------Critical demand constraint------------#
     if case_dict[CRITICAL_CONSTRAINT] is True:
-        # ADDED: a function to make the stability constraint favor critical demand over demand
-        logging.info(
-            "Added constraint: Critical demand fulfilled at all timesteps"
-        )
+        logging.info("Added constraint: Critical demand fulfilled at all timesteps")
+
+        # list of assets which bring energy into the AC bus which could be used to fullfill critical demand
+        ac_generation_assets = [
+            asset
+            for asset in [
+                wind_plant,
+                pointofcoupling_consumption,
+                source_shortage,
+                inverter,
+            ]
+            if asset is not None
+        ]
+
+        if case_dict[GENSET_FIXED_CAPACITY] != None:
+            for number in range(1, case_dict[NUMBER_OF_EQUAL_GENERATORS] + 1):
+                ac_generation_assets.append(genset[number])
+
+        # TODO should we include the excess in the equation here?
+        # list of assets which take energy away from the AC bus which then compete with critical demand
+        ac_consumption_assets = [
+            asset
+            for asset in [pointofcoupling_feedin, rectifier, sink_demand_ac]
+            if asset is not None
+        ]
+
+        # list of assets which bring energy into the DC bus which could be used to fullfill demand
+        dc_generation_assets = [
+            asset
+            for asset in [solar_plant, rectifier, source_shortage, storage]
+            if asset is not None
+        ]
+
+        # TODO should we include the excess in the equation here?
+        # list of assets which take energy away from the DC bus which then compete with critical demand
+        dc_consumption_assets = [
+            asset for asset in [inverter, storage] if asset is not None
+        ]
+
         constraints_custom.critical(
             model
         )
