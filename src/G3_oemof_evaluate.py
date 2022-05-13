@@ -122,7 +122,7 @@ from src.constants import (
     DEMAND_AC_CRITICAL,
     DEMAND_DC_CRITICAL,
     GENSET_HOURS_OF_OPERATION,
-    STABILITY_CONSTRAINT,
+    CRITICAL_CONSTRAINT,
     CRITICAL,
 )
 
@@ -172,8 +172,8 @@ def get_demand(
     else:
         e_flows_df[DEMAND] += demand_dc
 
-    stability_constraint = case_dict.get(STABILITY_CONSTRAINT, None)
-    if stability_constraint == CRITICAL:
+    critical_constraint = case_dict.get(CRITICAL_CONSTRAINT, False)
+    if critical_constraint is True:
         # Add the critical demand to the total demand
         demand_ac_critical = electricity_bus_ac[SEQUENCES][
             ((BUS_ELECTRICITY_AC, SINK_DEMAND_AC_CRITICAL), FLOW)
@@ -255,7 +255,10 @@ def get_shortage(
 
         demand_supplied = e_flows_df[DEMAND] - shortage
         annual_value(
-            TOTAL_DEMAND_SUPPLIED_ANNUAL_KWH, demand_supplied, oemof_results, case_dict,
+            TOTAL_DEMAND_SUPPLIED_ANNUAL_KWH,
+            demand_supplied,
+            oemof_results,
+            case_dict,
         )
         annual_value(
             TOTAL_DEMAND_SHORTAGE_ANNUAL_KWH, shortage, oemof_results, case_dict
@@ -427,7 +430,10 @@ def get_inverter(
         e_flows_df = join_e_flows_df(inverter_in, INVERTER_INPUT, e_flows_df)
 
         annual_value(
-            TOTAL_INVERTER_DC_AC_THROUGHPUT_KWH, inverter_in, oemof_results, case_dict,
+            TOTAL_INVERTER_DC_AC_THROUGHPUT_KWH,
+            inverter_in,
+            oemof_results,
+            case_dict,
         )
     else:
         oemof_results.update({TOTAL_INVERTER_DC_AC_THROUGHPUT_KWH: 0})
@@ -503,7 +509,10 @@ def get_genset(case_dict, oemof_results, electricity_bus_ac, e_flows_df):
         total_genset = genset
         for number in range(2, case_dict[NUMBER_OF_EQUAL_GENERATORS] + 1):
             genset = electricity_bus_ac[SEQUENCES][
-                ((TRANSFORMER_GENSET_ + str(number), BUS_ELECTRICITY_AC), FLOW,)
+                (
+                    (TRANSFORMER_GENSET_ + str(number), BUS_ELECTRICITY_AC),
+                    FLOW,
+                )
             ]
             e_flows_df = join_e_flows_df(
                 genset, "Genset " + str(number) + " generation", e_flows_df
@@ -522,7 +531,10 @@ def get_genset(case_dict, oemof_results, electricity_bus_ac, e_flows_df):
         genset_capacity = 0
         for number in range(1, case_dict[NUMBER_OF_EQUAL_GENERATORS] + 1):
             genset_capacity += electricity_bus_ac[SCALARS][
-                ((TRANSFORMER_GENSET_ + str(number), BUS_ELECTRICITY_AC), INVEST,)
+                (
+                    (TRANSFORMER_GENSET_ + str(number), BUS_ELECTRICITY_AC),
+                    INVEST,
+                )
             ]
         oemof_results.update({CAPACITY_GENSET_KW: genset_capacity})
     elif isinstance(case_dict[GENSET_FIXED_CAPACITY], float):
@@ -636,7 +648,10 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
         ]
 
         oemof_results.update(
-            {CAPACITY_STORAGE_KWH: storage_capacity, POWER_STORAGE_KW: storage_power,}
+            {
+                CAPACITY_STORAGE_KWH: storage_capacity,
+                POWER_STORAGE_KW: storage_power,
+            }
         )
 
     elif isinstance(case_dict[STORAGE_FIXED_CAPACITY], float):
@@ -701,7 +716,10 @@ def get_national_grid(case_dict, oemof_results, results, e_flows_df, grid_availa
             results, BUS_ELECTRICITY_NG_CONSUMPTION
         )
         consumption_utility_side = bus_electricity_ng_consumption[SEQUENCES][
-            ((BUS_ELECTRICITY_NG_CONSUMPTION, TRANSFORMER_PCC_CONSUMPTION), FLOW,)
+            (
+                (BUS_ELECTRICITY_NG_CONSUMPTION, TRANSFORMER_PCC_CONSUMPTION),
+                FLOW,
+            )
         ]
         e_flows_df = join_e_flows_df(
             consumption_utility_side,
