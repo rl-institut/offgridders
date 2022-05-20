@@ -20,7 +20,7 @@ from src.constants import (
     COMBUSTION_VALUE_FUEL,
     SOURCE_SHORTAGE,
     STABILITY_CONSTRAINT,
-    CRITICAL,
+    CRITICAL_CONSTRAINT,
     SHORTAGE_PENALTY_COST,
     MAX_SHORTAGE,
     TOTAL_DEMAND_AC,
@@ -122,8 +122,8 @@ def shortage(
     for maximal unserved demand and the variable costs of unserved demand.
     """
 
-    stability_constraint = case_dict.get(STABILITY_CONSTRAINT, None)
-    if stability_constraint == CRITICAL:
+    critical_constraint = case_dict.get(CRITICAL_CONSTRAINT, False)
+    if critical_constraint is True:
         logging.debug("Added to oemof model: source shortage for critical demand")
         source_shortage = solph.Source(
             label=SOURCE_SHORTAGE,
@@ -137,7 +137,7 @@ def shortage(
                 bus_electricity_dc: solph.Flow(
                     variable_costs=experiment[SHORTAGE_PENALTY_COST],
                     nominal_value=case_dict[MAX_SHORTAGE]
-                    * case_dict[TOTAL_DEMAND_AC_CRITICAL],
+                    * case_dict[TOTAL_DEMAND_DC_CRITICAL],
                     summed_max=1,
                 ),
             },
@@ -154,7 +154,7 @@ def shortage(
                 ),
                 bus_electricity_dc: solph.Flow(
                     variable_costs=experiment[SHORTAGE_PENALTY_COST],
-                    nominal_value=case_dict[MAX_SHORTAGE] * case_dict[TOTAL_DEMAND_AC],
+                    nominal_value=case_dict[MAX_SHORTAGE] * case_dict[TOTAL_DEMAND_DC],
                     summed_max=1,
                 ),
             },
