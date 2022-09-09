@@ -733,10 +733,10 @@ def critical(
 
         return dc_production - dc_consumption - dc_critical_demand >= 0
 
-    model.critical_constraint = po.Constraint(
+    model.critical_constraint_ac = po.Constraint(
         model.TIMESTEPS, rule=meet_critical_ac_demand_rule
     )
-    model.critical_constraint = po.Constraint(
+    model.critical_constraint_dc = po.Constraint(
         model.TIMESTEPS, rule=meet_critical_dc_demand_rule
     )
 
