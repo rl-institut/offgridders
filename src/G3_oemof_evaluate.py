@@ -222,6 +222,7 @@ def get_shortage(
             shortage_ac = electricity_bus_ac[SEQUENCES][
                 ((SOURCE_SHORTAGE, BUS_ELECTRICITY_AC), FLOW)
             ]
+            # aggregated flow into the AC bus
             annual_value(
                 TOTAL_DEMAND_SHORTAGE_AC_ANNUAL_KWH,
                 shortage_ac,
@@ -240,6 +241,7 @@ def get_shortage(
             shortage_dc = electricity_bus_dc[SEQUENCES][
                 ((SOURCE_SHORTAGE, BUS_ELECTRICITY_DC), FLOW)
             ]
+            # aggregated flow into the DC bus
             annual_value(
                 TOTAL_DEMAND_SHORTAGE_DC_ANNUAL_KWH,
                 shortage_dc,
@@ -253,7 +255,12 @@ def get_shortage(
             else:
                 shortage += shortage_dc
 
-        demand_supplied = e_flows_df[DEMAND] - shortage
+        # TODO make sure this does not raise errors when used without critical demand option
+        if case_dict[EVALUATION_PERSPECTIVE] == AC_SYSTEM:
+            demand_supplied = e_flows_df[DEMAND_AC_CRITICAL] + e_flows_df[DEMAND_AC] - shortage
+        else:
+            demand_supplied = e_flows_df[DEMAND_DC_CRITICAL] + e_flows_df[DEMAND_DC] - shortage
+
         annual_value(
             TOTAL_DEMAND_SUPPLIED_ANNUAL_KWH,
             demand_supplied,
