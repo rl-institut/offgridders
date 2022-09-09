@@ -60,6 +60,7 @@ from src.constants import (
     MAINGRID_ELECTRICITY_PRICE,
     PCOUPLING_EFFICIENCY,
     GENERIC_STORAGE,
+    SHORTAGE_MAX_ALLOWED,
     STORAGE_SOC_INITIAL,
     STORAGE_CAPACITY_COST_ANNUITY,
     STORAGE_COST_VAR,
@@ -752,10 +753,17 @@ def demand(micro_grid_system, bus_electricity, experiment, demand_type):
 
     logging.debug(f"Added to oemof model: {demand_type}")
     # create and add demand sink to micro_grid_system - fixed
+
+    # The demand shortage is only allowed on the non-critical demand
+    if demand_type in (DEMAND_DC, DEMAND_AC):
+        electrical_demand = experiment[demand_type] * experiment[SHORTAGE_MAX_ALLOWED]
+    else:
+        electrical_demand = experiment[demand_type]
+
     sink_demand_ac = solph.Sink(
         label=dict_sink_names[demand_type],
         inputs={
-            bus_electricity: solph.Flow(fix=experiment[demand_type], nominal_value=1)
+            bus_electricity: solph.Flow(fix=electrical_demand, nominal_value=1)
         },
     )
 
