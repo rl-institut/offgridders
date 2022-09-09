@@ -460,6 +460,10 @@ def build(experiment, case_dict):
     if case_dict[CRITICAL_CONSTRAINT] is True:
         logging.info("Added constraint: Critical demand fulfilled at all timesteps")
 
+        if case_dict[STABILITY_CONSTRAINT] != False:
+            raise ValueError("At the moment you cannot use the stability constraint with critical demand")
+
+
         # list of assets which bring energy into the AC bus which could be used to fullfill critical demand
         ac_generation_assets = [
             asset
