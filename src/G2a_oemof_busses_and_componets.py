@@ -756,7 +756,7 @@ def demand(micro_grid_system, bus_electricity, experiment, demand_type):
 
     # The demand shortage is only allowed on the non-critical demand
     if demand_type in (DEMAND_DC, DEMAND_AC):
-        electrical_demand = experiment[demand_type] * experiment[SHORTAGE_MAX_ALLOWED]
+        electrical_demand = experiment[demand_type] * (1 - experiment[SHORTAGE_MAX_ALLOWED])
     else:
         electrical_demand = experiment[demand_type]
 
