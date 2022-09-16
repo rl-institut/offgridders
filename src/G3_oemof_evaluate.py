@@ -16,14 +16,20 @@ from src.constants import (
     EVALUATED_DAYS,
     DATE_TIME_INDEX,
     DEMAND,
+    DEMAND_CRITICAL,
+    DEMAND_NON_CRITICAL,
     SEQUENCES,
     BUS_ELECTRICITY_AC,
     SINK_DEMAND_AC,
+    SINK_DEMAND_AC_CRITICAL,
+SINK_DEMAND_AC_REDUCABLE,
     FLOW,
     EVALUATION_PERSPECTIVE,
     INVERTER_DC_AC_EFFICIENCY,
     BUS_ELECTRICITY_DC,
     SINK_DEMAND_DC,
+    SINK_DEMAND_DC_CRITICAL,
+SINK_DEMAND_DC_REDUCABLE,
     RECTIFIER_AC_DC_EFFICIENCY,
     TOTAL_DEMAND_ANNUAL_KWH,
     DEMAND_PEAK_KW,
@@ -117,7 +123,12 @@ from src.constants import (
     FEED_INTO_MAIN_GRID_MG_SIDE,
     DEMAND_AC,
     DEMAND_DC,
+    DEMAND_AC_CRITICAL,
+    DEMAND_DC_CRITICAL,
+    DEMAND_NON_CRITICAL_REDUCABLE,
     GENSET_HOURS_OF_OPERATION,
+    CRITICAL_CONSTRAINT,
+    CRITICAL,
 )
 
 
@@ -145,6 +156,8 @@ def get_demand(
         columns=[DEMAND],
         index=experiment[DATE_TIME_INDEX],
     )
+
+
     demand_ac = electricity_bus_ac[SEQUENCES][
         ((BUS_ELECTRICITY_AC, SINK_DEMAND_AC), FLOW)
     ]
@@ -166,7 +179,62 @@ def get_demand(
     else:
         e_flows_df[DEMAND] += demand_dc
 
+    critical_constraint = case_dict.get(CRITICAL_CONSTRAINT, False)
+    if critical_constraint is True:
+
+        # when the critical constraint is on, the non critical demand is split between two sinks
+        # SINK_DEMAND_AC and SINK_DEMAND_AC_REDUCABLE, SINK_DEMAND_AC was already considered above so
+        # only SINK_DEMAND_AC_REDUCABLE is added now
+        demand_ac_non_critical_reducable = electricity_bus_ac[SEQUENCES][
+            ((BUS_ELECTRICITY_AC, SINK_DEMAND_AC_REDUCABLE), FLOW)
+        ]
+        e_flows_df = join_e_flows_df(demand_ac_non_critical_reducable, DEMAND_NON_CRITICAL_REDUCABLE, e_flows_df)
+        if case_dict[EVALUATION_PERSPECTIVE] == AC_SYSTEM:
+            e_flows_df[DEMAND] += demand_ac_non_critical_reducable
+        else:
+            e_flows_df[DEMAND] += demand_ac_non_critical_reducable / experiment[INVERTER_DC_AC_EFFICIENCY]
+
+        demand_dc_non_critical_reducable = electricity_bus_dc[SEQUENCES][
+            ((BUS_ELECTRICITY_DC, SINK_DEMAND_DC_REDUCABLE), FLOW)
+        ]
+        if case_dict[EVALUATION_PERSPECTIVE] == AC_SYSTEM:
+            e_flows_df[DEMAND] += demand_dc_non_critical_reducable / experiment[RECTIFIER_AC_DC_EFFICIENCY]
+        else:
+            e_flows_df[DEMAND] += demand_dc_non_critical_reducable
+
+
+
+        e_flows_df[DEMAND_CRITICAL] = 0
+        # Add the critical demand to the total demand
+        demand_ac_critical = electricity_bus_ac[SEQUENCES][
+            ((BUS_ELECTRICITY_AC, SINK_DEMAND_AC_CRITICAL), FLOW)
+        ]
+        e_flows_df = join_e_flows_df(demand_ac_critical, DEMAND_AC_CRITICAL, e_flows_df)
+        if case_dict[EVALUATION_PERSPECTIVE] == AC_SYSTEM:
+            e_flows_df[DEMAND_CRITICAL] += demand_ac_critical
+        else:
+            e_flows_df[DEMAND_CRITICAL] += (
+                demand_ac_critical / experiment[INVERTER_DC_AC_EFFICIENCY]
+            )
+
+        demand_dc_critical = electricity_bus_dc[SEQUENCES][
+            ((BUS_ELECTRICITY_DC, SINK_DEMAND_DC), FLOW)
+        ]
+        e_flows_df = join_e_flows_df(demand_dc_critical, DEMAND_DC_CRITICAL, e_flows_df)
+        if case_dict[EVALUATION_PERSPECTIVE] == AC_SYSTEM:
+            e_flows_df[DEMAND_CRITICAL] += (
+                demand_dc_critical / experiment[RECTIFIER_AC_DC_EFFICIENCY]
+            )
+        else:
+            e_flows_df[DEMAND_CRITICAL] += demand_dc_critical
+
+        # add the critical demand to the total demand and the non critical demand
+        # is simply equal to the demand
+        e_flows_df[DEMAND_NON_CRITICAL] = e_flows_df[DEMAND]
+        e_flows_df[DEMAND] += e_flows_df[DEMAND_CRITICAL]
+
     annual_value(TOTAL_DEMAND_ANNUAL_KWH, e_flows_df[DEMAND], oemof_results, case_dict)
+
     oemof_results.update({DEMAND_PEAK_KW: max(e_flows_df[DEMAND])})
     return e_flows_df
 
@@ -190,6 +258,7 @@ def get_shortage(
             shortage_ac = electricity_bus_ac[SEQUENCES][
                 ((SOURCE_SHORTAGE, BUS_ELECTRICITY_AC), FLOW)
             ]
+            # aggregated flow into the AC bus
             annual_value(
                 TOTAL_DEMAND_SHORTAGE_AC_ANNUAL_KWH,
                 shortage_ac,
@@ -208,6 +277,7 @@ def get_shortage(
             shortage_dc = electricity_bus_dc[SEQUENCES][
                 ((SOURCE_SHORTAGE, BUS_ELECTRICITY_DC), FLOW)
             ]
+            # aggregated flow into the DC bus
             annual_value(
                 TOTAL_DEMAND_SHORTAGE_DC_ANNUAL_KWH,
                 shortage_dc,
@@ -221,9 +291,22 @@ def get_shortage(
             else:
                 shortage += shortage_dc
 
-        demand_supplied = e_flows_df[DEMAND] - shortage
+        # TODO make sure this does not raise errors when used without critical demand option
+        if case_dict[EVALUATION_PERSPECTIVE] == AC_SYSTEM:
+            # todo something here is fishy
+            demand_supplied = (
+                e_flows_df[DEMAND_AC_CRITICAL] + e_flows_df[DEMAND_AC] - shortage
+            )
+        else:
+            demand_supplied = (
+                e_flows_df[DEMAND_DC_CRITICAL] + e_flows_df[DEMAND_DC] - shortage
+            )
+
         annual_value(
-            TOTAL_DEMAND_SUPPLIED_ANNUAL_KWH, demand_supplied, oemof_results, case_dict,
+            TOTAL_DEMAND_SUPPLIED_ANNUAL_KWH,
+            demand_supplied,
+            oemof_results,
+            case_dict,
         )
         annual_value(
             TOTAL_DEMAND_SHORTAGE_ANNUAL_KWH, shortage, oemof_results, case_dict
@@ -395,7 +478,10 @@ def get_inverter(
         e_flows_df = join_e_flows_df(inverter_in, INVERTER_INPUT, e_flows_df)
 
         annual_value(
-            TOTAL_INVERTER_DC_AC_THROUGHPUT_KWH, inverter_in, oemof_results, case_dict,
+            TOTAL_INVERTER_DC_AC_THROUGHPUT_KWH,
+            inverter_in,
+            oemof_results,
+            case_dict,
         )
     else:
         oemof_results.update({TOTAL_INVERTER_DC_AC_THROUGHPUT_KWH: 0})
@@ -471,7 +557,10 @@ def get_genset(case_dict, oemof_results, electricity_bus_ac, e_flows_df):
         total_genset = genset
         for number in range(2, case_dict[NUMBER_OF_EQUAL_GENERATORS] + 1):
             genset = electricity_bus_ac[SEQUENCES][
-                ((TRANSFORMER_GENSET_ + str(number), BUS_ELECTRICITY_AC), FLOW,)
+                (
+                    (TRANSFORMER_GENSET_ + str(number), BUS_ELECTRICITY_AC),
+                    FLOW,
+                )
             ]
             e_flows_df = join_e_flows_df(
                 genset, "Genset " + str(number) + " generation", e_flows_df
@@ -490,7 +579,10 @@ def get_genset(case_dict, oemof_results, electricity_bus_ac, e_flows_df):
         genset_capacity = 0
         for number in range(1, case_dict[NUMBER_OF_EQUAL_GENERATORS] + 1):
             genset_capacity += electricity_bus_ac[SCALARS][
-                ((TRANSFORMER_GENSET_ + str(number), BUS_ELECTRICITY_AC), INVEST,)
+                (
+                    (TRANSFORMER_GENSET_ + str(number), BUS_ELECTRICITY_AC),
+                    INVEST,
+                )
             ]
         oemof_results.update({CAPACITY_GENSET_KW: genset_capacity})
     elif isinstance(case_dict[GENSET_FIXED_CAPACITY], float):
@@ -604,7 +696,10 @@ def get_storage(case_dict, oemof_results, experiment, results, e_flows_df):
         ]
 
         oemof_results.update(
-            {CAPACITY_STORAGE_KWH: storage_capacity, POWER_STORAGE_KW: storage_power,}
+            {
+                CAPACITY_STORAGE_KWH: storage_capacity,
+                POWER_STORAGE_KW: storage_power,
+            }
         )
 
     elif isinstance(case_dict[STORAGE_FIXED_CAPACITY], float):
@@ -669,7 +764,10 @@ def get_national_grid(case_dict, oemof_results, results, e_flows_df, grid_availa
             results, BUS_ELECTRICITY_NG_CONSUMPTION
         )
         consumption_utility_side = bus_electricity_ng_consumption[SEQUENCES][
-            ((BUS_ELECTRICITY_NG_CONSUMPTION, TRANSFORMER_PCC_CONSUMPTION), FLOW,)
+            (
+                (BUS_ELECTRICITY_NG_CONSUMPTION, TRANSFORMER_PCC_CONSUMPTION),
+                FLOW,
+            )
         ]
         e_flows_df = join_e_flows_df(
             consumption_utility_side,
