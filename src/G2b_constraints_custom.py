@@ -61,6 +61,9 @@ def backup(
     el_bus_ac,
     el_bus_dc,
 ):
+
+    raise ValueError("backup")
+
     stability_limit = experiment[SHORTAGE_LIMIT]
     ## ------- Get CAP genset ------- #
     CAP_genset = 0
@@ -168,6 +171,8 @@ def backup_test(case_dict, oemof_results, experiment, e_flows_df):
     """
     Testing simulation results for adherance to above defined stability criterion
     """
+
+    raise ValueError("backup test")
     if case_dict[STABILITY_CONSTRAINT] != False:
         demand_profile = e_flows_df[DEMAND]
 
@@ -250,34 +255,57 @@ def hybrid(
     source_shortage,
     el_bus_ac,
     el_bus_dc,
+    demand_ac_critical=None,
 ):
 
     stability_limit = experiment[SHORTAGE_LIMIT]
+    print(case_dict[ALLOW_SHORTAGE])
+    print(case_dict[GENSET_FIXED_CAPACITY])
+    print(case_dict[STORAGE_FIXED_CAPACITY])
+    import ipdb
+
+    ipdb.set_trace()
+
+    # ac_critical_demand = model.flow[el_bus_ac, demand_ac_critical, t]
 
     def stability_rule_capacity(model, t):
         expr = 0
         ## ------- Get demand at t ------- #
+        # TODO adapt this
         demand = model.flow[el_bus_ac, sink_demand, t]
         expr += -stability_limit * demand
 
+        # Current state
+        # -stability*demand_nc + stability*shortage + SUM_i genset_i + storage_out (can be negative or positive) >= 0
+
+        # what do we want?
+        # a) -stability*(demand_nc + demand_c) + stabililty*shortage + SUM_i genset_i + storage_out (can be negative or positive) >= 0
+        # b) -stability*(demand_c) + stability*shortage + SUM_i genset_i + storage_out (can be negative or positive) >= 0
+
         ## ------- Get shortage at t------- #
         if case_dict[ALLOW_SHORTAGE] is True:
+            # TODO this is considered
             shortage = model.flow[source_shortage, el_bus_ac, t]
-            expr += +stability_limit * shortage
+            expr += stability_limit * shortage
 
         ## ------- Generation Diesel ------- #
         if case_dict[GENSET_FIXED_CAPACITY] != None:
+            # TODO this is considered
             for number in range(1, case_dict[NUMBER_OF_EQUAL_GENERATORS] + 1):
                 expr += model.flow[genset[number], el_bus_ac, t]
 
         ##---------Grid consumption t-------#
         if case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] != None:
+            # TODO this is NOT considered
             expr += model.flow[pcc_consumption, el_bus_ac, t]
 
         ## ------- Get stored capacity storage at t------- #
         if case_dict[STORAGE_FIXED_CAPACITY] != None:
+            # TODO this is considered
+
             stored_electricity = 0
             if case_dict[STORAGE_FIXED_CAPACITY] is False:  # Storage subject to OEM
+                # TODO this is considered
                 stored_electricity += (
                     model.GenericInvestmentStorageBlock.storage_content[storage, t]
                     - experiment[STORAGE_SOC_MIN]
@@ -286,6 +314,7 @@ def hybrid(
             elif isinstance(
                 case_dict[STORAGE_FIXED_CAPACITY], float
             ):  # Fixed storage subject to dispatch
+                # TODO this is NOT considered
                 stored_electricity += (
                     model.GenericStorageBlock.storage_content[storage, t]
                     - experiment[STORAGE_SOC_MIN] * storage.nominal_capacity
@@ -308,24 +337,36 @@ def hybrid(
         demand = model.flow[el_bus_ac, sink_demand, t]
         expr += -stability_limit * demand
 
+        # Current state
+        # -stability_limit*demand_nc + stability*shortage + SUM_i genset_i + storage_out (can be negative or positive) >= 0
+
+        # what do we want?
+        # a) -stability*(demand_nc + demand_c) + stabililty*shortage + SUM_i genset_i + storage_out (can be negative or positive) >= 0
+        # b) -stability*(demand_c) + stability*shortage + SUM_i genset_i + storage_out (can be negative or positive) >= 0
+
         ## ------- Get shortage at t------- #
         if case_dict[ALLOW_SHORTAGE] is True:
+            # TODO this is considered
             shortage = model.flow[source_shortage, el_bus_ac, t]
             expr += +stability_limit * shortage
 
         ## ------- Generation Diesel ------- #
         if case_dict[GENSET_FIXED_CAPACITY] != None:
+            # TODO this is considered
             for number in range(1, case_dict[NUMBER_OF_EQUAL_GENERATORS] + 1):
                 expr += model.flow[genset[number], el_bus_ac, t]
 
         ##---------Grid consumption t-------#
         if case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] != None:
+            # TODO this is NOT considered
             expr += model.flow[pcc_consumption, el_bus_ac, t]
 
         ## ------- Get power of storage ------- #
         if case_dict[STORAGE_FIXED_POWER] != None:
+            # TODO this is considered
             storage_power = 0
             if case_dict[STORAGE_FIXED_CAPACITY] is False:
+                # TODO this is considered
                 storage_power += model.InvestmentFlow.invest[storage, el_bus_dc]
             elif isinstance(case_dict[STORAGE_FIXED_CAPACITY], float):
                 storage_power += case_dict[STORAGE_FIXED_POWER]
@@ -419,7 +460,7 @@ def hybrid_test(case_dict, oemof_results, experiment, e_flows_df):
                 ],
                 index=demand_profile.index,
             )
-            ratio_below_zero = ratio.clip_upper(0)
+            ratio_below_zero = ratio.clip(upper=0)
             test_warning(ratio_below_zero, oemof_results, boolean_test)
 
     else:
@@ -439,6 +480,8 @@ def usage(
     source_shortage,
     el_bus,
 ):
+
+    raise ValueError("usage")
 
     stability_limit = experiment[SHORTAGE_LIMIT]
 
@@ -772,9 +815,9 @@ def forced_charge(model, case_dict, el_bus_dc, storage, experiment):
         expr = 0
         if case_dict[STORAGE_FIXED_CAPACITY] != None:
             if case_dict[STORAGE_FIXED_CAPACITY] is False:  # Storage subject to OEM
-                stored_electricity += model.GenericInvestmentStorageBlock.storage_content[
-                    storage, t
-                ]
+                stored_electricity += (
+                    model.GenericInvestmentStorageBlock.storage_content[storage, t]
+                )
             elif isinstance(
                 case_dict[STORAGE_FIXED_CAPACITY], float
             ):  # Fixed storage subject to dispatch
@@ -881,9 +924,9 @@ def discharge_only_at_blackout(model, case_dict, el_bus, storage, experiment):
             expr += model.flow[storage, el_bus, t]
             # Get stored electricity at t
             if case_dict[STORAGE_FIXED_CAPACITY] is False:  # Storage subject to OEM
-                stored_electricity += model.GenericInvestmentStorageBlock.storage_content[
-                    storage, t
-                ]
+                stored_electricity += (
+                    model.GenericInvestmentStorageBlock.storage_content[storage, t]
+                )
             elif isinstance(
                 case_dict[STORAGE_FIXED_CAPACITY], float
             ):  # Fixed storage subject to dispatch

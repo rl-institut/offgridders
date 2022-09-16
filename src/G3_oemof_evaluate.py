@@ -22,12 +22,14 @@ from src.constants import (
     BUS_ELECTRICITY_AC,
     SINK_DEMAND_AC,
     SINK_DEMAND_AC_CRITICAL,
+SINK_DEMAND_AC_REDUCABLE,
     FLOW,
     EVALUATION_PERSPECTIVE,
     INVERTER_DC_AC_EFFICIENCY,
     BUS_ELECTRICITY_DC,
     SINK_DEMAND_DC,
     SINK_DEMAND_DC_CRITICAL,
+SINK_DEMAND_DC_REDUCABLE,
     RECTIFIER_AC_DC_EFFICIENCY,
     TOTAL_DEMAND_ANNUAL_KWH,
     DEMAND_PEAK_KW,
@@ -123,6 +125,7 @@ from src.constants import (
     DEMAND_DC,
     DEMAND_AC_CRITICAL,
     DEMAND_DC_CRITICAL,
+    DEMAND_NON_CRITICAL_REDUCABLE,
     GENSET_HOURS_OF_OPERATION,
     CRITICAL_CONSTRAINT,
     CRITICAL,
@@ -153,6 +156,8 @@ def get_demand(
         columns=[DEMAND],
         index=experiment[DATE_TIME_INDEX],
     )
+
+
     demand_ac = electricity_bus_ac[SEQUENCES][
         ((BUS_ELECTRICITY_AC, SINK_DEMAND_AC), FLOW)
     ]
@@ -176,6 +181,28 @@ def get_demand(
 
     critical_constraint = case_dict.get(CRITICAL_CONSTRAINT, False)
     if critical_constraint is True:
+
+        # when the critical constraint is on, the non critical demand is split between two sinks
+        # SINK_DEMAND_AC and SINK_DEMAND_AC_REDUCABLE, SINK_DEMAND_AC was already considered above so
+        # only SINK_DEMAND_AC_REDUCABLE is added now
+        demand_ac_non_critical_reducable = electricity_bus_ac[SEQUENCES][
+            ((BUS_ELECTRICITY_AC, SINK_DEMAND_AC_REDUCABLE), FLOW)
+        ]
+        e_flows_df = join_e_flows_df(demand_ac_non_critical_reducable, DEMAND_NON_CRITICAL_REDUCABLE, e_flows_df)
+        if case_dict[EVALUATION_PERSPECTIVE] == AC_SYSTEM:
+            e_flows_df[DEMAND] += demand_ac_non_critical_reducable
+        else:
+            e_flows_df[DEMAND] += demand_ac_non_critical_reducable / experiment[INVERTER_DC_AC_EFFICIENCY]
+
+        demand_dc_non_critical_reducable = electricity_bus_dc[SEQUENCES][
+            ((BUS_ELECTRICITY_DC, SINK_DEMAND_DC_REDUCABLE), FLOW)
+        ]
+        if case_dict[EVALUATION_PERSPECTIVE] == AC_SYSTEM:
+            e_flows_df[DEMAND] += demand_dc_non_critical_reducable / experiment[RECTIFIER_AC_DC_EFFICIENCY]
+        else:
+            e_flows_df[DEMAND] += demand_dc_non_critical_reducable
+
+
 
         e_flows_df[DEMAND_CRITICAL] = 0
         # Add the critical demand to the total demand
@@ -201,7 +228,8 @@ def get_demand(
         else:
             e_flows_df[DEMAND_CRITICAL] += demand_dc_critical
 
-        # add the critical demand to the total demand
+        # add the critical demand to the total demand and the non critical demand
+        # is simply equal to the demand
         e_flows_df[DEMAND_NON_CRITICAL] = e_flows_df[DEMAND]
         e_flows_df[DEMAND] += e_flows_df[DEMAND_CRITICAL]
 
@@ -265,6 +293,7 @@ def get_shortage(
 
         # TODO make sure this does not raise errors when used without critical demand option
         if case_dict[EVALUATION_PERSPECTIVE] == AC_SYSTEM:
+            # todo something here is fishy
             demand_supplied = (
                 e_flows_df[DEMAND_AC_CRITICAL] + e_flows_df[DEMAND_AC] - shortage
             )

@@ -93,6 +93,8 @@ def build(experiment, case_dict):
     # create energy system
     micro_grid_system = solph.EnergySystem(timeindex=experiment[DATE_TIME_INDEX])
 
+    critical_constraint = case_dict.get(CRITICAL_CONSTRAINT, False)
+
     ###################################
     ## AC side of the energy system   #
     ###################################
@@ -101,20 +103,24 @@ def build(experiment, case_dict):
     bus_electricity_ac = solph.Bus(label=BUS_ELECTRICITY_AC)
     micro_grid_system.add(bus_electricity_ac)
 
-    # ------------demand sink ac------------#
-    # the function already add the sink to the energy system
-    sink_demand_ac = generate.demand(
-        micro_grid_system, bus_electricity_ac, experiment, demand_type=DEMAND_AC
-    )
+    if critical_constraint is True:
+        # ------------demand sink ac critical ------------#
+        # the function already add the sink to the energy system
+        # demand_ac_critical \
+        sink_demand_ac, sink_demand_ac_reducable, sink_demand_ac_critical = generate.demand_critical(
+            micro_grid_system,
+            bus_electricity_ac,
+            experiment,
+            demand_type=DEMAND_AC_CRITICAL,
+        )
+    else:
+        # ------------demand sink ac------------#
+        # the function already add the sink to the energy system
+        sink_demand_ac = generate.demand(
+            micro_grid_system, bus_electricity_ac, experiment, demand_type=DEMAND_AC
+        )
 
-    # ------------demand sink ac critical ------------#
-    # the function already add the sink to the energy system
-    demand_ac_critical = generate.demand(
-        micro_grid_system,
-        bus_electricity_ac,
-        experiment,
-        demand_type=DEMAND_AC_CRITICAL,
-    )
+
 
     # ------------fuel source------------#
     if case_dict[GENSET_FIXED_CAPACITY] != None:
@@ -271,20 +277,23 @@ def build(experiment, case_dict):
     bus_electricity_dc = solph.Bus(label=BUS_ELECTRICITY_DC)
     micro_grid_system.add(bus_electricity_dc)
 
-    # ------------demand sink dc------------#
-    # the function already add the sink to the energy system
-    sink_demand_dc = generate.demand(
-        micro_grid_system, bus_electricity_dc, experiment, demand_type=DEMAND_DC
-    )
+    if critical_constraint is True:
+        # ------------demand sink dc critical ------------#
+        # the function already add the sink to the energy system
+        #demand_dc_critical
+        sink_demand_dc, sink_demand_dc_reducable, sink_demand_dc_critical = generate.demand_critical(
+            micro_grid_system,
+            bus_electricity_dc,
+            experiment,
+            demand_type=DEMAND_DC_CRITICAL,
+        )
+    else:
+        # ------------demand sink dc------------#
+        # the function already add the sink to the energy system
+        sink_demand_dc = generate.demand(
+            micro_grid_system, bus_electricity_dc, experiment, demand_type=DEMAND_DC
+        )
 
-    # ------------demand sink dc critical ------------#
-    # the function already add the sink to the energy system
-    demand_dc_critical = generate.demand(
-        micro_grid_system,
-        bus_electricity_dc,
-        experiment,
-        demand_type=DEMAND_DC_CRITICAL,
-    )
 
     # ------------PV------------#
     if case_dict[PV_FIXED_CAPACITY] == None:
@@ -443,6 +452,7 @@ def build(experiment, case_dict):
             experiment=experiment,
             storage=storage,
             sink_demand=sink_demand_ac,
+            demand_ac_critical=demand_ac_critical,
             genset=genset,
             pcc_consumption=pointofcoupling_consumption,
             source_shortage=source_shortage,
@@ -461,8 +471,9 @@ def build(experiment, case_dict):
         logging.info("Added constraint: Critical demand fulfilled at all timesteps")
 
         if case_dict[STABILITY_CONSTRAINT] != False:
-            raise ValueError("At the moment you cannot use the stability constraint with critical demand")
-
+            raise ValueError(
+                "At the moment you cannot use the stability constraint with critical demand"
+            )
 
         # list of assets which bring energy into the AC bus which could be used to fullfill critical demand
         ac_generation_assets = [
@@ -484,7 +495,7 @@ def build(experiment, case_dict):
         # list of assets which take energy away from the AC bus which then compete with critical demand
         ac_consumption_assets = [
             asset
-            for asset in [pointofcoupling_feedin, rectifier, sink_demand_ac]
+            for asset in [pointofcoupling_feedin, rectifier, sink_demand_ac, sink_demand_ac_reducable]
             if asset is not None
         ]
 
@@ -498,7 +509,7 @@ def build(experiment, case_dict):
         # TODO should we include the excess in the equation here?
         # list of assets which take energy away from the DC bus which then compete with critical demand
         dc_consumption_assets = [
-            asset for asset in [inverter, storage, sink_demand_dc] if asset is not None
+            asset for asset in [inverter, storage, sink_demand_dc, sink_demand_dc_reducable] if asset is not None
         ]
 
         constraints_custom.critical(
@@ -507,8 +518,8 @@ def build(experiment, case_dict):
             ac_consumption_assets=ac_consumption_assets,
             dc_generation_assets=dc_generation_assets,
             dc_consumption_assets=dc_consumption_assets,
-            demand_dc_critical=demand_dc_critical,
-            demand_ac_critical=demand_ac_critical,
+            demand_dc_critical=sink_demand_dc_critical,
+            demand_ac_critical=sink_demand_ac_critical,
             el_bus_ac=bus_electricity_ac,
             el_bus_dc=bus_electricity_dc,
         )
