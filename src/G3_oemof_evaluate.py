@@ -16,6 +16,8 @@ from src.constants import (
     EVALUATED_DAYS,
     DATE_TIME_INDEX,
     DEMAND,
+    DEMAND_CRITICAL,
+    DEMAND_NON_CRITICAL,
     SEQUENCES,
     BUS_ELECTRICITY_AC,
     SINK_DEMAND_AC,
@@ -174,15 +176,17 @@ def get_demand(
 
     critical_constraint = case_dict.get(CRITICAL_CONSTRAINT, False)
     if critical_constraint is True:
+
+        e_flows_df[DEMAND_CRITICAL] = 0
         # Add the critical demand to the total demand
         demand_ac_critical = electricity_bus_ac[SEQUENCES][
             ((BUS_ELECTRICITY_AC, SINK_DEMAND_AC_CRITICAL), FLOW)
         ]
         e_flows_df = join_e_flows_df(demand_ac_critical, DEMAND_AC_CRITICAL, e_flows_df)
         if case_dict[EVALUATION_PERSPECTIVE] == AC_SYSTEM:
-            e_flows_df[DEMAND] += demand_ac_critical
+            e_flows_df[DEMAND_CRITICAL] += demand_ac_critical
         else:
-            e_flows_df[DEMAND] += (
+            e_flows_df[DEMAND_CRITICAL] += (
                 demand_ac_critical / experiment[INVERTER_DC_AC_EFFICIENCY]
             )
 
@@ -191,11 +195,15 @@ def get_demand(
         ]
         e_flows_df = join_e_flows_df(demand_dc_critical, DEMAND_DC_CRITICAL, e_flows_df)
         if case_dict[EVALUATION_PERSPECTIVE] == AC_SYSTEM:
-            e_flows_df[DEMAND] += (
+            e_flows_df[DEMAND_CRITICAL] += (
                 demand_dc_critical / experiment[RECTIFIER_AC_DC_EFFICIENCY]
             )
         else:
-            e_flows_df[DEMAND] += demand_dc_critical
+            e_flows_df[DEMAND_CRITICAL] += demand_dc_critical
+
+        # add the critical demand to the total demand
+        e_flows_df[DEMAND_NON_CRITICAL] = e_flows_df[DEMAND]
+        e_flows_df[DEMAND] += e_flows_df[DEMAND_CRITICAL]
 
     annual_value(TOTAL_DEMAND_ANNUAL_KWH, e_flows_df[DEMAND], oemof_results, case_dict)
 
@@ -257,9 +265,13 @@ def get_shortage(
 
         # TODO make sure this does not raise errors when used without critical demand option
         if case_dict[EVALUATION_PERSPECTIVE] == AC_SYSTEM:
-            demand_supplied = e_flows_df[DEMAND_AC_CRITICAL] + e_flows_df[DEMAND_AC] - shortage
+            demand_supplied = (
+                e_flows_df[DEMAND_AC_CRITICAL] + e_flows_df[DEMAND_AC] - shortage
+            )
         else:
-            demand_supplied = e_flows_df[DEMAND_DC_CRITICAL] + e_flows_df[DEMAND_DC] - shortage
+            demand_supplied = (
+                e_flows_df[DEMAND_DC_CRITICAL] + e_flows_df[DEMAND_DC] - shortage
+            )
 
         annual_value(
             TOTAL_DEMAND_SUPPLIED_ANNUAL_KWH,
