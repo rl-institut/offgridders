@@ -20,6 +20,8 @@ from src.constants import (
     FILENAME,
     TOTAL_DEMAND_AC,
     TOTAL_DEMAND_DC,
+    TOTAL_DEMAND_AC_CRITICAL,
+    TOTAL_DEMAND_DC_CRITICAL,
     ABS_PEAK_DEMAND_AC_SIDE,
     EVALUATED_DAYS,
     GENSET_WITH_MINIMAL_LOADING,
@@ -59,6 +61,7 @@ from src.constants import (
     RENEWABLE_CONSTRAINT,
     MIN_RENEWABLE_SHARE,
     RENEWABLE_SHARE_CONSTRAINT,
+    CRITICAL_CONSTRAINT,
     NUMBER_OF_EQUAL_GENERATORS,
     EVALUATION_PERSPECTIVE,
     FORCE_CHARGE_FROM_MAINGRID,
@@ -70,6 +73,7 @@ from src.constants import (
     SHARE_BACKUP,
     SHARE_USAGE,
     SHARE_HYBRID,
+    CRITICAL,
     DEFAULT,
 )
 
@@ -108,6 +112,8 @@ def update_dict(capacities_oem, specific_case, experiment):
             ],  # experiment['output_folder'] + "_" + specific_case['case_name'] + experiment['filename']
             TOTAL_DEMAND_AC: experiment[TOTAL_DEMAND_AC],
             TOTAL_DEMAND_DC: experiment[TOTAL_DEMAND_DC],
+            TOTAL_DEMAND_AC_CRITICAL: experiment[TOTAL_DEMAND_AC_CRITICAL],
+            TOTAL_DEMAND_DC_CRITICAL: experiment[TOTAL_DEMAND_DC_CRITICAL],
             PEAK_DEMAND: experiment[ABS_PEAK_DEMAND_AC_SIDE],
             EVALUATED_DAYS: experiment[EVALUATED_DAYS],
             GENSET_WITH_MINIMAL_LOADING: specific_case[GENSET_WITH_MINIMAL_LOADING],
@@ -236,6 +242,7 @@ def update_dict(capacities_oem, specific_case, experiment):
         or specific_case[STABILITY_CONSTRAINT] == SHARE_BACKUP
         or specific_case[STABILITY_CONSTRAINT] == SHARE_USAGE
         or specific_case[STABILITY_CONSTRAINT] == SHARE_HYBRID
+        or specific_case[STABILITY_CONSTRAINT] == CRITICAL
     ):
         experiment_case_dict.update(
             {STABILITY_CONSTRAINT: specific_case[STABILITY_CONSTRAINT]}
@@ -247,8 +254,22 @@ def update_dict(capacities_oem, specific_case, experiment):
         )
 
     ###########################################
-    # Include renewable constraint            #
+    # Include critical constraint            #
     ###########################################
+    if specific_case[CRITICAL_CONSTRAINT] == DEFAULT:
+        experiment_case_dict.update({CRITICAL_CONSTRAINT: False})
+    elif specific_case[CRITICAL_CONSTRAINT] is False:
+        experiment_case_dict.update({CRITICAL_CONSTRAINT: False})
+    elif specific_case[CRITICAL_CONSTRAINT] is True:
+        experiment_case_dict.update({CRITICAL_CONSTRAINT: True})
+    else:
+        logging.warning(
+            warning_string
+            + f" value {CRITICAL_CONSTRAINT} (True/False/default) not defined properly"
+        )
+    ###########################################
+    # Include renewable constraint            #
+    ###########################################>>
 
     if specific_case[RENEWABLE_CONSTRAINT] == DEFAULT:
         if experiment[MIN_RENEWABLE_SHARE] == 0:

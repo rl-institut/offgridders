@@ -155,7 +155,7 @@ def run(experiment, case_dict):
             experiment,
             e_flows_df,
         )
-
+        # TODO maybe separate critical and non critical here for results plotting
         oemof_results.update(
             {
                 SUPPLY_RELIABILITY_KWH: oemof_results[TOTAL_DEMAND_SUPPLIED_ANNUAL_KWH]

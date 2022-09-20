@@ -32,19 +32,29 @@ from src.constants import (
     TIME_FREQUENCY,
     FILE_INDEX,
     DEMAND_PROFILE_AC,
+    DEMAND_PROFILE_AC_CRITICAL,
     DEMAND_PROFILE_DC,
+    DEMAND_PROFILE_DC_CRITICAL,
     ACCUMULATED_PROFILE_AC_SIDE,
     ACCUMULATED_PROFILE_DC_SIDE,
     TOTAL_DEMAND_AC,
+    TOTAL_DEMAND_AC_CRITICAL,
     PEAK_DEMAND_AC,
+    PEAK_DEMAND_AC_CRITICAL,
     TOTAL_DEMAND_DC,
+    TOTAL_DEMAND_DC_CRITICAL,
     PEAK_DEMAND_DC,
+    PEAK_DEMAND_DC_CRITICAL,
     PEAK_PV_GENERATION_PER_KWP,
     PEAK_WIND_GENERATION_PER_KW,
     MEAN_DEMAND_AC,
+    MEAN_DEMAND_AC_CRITICAL,
     MEAN_DEMAND_DC,
+    MEAN_DEMAND_DC_CRITICAL,
     PEAK_MEAN_DEMAND_RATIO_AC,
+    PEAK_MEAN_DEMAND_RATIO_AC_CRITICAL,
     PEAK_MEAN_DEMAND_RATIO_DC,
+    PEAK_MEAN_DEMAND_RATIO_DC_CRITICAL,
     ABS_PEAK_DEMAND_AC_SIDE,
     PROJECT_LIFETIME,
     WACC,
@@ -53,10 +63,12 @@ from src.constants import (
     FUEL_PRICE_CHANGE_ANNUAL,
     TAX,
     DEMAND_AC,
+    DEMAND_AC_CRITICAL,
     PV_GENERATION_PER_KWP,
     WIND_GENERATION_PER_KW,
     GRID_AVAILABILITY,
     DEMAND_DC,
+    DEMAND_DC_CRITICAL,
     LP_FILE_FOR_ONLY_3_TIMESTEPS,
     RECTIFIER_AC_DC_EFFICIENCY,
     INVERTER_DC_AC_EFFICIENCY,
@@ -229,7 +241,27 @@ def economic_values(experiment):
     return experiment
 
 
-def add_timeseries(experiment_s):
+MAPPING_DEMAND_TYPE_TO_PROFILE = {
+    DEMAND_AC: DEMAND_PROFILE_AC,
+    DEMAND_AC_CRITICAL: DEMAND_PROFILE_AC_CRITICAL,
+    DEMAND_DC_CRITICAL: DEMAND_PROFILE_DC_CRITICAL,
+    DEMAND_DC: DEMAND_PROFILE_DC,
+}
+
+
+def update_demand_profile(experiment_s, experiment, demand_type):
+    index = experiment_s[experiment][DATE_TIME_INDEX]
+    experiment_s[experiment].update(
+        {
+            MAPPING_DEMAND_TYPE_TO_PROFILE[demand_type]: pd.Series(
+                experiment_s[experiment][demand_type][0 : len(index)].values,
+                index=index,
+            )
+        }
+    )
+
+
+def add_timeseries(experiment_s) -> object:
     """
     Update experiments and add longest date_time_index to settings
 
@@ -278,7 +310,7 @@ def add_timeseries(experiment_s):
 
     for experiment in experiment_s:
         index = experiment_s[experiment][DATE_TIME_INDEX]
-        if experiment_s[experiment][FILE_INDEX] != None:
+        if experiment_s[experiment][FILE_INDEX] is not None:
             if DEMAND_AC in experiment_s[experiment]:
                 year_timeseries_in_file = (
                     experiment_s[experiment][DEMAND_AC].index[0].year
@@ -300,8 +332,16 @@ def add_timeseries(experiment_s):
                     experiment_s[experiment][DEMAND_AC].values,
                     index=experiment_s[experiment][FILE_INDEX],
                 )
+                demand_ac_critical = pd.Series(
+                    experiment_s[experiment][DEMAND_AC_CRITICAL].values,
+                    index=experiment_s[experiment][FILE_INDEX],
+                )
                 demand_dc = pd.Series(
                     experiment_s[experiment][DEMAND_DC].values,
+                    index=experiment_s[experiment][FILE_INDEX],
+                )
+                demand_dc_critical = pd.Series(
+                    experiment_s[experiment][DEMAND_DC_CRITICAL].values,
                     index=experiment_s[experiment][FILE_INDEX],
                 )
                 pv_generation_per_kWp = pd.Series(
@@ -314,7 +354,13 @@ def add_timeseries(experiment_s):
                 )
                 # from provided data use only analysed timeframe
                 experiment_s[experiment].update({DEMAND_PROFILE_AC: demand_ac[index]})
+                experiment_s[experiment].update(
+                    {DEMAND_PROFILE_AC_CRITICAL: demand_ac_critical[index]}
+                )
                 experiment_s[experiment].update({DEMAND_PROFILE_DC: demand_dc[index]})
+                experiment_s[experiment].update(
+                    {DEMAND_PROFILE_DC_CRITICAL: demand_dc_critical[index]}
+                )
                 experiment_s[experiment].update(
                     {PV_GENERATION_PER_KWP: pv_generation_per_kWp[index]}
                 )
@@ -335,24 +381,15 @@ def add_timeseries(experiment_s):
                 # file index is date time index, no change necessary
                 pass
 
-        elif experiment_s[experiment][FILE_INDEX] == None:
-            # limit based on index
-            experiment_s[experiment].update(
-                {
-                    DEMAND_PROFILE_AC: pd.Series(
-                        experiment_s[experiment][DEMAND_AC][0 : len(index)].values,
-                        index=index,
-                    )
-                }
-            )
-            experiment_s[experiment].update(
-                {
-                    DEMAND_PROFILE_DC: pd.Series(
-                        experiment_s[experiment][DEMAND_DC][0 : len(index)].values,
-                        index=index,
-                    )
-                }
-            )
+        elif experiment_s[experiment][FILE_INDEX] is None:
+            for demand_type in [
+                DEMAND_AC,
+                DEMAND_AC_CRITICAL,
+                DEMAND_DC_CRITICAL,
+                DEMAND_DC,
+            ]:
+                update_demand_profile(experiment_s, experiment, demand_type)
+
             experiment_s[experiment].update(
                 {
                     PV_GENERATION_PER_KWP: pd.Series(
@@ -363,6 +400,7 @@ def add_timeseries(experiment_s):
                     )
                 }
             )
+
             experiment_s[experiment].update(
                 {
                     WIND_GENERATION_PER_KW: pd.Series(
@@ -420,8 +458,23 @@ def add_timeseries(experiment_s):
                 {DEMAND_PROFILE_AC: experiment_s[experiment][DEMAND_PROFILE_AC][index]}
             )
             experiment_s[experiment].update(
+                {
+                    DEMAND_PROFILE_AC_CRITICAL: experiment_s[experiment][
+                        DEMAND_PROFILE_AC_CRITICAL
+                    ][index]
+                }
+            )
+            experiment_s[experiment].update(
                 {DEMAND_PROFILE_DC: experiment_s[experiment][DEMAND_PROFILE_DC][index]}
             )
+            experiment_s[experiment].update(
+                {
+                    DEMAND_PROFILE_DC_CRITICAL: experiment_s[experiment][
+                        DEMAND_PROFILE_DC_CRITICAL
+                    ][index]
+                }
+            )
+
             experiment_s[experiment].update(
                 {
                     PV_GENERATION_PER_KWP: experiment_s[experiment][
@@ -444,7 +497,6 @@ def add_timeseries(experiment_s):
                         ]
                     }
                 )
-
         experiment_s[experiment].update(
             {
                 ACCUMULATED_PROFILE_AC_SIDE: experiment_s[experiment][DEMAND_PROFILE_AC]
@@ -452,7 +504,6 @@ def add_timeseries(experiment_s):
                 / experiment_s[experiment][RECTIFIER_AC_DC_EFFICIENCY]
             }
         )
-
         experiment_s[experiment].update(
             {
                 ACCUMULATED_PROFILE_DC_SIDE: experiment_s[experiment][DEMAND_PROFILE_AC]
@@ -460,12 +511,25 @@ def add_timeseries(experiment_s):
                 + experiment_s[experiment][DEMAND_PROFILE_DC]
             }
         )
+
         experiment_s[experiment].update(
             {
                 TOTAL_DEMAND_AC: sum(experiment_s[experiment][DEMAND_PROFILE_AC]),
+                TOTAL_DEMAND_AC_CRITICAL: sum(
+                    experiment_s[experiment][DEMAND_PROFILE_AC_CRITICAL]
+                ),
                 PEAK_DEMAND_AC: max(experiment_s[experiment][DEMAND_PROFILE_AC]),
+                PEAK_DEMAND_AC_CRITICAL: max(
+                    experiment_s[experiment][DEMAND_PROFILE_AC_CRITICAL]
+                ),
                 TOTAL_DEMAND_DC: sum(experiment_s[experiment][DEMAND_PROFILE_DC]),
+                TOTAL_DEMAND_DC_CRITICAL: sum(
+                    experiment_s[experiment][DEMAND_PROFILE_DC_CRITICAL]
+                ),
                 PEAK_DEMAND_DC: max(experiment_s[experiment][DEMAND_PROFILE_DC]),
+                PEAK_DEMAND_DC_CRITICAL: max(
+                    experiment_s[experiment][DEMAND_PROFILE_DC_CRITICAL]
+                ),
                 PEAK_PV_GENERATION_PER_KWP: max(
                     experiment_s[experiment][PV_GENERATION_PER_KWP]
                 ),
@@ -515,14 +579,22 @@ def add_timeseries(experiment_s):
 
         # Warnings
         if (
-            experiment_s[experiment][TOTAL_DEMAND_AC]
-            == 0 + experiment_s[experiment][TOTAL_DEMAND_DC]
-            == 0
+            experiment_s[experiment][TOTAL_DEMAND_AC] == 0
+            and experiment_s[experiment][TOTAL_DEMAND_DC] == 0
         ):
             logging.warning(
                 "No demand in evaluated timesteps at project site "
                 + experiment_s[experiment][PROJECT_SITE_NAME]
                 + " - simulation will crash."
+            )
+        if (
+            experiment_s[experiment][TOTAL_DEMAND_AC_CRITICAL] == 0
+            and experiment_s[experiment][TOTAL_DEMAND_DC_CRITICAL] == 0
+        ):
+            logging.warning(
+                "No critical demand in evaluated timesteps at project site "
+                + experiment_s[experiment][PROJECT_SITE_NAME]
+                + " - simulation will not provide expected results if you wanted to distinguish between critical and non-critical demand."
             )
         if experiment_s[experiment][PEAK_PV_GENERATION_PER_KWP] == 0:
             logging.info(
@@ -557,7 +629,9 @@ def apply_noise(experiment_s):
     """
     for experiment in experiment_s:
         on_series(experiment_s[experiment], WHITE_NOISE_DEMAND, DEMAND_AC)
+        on_series(experiment_s[experiment], WHITE_NOISE_DEMAND, DEMAND_AC_CRITICAL)
         on_series(experiment_s[experiment], WHITE_NOISE_DEMAND, DEMAND_DC)
+        on_series(experiment_s[experiment], WHITE_NOISE_DEMAND, DEMAND_DC_CRITICAL)
         on_series(experiment_s[experiment], WHITE_NOISE_PV, PV_GENERATION_PER_KWP)
         on_series(experiment_s[experiment], WHITE_NOISE_WIND, WIND_GENERATION_PER_KW)
     return

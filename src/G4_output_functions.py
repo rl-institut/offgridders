@@ -37,6 +37,8 @@ from src.constants import (
     GENSET_GENERATION,
     GRID_AVAILABILITY,
     DEMAND,
+    DEMAND_CRITICAL,
+    DEMAND_NON_CRITICAL,
     FEED_INTO_MAIN_GRID,
     CONSUMPTION_FROM_MAIN_GRID,
     SAVE_TO_CSV_FLOWS_ELECTRICITY_MG,
@@ -55,6 +57,10 @@ from src.constants import (
     FEED_INTO_MAIN_GRID_MG_SIDE,
     DEMAND_AC,
     DEMAND_DC,
+    DEMAND_AC_CRITICAL,
+    DEMAND_DC_CRITICAL,
+DEMAND_NON_CRITICAL_REDUCABLE,
+    CRITICAL_CONSTRAINT,
     SUFFIX_GRAPH,
     BASE_OEM,
     BASE_OEM_WITH_MIN_LOADING,
@@ -68,6 +74,25 @@ from src.constants import (
     EFFICIENCY_GENSET_TIMESERIES,
     GENSET_WITH_EFFICIENCY_CURVE,
 )
+
+# website with websafe hexacolours: https://www.colorhexa.com/web-safe-colors
+COLOR_DICT = {
+    DEMAND: "#33ff00",  # dark green
+    DEMAND_SUPPLIED: "#66cc33",  # grass green
+    DEMAND_CRITICAL: "#009900",  # green
+    DEMAND_NON_CRITICAL: "#33ffcc",  # green blue
+    PV_GENERATION: "#ffcc00",  # orange
+    WIND_GENERATION: "#33ccff",  # light blue
+    GENSET_GENERATION: "#000000",  # black
+    CONSUMPTION_FROM_MAIN_GRID: "#990099",  # violet
+    STORAGE_CHARGE: "#0033cc",  # light green
+    EXCESS_GENERATION: "#996600",  # brown
+    FEED_INTO_MAIN_GRID: "#ff33cc",  # pink
+    STORAGE_DISCHARGE: "#ccccff",  # pidgeon blue
+    DEMAND_SHORTAGE: "#ff3300",  # bright red
+    STORAGE_SOC: "#0033cc",  # blue
+    GRID_AVAILABILITY: "#cc0000",  # red
+}
 
 
 def print_oemof_meta_main_invest(experiment, meta, electricity_bus, case_name):
@@ -142,8 +167,21 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
         EFFICIENCY_GENSET_TIMESERIES,
     ]
 
+    critical_constraint = case_dict.get(CRITICAL_CONSTRAINT, False)
+    if critical_constraint is True:
+        flows_connected_to_electricity_mg_bus = (
+            [DEMAND_NON_CRITICAL, DEMAND_CRITICAL, DEMAND_NON_CRITICAL_REDUCABLE]
+            + flows_connected_to_electricity_mg_bus[:2]
+            + [DEMAND_AC_CRITICAL, DEMAND_DC_CRITICAL]
+            + flows_connected_to_electricity_mg_bus[2:]
+        )
+
+        droplist += [DEMAND_AC_CRITICAL, DEMAND_DC_CRITICAL]
+
     mg_flows = pd.DataFrame(
-        e_flows_df[DEMAND].values, columns=[DEMAND], index=e_flows_df[DEMAND].index,
+        e_flows_df[DEMAND].values,
+        columns=[DEMAND],
+        index=e_flows_df[DEMAND].index,
     )
     for entry in flows_connected_to_electricity_mg_bus:
         if entry in e_flows_df.columns:
@@ -283,31 +321,15 @@ def plot_flows(case_dict, experiment, mg_flows, e_flows_df, number_of_subplots):
         fig, axes = plt.subplots(nrows=2, figsize=(16 / 2.54, 10 / 2.54))
         axes_mg = axes[0]
 
-    # website with websafe hexacolours: https://www.colorhexa.com/web-safe-colors
-    color_dict = {
-        DEMAND: "#33ff00",  # dark green
-        DEMAND_SUPPLIED: "#66cc33",  # grass green
-        PV_GENERATION: "#ffcc00",  # orange
-        WIND_GENERATION: "#33ccff",  # light blue
-        GENSET_GENERATION: "#000000",  # black
-        CONSUMPTION_FROM_MAIN_GRID: "#990099",  # violet
-        STORAGE_CHARGE: "#0033cc",  # light green
-        EXCESS_GENERATION: "#996600",  # brown
-        FEED_INTO_MAIN_GRID: "#ff33cc",  # pink
-        STORAGE_DISCHARGE: "#ccccff",  # pidgeon blue
-        DEMAND_SHORTAGE: "#ff3300",  # bright red
-        STORAGE_SOC: "#0033cc",  # blue
-        GRID_AVAILABILITY: "#cc0000",  # red
-    }
-
     mg_flows.plot(
         title="MG Operation of case "
         + case_dict[CASE_NAME]
         + " in "
         + experiment[PROJECT_SITE_NAME],
-        color=[color_dict.get(x, "#333333") for x in mg_flows.columns],
+        color=[COLOR_DICT.get(x, "#333333") for x in mg_flows.columns],
         ax=axes_mg,
         drawstyle="steps-mid",
+        # style=[":" if "ritical" in x else "-" for x in mg_flows.columns]
     )
     axes_mg.set(xlabel="Time", ylabel="Electricity flow in kWh")
     axes_mg.legend(loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
@@ -320,7 +342,7 @@ def plot_flows(case_dict, experiment, mg_flows, e_flows_df, number_of_subplots):
         ) and (GRID_AVAILABILITY in e_flows_df.columns):
             e_flows_df[GRID_AVAILABILITY].plot(
                 ax=axes[1],
-                color=color_dict.get(GRID_AVAILABILITY, "#333333"),
+                color=COLOR_DICT.get(GRID_AVAILABILITY, "#333333"),
                 drawstyle="steps-mid",
             )
             ylabel += GRID_AVAILABILITY
@@ -333,7 +355,7 @@ def plot_flows(case_dict, experiment, mg_flows, e_flows_df, number_of_subplots):
         ):
             e_flows_df[STORAGE_SOC].plot(
                 ax=axes[1],
-                color=color_dict.get(STORAGE_SOC, "#333333"),
+                color=COLOR_DICT.get(STORAGE_SOC, "#333333"),
                 drawstyle="steps-mid",
             )
             ylabel += STORAGE_SOC
