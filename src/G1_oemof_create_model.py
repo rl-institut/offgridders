@@ -33,6 +33,7 @@ from src.constants import (
     RECTIFIER_AC_DC_FIXED_CAPACITY,
     INVERTER_DC_AC_FIXED_CAPACITY,
     ALLOW_SHORTAGE,
+    MAX_SHORTAGE,
     STABILITY_CONSTRAINT,
     SHARE_BACKUP,
     SHARE_USAGE,
@@ -112,6 +113,7 @@ def build(experiment, case_dict):
             micro_grid_system,
             bus_electricity_ac,
             experiment,
+            max_shortage=case_dict[MAX_SHORTAGE],
             demand_type=DEMAND_AC_CRITICAL,
         )
     else:
@@ -291,6 +293,7 @@ def build(experiment, case_dict):
             micro_grid_system,
             bus_electricity_dc,
             experiment,
+            max_shortage=case_dict[MAX_SHORTAGE],
             demand_type=DEMAND_DC_CRITICAL,
         )
     else:

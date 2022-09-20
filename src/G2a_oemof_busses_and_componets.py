@@ -854,7 +854,7 @@ def demand(micro_grid_system, bus_electricity, experiment, demand_type):
     return sink_demand
 
 
-def demand_critical(micro_grid_system, bus_electricity, experiment, demand_type):
+def demand_critical(micro_grid_system, bus_electricity, experiment, max_shortage, demand_type):
     """
     Creates 3 demand sinks: one fix with critical demand, and the non critical demand is modelled
     by two sinks, one of a demand type with a fixed flow (non critical demand needed to be supplied) and
@@ -873,7 +873,7 @@ def demand_critical(micro_grid_system, bus_electricity, experiment, demand_type)
     logging.debug(f"Added to oemof model: {demand_type}")
     # create and add demand sink to micro_grid_system - fixed
 
-    logging.warning(f"experiment[MAX_SHORTAGE]: {experiment[MAX_SHORTAGE]}")
+    logging.warning(f"case_dict[MAX_SHORTAGE]: {max_shortage}")
 
     # The demand shortage is only allowed on the non-critical demand
     if demand_type == DEMAND_AC_CRITICAL:
@@ -895,7 +895,7 @@ def demand_critical(micro_grid_system, bus_electricity, experiment, demand_type)
     sink_demand_non_critical_reducable = solph.Sink(
         label=non_critical_sink_name + NON_CRITICAL_REDUCABLE_SUFFIX,
         inputs={
-            bus_electricity: solph.Flow(max=experiment[MAX_SHORTAGE]*experiment[non_critical_demand_type],
+            bus_electricity: solph.Flow(max=max_shortage*experiment[non_critical_demand_type],
                                         nominal_value=1, variable_costs=-0.000001)
         },
     )
@@ -903,7 +903,7 @@ def demand_critical(micro_grid_system, bus_electricity, experiment, demand_type)
     sink_demand_non_critical = solph.Sink(
         label=non_critical_sink_name,
         inputs={
-            bus_electricity: solph.Flow(fix=experiment[non_critical_demand_type] * (1 - experiment[MAX_SHORTAGE]),
+            bus_electricity: solph.Flow(fix=experiment[non_critical_demand_type] * (1 - max_shortage),
                                         nominal_value=1)
         },
     )
