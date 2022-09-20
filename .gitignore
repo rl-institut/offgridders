@@ -3,3 +3,7 @@
 /docs/_build/doctrees/
 /docs/_build/html/
 /.idea/
+cbc.exe
+coin-license.txt
+**/__pycache__/**
+micro_grid_design_logfile.log*
