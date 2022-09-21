@@ -59,7 +59,8 @@ from src.constants import (
     DEMAND_DC,
     DEMAND_AC_CRITICAL,
     DEMAND_DC_CRITICAL,
-DEMAND_NON_CRITICAL_REDUCABLE,
+    DEMAND_NON_CRITICAL,
+    DEMAND_NON_CRITICAL_REDUCABLE,
     CRITICAL_CONSTRAINT,
     SUFFIX_GRAPH,
     BASE_OEM,
@@ -162,6 +163,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
 
     critical_constraint = case_dict.get(CRITICAL_CONSTRAINT, False)
     if critical_constraint is True:
+
         flows_connected_to_electricity_mg_bus = (
             [DEMAND_NON_CRITICAL, DEMAND_CRITICAL, DEMAND_NON_CRITICAL_REDUCABLE]
             + flows_connected_to_electricity_mg_bus[:2]
