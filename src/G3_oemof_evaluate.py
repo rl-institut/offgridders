@@ -34,6 +34,7 @@ from src.constants import (
     TOTAL_DEMAND_ANNUAL_KWH,
     DEMAND_PEAK_KW,
     ALLOW_SHORTAGE,
+MAX_SHORTAGE,
     SOURCE_SHORTAGE,
     TOTAL_DEMAND_SHORTAGE_AC_ANNUAL_KWH,
     DEMAND_SHORTAGE_AC,
@@ -191,20 +192,27 @@ def get_demand(
             ((BUS_ELECTRICITY_AC, SINK_DEMAND_AC_REDUCABLE), FLOW)
         ]
         e_flows_df = join_e_flows_df(demand_ac_non_critical_reducable, DEMAND_NON_CRITICAL_REDUCABLE, e_flows_df)
+
+        ac_part = 0
         if case_dict[EVALUATION_PERSPECTIVE] == AC_SYSTEM:
-            e_flows_df[DEMAND] += demand_ac_non_critical_reducable
+            ac_part += demand_ac_non_critical_reducable
         else:
-            e_flows_df[DEMAND] += demand_ac_non_critical_reducable / experiment[INVERTER_DC_AC_EFFICIENCY]
+            ac_part += demand_ac_non_critical_reducable / experiment[INVERTER_DC_AC_EFFICIENCY]
+
+        e_flows_df[DEMAND] += ac_part
 
         demand_dc_non_critical_reducable = electricity_bus_dc[SEQUENCES][
             ((BUS_ELECTRICITY_DC, SINK_DEMAND_DC_REDUCABLE), FLOW)
         ]
+        dc_part = 0
         if case_dict[EVALUATION_PERSPECTIVE] == AC_SYSTEM:
-            e_flows_df[DEMAND] += demand_dc_non_critical_reducable / experiment[RECTIFIER_AC_DC_EFFICIENCY]
+            dc_part += demand_dc_non_critical_reducable / experiment[RECTIFIER_AC_DC_EFFICIENCY]
         else:
-            e_flows_df[DEMAND] += demand_dc_non_critical_reducable
+            dc_part += demand_dc_non_critical_reducable
 
+        e_flows_df[DEMAND] += dc_part
 
+        e_flows_df[DEMAND_NON_CRITICAL_REDUCABLE] = ac_part + dc_part
 
         e_flows_df[DEMAND_CRITICAL] = 0
         # Add the critical demand to the total demand
@@ -295,11 +303,30 @@ def get_shortage(
             else:
                 shortage += shortage_dc
 
-
-            demand_supplied = e_flows_df[DEMAND] - shortage
-
             if critical_constraint is True:
-                nc_demand_supplied = e_flows_df[DEMAND_NON_CRITICAL] - shortage
+
+                # TODO @Adnan
+                e_flows_df = join_e_flows_df(e_flows_df[DEMAND_NON_CRITICAL_REDUCABLE], "non critical demand supplied", e_flows_df)
+
+                wished_non_critical_demand = e_flows_df[DEMAND_AC] + e_flows_df[DEMAND_DC]
+                # share of the non-critical demand that the system is allowed not supply
+                max_allowed_demand_reduction = wished_non_critical_demand * case_dict[MAX_SHORTAGE]
+                share_reducable_demand_not_supplied = max_allowed_demand_reduction - e_flows_df[DEMAND_NON_CRITICAL_REDUCABLE]
+                # update the demand reduction: the total demand reduction, or demand shortage, is the sum of what was
+                # provided by the shortage source and what could not be supplied by the reducable demand sink
+                shortage += share_reducable_demand_not_supplied
+
+                under_supply = shortage > max_allowed_demand_reduction
+                if under_supply.any():
+                    ts = "\n".join([str(d) for d in under_supply.loc[under_supply == True].index.values])
+                    logging.warning(f"The total demand reduction, or demand shortage, exceeds the allowed {100 *case_dict[MAX_SHORTAGE]}% of the non-critical demand:\n {ts}")
+                under_supply = shortage > e_flows_df[DEMAND_NON_CRITICAL]
+                if under_supply.any():
+                    ts = "\n".join([str(d) for d in under_supply.loc[under_supply == True].index.values])
+                    logging.error(f"A portion of the critical demand could not be provided :\n {ts}")
+
+
+        demand_supplied = e_flows_df[DEMAND] - shortage
 
 
         annual_value(
@@ -313,7 +340,6 @@ def get_shortage(
         )
         e_flows_df = join_e_flows_df(shortage, DEMAND_SHORTAGE, e_flows_df)
         e_flows_df = join_e_flows_df(demand_supplied, DEMAND_SUPPLIED, e_flows_df)
-        e_flows_df = join_e_flows_df(nc_demand_supplied, "non critical demand supplied", e_flows_df)
     else:
         oemof_results.update(
             {TOTAL_DEMAND_SUPPLIED_ANNUAL_KWH: oemof_results[TOTAL_DEMAND_ANNUAL_KWH]}
