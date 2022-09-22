@@ -449,18 +449,25 @@ def build(experiment, case_dict):
         logging.info(
             "Added constraint: Stability though actual generation of diesel generators and backup through batteries."
         )
+
+        if critical_constraint is True:
+            critical_demand_sinks = [sink_demand_ac_critical, sink_demand_ac_reducable]
+        else:
+            critical_demand_sinks = None
+
         constraints_custom.hybrid(
             model,
             case_dict,
             experiment=experiment,
             storage=storage,
             sink_demand=sink_demand_ac,
-            demand_ac_critical=demand_ac_critical,
+            critical_demand=critical_demand_sinks,
             genset=genset,
             pcc_consumption=pointofcoupling_consumption,
             source_shortage=source_shortage,
             el_bus_ac=bus_electricity_ac,
             el_bus_dc=bus_electricity_dc,
+
         )
     else:
         logging.warning(
@@ -473,9 +480,9 @@ def build(experiment, case_dict):
     if case_dict[CRITICAL_CONSTRAINT] is True:
         logging.info("Added constraint: Critical demand fulfilled at all timesteps")
 
-        if case_dict[STABILITY_CONSTRAINT] != False:
-            raise ValueError(
-                "At the moment you cannot use the stability constraint with critical demand"
+        if case_dict[STABILITY_CONSTRAINT] is True:
+            logging.warning(
+                "At the moment the stability constraint share_hybrid together with critical demand might be erroneous, use at your own risks!"
             )
 
         # list of assets which bring energy into the AC bus which could be used to fullfill critical demand

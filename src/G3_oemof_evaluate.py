@@ -258,7 +258,7 @@ def get_shortage(
     logging.debug("Evaluate flow: shortage")
 
     # Get flow
-    shortage = pd.Series([0 for i in e_flows_df.index], index=e_flows_df.index)
+    total_demand_reduction = pd.Series([0 for i in e_flows_df.index], index=e_flows_df.index)
 
     critical_constraint = case_dict.get(CRITICAL_CONSTRAINT, False)
 
@@ -278,9 +278,9 @@ def get_shortage(
             e_flows_df = join_e_flows_df(shortage_ac, DEMAND_SHORTAGE_AC, e_flows_df)
 
             if case_dict[EVALUATION_PERSPECTIVE] == AC_SYSTEM:
-                shortage += shortage_ac
+                total_demand_reduction += shortage_ac
             else:
-                shortage += shortage_ac / experiment[INVERTER_DC_AC_EFFICIENCY]
+                total_demand_reduction += shortage_ac / experiment[INVERTER_DC_AC_EFFICIENCY]
 
         if electricity_bus_dc != None:
 
@@ -297,9 +297,9 @@ def get_shortage(
             e_flows_df = join_e_flows_df(shortage_dc, DEMAND_SHORTAGE_DC, e_flows_df)
 
             if case_dict[EVALUATION_PERSPECTIVE] == AC_SYSTEM:
-                shortage += shortage_dc / experiment[RECTIFIER_AC_DC_EFFICIENCY]
+                total_demand_reduction += shortage_dc / experiment[RECTIFIER_AC_DC_EFFICIENCY]
             else:
-                shortage += shortage_dc
+                total_demand_reduction += shortage_dc
 
             if critical_constraint is True:
 
@@ -312,19 +312,21 @@ def get_shortage(
                 share_reducable_demand_not_supplied = max_allowed_demand_reduction - e_flows_df[DEMAND_NON_CRITICAL_REDUCABLE]
                 # update the demand reduction: the total demand reduction, or demand shortage, is the sum of what was
                 # provided by the shortage source and what could not be supplied by the reducable demand sink
-                shortage += share_reducable_demand_not_supplied
 
-                under_supply = shortage > max_allowed_demand_reduction
+                e_flows_df = join_e_flows_df(share_reducable_demand_not_supplied, "reducable_demand_not_supplied", e_flows_df)
+                total_demand_reduction += share_reducable_demand_not_supplied
+
+                under_supply = total_demand_reduction > max_allowed_demand_reduction
                 if under_supply.any():
                     ts = "\n".join([str(d) for d in under_supply.loc[under_supply == True].index.values])
                     logging.warning(f"The total demand reduction, or demand shortage, exceeds the allowed {100 *case_dict[MAX_SHORTAGE]}% of the non-critical demand:\n {ts}")
-                under_supply = shortage > e_flows_df[DEMAND_NON_CRITICAL]
+                under_supply = total_demand_reduction > e_flows_df[DEMAND_NON_CRITICAL]
                 if under_supply.any():
                     ts = "\n".join([str(d) for d in under_supply.loc[under_supply == True].index.values])
                     logging.error(f"A portion of the critical demand could not be provided :\n {ts}")
 
 
-        demand_supplied = e_flows_df[DEMAND] - shortage
+        demand_supplied = e_flows_df[DEMAND] - total_demand_reduction
 
 
         annual_value(
@@ -334,9 +336,9 @@ def get_shortage(
             case_dict,
         )
         annual_value(
-            TOTAL_DEMAND_SHORTAGE_ANNUAL_KWH, shortage, oemof_results, case_dict
+            TOTAL_DEMAND_SHORTAGE_ANNUAL_KWH, total_demand_reduction, oemof_results, case_dict
         )
-        e_flows_df = join_e_flows_df(shortage, DEMAND_SHORTAGE, e_flows_df)
+        e_flows_df = join_e_flows_df(total_demand_reduction, DEMAND_SHORTAGE, e_flows_df)
         e_flows_df = join_e_flows_df(demand_supplied, DEMAND_SUPPLIED, e_flows_df)
     else:
         oemof_results.update(

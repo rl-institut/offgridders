@@ -167,7 +167,7 @@ def save_mg_flows(experiment, case_dict, e_flows_df, filename):
         flows_connected_to_electricity_mg_bus = (
             [DEMAND_NON_CRITICAL, DEMAND_CRITICAL, DEMAND_NON_CRITICAL_REDUCABLE]
             + flows_connected_to_electricity_mg_bus[:2]
-            + [DEMAND_AC_CRITICAL, DEMAND_DC_CRITICAL]
+            + [DEMAND_AC_CRITICAL, DEMAND_DC_CRITICAL, "reducable_demand_not_supplied"]
             + flows_connected_to_electricity_mg_bus[2:]
         )
 
