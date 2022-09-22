@@ -255,37 +255,40 @@ def hybrid(
     source_shortage,
     el_bus_ac,
     el_bus_dc,
-    demand_ac_critical=None,
+    critical_demand=None,
 ):
 
     stability_limit = experiment[SHORTAGE_LIMIT]
-    print(case_dict[ALLOW_SHORTAGE])
-    print(case_dict[GENSET_FIXED_CAPACITY])
-    print(case_dict[STORAGE_FIXED_CAPACITY])
-    import ipdb
-
-    ipdb.set_trace()
 
     # ac_critical_demand = model.flow[el_bus_ac, demand_ac_critical, t]
 
     def stability_rule_capacity(model, t):
         expr = 0
         ## ------- Get demand at t ------- #
-        # TODO adapt this
+
         demand = model.flow[el_bus_ac, sink_demand, t]
+
+        if critical_demand is not None:
+            sink_demand_ac_critical, sink_demand_ac_reducable = critical_demand
+            demand += model.flow[el_bus_ac, sink_demand_ac_critical, t]
+            demand += model.flow[el_bus_ac, sink_demand_ac_reducable, t]
+
         expr += -stability_limit * demand
 
-        # Current state
+        # old state
         # -stability*demand_nc + stability*shortage + SUM_i genset_i + storage_out (can be negative or positive) >= 0
 
-        # what do we want?
-        # a) -stability*(demand_nc + demand_c) + stabililty*shortage + SUM_i genset_i + storage_out (can be negative or positive) >= 0
-        # b) -stability*(demand_c) + stability*shortage + SUM_i genset_i + storage_out (can be negative or positive) >= 0
-
+        # current state
+        # a) -stability*(demand_nc + demand_nc reducable  + demand_c) + stabililty*shortage2 + SUM_i genset_i + storage_out (can be negative or positive) >= 0
+        # shortage2 is shortage + max_allowed_reducable_demand - reducable_demand = shortage + non_supplied_reducable_demand
         ## ------- Get shortage at t------- #
         if case_dict[ALLOW_SHORTAGE] is True:
             # TODO this is considered
-            shortage = model.flow[source_shortage, el_bus_ac, t]
+            if critical_demand is not None:
+                max_allowed_demand_reduction = sink_demand_ac_reducable.inputs[el_bus_ac].max[t]
+                shortage = model.flow[source_shortage, el_bus_ac, t] - model.flow[el_bus_ac, sink_demand_ac_reducable, t] + max_allowed_demand_reduction
+            else:
+                shortage = model.flow[source_shortage, el_bus_ac, t]
             expr += stability_limit * shortage
 
         ## ------- Generation Diesel ------- #
@@ -335,19 +338,32 @@ def hybrid(
         expr = 0
         ## ------- Get demand at t ------- #
         demand = model.flow[el_bus_ac, sink_demand, t]
+
+        if critical_demand is not None:
+            sink_demand_ac_critical, sink_demand_ac_reducable = critical_demand
+            demand += model.flow[el_bus_ac, sink_demand_ac_critical, t]
+            demand += model.flow[el_bus_ac, sink_demand_ac_reducable, t]
+
+
         expr += -stability_limit * demand
 
-        # Current state
+        # old state
         # -stability_limit*demand_nc + stability*shortage + SUM_i genset_i + storage_out (can be negative or positive) >= 0
 
-        # what do we want?
-        # a) -stability*(demand_nc + demand_c) + stabililty*shortage + SUM_i genset_i + storage_out (can be negative or positive) >= 0
-        # b) -stability*(demand_c) + stability*shortage + SUM_i genset_i + storage_out (can be negative or positive) >= 0
+        # current state
+        # a) -stability*(demand_nc + demand_nc reducable  + demand_c) + stabililty*shortage2 + SUM_i genset_i + storage_out (can be negative or positive) >= 0
+        # shortage2 is shortage + max_allowed_reducable_demand - reducable_demand = shortage + non_supplied_reducable_demand
 
         ## ------- Get shortage at t------- #
         if case_dict[ALLOW_SHORTAGE] is True:
             # TODO this is considered
-            shortage = model.flow[source_shortage, el_bus_ac, t]
+            if critical_demand is not None:
+                max_allowed_demand_reduction = sink_demand_ac_reducable.inputs[el_bus_ac].max[t]
+
+                shortage = model.flow[source_shortage, el_bus_ac, t] - model.flow[
+                    el_bus_ac, sink_demand_ac_reducable, t] + max_allowed_demand_reduction
+            else:
+                shortage = model.flow[source_shortage, el_bus_ac, t]
             expr += +stability_limit * shortage
 
         ## ------- Generation Diesel ------- #
@@ -746,8 +762,11 @@ def critical(
 
     def meet_critical_ac_demand_rule(model, t):
         """
-        wind + genset + inverter + pcc_consumption + shortage - rectifier - pcc_feedin - non-critical demand - critical demand >= 0
+        wind + genset + inverter + pcc_consumption + shortage - rectifier - pcc_feedin - non-critical demand - non-critical demand reducable - critical demand >= 0
         """
+
+        # TODO maybe implement wind + genset + inverter + pcc_consumption - rectifier - pcc_feedin  - supplied_critical demand >= 0
+        # because if currently critical demand is 0 then the equation is satisfied, but we don't want the critical demand to be 0
         ac_production = 0
         for ac_asset in ac_generation_assets:
             ac_production += model.flow[ac_asset, el_bus_ac, t]
@@ -762,7 +781,7 @@ def critical(
 
     def meet_critical_dc_demand_rule(model, t):
         """
-        PV + storage-discharge + shortage + rectifier - inverter - storage-charge - non-critical demand - critical demand >= 0
+        PV + storage-discharge + shortage + rectifier - inverter - storage-charge - non-critical demand - non-critical demand reducable - critical demand >= 0
         """
         dc_production = 0
         for dc_asset in dc_generation_assets:
