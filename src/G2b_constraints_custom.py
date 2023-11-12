@@ -4,6 +4,7 @@ For defining custom constraints of the micro grid solutions
 import pyomo.environ as po
 import logging
 import pandas as pd
+import oemof.solph as solph
 from src.constants import (
     SHORTAGE_LIMIT,
     NUMBER_OF_EQUAL_GENERATORS,
@@ -953,6 +954,18 @@ def inverter_only_at_blackout_test(case_dict, oemof_results, e_flows_df):
                 )
 
     return
+
+# equate bi-directional transformer capacities
+def constraint_equate_bidirectional_transformer_capacities(model, case_dict, bus_transformer_in, bus_transformer_out, transformer_in, transformer_out, name_transformer_in, name_transformer_out, factor = 1):
+    CAP_inverter = 0 
+    CAP_rectifier = 0
+    if case_dict[name_transformer_in] != None and case_dict[name_transformer_out] != None:
+        if case_dict[name_transformer_in] is False and case_dict[name_transformer_out] is False:
+                CAP_inverter += model.InvestmentFlow.invest[bus_transformer_in, transformer_in]
+                CAP_rectifier += model.InvestmentFlow.invest[bus_transformer_out, transformer_out]
+    solph.constraints.equate_variables(model,CAP_rectifier, CAP_inverter, factor)
+
+    return model
 
 
 # todo shortage constraint / stbaility constraint only relates to AC bus

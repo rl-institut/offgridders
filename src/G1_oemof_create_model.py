@@ -25,7 +25,11 @@ from src.constants import (
     STORAGE_FIXED_CAPACITY,
     STORAGE_FIXED_POWER,
     RECTIFIER_AC_DC_FIXED_CAPACITY,
+    RECTIFIER_AC_DC_COST_INVESTMENT,
     INVERTER_DC_AC_FIXED_CAPACITY,
+    INVERTER_DC_AC_COST_INVESTMENT,
+    INVERTER_RECTIFIER_CAPACITY_RATIO_FACTOR,
+    USE_BIDIRECTIONAL_INVERTER_CONSTRAINT,
     ALLOW_SHORTAGE,
     STABILITY_CONSTRAINT,
     SHARE_BACKUP,
@@ -220,9 +224,9 @@ def build(experiment, case_dict):
     # ------------point of coupling (feedin)------------#
     if case_dict[PCC_FEEDIN_FIXED_CAPACITY] == None:
         pass
-        # pointofcoupling_feedin = None
+        pointofcoupling_feedin = None
     elif case_dict[PCC_FEEDIN_FIXED_CAPACITY] is False:
-        generate.pointofcoupling_feedin_oem(
+        pointofcoupling_feedin = generate.pointofcoupling_feedin_oem(
             micro_grid_system,
             bus_electricity_ac,
             bus_electricity_ng_feedin,
@@ -231,7 +235,7 @@ def build(experiment, case_dict):
         )
 
     elif isinstance(case_dict[PCC_FEEDIN_FIXED_CAPACITY], float):
-        generate.pointofcoupling_feedin_fix(
+        pointofcoupling_feedin = generate.pointofcoupling_feedin_fix(
             micro_grid_system,
             bus_electricity_ac,
             bus_electricity_ng_feedin,
@@ -452,6 +456,45 @@ def build(experiment, case_dict):
             + " faulty at renewable_share_constraint. Value can only be True or False"
         )
 
+    # ------------Link transformer station capacities constraint ------------#
+    if case_dict[PCC_CONSUMPTION_FIXED_CAPACITY] != None and case_dict[PCC_FEEDIN_FIXED_CAPACITY] != None:
+        logging.info("Added constraint: Linking transformer station capacities.")
+        constraints_custom.constraint_equate_bidirectional_transformer_capacities(
+            model, 
+            case_dict, 
+            bus_electricity_ng_feedin, 
+            bus_electricity_ng_consumption, 
+            pointofcoupling_feedin, 
+            pointofcoupling_consumption, 
+            PCC_FEEDIN_FIXED_CAPACITY, 
+            PCC_CONSUMPTION_FIXED_CAPACITY
+        )
+    
+    # ------------Link rectifier and inverter capacities constraint------------#
+    if case_dict[USE_BIDIRECTIONAL_INVERTER_CONSTRAINT] != None:
+        if case_dict[USE_BIDIRECTIONAL_INVERTER_CONSTRAINT] is True:
+            logging.info("Added constraint: Linking rectifier and inverter capacities.")
+            constraints_custom.constraint_equate_bidirectional_transformer_capacities(
+                model, 
+                case_dict, 
+                bus_electricity_dc, 
+                bus_electricity_ac, 
+                inverter, 
+                rectifier, 
+                INVERTER_DC_AC_FIXED_CAPACITY, 
+                RECTIFIER_AC_DC_FIXED_CAPACITY,
+                experiment[INVERTER_RECTIFIER_CAPACITY_RATIO_FACTOR]
+            )
+            if experiment[RECTIFIER_AC_DC_COST_INVESTMENT] != 0:                
+                logging.warning(
+                    "Case definition of "
+                    + case_dict[CASE_NAME]
+                    + ": Are you sure that you want to define both rectifier and inverter costs if "
+                    + "you link the capacties to receive a biderectional inverter? "
+                    + "This would result in effective investment costs of "
+                    + str(float(experiment[RECTIFIER_AC_DC_COST_INVESTMENT])+float(case_dict[INVERTER_AC_DC_COST_INVESTMENT]))
+                    + " currency/kW bidirectional inverter."
+            )
     # ------------Force charge from maingrid------------#
     if case_dict[FORCE_CHARGE_FROM_MAINGRID] is False:
         pass
@@ -497,6 +540,7 @@ def build(experiment, case_dict):
             + " faulty at enable_inverter_at_backout. Value can only be True or False"
         )
 
+
     """
     # ------------Allow shortage only for certain percentage of demand in a timestep------------#
     if case_dict['allow_shortage'] is True:
@@ -507,6 +551,7 @@ def build(experiment, case_dict):
             shortage_constraints.timestep(model, case_dict, experiment, sink_demand_dc, 
                                           source_shortage, bus_electricity_dc)
     """
+
     return micro_grid_system, model
 
 

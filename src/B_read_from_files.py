@@ -59,6 +59,7 @@ from src.constants import (
     ELECTRICITY_MG_FOLDER,
     STORAGE_FOLDER,
     LP_FILES_FOLDER,
+    USE_BIDIRECTIONAL_INVERTER_CONSTRAINT,
 )
 
 # requires xlrd
@@ -412,6 +413,12 @@ def get_case_definitions(file, sheet_project_sites):
         ]:
             logging.error(
                 f"Parameter {EVALUATION_PERSPECTIVE} has to be either {AC_SYSTEM} or {DC_SYSTEM}, but is {case_definitions[case][EVALUATION_PERSPECTIVE]}"
+            )
+
+        if USE_BIDIRECTIONAL_INVERTER_CONSTRAINT not in case_definitions[case]:
+            case_definitions[case][USE_BIDIRECTIONAL_INVERTER_CONSTRAINT] = False
+            logging.error(
+                f"Parameter {USE_BIDIRECTIONAL_INVERTER_CONSTRAINT} was not defined in excel input sheet and thus set to False."
             )
 
         case_definitions[case].update(
