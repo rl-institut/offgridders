@@ -615,4 +615,4 @@ def randomized(white_noise_percentage, data_subframe):
     for i in range(0, len(data_subframe)):
         if data_subframe[i] != 0:
             data_subframe[i] = data_subframe[i] * (1 - noise[i])
-    return data_subframe.clip_lower(0)  # do not allow values <0
+    return data_subframe.clip(lower=0)  # do not allow values <0
