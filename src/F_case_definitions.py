@@ -310,6 +310,12 @@ def get_base_capacity(
         Base capacity of the simulation
 
     """
+    try:
+        case_dict_entry = float(case_dict_entry)
+    except ValueError:
+        pass
+    except TypeError:
+        pass
     if case_dict_entry == OEM:
         case_dict_capacity = OEM
     elif case_dict_entry == None or case_dict_entry == "None":
@@ -320,6 +326,7 @@ def get_base_capacity(
         case_dict_capacity = round(experiment_case_dict[PEAK_DEMAND], 3)
         case_dict_capacity = float(case_dict_capacity)
     elif case_dict_entry in capacities:
+        logging.info(f"Base_capacities are used for {experiment_case_dict[CASE_NAME]}")
         case_dict_capacity = capacities[case_dict_entry][component_name]
         case_dict_capacity = round(0.5 + case_dict_capacity / batch_size) * batch_size
         case_dict_capacity = float(case_dict_capacity)
