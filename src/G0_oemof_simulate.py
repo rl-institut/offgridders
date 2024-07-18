@@ -119,7 +119,7 @@ def run(experiment, case_dict):
         experiment[OUTPUT_FOLDER], file_name
     )
 
-    # output.save_network_graph(micro_grid_system, case_dict['case_name'])
+    output.save_network_graph(micro_grid_system, case_dict['case_name'])
     ######################
     # Processing
     ######################

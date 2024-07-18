@@ -11,6 +11,14 @@ import logging
 import networkx as nx
 import oemof.network.graph as graph
 
+OEMOF_VISIO = False
+try:
+    from oemof_visio import ESGraphRenderer
+    OEMOF_VISIO = True
+except ImportError:
+    ESGraphRenderer = None
+
+
 from src.constants import (
     DISPLAY_META,
     DISPLAY_MAIN,
@@ -398,41 +406,52 @@ def save_storage(experiment, case_dict, e_flows_df, filename):
 
 
 def save_network_graph(energysystem, case_name):
-    logging.debug("Generate networkx diagram")
-    energysystem_graph = graph.create_nx_graph(energysystem)
-    graph_file_name = case_name + SUFFIX_GRAPH
-    graph_path = "./simulation_results/" + graph_file_name
-    nx.readwrite.write_gpickle(G=energysystem_graph, path=graph_path)
-    energysystem_graph = nx.readwrite.read_gpickle(graph_path)
-    matplotlib.rcParams["figure.figsize"] = [20.0, 15.0]
+    if OEMOF_VISIO is True:
+        logging.debug("Generate energy_system diagram")
+        graph_file_name = case_name + SUFFIX_GRAPH
+        graph_path = "./simulation_results/" + graph_file_name
+        gr = ESGraphRenderer(energy_system=energysystem, filepath=graph_path)
+        gr.render()
+        #energysystem_graph = graph.create_nx_graph(energysystem)
 
-    draw_graph(
-        energysystem_graph,
-        case_name,
-        node_size=5500,
-        node_color={
-            "coal": "#0f2e2e",
-            "gas": "#c76c56",
-            "oil": "#494a19",
-            "lignite": "#56201d",
-            "bel": "#9a9da1",
-            "bth": "#cd3333",
-            "wind": "#4ca7c3",
-            "pv": "#ffde32",
-            "demand_el": "#9a9da1",
-            "excess_el": "#9a9da1",
-            "demand_th": "#cd3333",
-            "pp_coal": "#0f2e2e",
-            "pp_lig": "#56201d",
-            "pp_gas": "#c76c56",
-            "pp_oil": "#494a19",
-            "pp_chp": "#eeac7e",
-            "b_heat_source": "#cd3333",
-            "heat_source": "#cd3333",
-            "heat_pump": "#42c77a",
-        },
-        edge_color="#eeac7e",
-    )
+        #nx.readwrite.write_gpickle(G=energysystem_graph, path=graph_path)
+        #energysystem_graph = nx.readwrite.read_gpickle(graph_path)
+        #matplotlib.rcParams["figure.figsize"] = [20.0, 15.0]
+    else:
+        logging.info("You can benefit from generating energy_system diagram, for this you need to install oemof_visio with "
+                     "\n\n `pip install git+https://github.com/oemof/oemof_visio.git`.\n\n"
+                     "You also need to install graphviz with `pip install graphviz`.\n"
+                     "Windows user you might want to look at\n"
+                     "https://multi-vector-simulator.readthedocs.io/en/latest/references/troubleshooting.html\n"
+                     "Once this is installed you will find pdf of the energy system representation in your results folder")
+
+        # draw_graph(
+        #     energysystem_graph,
+        #     case_name,
+        #     node_size=5500,
+        #     node_color={
+        #         "coal": "#0f2e2e",
+        #         "gas": "#c76c56",
+        #         "oil": "#494a19",
+        #         "lignite": "#56201d",
+        #         "bel": "#9a9da1",
+        #         "bth": "#cd3333",
+        #         "wind": "#4ca7c3",
+        #         "pv": "#ffde32",
+        #         "demand_el": "#9a9da1",
+        #         "excess_el": "#9a9da1",
+        #         "demand_th": "#cd3333",
+        #         "pp_coal": "#0f2e2e",
+        #         "pp_lig": "#56201d",
+        #         "pp_gas": "#c76c56",
+        #         "pp_oil": "#494a19",
+        #         "pp_chp": "#eeac7e",
+        #         "b_heat_source": "#cd3333",
+        #         "heat_source": "#cd3333",
+        #         "heat_pump": "#42c77a",
+        #     },
+        #     edge_color="#eeac7e",
+        # )
 
 
 def draw_graph(
